@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project ClouderClient with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/Users/G/git/UnaCloud/unacloudIaaS2.0/unacloudIaaS2.0/web-app/agentSources/ClouderClient.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="domain.Main"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ log4j.jar sigar.jar nsclient4j.jar mysql-connector-java-5.1.18-bin.jar commonshares.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="C:/Users/G/git/UnaCloud/unacloudIaaS2.0/ClouderClient/target/classes"/>
+            <zipfileset dir="C:\Users\G\git\UnaCloud\unacloudIaaS2.0\ClouderClient\lib\sigar-bin\lib" includes="log4j.jar"/>
+            <zipfileset dir="C:\Users\G\git\UnaCloud\unacloudIaaS2.0\ClouderClient\lib\sigar-bin\lib" includes="sigar.jar"/>
+            <zipfileset dir="C:\Users\G\git\UnaCloud\unacloudIaaS2.0\ClouderClient\lib" includes="nsclient4j.jar"/>
+            <zipfileset dir="C:\Users\G\git\UnaCloud\unacloudIaaS2.0\ClouderClient\lib" includes="mysql-connector-java-5.1.18-bin.jar"/>
+            <fileset dir="C:/Users/G/git/UnaCloud/unacloudIaaS2.0/ClouderClient/lib/sigar-bin"/>
+            <zipfileset dir="C:\Users\G\git\UnaCloud\unacloudIaaS2.0\unacloudIaaS2.0\lib" includes="commonshares.jar"/>
+        </jar>
+    </target>
+</project>
