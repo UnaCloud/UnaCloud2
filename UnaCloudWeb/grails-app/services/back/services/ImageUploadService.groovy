@@ -12,8 +12,8 @@ import unacloud2.Repository;
 import unacloud2.User
 import unacloud2.VirtualMachineExecution;
 import unacloud2.VirtualMachineImage;
-import unacloud2.VirtualMachineImageEnum;
 import unacloud2.VirtualMachineImageService;
+import unacloud2.enums.VirtualMachineImageEnum;
 import unacloudEnums.VirtualMachineExecutionStateEnum;
 
 class ImageUploadService {

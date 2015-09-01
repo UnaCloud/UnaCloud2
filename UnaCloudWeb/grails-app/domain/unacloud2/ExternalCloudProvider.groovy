@@ -10,7 +10,7 @@ class ExternalCloudProvider {
 	
 	ExternalCloudTypeEnum type
 	
-	static hasMany = [hardwareProfiles: HardwareProfile]
+	static hasMany = [hardwareProfiles: HardwareProfile, accounts:ExternalCloudAccount]
 		
     static constraints = {
     }

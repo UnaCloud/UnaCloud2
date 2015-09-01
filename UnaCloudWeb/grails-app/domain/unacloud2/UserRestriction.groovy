@@ -16,6 +16,11 @@ class UserRestriction {
 	 */
 	String value
 	
+	/**
+	 * Owner
+	 */
+	static belongsTo = [user: User]
+	
     static constraints = {
     }
 }

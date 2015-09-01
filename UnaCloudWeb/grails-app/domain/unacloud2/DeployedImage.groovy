@@ -13,7 +13,7 @@ class DeployedImage {
 	/**
 	 * representation of the virtual machine image
 	 */
-	VirtualMachineImage image
+	static belongsTo =  [image: VirtualMachineImage]
 	
 	/**
 	 * it tells if the image is set to be deployed in high availability machines
@@ -27,7 +27,6 @@ class DeployedImage {
     
 	
 	static constraints = {
-		image nullable:true 
     }
 	
 	//-----------------------------------------------------------------

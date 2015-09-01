@@ -33,6 +33,11 @@ class Deployment {
 	 */
 	DeploymentStateEnum status
 	
+	/**
+	 * Owner
+	 */
+	static belongsTo = [user: User]
+	
 	static constraints = {	
 		stopTime nullable:true 
     }

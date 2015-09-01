@@ -19,11 +19,9 @@ class IP {
 	/**
 	 * IP Pool to which IP belongs
 	 */
-	IPPool ipPool
-	
+	static belongsTo = [ipPool: IPPool]	
 	
 	static constraints = {
-		ipPool nullable:true
 		ip unique: true	
 	}
 }

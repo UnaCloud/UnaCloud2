@@ -1,4 +1,4 @@
-package unacloud2;
+package unacloud2.enums;
 
 public enum VirtualMachineImageEnum {
 

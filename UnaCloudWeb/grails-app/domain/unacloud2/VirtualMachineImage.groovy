@@ -1,6 +1,7 @@
 package unacloud2
 
 import unacloud2.enums.DeploymentStateEnum;
+import unacloud2.enums.VirtualMachineImageEnum;
 
 class VirtualMachineImage {
 	
@@ -65,6 +66,11 @@ class VirtualMachineImage {
 	 *Virtual machine state (DISABLE, AVAILABLE, COPYING) 
 	 */
 	VirtualMachineImageEnum state = VirtualMachineImageEnum.AVAILABLE;
+	
+	/**
+	 * Owner 
+	 */
+	static belongsTo = [user: User]
 	
 	static constraints = {
     	mainFile (nullable: true)

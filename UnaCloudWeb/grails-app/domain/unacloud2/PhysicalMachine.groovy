@@ -63,23 +63,15 @@ class PhysicalMachine {
 	Date lastReport
 	
 	/**
-	 * Laboratory to which the physical machine belongs
-	 */
-	Laboratory laboratory;
-	/**
-	 * Status of monitoring cpu process in agent
-	 */
-	MonitoringStatus monitorStatus;
-	
-	/**
-	 * Status of monitoring energy process in agent
-	 */
-	MonitoringStatus monitorStatusEnergy;
-	
-	/**
 	 * Free space in data directory: current virtual machine directory
 	 */
 	long dataSpace = 0;
+	
+	
+	/**
+	 * Laboratory to which the physical machine belongs
+	 */
+	static belongsTo =  [laboratory:Laboratory]
 	
 	//-----------------------------------------------------------------
 	// Methods

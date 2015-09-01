@@ -9,8 +9,8 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import unacloud2.VirtualMachineImageEnum;
 import unacloud2.VirtualMachineImageService;
+import unacloud2.enums.VirtualMachineImageEnum;
 
 public class FileReceiverTask implements Runnable{
 	Socket s;	

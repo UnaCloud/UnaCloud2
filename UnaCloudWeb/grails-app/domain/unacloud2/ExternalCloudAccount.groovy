@@ -4,7 +4,7 @@ class ExternalCloudAccount {
 	
 	String name
 	
-	ExternalCloudProvider provider
+	static belongsTo = [provider:ExternalCloudProvider]
 
 	String account_id
 	

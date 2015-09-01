@@ -20,6 +20,10 @@ class Cluster {
 	 */
 	static hasMany = [images: VirtualMachineImage]
 	
+	/**
+	 * Owner
+	 */
+	static belongsTo = [user: User]
 	
 	//-----------------------------------------------------------------
 	// Methods

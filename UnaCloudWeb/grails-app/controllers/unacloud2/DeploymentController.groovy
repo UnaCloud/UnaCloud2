@@ -12,6 +12,7 @@ import java.util.regex.Pattern.Start;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
 
 import unacloud2.enums.PhysicalMachineStateEnum;
+import unacloud2.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
 class DeploymentController {

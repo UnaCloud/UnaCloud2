@@ -9,7 +9,8 @@ import com.losandes.utils.LocalProcessExecutor;
 import static com.losandes.utils.Constants.*;
 
 /**
- * @author Eduardo Rosales
+ * @author Eduardo Rosales 
+ * @author CesarF
  * Responsible for executing operating system operations
  */
 public class OperatingSystem {
@@ -136,9 +137,9 @@ public class OperatingSystem {
         return userName;
     }
     /**
-     * Operations to get constanst in OS
+     * Operations to get constants in OS
      */
-    
+
     public boolean isWindows() {		 
 		return (operatingSystemName.indexOf("win") >= 0); 
 	} 

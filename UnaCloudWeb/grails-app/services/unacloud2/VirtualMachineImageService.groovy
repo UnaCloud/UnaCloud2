@@ -7,6 +7,8 @@ import org.apache.commons.io.FileUtils
 import org.junit.internal.runners.statements.FailOnTimeout;
 import org.springframework.transaction.annotation.Transactional;
 
+import unacloud2.enums.VirtualMachineImageEnum;
+
 class VirtualMachineImageService {	
 	//-----------------------------------------------------------------
 	// Properties
