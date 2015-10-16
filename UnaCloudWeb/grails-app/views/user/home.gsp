@@ -7,11 +7,7 @@
         <h1>
             Welcome Guest
             <small>Control panel</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Blank page</li>
-        </ol>
+        </h1>       
     </section>
     <!-- Main content -->
     <section class="content">

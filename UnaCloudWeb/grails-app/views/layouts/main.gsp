@@ -153,7 +153,7 @@
             </aside>
 
             <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">                
+            <aside class="right-side">              
                 <g:layoutBody/>
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->

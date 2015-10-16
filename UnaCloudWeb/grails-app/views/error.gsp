@@ -1,7 +1,4 @@
 <html>
-   <head>
-      <meta name="layout" content="main"/>
-   </head>
 <body> 
 	<section class="content-header">
          <h1>

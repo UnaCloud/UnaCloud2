@@ -11,12 +11,27 @@
         <ol class="breadcrumb">
             <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Images</li>
-        </ol>
+        </ol>        	         
     </section>
     <!-- Main content -->
     <section class="content">
-     	<div class="row">
-             <div class="col-xs-12">                          
+     	<div class="row">     		     
+             <div class="col-xs-12">  
+             	<g:if test="${flash.message && flash.message!=""}">
+	          		<g:if test="${flash.type=="success"}">
+	          			<div class="alert alert-success"><i class="fa fa-check"></i>
+	          		</g:if>  
+	          		<g:elseif test="${flash.type=="info"}">
+	          			<div class="alert alert-info"><i class="fa fa-info"></i>
+	          		</g:elseif> 
+	          		<g:elseif test="${flash.type=="warning"}">
+	          			<div class="alert alert-warning"><i class="fa fa-warning"></i>
+	          		</g:elseif>             			
+	          		<g:else>
+	          			<div class="alert alert-danger"><i class="fa fa-ban"></i>
+	          		</g:else> 	
+			   		&nbsp;&nbsp;&nbsp;${flash.message}</div>
+				</g:if>                         
                   <a href="${createLink(uri: '/services/image/new', absolute: true)}" class="btn btn-primary btn-sm">New</a>
                   <hr>
                   <div class="box-body table-responsive">
@@ -59,11 +74,11 @@
                                   <td class="column-center"> 
                                   <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)}">
                                  	 <div class="btn-group" data-id="${image.id}">
-                                 	 	<button type="button" class="btn btn-primary"><i class='fa fa-trash-o' title="Delete"></i></button>
-                                        <button type="button" class="btn btn-primary"><i class='fa fa-pencil-square' title="Edit"></i></button>   
-                                        <button type="button" class="btn btn-primary"><i class='fa fa-upload' title="Update"></i></button>   
-                                        <button type="button" class="btn btn-primary"><i class='fa fa-cloud-upload' title="Send to External Provider"></i></button> 
-                                        <button type="button" class="btn btn-primary"><i class='fa fa-eraser' title="Remove from cache"></i></button>   
+                                 	 	<a title="Delete" class="delete_images btn btn-primary" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+                                   	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-primary" ><i class="fa fa-pencil-square" ></i></a>
+                                        <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-primary"  ><i class="fa fa-upload"></i></a>
+									    <a title="Add/Modify external account id" href="${createLink(uri: '/services/image/external/'+image.id, absolute: true)}" class="btn btn-primary" ><i class="fa fa-cloud-upload" ></i></a>
+  			                            <a title="Remove from cache" class="clear_image btn btn-primary" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}"><i class='fa fa-eraser'></i></a>  
                                      </div>
                                   </g:if>
 								  </td>
@@ -74,7 +89,8 @@
                   </div><!-- /.box-body -->
              </div>
         </div>     	
-	</section><!-- /.content -->        
-	<script>$(document).on('ready', $("#unacloudTable").dataTable())</script> 
+	</section><!-- /.content -->   
+	<asset:javascript src="pages/images.js" />     
+	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();loadImages();})</script> 
 </body>
                
