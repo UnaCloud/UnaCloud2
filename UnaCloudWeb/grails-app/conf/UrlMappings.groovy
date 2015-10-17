@@ -13,8 +13,8 @@ class UrlMappings {
 		"/error"(view:'/error')
 		/** services - my images**/
 		"/services/image/list"(controller:'VirtualMachineImage',action:"list")
-		"/services/image/new"(controller:"virtualMachineImage",action:"newUploadImage")
-		"/services/image/upload"(controller:"virtualMachineImage",action:"upload")
+		"/services/image/new"(controller:"VirtualMachineImage",action:"newUploadImage")
+		"/services/image/upload"(controller:"VirtualMachineImage",action:"upload")
 		"/services/image/edit/$id"(controller:'VirtualMachineImage',action:"edit")
 		"/services/image/delete/$id"(controller:'VirtualMachineImage',action:"delete")
 		"/services/image/clear/$id"(controller:'VirtualMachineImage',action:"clearFromCache")
@@ -24,6 +24,11 @@ class UrlMappings {
 		"/services/image/external/$id"(controller:'VirtualMachineImage',action:'external')
 		"/services/image/update/$id"(controller:'VirtualMachineImage',action:'update')
 		"/services/image/update/save"(controller:'VirtualMachineImage',action:'updateFiles')
+		
+		/** services - my clusters**/
+		"/services/cluster/list"(controller:'Cluster',action:"list")
+		"/services/cluster/new"(controller:"Cluster",action:"newCluster")
+		"/services/cluster/save"(controller:"Cluster",action:"save")
 		
 		"404"(view:'/error')
 		"500"(view:'/error')

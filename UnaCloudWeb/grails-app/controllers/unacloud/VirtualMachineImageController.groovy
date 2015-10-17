@@ -115,7 +115,7 @@ class VirtualMachineImageController {
 		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){	
 			if(image.owner.id==session.user.id){
 				virtualMachineImageService.clearCache(image);				
-				image.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+				image.freeze()
 				flash.message="Your request has been sent, image will be deleted from physical machines in a few time";
 				flash.type="info";
 			}
@@ -208,7 +208,6 @@ class VirtualMachineImageController {
 					}
 					else{
 						def fileName=it.getOriginalFilename()
-						print fileName;
 						if(!(fileName.endsWith("vmx")|| fileName.endsWith("vmdk")||fileName.endsWith("vbox")|| fileName.endsWith("vdi"))){
 							resp = [success:false,'message':'Invalid file type.']
 							validate= false;

@@ -2,6 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
+import unacloud.enums.ClusterEnum;
 import unacloud.enums.DeploymentStateEnum;
 
 class Cluster {
@@ -25,6 +26,11 @@ class Cluster {
 	 */
 	static belongsTo = [user: User]
 	
+	/**
+	 * State of cluster
+	 */
+	ClusterEnum state = ClusterEnum.AVAILABLE;
+	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -35,20 +41,6 @@ class Cluster {
 	 */
 	List <PhysicalMachine> getOrderedImages(){
 		return images.sort()		
-	}
-	
-	/**
-	 * Returns the cluster state 
-	 * @return a boolean with the cluster current status
-	 */
-	def isDeployed(){
-		boolean isDeployed=false
-		def deployments= Deployment.findByStatusNotEqual(DeploymentStateEnum.FINISHED)
-		deployments.each (){
-			if(it.cluster.cluster==this)
-				isDeployed=true
-		}
-		return isDeployed
 	}	
 	
 }

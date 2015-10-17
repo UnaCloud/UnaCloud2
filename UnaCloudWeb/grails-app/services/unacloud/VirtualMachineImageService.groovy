@@ -61,7 +61,7 @@ class VirtualMachineImageService {
 			it.transferTo(newFile)			
 			if(image.isPublic){
 				QueueTaskerFile.createPublicCopy(image, user)
-				image.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+				image.freeze()
 			}
 //				def templateFile= new java.io.File(repo.root+"imageTemplates"+separator+image.name+separator+it.getOriginalFilename())
 //				FileUtils.copyFile(newFile, templateFile)				
@@ -128,7 +128,7 @@ class VirtualMachineImageService {
 		}
 		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id:image.id]);
 		QueueTaskerFile.deleteImage(image, user)
-		image.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+		image.freeze()
 		return true;
 	}
 //		try{//delete files
@@ -187,7 +187,7 @@ class VirtualMachineImageService {
 		}else if(toPublic && !image.isPublic){
 			QueueTaskerFile.createPublicCopy(image, image.owner);
 		}	
-		image.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+		image.freeze()
 	}
 	
 	/**
@@ -208,7 +208,7 @@ class VirtualMachineImageService {
 			it.transferTo(newFile)
 			if(image.isPublic){
 				 QueueTaskerFile.createPublicCopy(image, user)
-				 image.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+				 image.freeze()
 			}
 			if (file.endsWith(".vmx")||file.endsWith(".vbox"))
 			image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+file)

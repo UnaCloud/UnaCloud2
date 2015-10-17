@@ -32,7 +32,7 @@
 	          		</g:else> 	
 			   		&nbsp;&nbsp;&nbsp;${flash.message}</div>
 				</g:if>                         
-                  <a href="${createLink(uri: '/services/image/new', absolute: true)}" class="btn btn-primary btn-sm">New</a>
+                  <a href="${createLink(uri: '/services/image/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New</a>
                   <hr>
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">

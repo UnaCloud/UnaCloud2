@@ -1,6 +1,8 @@
 package unacloud
 
 import java.text.DecimalFormat
+
+import unacloud.enums.ClusterEnum;
 import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 
@@ -87,24 +89,12 @@ class VirtualMachineImage {
 	
 	//-----------------------------------------------------------------
 	// Methods
-	//-----------------------------------------------------------------
+	//-----------------------------------------------------------------	
 	
 	/**
-	 * Indicates if the image is part of an active deployment
-	 * @return a boolean indicating if the image is deployed
+	 * Return the size of image in GB, MB, KB
+	 * @return
 	 */
-	def boolean isDeployed(){
-		boolean isDeployed=false
-		def deployments= Deployment.findByStatusNotEqual(DeploymentStateEnum.FINISHED)
-		deployments.each (){
-			it.cluster.images.each(){
-				if(it.image==this)
-					isDeployed=true
-			}
-		}
-		return isDeployed
-	}
-	
 	def String getSize(){
 		DecimalFormat df = new DecimalFormat("#.00");
 		long diskSize = fixedDiskSize/1024;
@@ -120,4 +110,14 @@ class VirtualMachineImage {
 		else return df.format(fixedDiskSize)+" Bytes"
 	}
 	
+	/**
+	 * Change the state of image to IN_QUEUE and clusters where it is embedded
+	 */
+	def freeze(){
+		this.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+		def clusteres = Cluster.where{images{id==this.id;}}.findAll();
+		for(cluster in clusteres){
+			cluster.putAt("state", ClusterEnum.FREEZE);
+		}
+	}
 }	
