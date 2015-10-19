@@ -25,7 +25,7 @@ class Deployment {
 	Date stopTime
 	
 	/**
-	 * represent status of the deployment (ACTIVE of FINISHED)
+	 * represent status of the deployment (ACTIVE, REQUESTED or FINISHED)
 	 */
 	DeploymentStateEnum status
 	

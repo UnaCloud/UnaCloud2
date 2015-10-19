@@ -1,5 +1,6 @@
 package unacloud
 
+import unacloud.enums.ClusterEnum;
 import javassist.bytecode.stackmap.BasicBlock.Catch;
 
 class ClusterController {
@@ -75,5 +76,47 @@ class ClusterController {
 			}			
 			redirect(uri:"/services/cluster/new", absolute:true)
 		}	
+	}
+	
+	/**
+	 * Delete cluster action. Receives the cluster id  and
+	 * responses success and redirect to index after deletion
+	 * @return
+	 */
+	def delete(){
+		def cluster = Cluster.get(params.id)
+		if(cluster){
+			def user= User.get(session.user.id)
+			try{
+				clusterService.deleteCluster(cluster, user)
+				flash.message="Your cluster has been deleted"
+				flash.type="success"
+			}catch(Exception e){
+				flash.message = e.message;
+			}			
+		}
+		redirect(uri:"/services/cluster/list", absolute:true)
+	}
+	
+	/**
+	 * Deploy options action that brings the form with deploying options for each
+	 * image in the cluster
+	 * @return limits shown in the information of form and cluster to be deployed
+	 */
+	def deployOptions(){
+		def cluster=Cluster.get(params.id);
+		if(cluster&&cluster.state==ClusterEnum.AVAILABLE){
+			//TODO implement logic to deploy clusters
+			redirect(uri:"/services/cluster/list", absolute:true)
+		}else{
+			redirect(uri:"/services/cluster/list", absolute:true)
+		}		
+	}
+	/**
+	 * Action used to render view to deploy the cluster in external 
+	 * @return
+	 */
+	def externalDeployOptions(){		
+		//TODO to be implemented
 	}
 }

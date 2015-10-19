@@ -29,6 +29,9 @@ class UrlMappings {
 		"/services/cluster/list"(controller:'Cluster',action:"list")
 		"/services/cluster/new"(controller:"Cluster",action:"newCluster")
 		"/services/cluster/save"(controller:"Cluster",action:"save")
+		"/services/cluster/delete/$id"(controller:"Cluster",action:"delete")
+		"/services/cluster/deploy/$id"(controller:"Cluster",action:"deployOptions")
+		"/services/cluster/external/$id"(controller:"Cluster",action:"externalDeployOptions")
 		
 		"404"(view:'/error')
 		"500"(view:'/error')

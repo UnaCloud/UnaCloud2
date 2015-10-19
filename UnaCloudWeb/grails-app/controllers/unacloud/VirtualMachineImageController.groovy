@@ -175,7 +175,7 @@ class VirtualMachineImageController {
 	}
 	
 	/**
-	 * This method renders view to change the externalId reference in external cloud provider
+	 * This action renders view to change the externalId reference in external cloud provider
 	 * @return
 	 */
 	def external(){

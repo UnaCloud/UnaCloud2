@@ -73,7 +73,7 @@
                                   </td>
                                   <td class="column-center"> 
                                   <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)}">
-                                 	 <div class="btn-group" data-id="${image.id}">
+                                 	 <div class="btn-group">
                                  	 	<a title="Delete" class="delete_images btn btn-primary" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
                                    	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-primary" ><i class="fa fa-pencil-square" ></i></a>
                                         <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-primary"  ><i class="fa fa-upload"></i></a>

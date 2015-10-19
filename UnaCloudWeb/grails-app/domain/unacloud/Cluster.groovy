@@ -39,8 +39,19 @@ class Cluster {
 	 * Returns cluster images sorted
 	 * @return sorted images
 	 */
-	List <PhysicalMachine> getOrderedImages(){
+	def List <PhysicalMachine> getOrderedImages(){
 		return images.sort()		
 	}	
+	
+	/**
+	 * Returns if cluster is deployed or not
+	 * @return a boolean 
+	 */
+	def isDeployed(){
+		boolean isDeployed=false
+		Long clusterId = this.id;
+		def deployments= Deployment.where{status == DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
+		return deployments&&deployments.size()>0?true:false
+	}
 	
 }

@@ -8,3 +8,4 @@ function activator(){
 	else if(path.indexOf('monitoring')>0)$('#monitoring-tree').addClass('active');
 	else if(path.indexOf('config')>0)$('#config-tree').addClass('active');
 }
+

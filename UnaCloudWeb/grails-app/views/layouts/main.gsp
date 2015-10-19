@@ -98,7 +98,7 @@
                                 <li><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Deployments</a></li>
                             </ul>
                         </li>
-                         <li id="external-tree" class="treeview">
+                        <!--  <li id="external-tree" class="treeview">
                             <a href="#">
                                 <i class="fa fa-cloud-upload"></i>
                                 <span>External Services</span>
@@ -109,7 +109,7 @@
                                 <li><a href="pages/charts/flot.html"><i class="fa fa-angle-double-right"></i>My Deployments</a></li>
                                 <li><a href="pages/charts/inline.html"><i class="fa fa-angle-double-right"></i>My Storage</a></li>
                             </ul>
-                        </li>
+                        </li>-->
                         <g:if test="${session.user.isAdmin()}">
 	                        <li id="admin-tree" class="treeview">
 	                            <a href="#">
@@ -118,11 +118,16 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> General</a></li>
-	                                <li><a href="pages/UI/icons.html"><i class="fa fa-angle-double-right"></i> Icons</a></li>
-	                                <li><a href="pages/UI/buttons.html"><i class="fa fa-angle-double-right"></i> Buttons</a></li>
-	                                <li><a href="pages/UI/sliders.html"><i class="fa fa-angle-double-right"></i> Sliders</a></li>
-	                                <li><a href="pages/UI/timeline.html"><i class="fa fa-angle-double-right"></i> Timeline</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> User management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Group management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Hypervisor management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> OS management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Infrastructure management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> External Provider management</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> External Account management</a></li>
+	                                
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Hardware Profile management **</a></li>	                                
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Repository Management **</a></li>
 	                            </ul>
 	                        </li>
 	                        <li id="monitoring-tree" class="treeview">
@@ -131,9 +136,9 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="pages/forms/general.html"><i class="fa fa-angle-double-right"></i> General Elements</a></li>
-	                                <li><a href="pages/forms/advanced.html"><i class="fa fa-angle-double-right"></i> Advanced Elements</a></li>
-	                                <li><a href="pages/forms/editors.html"><i class="fa fa-angle-double-right"></i> Editors</a></li>                                
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Physical Monitoring status</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Virtual Monitoring status **</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Sensors management</a></li>                          
 	                            </ul>
 	                        </li>
 	                        <li id="config-tree" class="treeview">
@@ -142,8 +147,8 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Simple tables</a></li>
-	                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Data tables</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Server Variables</a></li>
+	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Agent management</a></li>
 	                            </ul>
 	                        </li>  
                         </g:if>                   

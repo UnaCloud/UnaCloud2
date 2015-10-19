@@ -38,17 +38,17 @@
                       <table id="unacloudTable" class="table table-bordered table-striped">
                           <thead>
                               <tr>
-                                  <th rowspan="3">Cluster Name</th>
-                                  <th rowspan="3">State</th>
+                                  <th>Cluster Name</th>
+                                  <th>State</th>
                                   <th>Images</th>
-                                  <th rowspan="3">Actions</th>
+                                  <th>Actions</th>
                               </tr>
                           </thead>
                           <tbody>
                           <g:each in="${clusters}" var="cluster"> 
                               <tr>
-                                 <td rowspan="3">${cluster.name}</td>
-                                 <td rowspan="3">
+                                 <td>${cluster.name}</td>
+                                 <td>
 	                                  <g:if test="${cluster.state.equals(ClusterEnum.AVAILABLE)}">
 	                                 	<span class="label label-success">${cluster.state.name}</span>
 	                                  </g:if>
@@ -62,19 +62,25 @@
 	                                  	<span class="label label-danger">${cluster.state.name}</span>
 	                                  </g:elseif>	                                  
                                   </td>
-                                  <td>uno</td>
-                                  <td rowspan="3"> 
-                                  <g:if test="${cluster.state.equals(ClusterEnum.AVAILABLE)}">
-                                  	
-                                  </g:if>
+                                  <td style="padding:0px !important">
+                                  	<table class="table table-striped insert-table">
+	                                  	<tbody>
+		                                  	<g:each in="${cluster.getOrderedImages()}" var="image"> 
+		                                  	<tr><td>${image.name}</td></tr>
+		                                  	</g:each>  
+	                                  	</tbody>
+                                  	</table>
+                                  </td>
+                                  <td class="column-center">
+                                  <div class="btn-group">
+	                                  <g:if test="${!cluster.state.equals(ClusterEnum.FREEZE)}">
+	                                  <a title="Delete" class="delete_cluster btn btn-primary" data-id="${cluster.id}" href="${createLink(uri: '/services/cluster/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Deploy Cluster" class="btn btn-primary" href="${createLink(uri: '/services/cluster/deploy/'+cluster.id, absolute: true)}" ><i class='fa fa-play' ></i></a>
+	                                  <a title="Deploy Cluster External Provider" class="btn btn-primary" href="${createLink(uri: '/services/cluster/external/'+cluster.id, absolute: true)}" ><i class='fa fa-cloud-upload' ></i></a>
+	                                  </g:if>
+                                  </div>
 								  </td>  
-                              </tr>
-                              <tr>                                
-                                <td>dos</td>                                                                  
-                              </tr>
-                              <tr> 
-                              	<td>tres</td>                          
-                              </tr>                                
+                              </tr>                                                          
                           </g:each>                                   
                           </tbody>
                       </table>
@@ -82,6 +88,7 @@
              </div>
         </div>     	
 	</section><!-- /.content -->    
-	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();})</script> 
+	<asset:javascript src="pages/cluster.js" />  
+	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();loadCluster();})</script> 
 </body>
                
