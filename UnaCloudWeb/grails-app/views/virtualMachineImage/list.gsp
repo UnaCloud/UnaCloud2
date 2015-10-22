@@ -17,21 +17,7 @@
     <section class="content">
      	<div class="row">     		     
              <div class="col-xs-12">  
-             	<g:if test="${flash.message && flash.message!=""}">
-	          		<g:if test="${flash.type=="success"}">
-	          			<div class="alert alert-success"><i class="fa fa-check"></i>
-	          		</g:if>  
-	          		<g:elseif test="${flash.type=="info"}">
-	          			<div class="alert alert-info"><i class="fa fa-info"></i>
-	          		</g:elseif> 
-	          		<g:elseif test="${flash.type=="warning"}">
-	          			<div class="alert alert-warning"><i class="fa fa-warning"></i>
-	          		</g:elseif>             			
-	          		<g:else>
-	          			<div class="alert alert-danger"><i class="fa fa-ban"></i>
-	          		</g:else> 	
-			   		&nbsp;&nbsp;&nbsp;${flash.message}</div>
-				</g:if>                         
+             	<g:render template="/share/message"/>                       
                   <a href="${createLink(uri: '/services/image/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New</a>
                   <hr>
                   <div class="box-body table-responsive">

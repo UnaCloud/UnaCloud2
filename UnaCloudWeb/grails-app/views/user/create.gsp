@@ -16,6 +16,7 @@
     <section class="content"> 
     	<div class="row">    		
              <div class="col-xs-12">   
+             		<g:render template="/share/message"/>
              		<div id="label-message"></div>               		     
              		<div class="box box-primary">     	
              			<div class="box-header">

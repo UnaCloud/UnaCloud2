@@ -103,6 +103,13 @@ class UserController {
 			User user = session.user;		
 		}		
 	}	
+	/**
+	 * render create view
+	 * @return
+	 */
+	def create(){
+		
+	}
 
 	/**
 	 * Create a new user

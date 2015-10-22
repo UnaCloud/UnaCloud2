@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">   
     <head>
         <meta charset="UTF-8">
         <title>UnaCloud | Dashboard</title>
@@ -23,10 +23,12 @@
         <!-- Datatables -->
         <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
         <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>
-        <asset:javascript src="ui.js"/>          
+        <asset:javascript src="ui.js"/>                  
         <g:layoutTitle/>
+        
     </head>
     <body class="skin-black fixed">
+    
         <!-- header logo: style can be found in header.less -->
         <header class="header">
             <a href="/" class="logo"><i class="fa fa-cloud"></i>

@@ -39,8 +39,9 @@ class UrlMappings {
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")
-		"/admin/user/new"(view:"user/create")
+		"/admin/user/new"(controller:'user',action:"create")
 		"/admin/user/save"(controller:'user',action:"save")
+		"/admin/user/delete"(controller:'user',action:"delete")
 		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")
