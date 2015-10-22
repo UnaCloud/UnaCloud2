@@ -18,7 +18,7 @@
      	<div class="row">     		     
              <div class="col-xs-12">  
              	  <g:render template="/share/message"/>                       
-                  <a href="${createLink(uri: '/services/cluster/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New</a>
+                  <a href="${createLink(uri: '/services/cluster/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New Cluster</a>
                   <hr>
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">

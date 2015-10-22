@@ -41,7 +41,9 @@ class UrlMappings {
 		"/admin/user/list"(controller:'user',action:"list")
 		"/admin/user/new"(controller:'user',action:"create")
 		"/admin/user/save"(controller:'user',action:"save")
-		"/admin/user/delete"(controller:'user',action:"delete")
+		"/admin/user/delete/$id"(controller:'user',action:"delete")
+		"/admin/user/edit/$id"(controller:'user',action:"edit")
+		"/admin/user/edit/save"(controller:'user',action:"saveEdit")
 		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")

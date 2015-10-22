@@ -13,4 +13,8 @@ public class QueueTaskerControl {
 	public static void clearCache(VirtualMachineImage image, User user){
 		
 	}
+	
+	public static void deleteUser(User user){
+		
+	}
 }

@@ -1,6 +1,7 @@
 package unacloud
 
 import unacloud.UserService;
+import unacloud.enums.UserStateEnum;
 
 class UserController {
 	
@@ -71,9 +72,14 @@ class UserController {
 		def user = userService.getUser(params.username,params.password)
 		println user
 		if (user){
-			session.user = user
-			flash.message=user.name
-			redirect(uri: '/', absolute: true)
+			if(user.status==UserStateEnum.AVAILABLE){				
+				session.user = user
+				flash.message=user.name
+				redirect(uri: '/', absolute: true)
+			}else{
+				flash.message="Disabled user"
+				redirect(uri: '/login', absolute: true)
+			}
 		}
 		else {
 			flash.message="Wrong username or password"
@@ -128,4 +134,59 @@ class UserController {
 			redirect(uri:"/admin/user/new", absolute:true)
 		}	
 	}
+	
+	/**
+	 * Deletes the selected user. Redirects to user list when finished.
+	 */	
+	def delete(){		
+		def user = User.get(params.id)
+		if (user&&user.id!=session.user.id&&user.status!=UserStateEnum.BLOCKED) {
+			try{
+				userService.deleteUser(user)
+				flash.message="The request will be processed in a few time"
+				flash.type="info"
+			}catch(Exception e){
+				flash.message=e.message
+				redirect(uri:"/admin/user/list", absolute:true)
+			}
+		}
+		redirect(uri:"/admin/user/list", absolute:true)		
+	}
+	
+	/**
+	 * User edition form action.
+	 * @return selected user
+	 */
+	
+	def edit(){
+		def user = User.get(params.id)
+		if (user&&user.id!=session.user.id) 
+			[user: user]
+		else
+		    redirect(uri:"/admin/user/list", absolute:true)
+	}
+	
+	/**
+	 * Saves user's information changes. Redirects to user list when finished.
+	 */
+	
+	def saveEdit(){
+		def user = User.get(params.id)
+		if(params.name&&params.username&&params.description){
+			if(!params.passwd||(params.passwd&&params.passwd.equals(params.cpasswd))){
+				if (user&&user.id!=session.user.id){		
+					try{						
+						userService.setValues(user,params.username, params.name, params.description, params.password)
+						flash.message="The user has been modified"
+						flash.type="success"
+					}catch(Exception e){
+						flash.message=e.message
+					}		
+				}
+			}else flash.message="Password fields don't match"			
+		}else flash.message="All fields are required"		
+		redirect(uri:"/admin/user/list", absolute:true)
+	}
+	
+	
 }

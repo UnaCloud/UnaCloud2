@@ -41,10 +41,10 @@
 	                                  <g:if test="${user.status.equals(UserStateEnum.AVAILABLE)}">
 	                                 	<span class="label label-success">${user.status.name}</span>
 	                                  </g:if>
-	                                  <g:elseif test="${user.state.equals(UserStateEnum.DISABLE)}">
+	                                  <g:elseif test="${user.status.equals(UserStateEnum.DISABLE)}">
 	                                  	<span class="label label-default">${user.status.name}</span>
 	                                  </g:elseif>
-	                                  <g:elseif test="${user.state.equals(UserStateEnum.BLOCKED)}">
+	                                  <g:elseif test="${user.status.equals(UserStateEnum.BLOCKED)}">
 	                                  	<span class="label label-danger">${user.status.name}</span>
 	                                  </g:elseif>                                 
                                   </td>
@@ -73,11 +73,13 @@
                                   	</table></td>
                                   <td class="column-center">
                                   <div class="btn-group">
+                                  <g:if test="${!user.status.equals(UserStateEnum.BLOCKED)}">
                                   	<g:if test="${session.user.id!=user.id}">
-	                                  <a title="Delete" class="delete_cluster btn btn-primary" data-id="${user.id}" href="${createLink(uri: '/services/cluster/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/services/cluster/deploy/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
+	                                  <a title="Delete" class="delete_user btn btn-primary" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
 	                                </g:if>
-	                                <a title="Config" class="btn btn-primary" href="${createLink(uri: '/services/cluster/external/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                <a title="Config" class="btn btn-primary" href="${createLink(uri: '/admin/user/config/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                              </g:if>
 	                              </div>
 								  </td>  
                               </tr>                                                          
@@ -88,7 +90,7 @@
              </div>
         </div>     	
 	</section><!-- /.content -->    
-	<asset:javascript src="pages/cluster.js" />  
+	<asset:javascript src="pages/users.js" />  
 	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();})</script> 
 </body>
                

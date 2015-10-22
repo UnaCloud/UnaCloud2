@@ -2,6 +2,8 @@ package unacloud
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import unacloud.enums.UserStateEnum;
+import unacloud.task.queue.QueueTaskerControl;
 import unacloud.utils.Hasher;
 
 class UserService {
@@ -65,5 +67,33 @@ class UserService {
 		String charset = (('A'..'Z') + ('0'..'9')).join()
 		Integer length = 32
 		return RandomStringUtils.random(length, charset.toCharArray())
+	}
+	
+	/**
+	 * Put the task to delete user, deployments, images, clusters
+	 * @param user user to be removed
+	 */	
+	def deleteUser(User user){
+		QueueTaskerControl.deleteUser(user);
+		user.putAt("status", UserStateEnum.BLOCKED);
+	}
+	
+	/**
+	 * Edits the user info
+	 * @param user user to be edited
+	 * @param username new username
+	 * @param name new name
+	 * @param description of user
+	 * @param password new password
+	 */
+	
+	def setValues(User user, String username, String name, String description, String password){	
+		user.setName(name)
+		user.setDescription(description)
+		user.setUsername(username)
+		if(password){			
+			user.setPassword( Hasher.hashSha256(password))
+		}
+		user.save(failOnError:true)
 	}
 }

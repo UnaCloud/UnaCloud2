@@ -23,7 +23,7 @@
              				<h5 class="box-title">Create a new user</h5> 							    			
              			</div>		
 	                 	<!-- form start -->
-	                 	<form id="form-new" action="${createLink(uri: '/admin/user/save', absolute: true)}" enctype="multipart/form-data" role="form">
+	                 	<form id="form-new" action="${createLink(uri: '/admin/user/save', absolute: true)}" role="form">
 	                     	<div class="box-body">	                     		
 	                        	<div class="form-group">
 	                            	<label>Full name</label>
