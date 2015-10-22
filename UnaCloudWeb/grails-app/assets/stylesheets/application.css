@@ -23,9 +23,17 @@
 }
 
 .text-green{
-	color: #1d9d74:
+	color: #1d9d74;
+}
+.text-orange{
+	color: #FFC51B !important;
 }
 
 .insert-table{
 	margin-bottom: 0px !important;
+	background-color: transparent !important;
+}
+
+.insert-row{
+	border-top: none !important;
 }

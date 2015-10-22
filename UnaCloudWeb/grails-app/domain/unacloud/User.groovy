@@ -2,6 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
+import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 
 class User {
@@ -45,7 +46,13 @@ class User {
 	 */
 	static hasMany = [images: VirtualMachineImage, restrictions: UserRestriction, userClusters: Cluster, deployments: Deployment]
 	
+	/**
+	 * State of user
+	 */
+	UserStateEnum status = UserStateEnum.AVAILABLE;
+	
 	static constraints = {
+		username unique: true
     }
 	
 	//-----------------------------------------------------------------
@@ -59,8 +66,7 @@ class User {
 	
 	def boolean isAdmin(){
 		UserGroup group = UserGroup.findByName(Constants.ADMIN_GROUP);
-		if(group)
-			return group.users.find{it.id = this.id}?true:false;
+		if(group)return group.users.find{it.id == this.id}?true:false;
 		return false
 	}
 	/**

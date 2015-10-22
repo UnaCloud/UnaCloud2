@@ -1,7 +1,6 @@
 
 import com.losandes.utils.Constants;
 
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
@@ -24,6 +23,7 @@ import unacloud.enums.ExternalCloudTypeEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
+import unacloud.utils.Hasher;
 import back.pmallocators.AllocatorEnum;
 
 class BootStrap {
@@ -43,7 +43,7 @@ class BootStrap {
 		}
 		if(User.count() ==0){
 			String randomString = userService.designAPIKey()
-			User user = new User(name:'UnaCloud',username:'admin',password:prop.getProperty("admin"),description:'Administrator',apiKey: randomString, registerDate:new Date()).save()
+			User user = new User(name:'UnaCloud',username:'admin',password:Hasher.hashSha256(prop.getProperty("admin")),description:'Administrator',apiKey: randomString, registerDate:new Date()).save()
 			UserGroup admins  = userGroupService.getAdminGroup();
 			admins.users.add(user)
 			admins.save()

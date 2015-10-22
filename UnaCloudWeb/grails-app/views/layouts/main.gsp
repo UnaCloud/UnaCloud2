@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <title>UnaCloud | Dashboard</title>
+        <link rel="shortcut icon" type="image/x-icon" href="${createLink(uri: '/images/favicon.ico', absolute: true)}"/>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        
         <asset:stylesheet src="main.css"/>
         <asset:stylesheet src="application.css"/>
         <!-- bootstrap 3.0.2 -->
@@ -14,14 +16,14 @@
         <asset:stylesheet src="ionicons.min.css"/>
         <asset:stylesheet src="plugins/datatables/dataTables.bootstrap.css"/>
         <!-- jQuery 2.0.2 -->
-        <asset:javascript src="/plugins/jquery/jquery_2_0_2.min.js"/>
+        <asset:javascript src="plugins/jquery/jquery_2_0_2.min.js"/>
         <!-- Bootstrap -->
-        <asset:javascript src="/plugins/bootstrap/bootstrap.min.js"/>    
-        <asset:javascript src="/plugins/bootbox/bootbox.js"/>  
+        <asset:javascript src="plugins/bootstrap/bootstrap.min.js"/>    
+        <asset:javascript src="plugins/bootbox/bootbox.js"/>  
         <!-- Datatables -->
-        <asset:javascript src="/plugins/datatables/jquery.dataTables.js"/>    
-        <asset:javascript src="/plugins/datatables/dataTables.bootstrap.js"/>
-        <asset:javascript src="ui.js"/>  
+        <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
+        <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>
+        <asset:javascript src="ui.js"/>          
         <g:layoutTitle/>
     </head>
     <body class="skin-black fixed">
@@ -118,16 +120,15 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> User management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Group management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Hypervisor management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> OS management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Infrastructure management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> External Provider management</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> External Account management</a></li>
-	                                
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Hardware Profile management **</a></li>	                                
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Repository Management **</a></li>
+	                                <li><a href="${createLink(uri: '/admin/user/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Users</a></li>
+	                                <li><a href="${createLink(uri: '/admin/group/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Groups</a></li>
+	                                <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hypervisors</a></li>
+	                                <li><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> OS</a></li>
+	                                <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Infrastructure</a></li>
+	                                <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
+	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
+	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                
+	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>
 	                            </ul>
 	                        </li>
 	                        <li id="monitoring-tree" class="treeview">

@@ -20,62 +20,15 @@ class UserGroupService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Saves a new group with the given users
-	 * @param g new empty group 
-	 * @param users list of users that will belong to the group
+	 * Add a user to a group
+	 * @param group to add user
+	 * @param user 
+	 * @return
 	 */
-    def addGroup(UserGroup g, users){
-		g.users = []
-		if(users.getClass().equals(String))
-			g.users.add(User.findByUsername(users))
-		else{
-			for(username in users){
-				g.users.add(User.findByUsername(username))
-			}
-		}
-		g.save()
-    }
-	
-	/**
-	 * Deletes the given group
-	 * @param g group to be deleted
-	 */
-	
-	def deleteGroup(UserGroup g){
-		g.delete()
-	}
-	
-	/**
-	 * Set a new user restriction to all group members
-	 * @param g group which users will have the new restriction
-	 * @param name restriction name
-	 * @param value restriction value
-	 */
-	
-	def setPolicy(UserGroup g, String name, String value){
-		for(user in g.users){
-			userService.setPolicy(user, name, value)
-		}
-	}
-	
-	/**
-	 * Edit the given group with new values
-	 * @param group group to be edited
-	 * @param users new list of users
-	 * @param name new name
-	 */
-	
-	def setValues(UserGroup group, users,String name){
-		group.putAt("name", name)
-		Set newUsers= []
-		if(users.getClass().equals(String))
-			newUsers.add(User.findByUsername(users))		
-		else{
-			for(username in users){
-				newUsers.add(User.findByUsername(username))
-			}
-		}
-		group.putAt("users", newUsers)		
+	def addToGroup(UserGroup group, User user){
+		if(!group.users)group.users =[]
+		group.users.add(user)
+		group.save(failOnError:true)
 	}
 	
 	/**
@@ -114,6 +67,6 @@ class UserGroupService {
 	 * @return true is admin, false is not
 	 */
 	def boolean isAdmin(User user){
-		return getAdminGroup().users.find{it.id = user.id}?true:false;
+		return getAdminGroup().users.find{it.id == user.id}?true:false;
 	}
 }

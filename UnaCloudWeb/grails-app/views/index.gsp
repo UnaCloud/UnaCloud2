@@ -11,13 +11,13 @@
 		    <g:if test="${flash.message && flash.message!=""}">
 		   	<div class="alert alert-danger"><i class="icon-exclamation-sign"></i>&nbsp;&nbsp;&nbsp;${flash.message }</div>
 		   	</g:if> 	   	
-		    <g:form controller="user" action="login">	    
+		    <form method="POST" action="${createLink(uri: '/user/login', absolute: true)}">	    
 		    <div class="box">
 		        <input class="text-una" name="username" type="text" placeholder="username">
 			    <input class="text-una" name="password" type="password" placeholder="password">		    
 			    <g:submitButton class="btn btn-default full-width" name="login" value="Sign in"/>
 		    </div>
-		    </g:form>	    
+		    </form>	    
 	    </div>
 	    
 	 </div>

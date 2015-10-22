@@ -63,10 +63,13 @@
 	                                  </g:elseif>	                                  
                                   </td>
                                   <td style="padding:0px !important">
-                                  	<table class="table table-striped insert-table">
+                                  	<table class="table insert-table">
 	                                  	<tbody>
-		                                  	<g:each in="${cluster.getOrderedImages()}" var="image"> 
-		                                  	<tr><td>${image.name}</td></tr>
+		                                  	<g:each in="${cluster.getOrderedImages()}" var="image" status="index"> 
+		                                  	<tr>
+		                                  	<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+		                                  	${image.name}</td>
+		                                  	</tr>
 		                                  	</g:each>  
 	                                  	</tbody>
                                   	</table>

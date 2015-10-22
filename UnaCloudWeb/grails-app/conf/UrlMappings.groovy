@@ -2,15 +2,19 @@ class UrlMappings {
 	
 	static excludes = ["/virtualMachineImage/update"]
 	static mappings = {
-		"/$controller/$action?/$id?"{
+		/**"/$controller/$action?/$id?"{
 			constraints {
 				// apply constraints here
 			}
-		}
+		}**/
 		"/"(controller:"user", action:"home")
 		"/login"(view:"/index")
+		"/user/login"(controller:'user',action:'login')
 		"/logout"(controller:'user',action:"logout")
 		"/error"(view:'/error')
+		"404"(view:'/error')
+		"500"(view:'/error')
+		
 		/** services - my images**/
 		"/services/image/list"(controller:'VirtualMachineImage',action:"list")
 		"/services/image/new"(controller:"VirtualMachineImage",action:"newUploadImage")
@@ -31,10 +35,12 @@ class UrlMappings {
 		"/services/cluster/save"(controller:"Cluster",action:"save")
 		"/services/cluster/delete/$id"(controller:"Cluster",action:"delete")
 		"/services/cluster/deploy/$id"(controller:"Cluster",action:"deployOptions")
-		"/services/cluster/external/$id"(controller:"Cluster",action:"externalDeployOptions")
+		"/services/cluster/external/$id"(controller:"Cluster",action:"externalDeployOptions")		
 		
-		"404"(view:'/error')
-		"500"(view:'/error')
+		/** admin - users**/
+		"/admin/user/list"(controller:'user',action:"list")
+		"/admin/user/new"(view:"user/create")
+		"/admin/user/save"(controller:'user',action:"save")
 		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")

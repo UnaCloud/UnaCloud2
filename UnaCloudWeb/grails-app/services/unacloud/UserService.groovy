@@ -2,92 +2,48 @@ package unacloud
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import unacloud.utils.Hasher;
+
 class UserService {
 	
+	//-----------------------------------------------------------------
+	// Properties
+	//-----------------------------------------------------------------
+	
+	
 	/**
-	 * Adds a new user to teh system
+	 * Representation of group services
+	 */
+	
+	UserGroupService userGroupService
+	
+	//-----------------------------------------------------------------
+	// Methods
+	//-----------------------------------------------------------------
+	
+	def User getUser(String username, String password){
+		return User.findWhere(username:username,password:Hasher.hashSha256(password));
+	}
+	/**
+	 * Adds a new user
 	 * @param username new user's username
-	 * @param name new user's name
-	 * @param userType type of user (Administrator or simply User)
+	 * @param name fullname
+	 * @param description of user
 	 * @param password user password
 	 */
 	
-    def addUser(String username, String name, String userType, String password) {
+    def addUser(String username, String name, String description, String password) {
 	   String charset = (('A'..'Z') + ('0'..'9')).join()
 	   Integer length = 32
 	   String randomString = RandomStringUtils.random(length, charset.toCharArray())
-	   def u= new User(username: username, name: name, userType: userType, password:password , apiKey: randomString )
-	   u.save()
-	   
+	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date())
+	   user.images=[]
+	   user.restrictions=[]
+	   user.userClusters=[]
+	   user.deployments=[]
+	   user.save()
+	   userGroupService.addToGroup(userGroupService.getDefaultGroup(), user)	   
     }
-	
-	/**
-	 * Deletes the selected user
-	 * @param user user to be removed
-	 */
-	
-	def deleteUser(User user){
-		user.delete()
-	}
-	
-	/**
-	 * Edits the user info
-	 * @param user user to be edited
-	 * @param username new username
-	 * @param name new name
-	 * @param userType new user type
-	 * @param password new password
-	 */
-	
-	def setValues(User user, String username, String name, String userType, String password){
-		user.putAt("username", username)
-		user.putAt("password", password)
-		user.putAt("name", name)
-		user.putAt("userType", userType)		
-	}
-	
-	/**
-	 * Sets a new user restriction to the given user
-	 * @param u user with the new restriction
-	 * @param name restriction name
-	 * @param value restriciton value
-	 */
-	
-	def setPolicy(User u, String name, String value){
-		UserRestriction oldAlloc
-		for(allocPolicy in u.restrictions){
-			if(allocPolicy.name.equals(name)){
-				oldAlloc= allocPolicy
-			}
-		}
-		println "alloc found:"+oldAlloc
-		if(oldAlloc==null){			
-			def alloc= new UserRestriction(name: name, value: value, user:u)
-			alloc.save(failOnError: true)
-			println "alloc created:"+alloc
-		}
-		else{
-			println "setting value on oldAlloc:"+oldAlloc
-			if(value.equals("")){
-				oldAlloc.delete()	
-			}
-			else{
-				oldAlloc.setValue(value)
-				oldAlloc.save(failOnError: true)
-			}
-		}
-	}
-	
-	/**
-	 * Changes user's password
-	 * @param u user which password will be changed
-	 * @param newPass new password
-	 */
-	
-	def changePass(User u, String newPass){
-		u.password=newPass
-		u.save()	
-	}
 	
 	/**
 	 * Creates a new API key for the given user
@@ -101,10 +57,13 @@ class UserService {
 		return u.apiKey
 	}
 	
+	/**
+	 * Desing an apikey for user
+	 * @return
+	 */
 	def designAPIKey(){
 		String charset = (('A'..'Z') + ('0'..'9')).join()
 		Integer length = 32
 		return RandomStringUtils.random(length, charset.toCharArray())
-	}	
-	
+	}
 }

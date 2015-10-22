@@ -34,8 +34,8 @@ class UserController {
 				redirect(uri:"/login", absolute:true)
 				return false
 			}
-			else{				
-				if(userGroupService.isAdmin(session.user)){
+			else{			
+				if(!userGroupService.isAdmin(session.user)){
 					flash.message="You must be administrator to see this content"
 					redirect(uri:"/error", absolute:true)
 					return false
@@ -44,18 +44,22 @@ class UserController {
 		}, except: [
 			'login',
 			'logout',
-			'home',
-			'account',
-			'changePass',
-			'refreshAPIKey'
+			'home'
 		]]
 	
 	/**
-	 * User index action
-	 * @return List of all users
+	 * Default action
 	 */
 	def index() {
-		[users: User.list(params)];
+		redirect(uri:"/error", absolute:true)
+	}
+	
+	/**
+	 * User list action
+	 * @return List of all users
+	 */
+	def list(){
+		[users: User.list().sort{it.id}];
 	}
 	
 	/**
@@ -64,7 +68,7 @@ class UserController {
 	 */
 	
 	def login(){
-		def user = User.findWhere(username:params.username,password:params.password)
+		def user = userService.getUser(params.username,params.password)
 		println user
 		if (user){
 			session.user = user
@@ -101,167 +105,20 @@ class UserController {
 	}	
 
 	/**
-	 * Saves a new user. Redirects so user index when finished.
+	 * Create a new user
 	 */
-	
-	def add() {
-		userService.addUser(params.username, params.name+" "+params.lastname, params.userType,
-				params.password )
-		redirect(controller:"user" ,action:"index")
+	def save(){
+		if(params.name&&params.username&&params.passwd&&params.description){	
+			try{
+				userService.addUser(params.username, params.name,params.description,params.passwd)
+				redirect(uri:"/admin/user/list", absolute:true)
+			}catch(Exception e){
+				flash.message=e.message
+				redirect(uri:"/admin/user/new", absolute:true)
+			}		
+		}else{
+			flash.message="All fields are required"					
+			redirect(uri:"/admin/user/new", absolute:true)
+		}	
 	}
-	
-	/**
-	 * My Account form action
-	 * @return session user for edition
-	 */
-	
-	def account(){
-
-		def u= User.get(session.user.id)
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-			[user: u]
-		}
-	}
-	
-	def downloadKey(){
-		def u= User.get(session.user.id)
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-		def separator =  java.io.File.separatorChar
-		def repository= Repository.findByName("Main Repository")
-		File key= new File(repository.root+"keyPairs"+separator+"unacloud."+u.username+".pem")
-			if(key.exists()){
-				response.setContentType("application/octet-stream")
-				response.setHeader("Content-disposition", "attachment;filename=${key.getName()}")				
-				response.outputStream << key.newInputStream()
-			}
-		}
-	}
-	/**
-	 * Sets or changes an user restriction. Redirects to user index when finished.
-	 */
-	
-	def setPolicy(){
-		User u= User.findByUsername(params.username)
-		userService.setPolicy(u, params.type,  params.value)
-		redirect(action:"index")
-	}
-	
-	/**
-	 * Edit restrictions form action. Controls part of the interface render.
-	 * @return User selected by user
-	 */
-	def editPerms(){
-		def u= User.findByUsername(params.username)
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-			def found
-			if(params.data!=null){
-				for(UserRestriction allocPolicy:u.restrictions){
-					if(allocPolicy.name.equals(params.data)){
-						found=true
-						render "<input id=\"value\" name=\"value\" type=\"text\" value=\""+allocPolicy.getValue()+"\">"
-					}
-				}
-				if(found!=true){
-				render "<input id=\"value\" name=\"value\" type=\"text\" value=\"\">"
-				}
-			}
-			else{
-			[user: u]
-			}
-		}
-	}
-
-	/**
-	 * Changes user password. Redirects to my account page when finished.
-	 */
-	
-	def changePass(){
-		def u= User.get(session.user.id)
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-			if(u.password.equals(params.oldPassword)){
-				if(params.newPassword.equals(params.confirmPassword)){
-					userService.changePass(u, params.newPassword)
-					redirect(uri:"/", absolute:true)
-				}
-				else {
-					flash.message="Passwords don't match"
-					redirect(uri:"/account", absolute:true)
-				}
-			}
-			else{
-				flash.message="Incorrect Password"
-				redirect(uri:"/account", absolute:true)
-			}
-		}
-	}
-	
-	/**
-	 * Generates a new API key and saves it. Redirects to my account page when finished.
-	 * @return
-	 */
-	def refreshAPIKey(){
-		def u= User.get(session.user.id)
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-			userService.refreshAPIKey(u)
-			redirect (action:"account")
-		}
-	}
-	
-	/**
-	 * Deletes the selected user. Redirects to user index when finished.
-	 */
-	
-	def delete(){
-		def user = User.findByUsername(params.username)
-		if (!user) {
-			redirect(action:"list")
-		}
-		else{
-			userService.deleteUser(user)
-			redirect(controller:"user" ,action:"index")
-		}
-	}
-	
-	/**
-	 * User edition form action.  
-	 * @return selected user 
-	 */
-	
-	def edit(){
-		def u= User.findByUsername(params.username)
-
-		if (!u) {
-			redirect(action:"index")
-		}
-		else{
-			[user: u]
-		}
-	}
-	
-	/**
-	 * Saves user's information changes. Redirects to user index when finished. 
-	 */
-	
-	def setValues(){
-		def user = User.findByUsername(params.oldUsername)
-		userService.setValues(user,params.username, params.name+" "+params.lastname, params.userType, params.password)
-		redirect(action:"index")
-	}
-	
-	
 }

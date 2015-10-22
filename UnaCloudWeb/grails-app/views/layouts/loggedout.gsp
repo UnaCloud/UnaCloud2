@@ -4,9 +4,12 @@
    <head>
 	   <meta charset="utf-8">
 	   <title>UnaCloud | Login</title>
+	   
+       <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico"/>
 	   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	   <meta name="description" content="">
 	   <meta name="author" content="">
+	   
 	   <g:layoutTitle/>
 	   <asset:stylesheet src="login.css"/> 	 
 	   <!-- bootstrap 3.0.2 -->
