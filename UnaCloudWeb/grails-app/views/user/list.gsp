@@ -78,7 +78,7 @@
 	                                  <a title="Delete" class="delete_user btn btn-primary" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
 	                                  <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
 	                                </g:if>
-	                                <a title="Config" class="btn btn-primary" href="${createLink(uri: '/admin/user/config/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                <a title="Config" class="btn btn-primary" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
 	                              </g:if>
 	                              </div>
 								  </td>  

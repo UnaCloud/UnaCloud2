@@ -2,6 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
+import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 
@@ -102,5 +103,12 @@ class User {
 			this.save()
 		}
 		return this.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}.sort{it.name}
+	}
+	
+	/**
+	 * Return a restriction of user, null if does not exist
+	 */
+	def getRestriction(UserRestrictionEnum restriction){
+		this.restrictions.find{it.name==restriction.toString()}
 	}
 }

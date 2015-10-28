@@ -1,6 +1,8 @@
 package unacloud
 
+import back.pmallocators.AllocatorEnum;
 import unacloud.UserService;
+import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
 
 class UserController {
@@ -20,6 +22,12 @@ class UserController {
 	 */
 	
 	UserGroupService userGroupService
+	
+	/**
+	 * Representation of labs services
+	 */
+	
+	LaboratoryService laboratoryService
 	
 	//-----------------------------------------------------------------
 	// Actions
@@ -70,7 +78,6 @@ class UserController {
 	
 	def login(){
 		def user = userService.getUser(params.username,params.password)
-		println user
 		if (user){
 			if(user.status==UserStateEnum.AVAILABLE){				
 				session.user = user
@@ -188,5 +195,59 @@ class UserController {
 		redirect(uri:"/admin/user/list", absolute:true)
 	}
 	
+	/**
+	 * Render page to edit restrictions
+	 * 
+	 */
+	def config(){
+		def user = User.get(params.id)
+		if(!user){
+			redirect(uri:"/admin/user/list", absolute:true)
+		}else{
+			[user:user.id,restrictions:[
+				  [name:UserRestrictionEnum.ALLOCATOR.name,type:UserRestrictionEnum.ALLOCATOR.toString(),list:true,current:user.getRestriction(UserRestrictionEnum.ALLOCATOR),values:AllocatorEnum.getList(),multiple:false],
+				  [name:UserRestrictionEnum.ALLOWED_LABS.name,type:UserRestrictionEnum.ALLOWED_LABS.toString(), list:true,current:user.getRestriction(UserRestrictionEnum.ALLOWED_LABS),values:laboratoryService.getLabsNames(),multiple:true],
+				  [name:UserRestrictionEnum.MAX_CORES_PER_VM.name,type:UserRestrictionEnum.MAX_CORES_PER_VM.toString(),list:false,current:user.getRestriction(UserRestrictionEnum.MAX_CORES_PER_VM),multiple:false],
+				  [name:UserRestrictionEnum.MAX_RAM_PER_VM.name,type:UserRestrictionEnum.ALLOCATOR.toString(), list:false,current:user.getRestriction(UserRestrictionEnum.MAX_RAM_PER_VM),multiple:false]	
+				]
+			]
+		}
+	}
+	/**
+	 * Set restrictions of user
+	 * @return
+	 */
+	def setRestrictions(){
+		def user = User.get(params.id)
+		if(!user){
+			redirect(uri:"/admin/user/list", absolute:true)
+		}else{
+			if(params.value){
+				switch(UserRestrictionEnum.getRestriction(params.restriction)){
+					case UserRestrictionEnum.MAX_CORES_PER_VM:
+					    userService.setRestriction(user,params.restriction,params.value)
+						break;
+					case UserRestrictionEnum.MAX_RAM_PER_VM:
+						userService.setRestriction(user,params.restriction,params.value)
+						break;
+					case UserRestrictionEnum.ALLOWED_LABS:
+						if(params.value.getClass().equals(String)){
+							userService.setRestriction(user,params.restriction,params.value)
+						}else{
+						    String list = ""
+							for(lab in params.value)
+								list+=lab+","
+							userService.setRestriction(user,params.restriction,list)
+						}
+						break;
+					case UserRestrictionEnum.ALLOCATOR:
+						String value= params.value;
+					    userService.setRestriction(user,params.restriction,AllocatorEnum.getAllocatorByName(value))
+						break;
+				}
+			}	
+			redirect(uri:"/admin/user/restrictions/"+user.id, absolute:true)
+		}
+	}
 	
 }

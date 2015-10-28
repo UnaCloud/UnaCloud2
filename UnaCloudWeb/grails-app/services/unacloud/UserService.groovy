@@ -2,6 +2,7 @@ package unacloud
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.utils.Hasher;
@@ -95,5 +96,45 @@ class UserService {
 			user.setPassword( Hasher.hashSha256(password))
 		}
 		user.save(failOnError:true)
+	}
+	
+	/**
+	 * Search the restriction in user
+	 * @param user
+	 * @param restriction
+	 * @return restriction, null if it does not exist
+	 */
+	def getRestrictionByUser(User user, String restriction){
+		return user.restrictions.find{it.name==UserRestrictionEnum.ALLOCATOR.toString()}
+	}
+	
+	/**
+	 * Sets a new user restriction to the given user
+	 * @param user user with the new restriction
+	 * @param name restriction name
+	 * @param value restriction value
+	 */
+	
+	def setRestriction(User user, String name, String value){
+		UserRestriction old = user.restrictions.find{it.name==name}
+		println "alloc found: "+old
+		if(old){			
+			def newRestriction= new UserRestriction(name: name, value: value)
+			newRestriction.save(failOnError: true)
+			println "alloc created: "+newRestriction
+			user.restrictions.add(newRestriction)
+			user.save(failOnError: true)
+		}
+		else{
+			println "setting value on old: "+old
+			if(value.equals("")){
+				user.restrictions.remove(old)
+				old.delete()
+			}
+			else{
+				old.setValue(value)
+				old.save(failOnError: true)
+			}
+		}
 	}
 }

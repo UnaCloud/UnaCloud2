@@ -26,8 +26,7 @@
 	                 	<form method="POST" id="form-edit" action="${createLink(uri: '/admin/user/edit/save', absolute: true)}"  role="form">
 	                 		<input name="id" type="hidden" value="${user.id}"/>  
 	                     	<div class="box-body">	 
-	                     		<p class="help-block">If you left password field empty, the user password won't be modified.</p>                     		
-	                        	<div class="form-group">
+	                     		<div class="form-group">
 	                            	<label>Full name</label>
 	                            	<input type="text" class="form-control" name="name" value="${user.name}" placeholder="User fullname">
 	                         	</div>
@@ -37,6 +36,7 @@
 	                         	</div>
 	                         	<div class="form-group">
 	                            	<label>Password</label>
+	                            	<p class="help-block">* If password field left empty, the user password won't be modified.</p> 
 	                            	<input type="password" class="form-control" name="passwd">
 	                         	</div>
 	                         	<div class="form-group">
@@ -56,6 +56,4 @@
              </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-	<asset:javascript src="pages/images.js" />
-    <script>$(document).ready(function(){newUploadImage();});</script>
 </body>

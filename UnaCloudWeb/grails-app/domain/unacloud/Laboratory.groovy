@@ -39,4 +39,7 @@ class Laboratory {
 		return id;
 	}
 	
+	static constraints = {
+		name unique: true
+	}
 }
