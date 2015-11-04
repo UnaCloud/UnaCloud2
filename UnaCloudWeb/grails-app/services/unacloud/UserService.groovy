@@ -116,9 +116,10 @@ class UserService {
 	 */
 	
 	def setRestriction(User user, String name, String value){
+		print value
 		UserRestriction old = user.restrictions.find{it.name==name}
 		println "alloc found: "+old
-		if(old){			
+		if(!old&&value){			
 			def newRestriction= new UserRestriction(name: name, value: value)
 			newRestriction.save(failOnError: true)
 			println "alloc created: "+newRestriction
@@ -127,7 +128,7 @@ class UserService {
 		}
 		else{
 			println "setting value on old: "+old
-			if(value.equals("")){
+			if(!value||value.equals("")){
 				user.restrictions.remove(old)
 				old.delete()
 			}

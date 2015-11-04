@@ -47,6 +47,11 @@ class UrlMappings {
 		"/admin/user/restrictions/$id"(controller:'user',action:"config")
 		"/admin/user/restrictions/set"(controller:'user',action:"setRestrictions")
 		
+		/** admin - groups**/
+		"/admin/group/list"(controller:'userGroup',action:"list")
+		"/admin/group/new"(controller:'userGroup',action:"create")
+		"/admin/group/save"(controller:'userGroup',action:"save")
+		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")
 		"/administration"(view:"/administration")

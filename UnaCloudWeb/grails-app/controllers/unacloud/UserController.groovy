@@ -208,7 +208,7 @@ class UserController {
 				  [name:UserRestrictionEnum.ALLOCATOR.name,type:UserRestrictionEnum.ALLOCATOR.toString(),list:true,current:user.getRestriction(UserRestrictionEnum.ALLOCATOR),values:AllocatorEnum.getList(),multiple:false],
 				  [name:UserRestrictionEnum.ALLOWED_LABS.name,type:UserRestrictionEnum.ALLOWED_LABS.toString(), list:true,current:user.getRestriction(UserRestrictionEnum.ALLOWED_LABS),values:laboratoryService.getLabsNames(),multiple:true],
 				  [name:UserRestrictionEnum.MAX_CORES_PER_VM.name,type:UserRestrictionEnum.MAX_CORES_PER_VM.toString(),list:false,current:user.getRestriction(UserRestrictionEnum.MAX_CORES_PER_VM),multiple:false],
-				  [name:UserRestrictionEnum.MAX_RAM_PER_VM.name,type:UserRestrictionEnum.ALLOCATOR.toString(), list:false,current:user.getRestriction(UserRestrictionEnum.MAX_RAM_PER_VM),multiple:false]	
+				  [name:UserRestrictionEnum.MAX_RAM_PER_VM.name,type:UserRestrictionEnum.MAX_RAM_PER_VM.toString(), list:false,current:user.getRestriction(UserRestrictionEnum.MAX_RAM_PER_VM),multiple:false]	
 				]
 			]
 		}
@@ -222,30 +222,35 @@ class UserController {
 		if(!user){
 			redirect(uri:"/admin/user/list", absolute:true)
 		}else{
-			if(params.value){
-				switch(UserRestrictionEnum.getRestriction(params.restriction)){
-					case UserRestrictionEnum.MAX_CORES_PER_VM:
-					    userService.setRestriction(user,params.restriction,params.value)
-						break;
-					case UserRestrictionEnum.MAX_RAM_PER_VM:
-						userService.setRestriction(user,params.restriction,params.value)
-						break;
-					case UserRestrictionEnum.ALLOWED_LABS:
-						if(params.value.getClass().equals(String)){
-							userService.setRestriction(user,params.restriction,params.value)
-						}else{
-						    String list = ""
-							for(lab in params.value)
-								list+=lab+","
-							userService.setRestriction(user,params.restriction,list)
-						}
-						break;
-					case UserRestrictionEnum.ALLOCATOR:
-						String value= params.value;
-					    userService.setRestriction(user,params.restriction,AllocatorEnum.getAllocatorByName(value))
-						break;
-				}
+			def modify = false
+			if(params.restriction){
+				def value = params.value	
+				if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.MAX_CORES_PER_VM){
+					userService.setRestriction(user,UserRestrictionEnum.MAX_CORES_PER_VM.toString(),value)
+					modify = true
+				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.MAX_RAM_PER_VM){
+					userService.setRestriction(user,UserRestrictionEnum.MAX_RAM_PER_VM.toString(),value)
+					modify = true
+				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.ALLOWED_LABS){
+					if(value.getClass().equals(String)){
+						userService.setRestriction(user,UserRestrictionEnum.ALLOWED_LABS.toString(),value)
+					}else{
+						String list = ""
+						for(lab in params.value)
+							list+=lab+","
+						userService.setRestriction(user,UserRestrictionEnum.ALLOWED_LABS.toString(),list)
+					}
+					modify = true
+				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.ALLOCATOR){
+					def allocator = AllocatorEnum.getAllocatorByName(value)
+					userService.setRestriction(user,UserRestrictionEnum.ALLOCATOR.toString(),allocator?allocator.getName():null)	
+					modify = true
+				}		
 			}	
+			if(modify){
+				flash.message="User restrictions have been modified"
+				flash.type="success"
+			}
 			redirect(uri:"/admin/user/restrictions/"+user.id, absolute:true)
 		}
 	}

@@ -37,14 +37,12 @@
 	                 		    	<select name= "value" class="form-control" multiple>
 	                 		    	</g:if>
 	                 		    	<g:else>
-	                 		    	<select name= "value" class="form-control">
-	                 		    	</g:else>
-	                 		    	<g:if test="${restriction.current}">
-	                 		    	<option value="" >-- Select one Allocator --</option>                                                
-	                                </g:if>
+	                 		    	<select name= "value" class="form-control">		                 		    	
+		                 		    	<option value="NoOne" >-- No one --</option>    
+	                 		    	</g:else>	                 		    	
 	                                <g:each in="${restriction.values}" var="val"> 
 	                                	<g:if test="${restriction.current}">
-	                                    <option value="${val}" <g:if test="${restriction.current.name.equals(val)}"> selected</g:if>>${val}</option>                                                
+	                                    <option value="${val}" <g:if test="${restriction.current.value.equals(val)}"> selected</g:if>>${val}</option>                                                
 	                                	</g:if>
 	           		    				<g:else>
 	           		    		 		<option value="${val}">${val}</option>                                              
@@ -54,10 +52,10 @@
 	                 		    </g:if>
 	                 		    <g:else>
 	                 		    	<g:if test="${restriction.current}">
-	                 		    	<input type="text" class="form-control" name="value" value="${restriction.current.name}">
+	                 		    	<input type="text" class="form-control" name="value" value="${restriction.current.value}" placeholder="Without restriction">
 	                 		    	</g:if>
 	                 		    	<g:else>
-	                 		    	<input type="text" class="form-control" name="value">
+	                 		    	<input type="text" class="form-control" name="value" placeholder="Without restriction">
 	                 		    	</g:else>		                            	
 	                 		    </g:else>
 	                 		    </div>

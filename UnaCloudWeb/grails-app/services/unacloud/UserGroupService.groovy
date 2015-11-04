@@ -1,5 +1,6 @@
 package unacloud
 
+import unacloud.utils.Hasher;
 import grails.transaction.Transactional
 
 @Transactional
@@ -39,7 +40,7 @@ class UserGroupService {
 	def UserGroup getAdminGroup(){
 		UserGroup admins = UserGroup.findByName(Constants.ADMIN_GROUP);
 		if(!admins){
-			admins = new UserGroup (name:Constants.ADMIN_GROUP);
+			admins = new UserGroup (name:Constants.ADMIN_GROUP, visualName:Constants.ADMIN_GROUP);
 			admins.users = []
 			admins.save();
 		}
@@ -55,7 +56,7 @@ class UserGroupService {
 	def UserGroup getDefaultGroup(){
 		UserGroup usersGroup = UserGroup.findByName(Constants.USERS_GROUP);
 		if(!usersGroup){
-			usersGroup = new UserGroup(name:Constants.USERS_GROUP);
+			usersGroup = new UserGroup(name:Constants.USERS_GROUP, visualName:Constants.USERS_GROUP);
 			usersGroup.users = []
 			usersGroup.save();
 		}
@@ -68,5 +69,24 @@ class UserGroupService {
 	 */
 	def boolean isAdmin(User user){
 		return getAdminGroup().users.find{it.id == user.id}?true:false;
+	}
+	
+	/**
+	 * Saves a new group with the given users
+	 * @param g new empty group
+	 * @param users list of users that will belong to the group
+	 */
+	def addGroup(name, users){
+		Date d = new Date()
+		def group = new UserGroup(visualName:name, name: "userg"+d.getDate()+"_"+Hasher.randomString(10));		
+		group.users = []
+		if(users.getClass().equals(String))
+			group.users.add(User.findByUsername(users))
+		else{
+			for(username in users){
+				group.users.add(User.findByUsername(username))
+			}
+		}
+		group.save()
 	}
 }
