@@ -1,1 +1,2 @@
-UnaCloudWeb/target/stacktrace.log
+UnaCloudWeb/target/*
+UnaCloudWeb/target-eclipse/*
