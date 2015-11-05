@@ -112,6 +112,7 @@ class ClusterController {
 			redirect(uri:"/services/cluster/list", absolute:true)
 		}		
 	}
+	
 	/**
 	 * Action used to render view to deploy the cluster in external 
 	 * @return

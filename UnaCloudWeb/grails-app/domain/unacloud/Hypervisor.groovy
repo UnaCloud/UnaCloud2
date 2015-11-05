@@ -17,6 +17,6 @@ class Hypervisor {
 	String hypervisorVersion
 	
     static constraints = {
-		
+		name nullable:false
     }
 }
