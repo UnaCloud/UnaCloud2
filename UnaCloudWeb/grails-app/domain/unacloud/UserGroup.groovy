@@ -1,5 +1,7 @@
 package unacloud
 
+import unacloud.enums.UserRestrictionEnum;
+
 class UserGroup {
 	
 	//-----------------------------------------------------------------
@@ -46,5 +48,11 @@ class UserGroup {
 	def boolean isDefault(){
 		return name.equals(Constants.USERS_GROUP)
 	}
-	
+		
+	/**
+	 * Return a restriction of user, null if does not exist
+	 */
+	def getRestriction(UserRestrictionEnum restriction){
+		this.restrictions.find{it.name==restriction.toString()}
+	}
 }

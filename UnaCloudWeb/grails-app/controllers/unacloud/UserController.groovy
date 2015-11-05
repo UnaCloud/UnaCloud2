@@ -154,7 +154,6 @@ class UserController {
 				flash.type="info"
 			}catch(Exception e){
 				flash.message=e.message
-				redirect(uri:"/admin/user/list", absolute:true)
 			}
 		}
 		redirect(uri:"/admin/user/list", absolute:true)		
@@ -213,6 +212,7 @@ class UserController {
 			]
 		}
 	}
+	
 	/**
 	 * Set restrictions of user
 	 * @return

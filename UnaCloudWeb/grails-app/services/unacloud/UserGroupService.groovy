@@ -81,12 +81,74 @@ class UserGroupService {
 		def group = new UserGroup(visualName:name, name: "userg"+d.getDate()+"_"+Hasher.randomString(10));		
 		group.users = []
 		if(users.getClass().equals(String))
-			group.users.add(User.findByUsername(users))
+			group.users.add(User.get(users))
 		else{
-			for(username in users){
-				group.users.add(User.findByUsername(username))
+			for(userId in users){
+				group.users.add(User.get(userId))
 			}
 		}
 		group.save()
+	}
+	
+	/**
+	 * Deletes the given group
+	 * @param group to be deleted
+	 */
+	
+	def deleteGroup(UserGroup group){
+		for(restriction in group.restrictions)
+			restriction.delete()
+		group.delete()
+	}
+	
+	/**
+	 * Edit the given group with new values
+	 * @param group group to be edited
+	 * @param users new list of users
+	 * @param name new name
+	 */
+	
+	def setValues(UserGroup group, users, String name){
+		group.putAt("visualName", name)
+		Set newUsers= []
+		if(users.getClass().equals(String))
+			newUsers.add(User.get(users))		
+		else{
+			for(userId in users){
+				newUsers.add(User.get(userId))
+			}
+		}
+		group.putAt("users", newUsers)		
+	}
+	
+	/**
+	 * Sets a new group restriction to the given group
+	 * @param group with the new restriction
+	 * @param name restriction name
+	 * @param value restriction value
+	 */
+	
+	def setRestriction(UserGroup group, String name, String value){
+		print value
+		UserRestriction old = group.restrictions.find{it.name==name}
+		println "alloc found: "+old
+		if(!old&&value){
+			def newRestriction= new UserRestriction(name: name, value: value)
+			newRestriction.save(failOnError: true)
+			println "alloc created: "+newRestriction
+			group.restrictions.add(newRestriction)
+			group.save(failOnError: true)
+		}
+		else{
+			println "setting value on old: "+old
+			if(!value||value.equals("")){
+				group.restrictions.remove(old)
+				old.delete()
+			}
+			else{
+				old.setValue(value)
+				old.save(failOnError: true)
+			}
+		}
 	}
 }

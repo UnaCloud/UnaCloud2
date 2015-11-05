@@ -1,0 +1,6 @@
+package unacloud
+
+class HypervisorController {
+
+	
+}

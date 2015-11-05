@@ -51,6 +51,19 @@ class UrlMappings {
 		"/admin/group/list"(controller:'userGroup',action:"list")
 		"/admin/group/new"(controller:'userGroup',action:"create")
 		"/admin/group/save"(controller:'userGroup',action:"save")
+		"/admin/group/delete/$id"(controller:'userGroup',action:"delete")
+		"/admin/group/edit/$id"(controller:'userGroup',action:"edit")		
+		"/admin/group/edit/save"(controller:'userGroup',action:"saveEdit")
+		"/admin/group/restrictions/$id"(controller:'userGroup',action:"config")
+		"/admin/group/restrictions/set"(controller:'userGroup',action:"setRestrictions")
+		
+		/** admin - hypervisors**/
+		"/admin/hypervisor/list"(controller:'hypervisor',action:"list")
+		"/admin/hypervisor/new"(controller:'hypervisor',action:"create")
+		"/admin/hypervisor/save"(controller:'hypervisor',action:"save")
+		"/admin/hypervisor/delete/$id"(controller:'hypervisor',action:"delete")
+		"/admin/hypervisor/edit/$id"(controller:'hypervisor',action:"edit")
+		"/admin/hypervisor/edit/save"(controller:'hypervisor',action:"saveEdit")
 		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")
