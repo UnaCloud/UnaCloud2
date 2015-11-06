@@ -30,6 +30,28 @@ public class LocalProcessExecutor {
     }
 
     /**
+     * Responsible for executing local commands without output
+     * @param cmdarray String array where the zeroth position is the command and the next entries are the command parameters
+     * @return If the command was successfully execute or nor
+     */
+    public static boolean executeCommand(String[] cmdarray){
+    	String tempMsg = cmdarray[0];
+    	
+    	for (int i = 1; i < cmdarray.length; i++) {
+			tempMsg += " " + cmdarray[i];
+		}
+    	
+    	System.out.println("Exec: "+tempMsg);
+        try {
+            Runtime.getRuntime().exec(cmdarray).waitFor();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    /**
      * Responsible for executing local commands with outputs
      * @param inCommand Command to execute
      * @return The output of the command execution
