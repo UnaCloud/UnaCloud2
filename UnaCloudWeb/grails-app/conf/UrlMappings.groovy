@@ -73,6 +73,10 @@ class UrlMappings {
 		"/admin/os/edit/$id"(controller:'operatingSystem',action:"edit")
 		"/admin/os/edit/save"(controller:'operatingSystem',action:"saveEdit")
 		
+		/** admin - Labs management**/
+		"/admin/lab/list"(controller:'laboratory',action:"index")
+		"/admin/lab/new"(controller:'laboratory',action:"create")
+		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")
 		"/administration"(view:"/administration")

@@ -44,7 +44,7 @@
 		       	 	          		     
 		       		<div class="box box-primary">  
 		            	<div class="box-header">
-		            	 	<h5 class="box-title">Step 2: Write a new name for the image</h5>
+		            	 	<h5 class="box-title">Step 2: Write a new name for image</h5>
 		            	</div>
 		           	 	<div class="box-body">	
 		           	 	 	<div class="form-group">

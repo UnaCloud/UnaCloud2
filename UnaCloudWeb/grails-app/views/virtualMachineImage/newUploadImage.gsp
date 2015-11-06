@@ -34,7 +34,7 @@
 	                 	<!-- form start -->
 	                 	<form id="form-new" action="${createLink(uri: '/services/image/upload', absolute: true)}" enctype="multipart/form-data" role="form">
 	                     	<div class="box-body">	                     		
-             					<p class="help-block">Create, configure and upload your own image to system.</p> 
+             					 <p class="help-block">Create, configure and upload your own image to system.</p> 
 	                        	 <div class="form-group">
 	                             	<label>Image Name</label>
 	                            	<input type="text" class="form-control" name="name" placeholder="Image Name">

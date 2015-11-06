@@ -15,4 +15,5 @@ public enum NetworkQualityEnum {
 		return new String[]{ETHERNET10MBPS.name,ETHERNET100MBPS.name,ETHERNET1GBPS.name,
 				ETHERNET10GBPS.name,INFINIBAND.name, FIBERCHANNEL.name};
 	}
+	
 }

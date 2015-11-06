@@ -1,2 +1,4 @@
 UnaCloudWeb/target/*
 UnaCloudWeb/target-eclipse/*
+*.class
+UnaCloudWeb/target/stacktrace.log
