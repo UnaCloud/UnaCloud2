@@ -1,59 +1,68 @@
-$('.delete_user').click(function (event){	
-	event.preventDefault();
-	redirectConfirm($(this).data("id"),  $(this).attr("href"), 'User')	
-});
-
-$('.delete_group').click(function (event){	
-	event.preventDefault();
-	redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Group')	
-});
-
-$('.delete_cluster').click(function (event){	
-	event.preventDefault();
-	redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Cluster')	
-});	
-
-$(".delete_images").click(function (event){
-	event.preventDefault();
-	redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Image')	
-});
-
-$(".delete_hypervisor").click(function (event){
-	event.preventDefault();
-	redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Hypervisor')	
-});
-
-$('.clear_image').click(function (event){	
-	event.preventDefault();
-	var data = $(this).data("id");
-	var href = $(this).attr("href");
-	showConfirm('Confirm','This image will be removed from all currently connected physical machines. Are you sure you want to remove it?', function(){
-		window.location.href = href+data;
+$(document).on('ready',function(){
+	$("#unacloudTable").dataTable();
+	
+	$('.delete_user').click(function (event){	
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'User')	
 	});
-});
 
-$('#button-upload').click(function (event){		
-	cleanLabel('#label-message');
-	var form = document.getElementById("form-new");
-	if(form["name"].value&&form["name"].value.length > 0&&
-		form["user"].value&&form["user"].value.length > 0&&
-			form["passwd"].value&&form["passwd"].value.length > 0&&
-				form["protocol"].value&&form["protocol"].value.length > 0 ){			
+	$('.delete_group').click(function (event){	
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Group')	
+	});
+
+	$('.delete_cluster').click(function (event){	
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Cluster')	
+	});	
+
+	$(".delete_images").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Image')	
+	});
+
+	$(".delete_hypervisor").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Hypervisor')	
+	});
+
+	$(".delete_os").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Operating System')	
+	});
+	
+	$('.clear_image').click(function (event){	
+		event.preventDefault();
+		var data = $(this).data("id");
+		var href = $(this).attr("href");
+		showConfirm('Confirm','This image will be removed from all currently connected physical machines. Are you sure you want to remove it?', function(){
+			window.location.href = href+data;
+		});
+	});
+
+	$('#button-upload').click(function (event){		
+		cleanLabel('#label-message');
+		var form = document.getElementById("form-new");
+		if(form["name"].value&&form["name"].value.length > 0&&
+			form["user"].value&&form["user"].value.length > 0&&
+				form["passwd"].value&&form["passwd"].value.length > 0&&
+					form["protocol"].value&&form["protocol"].value.length > 0 ){			
+			if(form["files"].value&&form["files"].value.length > 0){
+			  uploadForm(form);		
+			}
+			else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
+		}else addLabel('#label-message', 'All fields are required', true);
+	});
+
+	$('#button-update').click(function (event){		
+		cleanLabel('#label-message');
+		var form = document.getElementById("form-change");		
 		if(form["files"].value&&form["files"].value.length > 0){
-		  uploadForm(form);		
+			uploadForm(form);		
 		}
-		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
-	}else addLabel('#label-message', 'All fields are required', true);
-});
-
-$('#button-update').click(function (event){		
-	cleanLabel('#label-message');
-	var form = document.getElementById("form-change");		
-	if(form["files"].value&&form["files"].value.length > 0){
-		uploadForm(form);		
-	}
-	else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
-});
+		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
+	});
+})
 
 function redirectConfirm(data, href, name){
 	showConfirm('Confirm','This '+name+' will be deleted. Are you sure you want to delete it?', function(){		

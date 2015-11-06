@@ -65,6 +65,14 @@ class UrlMappings {
 		"/admin/hypervisor/edit/$id"(controller:'hypervisor',action:"edit")
 		"/admin/hypervisor/edit/save"(controller:'hypervisor',action:"saveEdit")
 		
+		/** admin - Operating system**/
+		"/admin/os/list"(controller:'operatingSystem',action:"list")
+		"/admin/os/new"(controller:'operatingSystem',action:"create")
+		"/admin/os/save"(controller:'operatingSystem',action:"save")
+		"/admin/os/delete/$id"(controller:'operatingSystem',action:"delete")
+		"/admin/os/edit/$id"(controller:'operatingSystem',action:"edit")
+		"/admin/os/edit/save"(controller:'operatingSystem',action:"saveEdit")
+		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")
 		"/administration"(view:"/administration")

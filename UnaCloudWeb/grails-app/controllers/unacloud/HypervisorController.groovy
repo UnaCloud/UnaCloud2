@@ -75,4 +75,55 @@ class HypervisorController {
 		}
 	}
 	
+	/**
+	 * Edit hypervisor form action.
+	 * @return hypervisor selected by user
+	 */
+	def edit(){
+		def hypervisor= Hypervisor.get(params.id)
+		if (!hypervisor)
+			redirect(uri:"/admin/hypervisor/list", absolute:true)
+		else
+			[hypervisor:hypervisor]
+	}
+	
+	/**
+	 * edit values action. Receives new hypervisor information and sends it to service
+	 * Redirects to hypervisor list when finished
+	 */
+	def saveEdit(){
+		if(params.name&&params.version){
+			try{
+				Hypervisor hypervisor = Hypervisor.get(params.id)
+				if(Hypervisor){
+					hypervisorService.setValues(hypervisor,params.name,params.version)
+					flash.message="Hypervisor values have been modified"
+					flash.type="success"
+				}	
+			}catch(Exception e){
+				flash.message=e.message
+			}
+			redirect(uri:"/admin/hypervisor/list", absolute:true)
+		}else{
+			flash.message="All fields are required"
+			redirect(uri:"/admin/hypervisor/edit/"+params.id, absolute:true)
+		}
+	}
+	
+	/**
+	 * Delete hypervisor action. Redirects to index when finished
+	 */	
+	def delete(){
+		def hypervisor = Hypervisor.get(params.id)
+		if (hypervisor) {			
+			try{
+				hypervisorService.deleteHypervisor(hypervisor)
+				flash.message="Your request has been processed"
+				flash.type="success"
+			}catch(Exception e){
+				flash.message=e.message
+			}
+		}
+		redirect(uri:"/admin/hypervisor/list", absolute:true)
+	}
 }

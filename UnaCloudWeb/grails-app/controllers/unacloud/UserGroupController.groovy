@@ -122,8 +122,11 @@ class UserGroupController {
 		if(params.name&&params.id){
 			try{
 				UserGroup group = UserGroup.get(params.id)
-				if(group)					
-					userGroupService.setValues(group,params.users,params.name)							
+				if(group){				
+					userGroupService.setValues(group,params.users,params.name)
+					flash.message="Group values have been modified"
+					flash.type="success"
+				}						
 			}catch(Exception e){
 				flash.message=e.message
 			}

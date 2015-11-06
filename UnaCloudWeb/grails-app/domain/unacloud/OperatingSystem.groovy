@@ -17,5 +17,6 @@ class OperatingSystem {
 	String configurer
 	
     static constraints = {
+		name nullable:false, unique:true
     }
 }

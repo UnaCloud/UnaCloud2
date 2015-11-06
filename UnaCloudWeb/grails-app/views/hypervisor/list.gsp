@@ -5,7 +5,7 @@
 <body>
 	<section class="content-header">
         <h1>
-            My Hypervisors
+            All Hypervisors
         </h1>
         <ol class="breadcrumb">
             <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -47,7 +47,5 @@
              </div>
         </div>     	
 	</section><!-- /.content -->    
-	<asset:javascript src="pages.js" />  
-	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();})</script> 
 </body>
                

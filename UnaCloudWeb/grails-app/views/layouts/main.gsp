@@ -23,7 +23,8 @@
         <!-- Datatables -->
         <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
         <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>
-        <asset:javascript src="ui.js"/>                  
+        <asset:javascript src="ui.js"/>   
+        <asset:javascript src="pages.js"/>                
         <g:layoutTitle/>
         
     </head>
@@ -127,10 +128,10 @@
 	                                <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hypervisors</a></li>
 	                                <li><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> OS</a></li>
 	                                <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Infrastructure</a></li>
-	                                <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
+	                                <!-- <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
 	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
 	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                
-	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>
+	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>-->
 	                            </ul>
 	                        </li>
 	                        <li id="monitoring-tree" class="treeview">
