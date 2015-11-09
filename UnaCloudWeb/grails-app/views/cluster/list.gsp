@@ -77,7 +77,5 @@
              </div>
         </div>     	
 	</section><!-- /.content -->    
-	<asset:javascript src="pages/cluster.js" />  
-	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();loadCluster();})</script> 
 </body>
                

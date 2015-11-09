@@ -76,7 +76,5 @@
              </div>
         </div>     	
 	</section><!-- /.content -->   
-	<asset:javascript src="pages/images.js" />     
-	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();loadImages();})</script> 
 </body>
                

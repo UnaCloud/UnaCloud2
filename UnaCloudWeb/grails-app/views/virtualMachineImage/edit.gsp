@@ -44,13 +44,13 @@
 		                         </div>
 		                     </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
-		                         <button type="submit" id="button-submit" class="btn btn-primary" style="cursor:pointer">Submit</button>
+		                         <button type="submit" id="button-submit" class="btn btn-primary" style="cursor:pointer">Submit</button>		                         
+		           			 	 <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>	
 		                     </div>
 	                	 </form>
 	             	</div>
              </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-	<asset:javascript src="pages/images.js" />
     <script>$(document).ready(function(){editImage();});</script>
 </body>

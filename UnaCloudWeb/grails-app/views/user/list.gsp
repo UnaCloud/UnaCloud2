@@ -90,7 +90,5 @@
              </div>
         </div>     	
 	</section><!-- /.content -->    
-	<asset:javascript src="pages/users.js" />  
-	<script>$(document).on('ready',function(){$("#unacloudTable").dataTable();})</script> 
 </body>
                

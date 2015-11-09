@@ -23,7 +23,7 @@
 		       		<div class="box box-primary">     
 		            	<!-- form start -->
 		            	 <div class="box-header">
-		            	 	<h5 class="box-title">Step 1: Select the image to copy</h5>
+		            	 	<h5 class="box-title">Select the image to copy</h5>
 		            	 </div>
 		           	 	 <div class="box-body"> 
 		                   	 <div class="form-group">
@@ -38,27 +38,20 @@
                                         </select>                                            
                                  	</div>
                                  </div>
-		           			 </div>                       
-		                 </div><!-- /.box-body -->		                         	
-		       	 	</div>
-		       	 	          		     
-		       		<div class="box box-primary">  
-		            	<div class="box-header">
-		            	 	<h5 class="box-title">Step 2: Write a new name for image</h5>
-		            	</div>
-		           	 	<div class="box-body">	
+		           			 </div>  
 		           	 	 	<div class="form-group">
-		                       <label>Image Name</label>
+		                       <label>New Image Name</label>
+		                       <p class="help-block">Write a new name for your copy</p>
 		                       <input type="text" class="form-control" name="name" placeholder="Image Name">
 		                    </div>  
 		           		</div>	
 		           		<div class="box-footer"> 
-		           			<g:submitButton name="button-submit" class="btn btn-primary" value="Submit" />		
+		           			<g:submitButton name="button-submit" class="btn btn-success" value="Submit" />	
+		           			 <a class="btn btn-danger" href="${createLink(uri: '/services/image/new', absolute: true)}" >Cancel</a>	
 		                </div>	  		
     				</div>   
 	       	 	</form>
     		</div>			
     	</div>   	
 	</section><!-- /.content -->     
-	<asset:javascript src="pages/images.js" />
 </body>

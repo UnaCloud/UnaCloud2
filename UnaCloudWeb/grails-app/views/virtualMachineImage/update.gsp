@@ -40,6 +40,5 @@
             </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-	<asset:javascript src="pages/images.js" />
     <script>$(document).ready(function(){changeUploadImage();});</script>
 </body>

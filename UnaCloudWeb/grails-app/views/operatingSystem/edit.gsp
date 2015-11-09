@@ -36,7 +36,9 @@
 	                         	</div>
 	                         </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
-		                        <g:submitButton name="button-submit" class="btn btn-primary" value="Submit" />	
+		                        <g:submitButton name="button-submit" class="btn btn-success" value="Submit" />	
+		                        <a class="btn btn-danger" href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}" >Cancel</a>	
+		                    	
 		                     </div>
 	                	 </form>
 	             	</div>

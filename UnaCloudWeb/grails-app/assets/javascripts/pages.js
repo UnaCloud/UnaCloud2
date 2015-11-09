@@ -119,3 +119,12 @@ function editImage(){
 		}else addLabel('#label-message', 'Name and user are required', true);
 	});
 }
+function calculateDeploy(){
+	$('#option-hw').change(function() {
+		var label = $(this).attr('data-img');
+		var hw = $(this).val();
+		 $.get('../maxDeploys', {hwp:hw}, function(data){
+			 $('#'+label).text(data.max);
+		 }, 'json');
+	});
+}
