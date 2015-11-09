@@ -20,30 +20,37 @@
                   <a href="${createLink(uri: '/admin/lab/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New Laboratory</a>
                   <hr>
                   <div class="row">
-                  <g:each in="${labs}" var="lab"> 
-                      <div class="col-lg-3 col-xs-6">
-                          <!-- small box -->
-                          <div class="small-box bg-aqua">
-                              <div class="inner">
-                              	  <h3>
-                                      lab.name
-                                  </h3>
-                                  <h5>
-                                      lab.physicalMachines.size
-                                  </h5>
-                                  <p>
-                                      Physical Machines
-                                  </p>
-                              </div>
-                              <div class="icon">
-                                  <i class="ion ion-laptop"></i>
-                              </div>
-                              <a href="#" class="small-box-footer">
-                                  Lab Detail <i class="fa fa-arrow-circle-right"></i>
-                              </a>
-                          </div>
-                      </div><!-- ./col -->
-                 </g:each> 
+                  <g:if test="${labs.size()<=0}">
+                  	  <div class="col-lg-12">
+	                  <p class="help-block">You do not have a laboratory configured</p>
+	                  </div>
+                  </g:if>
+                  <g:else>
+                  	   <g:each in="${labs}" var="lab"> 
+	                      <div class="col-lg-3 col-sm-3 col-xs-6">
+	                          <!-- small box -->
+	                          <div class="small-box  <g:if test="${lab.enable}">bg-light-blue</g:if><g:else>bg-gray</g:else>">
+	                              <div class="inner">
+	                              	  <h3>
+	                                      ${lab.name}
+	                                  </h3>
+	                                  <h5>
+	                                      ${lab.numberOfMachines()} Physical Machines
+	                                  </h5>
+	                                  <h5>
+	                                      ${lab.numberOfIps()} IPs
+	                                  </h5>
+	                              </div>
+	                              <div class="icon">
+	                                  <i class="ion ion-laptop"></i>
+	                              </div>
+	                              <a href="#" class="small-box-footer">
+	                                  Lab Detail <i class="fa fa-arrow-circle-right"></i>
+	                              </a>
+	                          </div>
+	                      </div><!-- ./col -->
+	                 </g:each> 
+                 </g:else>
                  </div><!-- /.row -->
              </div>
         </div>     	

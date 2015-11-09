@@ -62,6 +62,7 @@ $(document).on('ready',function(){
 		}
 		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
 	});
+	
 })
 
 function redirectConfirm(data, href, name){

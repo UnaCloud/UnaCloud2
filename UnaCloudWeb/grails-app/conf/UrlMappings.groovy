@@ -76,6 +76,7 @@ class UrlMappings {
 		/** admin - Labs management**/
 		"/admin/lab/list"(controller:'laboratory',action:"index")
 		"/admin/lab/new"(controller:'laboratory',action:"create")
+		"/admin/lab/save"(controller:'laboratory',action:"save")
 		
 		"/test/"(controller:"test", action:"index")
 		"/functionalities"(view:"/functionalities")

@@ -1,6 +1,8 @@
 package unacloud
 
+import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
+import unacloud.enums.PhysicalMachineStateEnum;
 
 class Laboratory {
 	
@@ -24,9 +26,19 @@ class Laboratory {
 	NetworkQualityEnum networkQuality
 	
 	/**
+	 * State of laboratory
+	 */
+	boolean enable = true;
+	
+	/**
 	 * list of physical machines belonging to this laboratory
 	 */
 	static hasMany = [physicalMachines: PhysicalMachine, ipPools: IPPool]
+	
+	static constraints = {
+		name unique: true
+	}
+	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -38,8 +50,20 @@ class Laboratory {
 	def long getDatabaseId(){
 		return id;
 	}
-	
-	static constraints = {
-		name unique: true
+
+	/**
+	 * Gets the number of ips availables
+	 * @return
+	 */
+	def long numberOfIps(){
+		long number = 0;
+		if(!ipPools)this.putAt("ipPools", [])
+		for(IPPool pool: ipPools)number+=pool.getIpsQuantity()
+		return number
 	}
+	
+	def long numberOfMachines(){
+		return physicalMachines.findAll{it.state!=PhysicalMachineStateEnum.DISABLED}.size()
+	}
+	
 }

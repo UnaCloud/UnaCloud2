@@ -58,5 +58,26 @@ class LaboratoryController {
 		[netConfigurations: NetworkQualityEnum.configurations]
 	}
 	
+	/**
+	 * Save created lab action. Redirects to list when finished 
+	 */
+	def save(){
+		if(params.name&&NetworkQualityEnum.getNetworkQuality(params.net)!=null
+			&&params.netGateway&&params.netMask&&params.ipInit&&params.ipEnd){
+			println params.ipInit
+			println params.ipEnd
+			try{
+				laboratoryService.createLab(params.name, (params.isHigh!=null),NetworkQualityEnum.getNetworkQuality(params.net), (params.isPrivate!=null),params.netGateway, params.netMask,params.ipInit,params.ipEnd);
+				redirect(uri:"/admin/lab/list", absolute:true)
+			}catch(Exception e){
+				flash.message="Error: "+e.message
+				redirect(uri:"/admin/lab/new", absolute:true)
+			}
+			
+		}else{
+			flash.message="All fields are required"
+			redirect(uri:"/admin/lab/new", absolute:true)
+		}
+	}
 	
 }

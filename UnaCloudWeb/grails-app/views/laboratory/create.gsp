@@ -1,6 +1,6 @@
 <html>
    <head>
-      <meta name="layout" content="main"/>
+      <meta name="layout" content="main"/> 
    </head>
 <body>
 	<section class="content-header">
@@ -20,8 +20,10 @@
     			<g:render template="/share/message"/>         
     			<form method="post" action="${createLink(uri: '/admin/lab/save', absolute: true)}" role="form">	                        		     
 		       		<div class="box box-primary"> 
-		           	 	 <div class="box-body"> 
-	           	 	 		 <p class="help-block">Configure your own lab.</p> 
+		       		    <div class="box-header">
+                           <h3 class="box-title">Configure your own lab</h3>
+                        </div><!-- /.box-header -->
+		       			<div class="box-body"> 		           	 	 
                         	 <div class="form-group">
                              	<label>Laboratory Name</label>
                             	<input type="text" class="form-control" name="name" placeholder="Lab Name">
@@ -29,6 +31,7 @@
                         	 <div class="form-group">
 	                             <label>Select</label>
 	                             <select name= "net" class="form-control">
+	                             	<option value="">-- Select an option --</option>
 	                             	<g:each in="${netConfigurations}" status="i" var="net">
 					  					<option value="${net}">${net}</option>
 					  				</g:each>
@@ -45,7 +48,51 @@
 	                             	<input type="checkbox" name="isHigh"  class="check-blue"/> High Availability
 	                             </label>
 	                             <p class="help-block">If your Physical Machines have a high availability.</p>
-	                         </div>               
+	                         </div>  
+	                         <hr>
+	                         <div class="form-group">  
+                         		<h4>IP Pool</h4>
+                         		<p class="help-block">This IP range will be given to virtual machines (you can add others IP Pools in edit lab section).</p>
+                         		  <div class="row">
+                         		  		 <div class="col-lg-3 col-sm-6 col-xs-12">
+                                        	<label>Range start</label>
+                                            <div class="input-group">
+	                                            <div class="input-group-addon">
+	                                                <i class="fa fa-laptop"></i>
+	                                            </div>
+	                                            <input type="text" name="ipInit" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                        	</div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 col-xs-12">
+                                        	<label>Range end</label>
+                                            <div class="input-group">
+	                                            <div class="input-group-addon">
+	                                                <i class="fa fa-laptop"></i>
+	                                            </div>
+	                                            <input type="text" name="ipEnd" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                        	</div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 col-xs-12">
+                                        	<label>Network Gateway</label>
+                                            <div class="input-group">
+	                                            <div class="input-group-addon">
+	                                                <i class="fa fa-laptop"></i>
+	                                            </div>
+	                                            <input type="text" name="netGateway" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                        	</div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 col-xs-12">
+                                        	<label>Network Mask</label>
+                                            <div class="input-group">
+	                                            <div class="input-group-addon">
+	                                                <i class="fa fa-laptop"></i>
+	                                            </div>
+	                                            <input type="text" name="netMask" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                        	</div>
+                                        </div>
+                                       
+                                    </div>
+                             </div>          
 		                 </div><!-- /.box-body -->	
 		                 <div class="box-footer"> 
 		           			<g:submitButton name="button-submit" class="btn btn-success" value="Submit" />		
@@ -56,4 +103,8 @@
     		</div>			
     	</div>   	
 	</section>
+	<script type="text/javascript">
+	$(function() {
+		$("[data-mask]").inputmask();
+	});</script>
 </body>

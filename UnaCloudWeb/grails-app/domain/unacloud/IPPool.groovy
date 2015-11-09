@@ -1,5 +1,9 @@
 package unacloud
 
+import unacloud.enums.IPEnum;
+import unacloud.enums.NetworkQualityEnum;
+import groovy.model.NestedValueModel;
+
 class IPPool {
 	
 	//-----------------------------------------------------------------
@@ -8,7 +12,7 @@ class IPPool {
 	/**
 	 * Indicates if the IPs in this IPPool are public or private
 	 */
-	boolean virtual 
+	boolean privateNet 
 	
 	/**
 	 * Common gateway to any IP in this pool
@@ -51,8 +55,15 @@ class IPPool {
 	/**
 	 * Method to return the ips segment quantity
 	 */
+	def int getAvailableIpsQuantity(){
+		return ips.findAll{it.state == IPEnum.AVAILABLE}.size()
+	}
+	
+	/**
+	 * Method to return the ips segment quantity
+	 */
 	def int getIpsQuantity(){
-		return ips.findAll{it.used == false}.size()
+		return ips.findAll{it.state != IPEnum.DISABLE}.size()
 	}
 	
 }

@@ -1,6 +1,7 @@
 package unacloud
 
 import unacloud.IP;
+import unacloud.enums.IPEnum;
 
 /**
  * @author Cesar
@@ -12,10 +13,11 @@ class ExecutionIP extends IP{
 	//-----------------------------------------------------------------
 	// Properties
 	//-----------------------------------------------------------------
+	
 	/**
-	 * Indicates if this IP is in use or not
+	 * State of IP
 	 */
-	boolean used
+	IPEnum state = IPEnum.AVAILABLE
 	
 	/**
 	 * IP Pool to which IP belongs

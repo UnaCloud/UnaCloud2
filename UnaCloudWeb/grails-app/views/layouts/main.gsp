@@ -22,7 +22,9 @@
         <asset:javascript src="plugins/bootbox/bootbox.js"/>  
         <!-- Datatables -->
         <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
-        <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>
+        <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>        
+     	<asset:javascript src="plugins/input-mask/jquery.inputmask.js"/>  
+     	<asset:javascript src="plugins/input-mask/jquery.inputmask.extensions.js"/> 
         <asset:javascript src="ui.js"/>   
         <asset:javascript src="pages.js"/>                
         <g:layoutTitle/>

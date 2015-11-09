@@ -1,5 +1,7 @@
 package unacloud
 
+import unacloud.enums.IPEnum;
+
 /**
  * @author Cesar
  * 
@@ -14,7 +16,8 @@ class IP {
 	/**
 	 * IP representation
 	 */
-    String ip	
+    String ip		
+	
 	
 	static constraints = {
 		ip unique: true	
