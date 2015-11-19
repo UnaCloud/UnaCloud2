@@ -18,12 +18,17 @@ class PhysicalMachine {
 	/**
 	 * indicates if this machine is being used
 	 */
-	boolean withUser
+	boolean withUser = false
 	
 	/**
 	 * number of processors
 	 */
 	int cores
+	
+	/**
+	 * number of physical processors
+	 */
+	int pCores
 	
 	/**
 	 * quantity of RAM memory in MB
@@ -77,6 +82,12 @@ class PhysicalMachine {
 	 * Monitoring System configured in physical machine
 	 */
 	MonitorSystem monitorSystem
+	
+	static constraints = {
+		monitorSystem nullable:true
+		lastReport nullable:true
+		ip nullable:true
+	}
 	
 	//-----------------------------------------------------------------
 	// Methods

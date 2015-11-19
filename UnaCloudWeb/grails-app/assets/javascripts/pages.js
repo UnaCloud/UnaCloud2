@@ -1,6 +1,6 @@
 $(document).on('ready',function(){
 	$("#unacloudTable").dataTable();
-	
+	$("#unacloudTable2").dataTable();
 	$('.delete_user').click(function (event){	
 		event.preventDefault();
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'User')	
@@ -31,11 +31,39 @@ $(document).on('ready',function(){
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Operating System')	
 	});
 	
+	$("#delete-lab").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Laboratory')	
+	});
+	
+	$(".delete_ip").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP')	
+	});
+	
+	$(".delete_pool").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP Pool')	
+	});
+	
 	$('.clear_image').click(function (event){	
 		event.preventDefault();
 		var data = $(this).data("id");
 		var href = $(this).attr("href");
 		showConfirm('Confirm','This image will be removed from all currently connected physical machines. Are you sure you want to remove it?', function(){
+			window.location.href = href+data;
+		});
+	});
+	
+	$('#disable-lab').click(function (event){
+		event.preventDefault();
+		var data = $(this).data("id");
+		var href = $(this).attr("href");
+		var state = $(this).data("state");
+		var text = "";
+		if(state) text = "enabled to disabled"
+		else text = "disabled to enabled"
+		showConfirm('Confirm','This laboratory will change its status from <strong>'+text+'</strong>. Are you sure you want to change it?', function(){
 			window.location.href = href+data;
 		});
 	});
@@ -63,10 +91,17 @@ $(document).on('ready',function(){
 		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
 	});
 	
+	$('#selectAll').click(function (event) {		
+        var selected = this.checked;
+        if(selected)$('#btn-group-agent').removeClass("hide-segment");
+        else $('#btn-group-agent').addClass("hide-segment");
+        $('.all:checkbox').each(function () {  this.checked = selected; });
+	});
+	
 })
 
 function redirectConfirm(data, href, name){
-	showConfirm('Confirm','This '+name+' will be deleted. Are you sure you want to delete it?', function(){		
+	showConfirm('Confirm','This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?', function(){		
 		window.location.href = href+data;
 	});
 }
@@ -128,4 +163,9 @@ function calculateDeploy(){
 			 $('#'+label).text(data.max);
 		 }, 'json');
 	});
+}
+
+function mask(){
+	$("[data-mask]").inputmask();
+	$("[data-mask-mac]").inputmask("[AA]:[AA]:[AA]:[AA]:[AA]:[AA]");
 }

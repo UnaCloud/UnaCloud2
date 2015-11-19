@@ -1,5 +1,7 @@
 package unacloud
 
+import java.util.List;
+
 import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
@@ -61,9 +63,20 @@ class Laboratory {
 		for(IPPool pool: ipPools)number+=pool.getIpsQuantity()
 		return number
 	}
-	
+	/**
+	 * Return the quantity of machines that are not disabled
+	 * @return
+	 */
 	def long numberOfMachines(){
 		return physicalMachines.findAll{it.state!=PhysicalMachineStateEnum.DISABLED}.size()
+	}
+	
+	/**
+	 * Returns cluster images sorted
+	 * @return sorted images
+	 */
+	def List <PhysicalMachine> getOrderedMachines(){
+		return physicalMachines.sort()
 	}
 	
 }

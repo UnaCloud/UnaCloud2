@@ -13,11 +13,11 @@
 ----------------------------
 */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700);
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic);
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400,600,300italic,400italic,600italic);
 html,
 body {
   overflow-x: hidden!important;
-  font-family: 'Source Sans Pro', sans-serif !important;
+  font-family: 'Open sans', 'Roboto' !important;
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
   background: #f9f9f9;
@@ -131,7 +131,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Open Sans', 'Roboto';
 }
 /* Page Header */
 .page-header {
@@ -184,6 +184,7 @@ img {
 }
 .bg-gray {
   background-color: #eaeaec !important;
+  color: gray !important;
 }
 .bg-black {
   background-color: #222222 !important;
@@ -403,9 +404,9 @@ body > .header .logo {
   font-size: 20px;
   line-height: 50px;
   text-align: center;
-  padding: 0 10px;
+  padding: 0 9px;
   width: 220px;
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: 'Open Sans', 'Roboto' !important;
   font-weight: bold !important;
   height: 50px;
   display: block;
@@ -413,6 +414,7 @@ body > .header .logo {
 }
 body > .header .logo:HOVER{
 	 outline: none !important;
+	 text-decoration: none !important;
 }
 body > .header .logo .icon {
   margin-right: 10px;
@@ -2435,10 +2437,10 @@ Component: timeline
   margin-right: 10px;
 }
 .skin-black .navbar .sidebar-toggle .icon-bar {
-  background: #333333;
+  background: #FFF;
 }
 .skin-black .navbar .sidebar-toggle:hover .icon-bar {
-  background: #999999 !important;
+  background: #333333 !important;
 }
 /* skin-black logo */
 .skin-black .logo {
@@ -2467,6 +2469,7 @@ Component: timeline
 /* skin-black sidebar */
 .skin-black .sidebar {
   border-bottom: 1px solid #333;
+  border-top: 1px solid #333;
 }
 .skin-black .sidebar > .sidebar-menu > li {
   border-top: 1px solid #333;
@@ -2483,8 +2486,9 @@ Component: timeline
 }
 .skin-black .sidebar > .sidebar-menu > li > a:hover,
 .skin-black .sidebar > .sidebar-menu > li.active > a {
-  color: #f6f6f6;
-  background: #4E80A9;
+  color: #444444;
+  background:#E5E5E5;
+  /**background: #4E80A9;**/
 }
 .skin-black .sidebar > .sidebar-menu > li > .treeview-menu {
   margin: 0 1px;
@@ -2505,11 +2509,13 @@ Component: timeline
 .skin-black .treeview-menu > li.active > a,
 .skin-black .treeview-menu > li > a:hover {
   color: #FFF;
-  background-color: #29445A;
+  /**background-color: #29445A;**/
+  background-color: #767E84;
 }
 .skin-black .treeview-menu > li .active{
   color: #FFF;
-  background-color: #29445A;
+  background-color: #767E84;
+  /**background-color: #29445A;**/
 }
 .skin-black .sidebar-form {
   -webkit-border-radius: 2px;

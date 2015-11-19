@@ -31,34 +31,34 @@
                				<label class="col-lg-12">${restriction.name}</label>
                				<div class="row">
 	               				<div class="col-lg-9 col-sm-9">	
-	               				<div class="form-group">
-	                 		    <g:if test="${restriction.list}">
-	                 		    	<g:if test="${restriction.multiple}">
-	                 		    	<select name= "value" class="form-control" multiple>
-	                 		    	</g:if>
-	                 		    	<g:else>
-	                 		    	<select name= "value" class="form-control">		                 		    	
-		                 		    	<option value="NoOne" >-- No one --</option>    
-	                 		    	</g:else>	                 		    	
-	                                <g:each in="${restriction.values}" var="val"> 
-	                                	<g:if test="${restriction.current}">
-	                                    <option value="${val}" <g:if test="${restriction.current.value.equals(val)}"> selected</g:if>>${val}</option>                                                
-	                                	</g:if>
-	           		    				<g:else>
-	           		    		 		<option value="${val}">${val}</option>                                              
-	           		    				</g:else>
-	                                </g:each>    
-	                                </select>                
-	                 		    </g:if>
-	                 		    <g:else>
-	                 		    	<g:if test="${restriction.current}">
-	                 		    	<input type="text" class="form-control" name="value" value="${restriction.current.value}" placeholder="Without restriction">
-	                 		    	</g:if>
-	                 		    	<g:else>
-	                 		    	<input type="text" class="form-control" name="value" placeholder="Without restriction">
-	                 		    	</g:else>		                            	
-	                 		    </g:else>
-	                 		    </div>
+		               				<div class="form-group">
+		                 		    <g:if test="${restriction.list}">
+		                 		    	<g:if test="${restriction.multiple}">
+		                 		    	<select name= "value" class="form-control" multiple>
+		                 		    	</g:if>
+		                 		    	<g:else>
+		                 		    	<select name= "value" class="form-control">		                 		    	
+			                 		    	<option value="NoOne" >-- No one --</option>    
+		                 		    	</g:else>	                 		    	
+		                                <g:each in="${restriction.values}" var="val"> 
+		                                	<g:if test="${restriction.current}">
+		                                    <option value="${val}" <g:if test="${restriction.current.value.equals(val)}"> selected</g:if>>${val}</option>                                                
+		                                	</g:if>
+		           		    				<g:else>
+		           		    		 		<option value="${val}">${val}</option>                                              
+		           		    				</g:else>
+		                                </g:each>    
+		                                </select>                
+		                 		    </g:if>
+		                 		    <g:else>
+		                 		    	<g:if test="${restriction.current}">
+		                 		    	<input type="text" class="form-control" name="value" value="${restriction.current.value}" placeholder="Without restriction">
+		                 		    	</g:if>
+		                 		    	<g:else>
+		                 		    	<input type="text" class="form-control" name="value" placeholder="Without restriction">
+		                 		    	</g:else>		                            	
+		                 		    </g:else>
+		                 		    </div>
 	                 		    </div>
 	                 			<div class="col-lg-3 col-sm-3">
 	                 				<div class="form-group">

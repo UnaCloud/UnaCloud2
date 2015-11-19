@@ -62,8 +62,27 @@ class IPPool {
 	/**
 	 * Method to return the ips segment quantity
 	 */
-	def int getIpsQuantity(){
-		return ips.findAll{it.state != IPEnum.DISABLE}.size()
+	def int getUsedIpsQuantity(){
+		return ips.findAll{it.state == IPEnum.USED || it.state == IPEnum.RESERVED}.size()
 	}
 	
+	/**
+	 * Method to return the ips segment quantity
+	 */
+	def int getIpsQuantity(){
+		return ips.findAll{it.state != IPEnum.DISABLED}.size()
+	}
+	
+	/**
+	 * Return the init range IP
+	 */
+	def ExecutionIP first(){
+		return ips.getAt(0)
+	}
+	/**
+	 * Return the end range IP
+	 */
+	def ExecutionIP last(){
+		return ips.getAt(ips.size()-1)
+	}
 }

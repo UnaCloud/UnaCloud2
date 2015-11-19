@@ -37,3 +37,22 @@
 .insert-row{
 	border-top: none !important;
 }
+
+.block-button{
+	text-decoration: none;
+}
+
+table thead .info{
+	background-color: #E5E5E5 !important;
+}
+
+.text-head{
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+.hide-segment{
+	display: none !important;
+}
+
+

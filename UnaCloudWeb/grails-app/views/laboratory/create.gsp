@@ -36,13 +36,7 @@
 					  					<option value="${net}">${net}</option>
 					  				</g:each>
 	                             </select>
-	                         </div>	                          
-	                         <div class="form-group">
-	                             <label>
-	                             	<input type="checkbox" name="isPrivate"  class="check-blue"/> Private network
-	                             </label>
-	                             <p class="help-block">If your network is private or public.</p>
-	                         </div>  
+	                         </div>	 
 	                         <div class="form-group">
 	                             <label>
 	                             	<input type="checkbox" name="isHigh"  class="check-blue"/> High Availability
@@ -53,45 +47,51 @@
 	                         <div class="form-group">  
                          		<h4>IP Pool</h4>
                          		<p class="help-block">This IP range will be given to virtual machines (you can add others IP Pools in edit lab section).</p>
-                         		  <div class="row">
-                         		  		 <div class="col-lg-3 col-sm-6 col-xs-12">
-                                        	<label>Range start</label>
-                                            <div class="input-group">
-	                                            <div class="input-group-addon">
-	                                                <i class="fa fa-laptop"></i>
-	                                            </div>
-	                                            <input type="text" name="ipInit" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
-                                        	</div>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-6 col-xs-12">
-                                        	<label>Range end</label>
-                                            <div class="input-group">
-	                                            <div class="input-group-addon">
-	                                                <i class="fa fa-laptop"></i>
-	                                            </div>
-	                                            <input type="text" name="ipEnd" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
-                                        	</div>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-6 col-xs-12">
-                                        	<label>Network Gateway</label>
-                                            <div class="input-group">
-	                                            <div class="input-group-addon">
-	                                                <i class="fa fa-laptop"></i>
-	                                            </div>
-	                                            <input type="text" name="netGateway" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
-                                        	</div>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-6 col-xs-12">
-                                        	<label>Network Mask</label>
-                                            <div class="input-group">
-	                                            <div class="input-group-addon">
-	                                                <i class="fa fa-laptop"></i>
-	                                            </div>
-	                                            <input type="text" name="netMask" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
-                                        	</div>
-                                        </div>
-                                       
+                         		                         
+		                         <div class="form-group">
+		                             <label>
+		                             	<input type="checkbox" name="isPrivate"  class="check-blue"/> Private network
+		                             </label>
+		                             <p class="help-block">If your network is private or public.</p>
+		                         </div>  
+                         		<div class="row">
+                     		  		 <div class="col-lg-3 col-sm-6 col-xs-12">
+                                    	<label>Init Range</label>
+                                        <div class="input-group">
+                                         <div class="input-group-addon">
+                                             <i class="fa fa-laptop"></i>
+                                         </div>
+                                         <input type="text" name="ipInit" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                    	</div>
                                     </div>
+                                    <div class="col-lg-3 col-sm-6 col-xs-12">
+                                    	<label>End Range</label>
+                                        <div class="input-group">
+                                         <div class="input-group-addon">
+                                             <i class="fa fa-laptop"></i>
+                                         </div>
+                                         <input type="text" name="ipEnd" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                    	</div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-xs-12">
+                                    	<label>Network Gateway</label>
+                                        <div class="input-group">
+                                         <div class="input-group-addon">
+                                             <i class="fa fa-laptop"></i>
+                                         </div>
+                                         <input type="text" name="netGateway" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                    	</div>
+                                    </div>
+                                    <div class="col-lg-3 col-sm-6 col-xs-12">
+                                    	<label>Network Mask</label>
+                                        <div class="input-group">
+                                         <div class="input-group-addon">
+                                             <i class="fa fa-laptop"></i>
+                                         </div>
+                                         <input type="text" name="netMask" class="form-control" data-inputmask="'alias': 'ip'" data-mask/>
+                                    	</div>
+                                    </div>                                       
+                                </div>
                              </div>          
 		                 </div><!-- /.box-body -->	
 		                 <div class="box-footer"> 
@@ -103,8 +103,5 @@
     		</div>			
     	</div>   	
 	</section>
-	<script type="text/javascript">
-	$(function() {
-		$("[data-mask]").inputmask();
-	});</script>
+	<script type="text/javascript">mask();</script>
 </body>

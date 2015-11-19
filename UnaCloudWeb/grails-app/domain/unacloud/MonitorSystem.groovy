@@ -29,11 +29,14 @@ class MonitorSystem {
 	
 	/**
 	 * times monitoring system will execute in machine
-	 * 0 is continue
+	 * 0 is every second
 	 */
 	int times
 	
-	boolean disable
+	/**
+	 * State of monitoring
+	 */
+	boolean disable = true;
 	
 	/**
 	 * configured Sensors in system

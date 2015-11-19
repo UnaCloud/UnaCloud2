@@ -29,13 +29,13 @@
                   	   <g:each in="${labs}" var="lab"> 
 	                      <div class="col-lg-3 col-sm-3 col-xs-6">
 	                          <!-- small box -->
-	                          <div class="small-box  <g:if test="${lab.enable}">bg-light-blue</g:if><g:else>bg-gray</g:else>">
+		                      <a href="${createLink(uri: '/admin/lab/'+lab.id, absolute: true)}" class="small-box  block-button <g:if test="${lab.enable}">bg-green</g:if><g:else>bg-gray</g:else>">
 	                              <div class="inner">
 	                              	  <h3>
 	                                      ${lab.name}
 	                                  </h3>
 	                                  <h5>
-	                                      ${lab.numberOfMachines()} Physical Machines
+	                                      ${lab.numberOfMachines()} Host
 	                                  </h5>
 	                                  <h5>
 	                                      ${lab.numberOfIps()} IPs
@@ -44,10 +44,10 @@
 	                              <div class="icon">
 	                                  <i class="ion ion-laptop"></i>
 	                              </div>
-	                              <a href="#" class="small-box-footer">
+	                              <div class="small-box-footer">
 	                                  Lab Detail <i class="fa fa-arrow-circle-right"></i>
-	                              </a>
-	                          </div>
+	                              </div>
+	                          </a>
 	                      </div><!-- ./col -->
 	                 </g:each> 
                  </g:else>
