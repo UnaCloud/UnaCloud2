@@ -9,7 +9,7 @@
             My Images
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Images</li>
         </ol>        	         
     </section>
@@ -60,11 +60,11 @@
                                   <td class="column-center"> 
                                   <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)}">
                                  	 <div class="btn-group">
-                                 	 	<a title="Delete" class="delete_images btn btn-primary" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-                                   	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-primary" ><i class="fa fa-pencil-square" ></i></a>
-                                        <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-primary"  ><i class="fa fa-upload"></i></a>
-									    <a title="Add/Modify external account id" href="${createLink(uri: '/services/image/external/'+image.id, absolute: true)}" class="btn btn-primary" ><i class="fa fa-cloud-upload" ></i></a>
-  			                            <a title="Remove from cache" class="clear_image btn btn-primary" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}"><i class='fa fa-eraser'></i></a>  
+                                 	 	<a title="Delete" class="delete_images btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+                                   	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-default" ><i class="fa fa-pencil-square" ></i></a>
+                                        <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-default"  ><i class="fa fa-upload"></i></a>
+									    <a title="Add/Modify external account id" href="${createLink(uri: '/services/image/external/'+image.id, absolute: true)}" class="btn btn-default" ><i class="fa fa-cloud-upload" ></i></a>
+  			                            <a title="Remove from cache" class="clear_image btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}"><i class='fa fa-eraser'></i></a>  
                                      </div>
                                   </g:if>
 								  </td>

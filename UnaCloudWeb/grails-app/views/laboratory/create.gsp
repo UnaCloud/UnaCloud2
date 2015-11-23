@@ -8,8 +8,8 @@
             New Laboratory
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-flask"></i> Laboratories</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-sitemap"></i> Laboratories</a></li>
             <li class="active">New Laboratory</li>
         </ol>
     </section>    

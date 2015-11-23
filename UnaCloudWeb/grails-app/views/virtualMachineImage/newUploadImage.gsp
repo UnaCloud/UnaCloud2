@@ -8,14 +8,14 @@
             New Image
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-th-list"></i> Images</a></li>
             <li class="active">New Image</li>
         </ol>
     </section>    
     <section class="content"> 
     	<div class="row">
-    		<div class="col-lg-6 col-sm-12 col-xs-12 pull-right">  
+    		<div class="col-lg-6 col-sm-6 col-xs-12 pull-right">  
     			<div class="box box-primary"> 
     				<div class="box-body">
     					<div class="form-group">  
@@ -25,7 +25,7 @@
     	 			</div> 	
     	 		</div> 	
     	 	</div> 	
-             <div class="col-lg-6 col-sm-12 col-xs-12">   
+             <div class="col-lg-6 col-sm-6 col-xs-12">   
              		<div id="label-message"></div>               		     
              		<div class="box box-primary">     	
              			<div class="box-header">
@@ -71,7 +71,7 @@
 		                         </div>
 		                     </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
-		                         <a id="button-submit" class="btn btn-success" style="cursor:pointer">Submit</a>
+		                         <a id="button-upload" class="btn btn-success" style="cursor:pointer">Submit</a>
 		                         <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>	      
 		                     </div>
 	                	 </form>
@@ -79,5 +79,4 @@
              </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-    <script>$(document).ready(function(){newUploadImage();});</script>
 </body>

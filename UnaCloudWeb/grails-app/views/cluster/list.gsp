@@ -9,7 +9,7 @@
             My Clusters
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Clusters</li>
         </ol>        	         
     </section>
@@ -63,9 +63,9 @@
                                   <td class="column-center">
                                   <div class="btn-group">
 	                                  <g:if test="${!cluster.state.equals(ClusterEnum.FREEZE)}">
-	                                  <a title="Delete" class="delete_cluster btn btn-primary" data-id="${cluster.id}" href="${createLink(uri: '/services/cluster/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Deploy Cluster" class="btn btn-primary" href="${createLink(uri: '/services/cluster/deploy/'+cluster.id, absolute: true)}" ><i class='fa fa-play' ></i></a>
-	                                  <a title="Deploy Cluster External Provider" class="btn btn-primary" href="${createLink(uri: '/services/cluster/external/'+cluster.id, absolute: true)}" ><i class='fa fa-cloud-upload' ></i></a>
+	                                  <a title="Delete" class="delete_cluster btn btn-default" data-id="${cluster.id}" href="${createLink(uri: '/services/cluster/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Deploy Cluster" class="btn btn-default" href="${createLink(uri: '/services/cluster/deploy/'+cluster.id, absolute: true)}" ><i class='fa fa-play' ></i></a>
+	                                  <a title="Deploy Cluster External Provider" class="btn btn-default" href="${createLink(uri: '/services/cluster/external/'+cluster.id, absolute: true)}" ><i class='fa fa-cloud-upload' ></i></a>
 	                                  </g:if>
                                   </div>
 								  </td>  

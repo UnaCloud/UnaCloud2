@@ -8,7 +8,7 @@
             All Groups
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Groups</li>
         </ol>        	         
     </section>
@@ -47,10 +47,10 @@
                                   <td class="column-center">
                                   <div class="btn-group">
 	                                  <g:if test="${!group.isAdmin()&&!group.isDefault()}">
-	                                  <a title="Delete" class="delete_group btn btn-primary" data-id="${group.id}" href="${createLink(uri: '/admin/group/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Delete" class="delete_group btn btn-default" data-id="${group.id}" href="${createLink(uri: '/admin/group/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
 	                                  </g:if>
-	                                  <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/admin/group/edit/'+group.id, absolute: true)}" ><i class='fa fa-users' ></i></a>
-	                                  <a title="Config" class="btn btn-primary" href="${createLink(uri: '/admin/group/restrictions/'+group.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/group/edit/'+group.id, absolute: true)}" ><i class='fa fa-users' ></i></a>
+	                                  <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/group/restrictions/'+group.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
 	                              </div>
 								  </td>  
                               </tr>                                                          

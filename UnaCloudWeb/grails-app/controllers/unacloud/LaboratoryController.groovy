@@ -90,47 +90,7 @@ class LaboratoryController {
 		}else{
 			redirect(uri:"/admin/lab/list", absolute:true)
 		}
-	}
-	
-	/**
-	 * Create physical machine form action
-	 * @return selected laboratory an list of operating systems
-	 */
-	def createMachine() {
-		def lab = Laboratory.get(params.id)
-		if(lab){
-			[lab: lab,oss: OperatingSystem.list()]
-		}else{
-			redirect(uri:"/admin/lab/list", absolute:true)
-		}
-		
-	}
-	
-	/**
-	 * Saves created physical machine and redirects to lab page
-	 * @return
-	 */
-	def saveMachine(){
-		def lab = Laboratory.get(params.lab)
-		if(lab){
-			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
-				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
-					laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab)
-					flash.message="Your Host has been added"
-					flash.type="success"
-					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
-				}else{
-					flash.message="CPU Cores and RAM Memory must be numbers."					
-					redirect(uri:"/admin/lab/"+lab.id+"/new", absolute:true)
-				}
-			}else{
-				flash.message="All fields are required."
-				redirect(uri:"/admin/lab/"+lab.id+"/new", absolute:true)	
-			}
-		}else{
-			redirect(uri:"/admin/lab/list", absolute:true)
-		}
-	}
+	}	
 	
 	/**
 	 * Delete a laboratory, validates if lab have machines
@@ -318,5 +278,108 @@ class LaboratoryController {
 				redirect(uri:"/admin/lab/"+lab.id+"/pool/new", absolute:true)
 			}
 		}else redirect(uri:"/admin/lab/list", absolute:true)		
+	}
+	
+	/**
+	 * Delete a valid Host (Physical Machine) in a lab
+	 *
+	 * @return
+	 */
+	def deleteMachine(){
+		def lab = Laboratory.get(params.id)
+		if(lab&&params.host){
+			try{
+				laboratoryService.deleteHost(lab,params.host)
+				flash.message="Your Host has been removed"
+				flash.type="success"
+				redirect(uri:"/admin/lab/"+lab.id, absolute:true)
+			}catch(Exception e){
+				flash.message=e.message
+				redirect(uri:"/admin/lab/"+lab.id, absolute:true)
+				return
+			}
+		}else
+			redirect(uri:"/admin/lab/list", absolute:true)
+	}
+	
+     /**
+	 * Edit physical machine form action
+	 * @return physical machine, laboratory which it belongs and list of all 
+	 * operating systems
+	 */
+	def editMachine(){		
+		def lab = Laboratory.get(params.id)
+		def machine = PhysicalMachine.findWhere(id:Long.parseLong(params.host),laboratory:lab)
+		if (!machine) 
+			redirect(uri:"/admin/lab/list", absolute:true)
+		else
+			[machine: machine, lab: lab, oss:OperatingSystem.list()]
+		
+	}
+	
+	/**
+	 * Create physical machine form action
+	 * @return selected laboratory an list of operating systems
+	 */
+	def createMachine() {
+		def lab = Laboratory.get(params.id)
+		if(lab){
+			[lab: lab,oss: OperatingSystem.list()]
+		}else{
+			redirect(uri:"/admin/lab/list", absolute:true)
+		}
+		
+	}
+	
+	/**
+	 * Saves created physical machine and redirects to lab page
+	 * @return
+	 */
+	def saveMachine(){
+		def lab = Laboratory.get(params.lab)
+		if(lab){
+			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
+				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
+					laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab)
+					flash.message="Your Host has been added"
+					flash.type="success"
+					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
+				}else{
+					flash.message="CPU Cores and RAM Memory must be numbers."
+					redirect(uri:"/admin/lab/"+lab.id+"/new", absolute:true)
+				}
+			}else{
+				flash.message="All fields are required."
+				redirect(uri:"/admin/lab/"+lab.id+"/new", absolute:true)
+			}
+		}else{
+			redirect(uri:"/admin/lab/list", absolute:true)
+		}
+	}
+	/**
+	 * Save new values in an edit host
+	 * @return
+	 */
+	def saveEditMachine(){
+		def lab = Laboratory.get(params.lab)
+		def machine = PhysicalMachine.findWhere(id:Long.parseLong(params.host),laboratory:lab)
+		if(machine){
+			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
+				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
+					laboratoryService.editMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, machine)
+					flash.message="Your Host has been modified"
+					flash.type="success"
+					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
+				}else{
+					flash.message="CPU Cores and RAM Memory must be numbers."
+					redirect(uri:"/admin/lab/"+lab.id+"/edit/"+machine.id, absolute:true)
+				}
+			}else{
+				flash.message="All fields are required."
+				redirect(uri:"/admin/lab/"+lab.id+"/edit/"+machine.id, absolute:true)
+			}
+		}else{
+			redirect(uri:"/admin/lab/list", absolute:true)
+		}
 	}
 }

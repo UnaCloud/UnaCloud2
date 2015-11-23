@@ -8,14 +8,14 @@
             New Group
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="${createLink(uri: '/admin/group/list', absolute: true)}"><i class="fa fa-users"></i> Groups</a></li>
             <li class="active">New Group</li>
         </ol>
     </section>    
     <section class="content"> 
     	<div class="row">
-    		<div class="col-xs-12">      			
+    		<div class="col-lg-6 col-sm-6 col-xs-12">      			
     			<div id="label-message"></div> 
     			<g:render template="/share/message"/>         
     			<form id="form-create" name="newGroup" action="${createLink(uri: '/admin/group/save', absolute: true)}" role="form">

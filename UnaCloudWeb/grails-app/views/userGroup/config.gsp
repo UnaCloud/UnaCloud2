@@ -62,7 +62,7 @@
 	                 		    </div>
 	                 			<div class="col-lg-3 col-sm-3">
 	                 				<div class="form-group">
-	                					<g:submitButton name="button-submit" class="btn btn-primary" value="Submit" />
+	                					<g:submitButton name="button-submit" class="btn btn-success" value="Submit" />
 	                				</div>	
 	                			</div>
                 			</div>

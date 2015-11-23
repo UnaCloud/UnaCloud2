@@ -9,7 +9,7 @@
             All Users
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Users</li>
         </ol>        	         
     </section>
@@ -75,10 +75,10 @@
                                   <div class="btn-group">
                                   <g:if test="${!user.status.equals(UserStateEnum.BLOCKED)}">
                                   	<g:if test="${session.user.id!=user.id}">
-	                                  <a title="Delete" class="delete_user btn btn-primary" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
+	                                  <a title="Delete" class="delete_user btn btn-default" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
 	                                </g:if>
-	                                <a title="Config" class="btn btn-primary" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
 	                              </g:if>
 	                              </div>
 								  </td>  

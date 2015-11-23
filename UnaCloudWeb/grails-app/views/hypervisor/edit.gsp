@@ -8,14 +8,14 @@
             Edit Hypervisor
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-rocket"></i> Hypervisors</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-star"></i> Hypervisors</a></li>
             <li class="active">Edit Hypervisor</li>
         </ol>
     </section>    
     <section class="content"> 
     	<div class="row">    		
-             <div class="col-xs-12">   
+             <div class="col-lg-6 col-sm-6 col-xs-12">   
              		<g:render template="/share/message"/>
              		<div id="label-message"></div>               		     
              		<div class="box box-primary">     	

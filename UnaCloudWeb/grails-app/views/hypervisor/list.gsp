@@ -8,7 +8,7 @@
             All Hypervisors
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li class="active">Hypervisors</li>
         </ol>        	         
     </section>
@@ -35,8 +35,8 @@
                                  <td>${hypervisor.hypervisorVersion}</td>
                                  <td class="column-center">                                  
 	                                 <div class="btn-group">
-		                                 <a title="Delete" class="delete_hypervisor btn btn-primary" data-id="${hypervisor.id}" href="${createLink(uri: '/admin/hypervisor/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-		                                 <a title="Edit" class="btn btn-primary" href="${createLink(uri: '/admin/hypervisor/edit/'+hypervisor.id, absolute: true)}" ><i class='fa fa-pencil' ></i></a>	                                
+		                                 <a title="Delete" class="delete_hypervisor btn btn-default" data-id="${hypervisor.id}" href="${createLink(uri: '/admin/hypervisor/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+		                                 <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/hypervisor/edit/'+hypervisor.id, absolute: true)}" ><i class='fa fa-pencil' ></i></a>	                                
 	                                 </div>
 								 </td>  
                               </tr>                                                          

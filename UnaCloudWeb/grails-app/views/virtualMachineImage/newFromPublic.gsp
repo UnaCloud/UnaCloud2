@@ -8,7 +8,7 @@
             New Image from Public
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-th-list"></i> Images</a></li>
             <li><a href="${createLink(uri: '/services/image/new', absolute: true)}"><i class="fa fa-file"></i> New Image</a></li>
             <li class="active">Public</li>
@@ -16,7 +16,7 @@
     </section>    
     <section class="content"> 
     	<div class="row">
-    		<div class="col-xs-12">      			
+    		<div class="col-lg-6 col-sm-6 col-xs-12">      			
     			<div id="label-message"></div>      
     			<form id="form-create" name="imageNewPublic" action="${createLink(uri: '/services/image/public/copy', absolute: true)}" enctype="multipart/form-data" role="form">
 	                        		     

@@ -8,14 +8,14 @@
             New Operating System
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-desktop"></i> Operating Systems</a></li>
             <li class="active">New Operating System</li>
         </ol>
     </section>    
     <section class="content"> 
     	<div class="row">    		
-             <div class="col-xs-12">   
+             <div class="col-lg-6 col-sm-6 col-xs-12">   
              		<g:render template="/share/message"/>
              		<div id="label-message"></div>               		     
              		<div class="box box-primary">     	

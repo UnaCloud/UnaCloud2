@@ -100,9 +100,9 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Images</a></li>
-                                <li><a href="${createLink(uri: '/services/cluster/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Clusters</a></li>
-                                <li><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Deployments</a></li>
+                                <li id="services-image-tree"><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Images</a></li>
+                                <li id="services-cluster-tree"><a href="${createLink(uri: '/services/cluster/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Clusters</a></li>
+                                <li id="services-deployment-tree"><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Deployments</a></li>
                             </ul>
                         </li>
                         <!--  <li id="external-tree" class="treeview">
@@ -125,18 +125,18 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="${createLink(uri: '/admin/user/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Users</a></li>
-	                                <li><a href="${createLink(uri: '/admin/group/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Groups</a></li>
-	                                <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hypervisors</a></li>
-	                                <li><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> OS</a></li>
-	                                <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Infrastructure</a></li>
+	                                <li id="admin-user-tree"><a href="${createLink(uri: '/admin/user/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Users</a></li>
+	                                <li id="admin-group-tree"><a href="${createLink(uri: '/admin/group/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Groups</a></li>
+	                                <li id="admin-hypervisor-tree"><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hypervisors</a></li>
+	                                <li id="admin-os-tree"><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> OS</a></li>
+	                                <li id="admin-lab-tree"><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Infrastructure</a></li>
 	                                <!-- <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
 	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
 	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                
 	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>-->
 	                            </ul>
 	                        </li>
-	                        <li id="monitoring-tree" class="treeview">
+	                       <!--  <li id="monitoring-tree" class="treeview">
 	                            <a href="#">
 	                                <i class="fa fa-bar-chart-o"></i> <span>Monitoring</span>
 	                                <i class="fa fa-angle-left pull-right"></i>
@@ -146,10 +146,10 @@
 	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Virtual Monitoring status **</a></li>
 	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Sensors management</a></li>                          
 	                            </ul>
-	                        </li>
+	                        </li>-->
 	                        <li id="config-tree" class="treeview">
 	                            <a href="#">
-	                                <i class="fa fa-edit"></i> <span>Configuration</span>
+	                                <i class="fa fa-cog"></i> <span>Configuration</span>
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">

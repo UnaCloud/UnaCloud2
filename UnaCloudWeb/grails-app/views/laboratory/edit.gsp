@@ -8,9 +8,9 @@
             Edit Laboratory
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-flask"></i> Laboratories</a></li>
-            <li><a href="${createLink(uri: '/admin/lab/'+lab.id, absolute: true)}"><i class="fa fa-sitemap"></i> ${lab.name}</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
+			<li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-sitemap"></i> All laboratories</a></li>
+            <li><a href="${createLink(uri: '/admin/lab/'+lab.id, absolute: true)}"><i class="fa fa-flask"></i> ${lab.name}</a></li>
             <li class="active">Edit Laboratory</li>
         </ol>
     </section>    

@@ -15,7 +15,7 @@
     </section>    
     <section class="content"> 
     	<div class="row">
-             <div class=" col-xs-12">   
+             <div class="col-lg-6 col-sm-6 col-xs-12">   
             		<div id="label-message"></div>  
              		<g:render template="/share/message"/>                		     
             		<div class="box box-primary">     	
@@ -33,12 +33,12 @@
 	                         </div>
 	                     </div><!-- /.box-body -->
 	                     <div class="box-footer"> 			
-	                         <a id="button-submit" class="btn btn-primary" style="cursor:pointer">Submit</a>
+	                         <a id="button-update" class="btn btn-success" style="cursor:pointer">Submit</a>
+	                         <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>	
 	                     </div>
                 	</form>
              	</div>
             </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-    <script>$(document).ready(function(){changeUploadImage();});</script>
 </body>

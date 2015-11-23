@@ -46,6 +46,11 @@ $(document).on('ready',function(){
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP Pool')	
 	});
 	
+	$(".delete_machines").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Host')	
+	});
+	
 	$('.clear_image').click(function (event){	
 		event.preventDefault();
 		var data = $(this).data("id");

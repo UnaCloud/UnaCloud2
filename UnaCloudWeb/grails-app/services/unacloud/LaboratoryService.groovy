@@ -5,6 +5,7 @@ import org.springframework.aop.ThrowsAdvice;
 import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
+import unacloud.enums.VirtualMachineExecutionStateEnum;
 
 import com.losandes.utils.Ip4Validator
 
@@ -56,6 +57,31 @@ class LaboratoryService {
 		def physicalMachine = new PhysicalMachine(name:name, cores:cores, pCores:pCores, ram: ram, highAvailability:(lab.highAvailability),
 			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip))
 		physicalMachine.save(failOnError:true)	
+	}
+	
+	/**
+	 * Set values in a host machine
+	 * @param ip
+	 * @param name
+	 * @param cores
+	 * @param pCores
+	 * @param ram
+	 * @param osId
+	 * @param mac
+	 * @param host
+	 * @return
+	 */
+	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host){
+		if(!host.ip.ip.equals(ip)){
+			host.ip.setIp(ip)
+		}
+		host.setName(name)
+		host.setMac(mac)
+		host.setCores(Integer.parseInt(cores))
+		host.setpCores(Integer.parseInt(pCores))
+		host.setRam(Integer.parseInt(ram))
+		host.setOperatingSystem(OperatingSystem.get(osId))
+		host.save(failOnError:true)
 	}
 	
 	/**
@@ -146,6 +172,26 @@ class LaboratoryService {
 		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()
 		for(String ipFind: ips){
 			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()
+		}
+	}
+	
+	/**
+	 * Deletes a host (physical machine) from a lab
+	 * Validates if there are not deployments in host
+	 * @param lab laboratory where is located the host
+	 * @param host to be deleted
+	 * @return
+	 */
+	def deleteHost(Laboratory lab, host){
+		PhysicalMachine hostMachine = PhysicalMachine.where{id==host&&laboratory==lab}.find()
+		if(hostMachine){
+			def executions = VirtualMachineExecution.where{
+				executionNode==hostMachine&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll()
+			if(VirtualMachineExecution.where{
+				executionNode==hostMachine&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll().size()>0) 
+				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
+			for(VirtualMachineExecution exe in executions)exe.putAt("executionNode", null)			
+			hostMachine.delete()			
 		}
 	}
 	

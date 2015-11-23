@@ -8,14 +8,14 @@
             New Cluster
         </h1>
         <ol class="breadcrumb">
-            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
             <li><a href="${createLink(uri: '/services/cluster/list', absolute: true)}"><i class="fa fa-th"></i> Clusters</a></li>
             <li class="active">New Cluster</li>
         </ol>
     </section>    
     <section class="content"> 
     	<div class="row">
-    		<div class="col-xs-12">      			
+    		<div class="col-lg-6 col-sm-6 col-xs-12">      			
     			<div id="label-message"></div> 
     			<g:render template="/share/message"/>         
     			<form id="form-create" name="newCluster" action="${createLink(uri: '/services/cluster/save', absolute: true)}" enctype="multipart/form-data" role="form">

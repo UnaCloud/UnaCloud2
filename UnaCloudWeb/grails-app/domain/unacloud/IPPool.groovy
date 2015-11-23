@@ -77,12 +77,12 @@ class IPPool {
 	 * Return the init range IP
 	 */
 	def ExecutionIP first(){
-		return ips.getAt(0)
+		return ips.sort{it.ip}.getAt(0)
 	}
 	/**
 	 * Return the end range IP
 	 */
 	def ExecutionIP last(){
-		return ips.getAt(ips.size()-1)
+		return ips.sort{it.ip}.getAt(ips.size()-1)
 	}
 }

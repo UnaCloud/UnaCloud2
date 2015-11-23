@@ -10,7 +10,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-flask"></i> All laboratories</a></li>
+            <li><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-sitemap"></i> All laboratories</a></li>
             <li class="active">${lab.name}</li>
         </ol>   
            	         
@@ -98,8 +98,8 @@
 										      </td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_images btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" href="${createLink(uri: '/services/image/edit/'+machine.id, absolute: true)}" class="btn btn-default" ><i class="fa fa-pencil-square" ></i></a>
+					                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+					                                  <a title="Edit" href="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id, absolute: true)}" class="btn btn-default" ><i class="fa fa-pencil-square" ></i></a>
 					                                  <a title="Stop" href="${createLink(uri: '/admin/lab/stop/', absolute: true)}" class="stop-agents btn btn-default" ><i class='fa fa-stop' ></i></a>
 					                                  <a title="Clean cache" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}" class="cache-agents btn btn-default" ><i class="fa fa-eraser" ></i></a>
 					                                  <a title="Update" href="${createLink(uri: '/admin/lab/update/', absolute: true)}" class="update-agents btn btn-default"  ><i class="fa fa-level-up"></i></a>
