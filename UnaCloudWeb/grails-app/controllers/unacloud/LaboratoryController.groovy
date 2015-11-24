@@ -1,6 +1,7 @@
 package unacloud
 
 import unacloud.enums.NetworkQualityEnum;
+import unacloud.enums.PhysicalMachineStateEnum;
 
 class LaboratoryController {
 	
@@ -340,9 +341,13 @@ class LaboratoryController {
 		if(lab){
 			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
 				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
-					laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab)
-					flash.message="Your Host has been added"
-					flash.type="success"
+					try{
+						laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab)
+						flash.message="Your Host has been added"
+						flash.type="success"
+					}catch(Exception e){
+						flash.message=e.message
+					}
 					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
 				}else{
 					flash.message="CPU Cores and RAM Memory must be numbers."
@@ -366,9 +371,13 @@ class LaboratoryController {
 		if(machine){
 			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
 				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
-					laboratoryService.editMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, machine)
-					flash.message="Your Host has been modified"
-					flash.type="success"
+					try{
+						laboratoryService.editMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, machine)
+						flash.message="Your Host has been modified"
+						flash.type="success"						
+					}catch(Exception e){
+						flash.message=e.message
+					}
 					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
 				}else{
 					flash.message="CPU Cores and RAM Memory must be numbers."
@@ -381,5 +390,38 @@ class LaboratoryController {
 		}else{
 			redirect(uri:"/admin/lab/list", absolute:true)
 		}
+	}
+	
+	/**
+	 * Stop, Update agent or Clear Cache in selected machines. Returns to lab when finishes
+	 */
+	
+	def updateMachines(){
+		def lab = Laboratory.get(params.id)
+		if(lab&&params.process in ['stop','update','cache']){
+			def hostList = []
+			params.each {
+				if (it.key.contains("machine")){
+					if(it.value.contains("on")){
+						PhysicalMachine pm= PhysicalMachine.get((it.key - "machine_") as Integer)
+						hostList.add(pm)
+						if(pm.state==PhysicalMachineStateEnum.ON){
+							hostList.add(pm)
+						}
+					}
+				}
+			}
+			if(hostList.size()>0){
+				try{
+					laboratoryService.createRequestTasktoMachines(hostList,params.process,session.user)
+					flash.message="Your request have been sent."
+					flash.type = "info"
+				}catch(Exception e){
+					flash.message=e.message
+				}
+			}else
+				flash.message="At least one host machine with state ON must be selected."
+			redirect(uri:"/admin/lab/"+lab.id, absolute:true)
+		}else redirect(uri:"/admin/lab/list", absolute:true)	
 	}
 }

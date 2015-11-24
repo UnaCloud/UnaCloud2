@@ -51,13 +51,33 @@ $(document).on('ready',function(){
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Host')	
 	});
 	
+	$(".stop-agents").click(function (event){		
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_machines');
+		submitConfirm(form, href, 'All selected host machines will be stopped. Do you want to continue?');
+	});
+	
+	$(".cache-agents").click(function (event){		
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_machines');
+		submitConfirm(form, href, 'All selected host machines will erased their cache. Do you want to continue?');
+	});
+	
+	$(".update-agents").click(function (event){	
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_machines');
+		submitConfirm(form, href, 'All selected host machines will update their agents, some processes in agents will be stopped. Do you want to continue?');
+	});
+	
+	
 	$('.clear_image').click(function (event){	
 		event.preventDefault();
 		var data = $(this).data("id");
 		var href = $(this).attr("href");
-		showConfirm('Confirm','This image will be removed from all currently connected physical machines. Are you sure you want to remove it?', function(){
-			window.location.href = href+data;
-		});
+		sendConfirm('This image will be removed from all currently connected physical machines. Are you sure you want to remove it?',href,data)
 	});
 	
 	$('#disable-lab').click(function (event){
@@ -68,9 +88,7 @@ $(document).on('ready',function(){
 		var text = "";
 		if(state) text = "enabled to disabled"
 		else text = "disabled to enabled"
-		showConfirm('Confirm','This laboratory will change its status from <strong>'+text+'</strong>. Are you sure you want to change it?', function(){
-			window.location.href = href+data;
-		});
+	    sendConfirm('This laboratory will change its status from <strong>'+text+'</strong>. Are you sure you want to change it?',href,data);
 	});
 
 	$('#button-upload').click(function (event){		
@@ -94,19 +112,62 @@ $(document).on('ready',function(){
 			uploadForm(form);		
 		}
 		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
-	});
-	
+	});	
+	tableChecker();
+})
+
+function tableChecker(){	
+	var checks = 0;	
 	$('#selectAll').click(function (event) {		
         var selected = this.checked;
         if(selected)$('#btn-group-agent').removeClass("hide-segment");
-        else $('#btn-group-agent').addClass("hide-segment");
-        $('.all:checkbox').each(function () {  this.checked = selected; });
+        else{ 
+        	$('#btn-group-agent').addClass("hide-segment");
+        	checks = 0;
+        }
+        $('.all:checkbox').each(function () {         	
+        	if(!this.checked&&selected)checks++;
+        	this.checked = selected; 
+        });
+	});	
+	$('.all:checkbox').click(function(event){
+		var selected = this.checked;
+		if(selected)checks++;
+        else checks--;
+		if(checks>=1)$('#btn-group-agent').removeClass("hide-segment");
+		else $('#btn-group-agent').addClass("hide-segment");
 	});
-	
-})
+}
+
+function checkSelected(){
+	cleanLabel('#label-message');
+	var selected = false;
+	$('.all:checkbox').each(function () {  
+		if(this.checked){
+			selected = true;
+			return;
+		}
+	});
+	if(!selected){
+		addLabel('#label-message','At least one physical machine should be selected.',true);		
+	}
+	return selected;
+}
+
+function submitConfirm(form, href, message){
+	if(checkSelected()){	
+		showConfirm('Confirm',message, function(){	
+			form.attr('action',href);
+			form.submit()
+		});			 		
+	}
+}
 
 function redirectConfirm(data, href, name){
-	showConfirm('Confirm','This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?', function(){		
+	sendConfirm('This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?',href,data)
+}
+function sendConfirm(message,href,data){
+	showConfirm('Confirm',message, function(){		
 		window.location.href = href+data;
 	});
 }

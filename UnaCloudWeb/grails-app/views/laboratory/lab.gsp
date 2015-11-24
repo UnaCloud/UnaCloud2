@@ -40,76 +40,78 @@
                      </ul>
                      <div class="tab-content">
                          <div class="tab-pane active" id="tab_host">
-                         	<p class="help-block">Host which from this Lab.</p>	                        		
-                            <div class="box-body table-responsive">
-			                      <table id="unacloudTable" class="table table-bordered table-striped">
-			                          <thead>
-			                          	  <g:if test="${machineSet.size()>0}">
-			                              <tr class="info">
-											  	<td colspan="12">
-												  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
-												  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
-				                                 	 	<a title="Stop" href="${createLink(uri: '/admin/lab/stop/', absolute: true)}" class="stop-agents btn btn-default" ><i class='fa fa-stop' ></i></a>
-				                                   	 	<a title="Clean cache" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}" class="cache-agents btn btn-default" ><i class="fa fa-eraser" ></i></a>
-				                                        <a title="Update" href="${createLink(uri: '/admin/lab/update/', absolute: true)}" class="update-agents btn btn-default"  ><i class="fa fa-level-up"></i></a>
-													</div>		  	
-											  	</td>
-										  </tr>
-										  </g:if>
-			                              <tr>
-			                                  <th></th>
-			                                  <th>Host Name</th>
-			                                  <th>IP</th>
-			                                  <th>State</th>
-			                                  <th>Monitoring</th>
-			                                  <th>Actions</th>
-			                              </tr>
-			                          </thead>
-			                          <tbody>
-			                          <g:each in="${machineSet}" status="i" var="machine"> 
-			                              <tr>
-			                              	  <td class="column-center">	
-									      		<input type="checkbox" name="machine${machine.id}" class="all"/>  
-									      	  <td> 		
-									        	<small>${machine.name} </small><g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>
-										      </td>
-			                                  <td><small>${machine.ip.ip}</small></td>
-			                                  <td>
-				                                <g:if test="${machine.state.equals(PhysicalMachineStateEnum.ON) }">
-										   			<span class="label label-success">${machine.state.toString()}</span>
-										   		</g:if>
-										   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.DISABLED) }">
-										   			<span class="label label-default">${machine.state.toString()}</span>
-										   		</g:if>
-										   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.OFF) }">
-										   			<span class="label label-danger">${machine.state.toString()}</span>
-										   		</g:if>
-			                                  </td>
-										      <td>
-										        <g:if test="${machine.monitorSystem==null}">
-										   			<span class="label label-default">DISABLED</span>
-										   		</g:if>
-										   		<g:elseif test="${machine.monitorSystem.disable}">
-										   			<span class="label label-danger">OFF</span>
-										   		</g:elseif>
-										   		<g:else>
-										   			<span class="label label-success">ON</span>
-										   		</g:else>
-										      </td>
-			                                  <td class="column-center"> 
-				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" href="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id, absolute: true)}" class="btn btn-default" ><i class="fa fa-pencil-square" ></i></a>
-					                                  <a title="Stop" href="${createLink(uri: '/admin/lab/stop/', absolute: true)}" class="stop-agents btn btn-default" ><i class='fa fa-stop' ></i></a>
-					                                  <a title="Clean cache" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}" class="cache-agents btn btn-default" ><i class="fa fa-eraser" ></i></a>
-					                                  <a title="Update" href="${createLink(uri: '/admin/lab/update/', absolute: true)}" class="update-agents btn btn-default"  ><i class="fa fa-level-up"></i></a>
-												  </div>
-											  </td>
-			                              </tr>
-				                      </g:each>                         
-			                          </tbody>
-			                      </table>
-			                  </div><!-- /.box-body -->
+                            <form method="post" id="form_machines">
+	                         	<p class="help-block">Host which from this Lab.</p>	                        		
+	                            <div class="box-body table-responsive">
+				                      <table id="unacloudTable" class="table table-bordered table-striped">
+				                          <thead>
+				                          	  <g:if test="${machineSet.size()>0}">
+				                              <tr class="info">
+												  	<td colspan="12">
+													  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
+													  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
+					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
+					                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
+					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
+														</div>		  	
+												  	</td>
+											  </tr>
+											  </g:if>
+				                              <tr>
+				                                  <th></th>
+				                                  <th>Host Name</th>
+				                                  <th>IP</th>
+				                                  <th>State</th>
+				                                  <th>Monitoring</th>
+				                                  <th>Actions</th>
+				                              </tr>
+				                          </thead>
+				                          <tbody>
+				                          <g:each in="${machineSet}" status="i" var="machine"> 
+				                              <tr>
+				                              	  <td class="column-center">	
+										      		<input type="checkbox" name="machine_${machine.id}" class="all"/>  
+										      	  <td> 		
+										        	<small>${machine.name} </small><g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>
+											      </td>
+				                                  <td><small>${machine.ip.ip}</small></td>
+				                                  <td>
+					                                <g:if test="${machine.state.equals(PhysicalMachineStateEnum.ON) }">
+											   			<span class="label label-success">${machine.state.toString()}</span>
+											   		</g:if>
+											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.DISABLED) }">
+											   			<span class="label label-default">${machine.state.toString()}</span>
+											   		</g:if>
+											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.OFF) }">
+											   			<span class="label label-danger">${machine.state.toString()}</span>
+											   		</g:if>
+											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.PROCESSING) }">
+											   			<span class="label label-warning">${machine.state.toString()}</span>
+											   		</g:if>
+				                                  </td>
+											      <td>
+											        <g:if test="${machine.monitorSystem==null}">
+											   			<span class="label label-default">DISABLED</span>
+											   		</g:if>
+											   		<g:elseif test="${machine.monitorSystem.disable}">
+											   			<span class="label label-danger">OFF</span>
+											   		</g:elseif>
+											   		<g:else>
+											   			<span class="label label-success">ON</span>
+											   		</g:else>
+											      </td>
+				                                  <td class="column-center"> 
+					                               	  <div class="btn-group">
+						                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+						                                  <a title="Edit" class="btn btn-default"  href="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id, absolute: true)}" ><i class="fa fa-pencil-square" ></i></a>
+						                              </div>
+												  </td>
+				                              </tr>
+					                      </g:each>                         
+				                          </tbody>
+				                      </table>
+				                  </div><!-- /.box-body -->
+			                  </form>
                          </div><!-- /.tab-pane -->
                          <div class="tab-pane" id="tab_ips">                         	
                          	<p class="help-block">IP Pool list from this Lab.</p>

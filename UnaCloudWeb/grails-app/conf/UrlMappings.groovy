@@ -83,6 +83,7 @@ class UrlMappings {
 		"/admin/lab/$id/delete/$host"(controller:'laboratory',action:"deleteMachine")
 		"/admin/lab/$id/edit/$host"(controller:'laboratory',action:"editMachine")
 		"/admin/lab/$id/edit/$host/save"(controller:'laboratory',action:"saveEditMachine")
+		"/admin/lab/$id/$process"(controller:'laboratory',action:"updateMachines")
 		"/admin/lab/disable/$id"(controller:'laboratory',action:"setStatus")
 		"/admin/lab/delete/$id"(controller:'laboratory',action:"delete")
 		"/admin/lab/edit/$id"(controller:'laboratory',action:"edit")

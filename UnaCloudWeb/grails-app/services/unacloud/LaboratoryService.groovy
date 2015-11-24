@@ -6,6 +6,7 @@ import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.task.queue.QueueTaskerControl;
 
 import com.losandes.utils.Ip4Validator
 
@@ -193,6 +194,20 @@ class LaboratoryService {
 			for(VirtualMachineExecution exe in executions)exe.putAt("executionNode", null)			
 			hostMachine.delete()			
 		}
+	}
+	
+	/**
+	 * Create a task to stop, update agent or clear cache in a list of host machines
+	 * @param machines
+	 * @return
+	 */
+	def createRequestTasktoMachines(machines, task, user){
+		List<PhysicalMachine> machineList = new ArrayList<PhysicalMachine>();
+		for(PhysicalMachine pm: machines){
+			pm.putAt("state", PhysicalMachineStateEnum.PROCESSING)
+			machineList.add(pm);
+		}
+		QueueTaskerControl.taskMachines(machineList,task as String, user)
 	}
 	
 	/**

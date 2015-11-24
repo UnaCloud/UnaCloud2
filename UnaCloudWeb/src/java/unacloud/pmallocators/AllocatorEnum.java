@@ -1,4 +1,4 @@
-package back.pmallocators;
+package unacloud.pmallocators;
 
 public enum AllocatorEnum {
 	RANDOM(new RandomAllocator(),"Random"),ROUND_ROBIN(new RoundRobinAllocator(),"Round Robin"),GREEN(null,"Green"),

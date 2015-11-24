@@ -24,7 +24,7 @@ import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
 import unacloud.utils.Hasher;
-import back.pmallocators.AllocatorEnum;
+import unacloud.pmallocators.AllocatorEnum;
 
 class BootStrap {
 	UserService userService 

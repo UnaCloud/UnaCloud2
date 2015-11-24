@@ -1,6 +1,6 @@
 package unacloud
 
-import back.pmallocators.AllocatorEnum;
+import unacloud.pmallocators.AllocatorEnum;
 import unacloud.UserService;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;

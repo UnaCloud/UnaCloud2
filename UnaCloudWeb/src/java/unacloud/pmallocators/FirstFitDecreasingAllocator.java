@@ -1,4 +1,4 @@
-package back.pmallocators;
+package unacloud.pmallocators;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -8,7 +8,7 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
-public class BestFitAllocator extends VirtualMachineAllocator {
+public class FirstFitDecreasingAllocator extends VirtualMachineAllocator {
 	
 	public class PhysicalMachineComparator implements Comparator<PhysicalMachine>{
 		Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions;
@@ -21,7 +21,7 @@ public class BestFitAllocator extends VirtualMachineAllocator {
 			PhysicalMachineAllocationDescription pmad1=physicalMachineDescriptions.get(p1.getDatabaseId());
 			PhysicalMachineAllocationDescription pmad2=physicalMachineDescriptions.get(p2.getDatabaseId());
 			int coresUsados1=pmad1==null?0:pmad1.cores,coresUsados2=pmad2==null?0:pmad2.cores;
-			int cores=Integer.compare(p1.getCores()-coresUsados1,p2.getCores()-coresUsados2);
+			int cores=p1.getCores()-coresUsados1-(p2.getCores()-coresUsados2);
 			return cores;
 		}
 	}
@@ -34,10 +34,12 @@ public class BestFitAllocator extends VirtualMachineAllocator {
 				return Integer.compare(v2.getHardwareProfile().getCores(),v1.getHardwareProfile().getCores());
 			}
 		});
+		for(PhysicalMachine pm:physicalMachines){
+			System.out.println(pm.getDatabaseId()+"\t"+pm.getCores()+"\t"+pm.getRam()+"\t"+physicalMachineDescriptions.get(pm.getDatabaseId()));
+		}
 		vmCycle:for(VirtualMachineExecution vme:virtualMachineList){
 			for(PhysicalMachine pm:physicalMachines){
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
-				//System.out.println("Evaluating "+pm.getName()+" "+pmad+" "+vme.getHardwareProfile().getCores()+" "+vme.getHardwareProfile().getRam());
 				if(fitVMonPM(vme, pm, pmad)){
 					vme.setExecutionNode(pm);
 					if(pmad==null){
@@ -45,11 +47,7 @@ public class BestFitAllocator extends VirtualMachineAllocator {
 						physicalMachineDescriptions.put(pmad.getNodeId(),pmad);
 					}
 					pmad.addResources(vme.getHardwareProfile().getCores(),vme.getHardwareProfile().getRam(), 1);
-					//System.out.println("");
-					Collections.sort(physicalMachines, new PhysicalMachineComparator(physicalMachineDescriptions));
 					continue vmCycle;
-				}else{
-					//System.out.println("No hace fit "+pmad+" "+vme.getCores()+" "+vme.getRam());
 				}
 			}
 			throw new AllocatorException("Cannot allocate all VMs on available insfrastructure");
