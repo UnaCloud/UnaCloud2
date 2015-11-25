@@ -94,5 +94,14 @@ class UrlMappings {
 		"/admin/lab/$id/pool/delete/$pool"(controller:'laboratory',action:"poolDelete")
 		"/admin/lab/$id/pool/$pool/delete/ip/$ip"(controller:'laboratory',action:"ipDelete")
 		"/admin/lab/$id/pool/$pool/set/ip/$ip"(controller:'laboratory',action:"ipSet")
+		
+		/** config - variables**/		
+		"/config/variables"(controller:'configuration',action:"listVariables")
+		"/config/variables/set"(controller:'configuration',action:"setVariable")
+		
+		/** config - agent**/
+		"/config/agent"(controller:'configuration',action:"agentConfig")
+		"/config/agent/version"(controller:'configuration',action:"setAgentVersion")
+		"/config/agent/download"(controller:'configuration',action:"downloadAgent")
 	}
 }

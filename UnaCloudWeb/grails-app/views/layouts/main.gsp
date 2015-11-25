@@ -153,8 +153,8 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Server Variables</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Agent management</a></li>
+	                                <li><a href="${createLink(uri: '/config/variables', absolute: true)}"><i class="fa fa-angle-double-right"></i> Server Variables</a></li>
+	                                <li><a href="${createLink(uri: '/config/agent', absolute: true)}"><i class="fa fa-angle-double-right"></i> Agent management</a></li>
 	                            </ul>
 	                        </li>  
                         </g:if>                   

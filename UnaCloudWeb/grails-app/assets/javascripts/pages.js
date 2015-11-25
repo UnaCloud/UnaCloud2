@@ -113,8 +113,25 @@ $(document).on('ready',function(){
 		}
 		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
 	});	
+	
+	$('.btn-variable').click(function(event){
+		var parent = $(this).parent();
+		parent.find('input.btn-submit').removeClass('hide-segment');
+		parent.find('input.btn-cancel').removeClass('hide-segment');
+		parent.find('input.btn-variable').addClass('hide-segment');
+		$('.'+parent.attr('id')).prop('disabled', false);
+	});
+	
+	$('.btn-cancel').click(function(event){
+		var parent = $(this).parent();
+		parent.find('input.btn-submit').addClass('hide-segment');
+		parent.find('input.btn-cancel').addClass('hide-segment');
+		parent.find('input.btn-variable').removeClass('hide-segment');
+		$('.'+parent.attr('id')).prop('disabled', true);
+	});	
+	
 	tableChecker();
-})
+});
 
 function tableChecker(){	
 	var checks = 0;	

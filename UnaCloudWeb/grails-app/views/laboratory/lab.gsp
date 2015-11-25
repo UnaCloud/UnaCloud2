@@ -62,6 +62,7 @@
 				                                  <th>Host Name</th>
 				                                  <th>IP</th>
 				                                  <th>State</th>
+				                                  <th>Activity</th>
 				                                  <th>Monitoring</th>
 				                                  <th>Actions</th>
 				                              </tr>
@@ -71,9 +72,8 @@
 				                              <tr>
 				                              	  <td class="column-center">	
 										      		<input type="checkbox" name="machine_${machine.id}" class="all"/>  
-										      	  <td> 		
-										        	<small>${machine.name} </small><g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>
-											      </td>
+										      	  </td>
+										      	  <td><small>${machine.name} </small></td>
 				                                  <td><small>${machine.ip.ip}</small></td>
 				                                  <td>
 					                                <g:if test="${machine.state.equals(PhysicalMachineStateEnum.ON) }">
@@ -89,6 +89,9 @@
 											   			<span class="label label-warning">${machine.state.toString()}</span>
 											   		</g:if>
 				                                  </td>
+				                                  <td class="column-center">	
+										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>  
+										      	  </td>
 											      <td>
 											        <g:if test="${machine.monitorSystem==null}">
 											   			<span class="label label-default">DISABLED</span>

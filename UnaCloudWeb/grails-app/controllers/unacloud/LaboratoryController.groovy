@@ -404,7 +404,6 @@ class LaboratoryController {
 				if (it.key.contains("machine")){
 					if(it.value.contains("on")){
 						PhysicalMachine pm= PhysicalMachine.get((it.key - "machine_") as Integer)
-						hostList.add(pm)
 						if(pm.state==PhysicalMachineStateEnum.ON){
 							hostList.add(pm)
 						}
