@@ -29,6 +29,12 @@ class UserController {
 	
 	LaboratoryService laboratoryService
 	
+	/**
+	 * Representation of Hardware profiles services
+	 */
+	
+	HardwareProfileService hardwareProfileService
+	
 	//-----------------------------------------------------------------
 	// Actions
 	//-----------------------------------------------------------------
@@ -206,8 +212,8 @@ class UserController {
 			[user:user.id,restrictions:[
 				  [name:UserRestrictionEnum.ALLOCATOR.name,type:UserRestrictionEnum.ALLOCATOR.toString(),list:true,current:user.getRestriction(UserRestrictionEnum.ALLOCATOR),values:AllocatorEnum.getList(),multiple:false],
 				  [name:UserRestrictionEnum.ALLOWED_LABS.name,type:UserRestrictionEnum.ALLOWED_LABS.toString(), list:true,current:user.getRestriction(UserRestrictionEnum.ALLOWED_LABS),values:laboratoryService.getLabsNames(),multiple:true],
-				  [name:UserRestrictionEnum.MAX_CORES_PER_VM.name,type:UserRestrictionEnum.MAX_CORES_PER_VM.toString(),list:false,current:user.getRestriction(UserRestrictionEnum.MAX_CORES_PER_VM),multiple:false],
-				  [name:UserRestrictionEnum.MAX_RAM_PER_VM.name,type:UserRestrictionEnum.MAX_RAM_PER_VM.toString(), list:false,current:user.getRestriction(UserRestrictionEnum.MAX_RAM_PER_VM),multiple:false]	
+				  [name:UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES.name,type:UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES.toString(),list:true,current:user.getRestriction(UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES),values:hardwareProfileService.getProfilesNames(),multiple:true]
+				 // [name:UserRestrictionEnum.MAX_RAM_PER_VM.name,type:UserRestrictionEnum.MAX_RAM_PER_VM.toString(), list:false,current:user.getRestriction(UserRestrictionEnum.MAX_RAM_PER_VM),multiple:false]	
 				]
 			]
 		}
@@ -225,12 +231,16 @@ class UserController {
 			def modify = false
 			if(params.restriction){
 				def value = params.value	
-				if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.MAX_CORES_PER_VM){
-					userService.setRestriction(user,UserRestrictionEnum.MAX_CORES_PER_VM.toString(),value)
-					modify = true
-				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.MAX_RAM_PER_VM){
-					userService.setRestriction(user,UserRestrictionEnum.MAX_RAM_PER_VM.toString(),value)
-					modify = true
+				if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES){
+					if(value.getClass().equals(String)){
+						userService.setRestriction(user,UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES.toString(),value)
+					}else{
+						String list = ""
+						for(hwdp in params.value)
+							list+=hwdp+(hwdp.equals(params.value[params.value.size()-1])?"":",")
+						userService.setRestriction(user,UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES.toString(),list)
+					}
+					modify = true					
 				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.ALLOWED_LABS){
 					if(value.getClass().equals(String)){
 						userService.setRestriction(user,UserRestrictionEnum.ALLOWED_LABS.toString(),value)

@@ -32,7 +32,7 @@ class DeploymentController {
 	}
 	
 	/**
-	 * Deploy options action that brings the form with deploying options for each
+	 * Deployment configuration options action that brings the form with deploying options for each
 	 * image
 	 * @return limits shown in the information of form and cluster to be deployed
 	 */
