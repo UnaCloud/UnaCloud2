@@ -21,6 +21,6 @@ class UserRestriction {
     }
 	
 	def getValues(){
-		return value.split(',')
+		return value.isEmpty()?[]:value.split(',')
 	}
 }

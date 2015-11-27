@@ -17,9 +17,20 @@ class LaboratoryService {
 
     /**
 	 * Return the lab name list
+	 * @return lab name list
 	 */
 	def getLabsNames(){
 		return Laboratory.executeQuery("select name from Laboratory")
+	}
+	
+	/**
+	 * Return all labs searched by names array
+	 * @param names list of lab names
+	 * @return list of Hardware Profiles
+	 */
+	def getLabsByName(String[] names){
+		if(names==null)return Laboratory.all
+		return Laboratory.where{name in names && enable == true}.findAll()
 	}
 	
 	/**
@@ -54,7 +65,6 @@ class LaboratoryService {
 	 */
 	
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab) {
-		println "creating machine in laboratory"+ lab.name+"-"+lab.highAvailability
 		def physicalMachine = new PhysicalMachine(name:name, cores:cores, pCores:pCores, ram: ram, highAvailability:(lab.highAvailability),
 			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip))
 		physicalMachine.save(failOnError:true)	

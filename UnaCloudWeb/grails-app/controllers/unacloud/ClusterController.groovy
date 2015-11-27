@@ -1,6 +1,8 @@
 package unacloud
 
 import unacloud.enums.ClusterEnum;
+import unacloud.enums.PhysicalMachineStateEnum;
+import unacloud.enums.VirtualMachineImageEnum;
 import javassist.bytecode.stackmap.BasicBlock.Catch;
 
 class ClusterController {
@@ -12,6 +14,11 @@ class ClusterController {
 	 * Representation of cluster service
 	 */
 	ClusterService clusterService
+	
+	/**
+	 * Representation of User Restriction service
+	 */
+	UserRestrictionService userRestrictionService
 	
 	//-----------------------------------------------------------------
 	// Actions MVC
@@ -106,7 +113,14 @@ class ClusterController {
 	def deployOptions(){
 		def cluster=Cluster.get(params.id);
 		if(cluster&&cluster.state==ClusterEnum.AVAILABLE){
-			
+			def unavailable = cluster.images.findAll {it.state==VirtualMachineImageEnum.AVAILABLE}
+			if(unavailable.size()!=cluster.images.size()){
+				flash.message= "Some images in cluster are not available at this moment. Please, change cluster or remove images in cluster."
+				redirect(uri:"/services/cluster/list", absolute:true)
+				return
+			}			
+			def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(session.user)
+			def labsAvoided = userRestrictionService.getAvoidLabs(session.user)
 		}else{
 			redirect(uri:"/services/cluster/list", absolute:true)
 		}		

@@ -111,4 +111,11 @@ class User {
 	def getRestriction(UserRestrictionEnum restriction){
 		this.restrictions.find{it.name==restriction.toString()}
 	}
+	
+	/**
+	 * Return all groups where exists the restriction, null if does not exist
+	 */
+	def getGroupsWithRestriction(UserRestrictionEnum restriction){ 
+		return UserGroup.where {users{id==this.id} && restrictions{name==restriction.toString()}}.findAll()
+	}
 }
