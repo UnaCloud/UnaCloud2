@@ -106,8 +106,7 @@ class ClusterController {
 	def deployOptions(){
 		def cluster=Cluster.get(params.id);
 		if(cluster&&cluster.state==ClusterEnum.AVAILABLE){
-			//TODO implement logic to deploy clusters
-			redirect(uri:"/services/cluster/list", absolute:true)
+			
 		}else{
 			redirect(uri:"/services/cluster/list", absolute:true)
 		}		

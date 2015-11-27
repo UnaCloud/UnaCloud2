@@ -237,7 +237,7 @@ class UserController {
 					}else{
 						String list = ""
 						for(lab in params.value)
-							list+=lab+","
+							list+=lab+(lab.equals(params.value[params.value.size()-1])?"":",")
 						userService.setRestriction(user,UserRestrictionEnum.ALLOWED_LABS.toString(),list)
 					}
 					modify = true

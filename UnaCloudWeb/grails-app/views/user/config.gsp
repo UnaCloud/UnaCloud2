@@ -24,25 +24,25 @@
             			</div>		
                  	<!-- form start -->
                  	<div class="box-body">	 
-                 	<g:each in="${restrictions}" var="restriction">
+                 	<g:each status="i" in="${restrictions}" var="restriction">
                  		<form action="${createLink(uri: '/admin/user/restrictions/set', absolute: true)}" role="form">	
                  			<input name="id" type="hidden" value="${user}"/>       
                  			<input name="restriction" type="hidden" value="${restriction.type}"/>               			
                				<label class="col-lg-12">${restriction.name}</label>
                				<div class="row">
-	               				<div class="col-lg-9 col-sm-9">	
+	               				<div class="col-lg-8 col-sm-12 col-xs-12">	
 		               				<div class="form-group">
 		                 		    <g:if test="${restriction.list}">
 		                 		    	<g:if test="${restriction.multiple}">
-		                 		    	<select name= "value" class="form-control" multiple>
+		                 		    	<select name= "value" class="form-control var-${i}" disabled multiple >
 		                 		    	</g:if>
 		                 		    	<g:else>
-		                 		    	<select name= "value" class="form-control">		                 		    	
+		                 		    	<select name= "value" class="form-control var-${i}" disabled>		                 		    	
 			                 		    	<option value="NoOne" >-- No one --</option>    
 		                 		    	</g:else>	                 		    	
 		                                <g:each in="${restriction.values}" var="val"> 
 		                                	<g:if test="${restriction.current}">
-		                                    <option value="${val}" <g:if test="${restriction.current.value.equals(val)}"> selected</g:if>>${val}</option>                                                
+		                                    <option value="${val}" <g:if test="${val in restriction.current.getValues()}"> selected</g:if>>${val}</option>                                                
 		                                	</g:if>
 		           		    				<g:else>
 		           		    		 		<option value="${val}">${val}</option>                                              
@@ -52,18 +52,20 @@
 		                 		    </g:if>
 		                 		    <g:else>
 		                 		    	<g:if test="${restriction.current}">
-		                 		    	<input type="text" class="form-control" name="value" value="${restriction.current.value}" placeholder="Without restriction">
+		                 		    	<input type="text" class="form-control var-${i}" disabled name="value" value="${restriction.current.value}" placeholder="Without restriction">
 		                 		    	</g:if>
 		                 		    	<g:else>
-		                 		    	<input type="text" class="form-control" name="value" placeholder="Without restriction">
+		                 		    	<input type="text" class="form-control var-${i}" disabled name="value" placeholder="Without restriction">
 		                 		    	</g:else>		                            	
 		                 		    </g:else>
 		                 		    </div>
 	                 		    </div>
-	                 			<div class="col-lg-3 col-sm-3">
-	                 				<div class="form-group">
-	                					<g:submitButton name="button-submit" class="btn btn-success" value="Submit" />
-	                				</div>	
+	                 			<div class="col-lg-4 col-sm-12 col-xs-12">
+	                 				<div id="var-${i}" class="form-group">
+		                 				<input name="button" type="button" class="btn-variable btn btn-default" value="Edit">
+		                 				<input name="button-submit" type="submit" class="btn-submit btn btn-success hide-segment" value="Submit">
+		                 				<input name="button-cancel" type="button" class="btn-cancel btn btn-danger hide-segment" value="Cancel">
+		                			</div>		
 	                			</div>
                 			</div>
                  		</form>

@@ -19,4 +19,8 @@ class UserRestriction {
 	
     static constraints = {
     }
+	
+	def getValues(){
+		return value.split(',')
+	}
 }

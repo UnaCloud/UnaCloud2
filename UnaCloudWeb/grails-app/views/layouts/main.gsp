@@ -100,9 +100,9 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li id="services-image-tree"><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Images</a></li>
-                                <li id="services-cluster-tree"><a href="${createLink(uri: '/services/cluster/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Clusters</a></li>
-                                <li id="services-deployment-tree"><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> My Deployments</a></li>
+                                <li id="services-image-tree"><a href="${createLink(uri: '/services/image/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Images</a></li>
+                                <li id="services-cluster-tree"><a href="${createLink(uri: '/services/cluster/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Clusters</a></li>
+                                <li id="services-deployment-tree"><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Deployments</a></li>
                             </ul>
                         </li>
                         <!--  <li id="external-tree" class="treeview">

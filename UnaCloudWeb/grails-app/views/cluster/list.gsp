@@ -64,8 +64,8 @@
                                   <div class="btn-group">
 	                                  <g:if test="${!cluster.state.equals(ClusterEnum.FREEZE)}">
 	                                  <a title="Delete" class="delete_cluster btn btn-default" data-id="${cluster.id}" href="${createLink(uri: '/services/cluster/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Deploy Cluster" class="btn btn-default" href="${createLink(uri: '/services/cluster/deploy/'+cluster.id, absolute: true)}" ><i class='fa fa-play' ></i></a>
-	                                  <a title="Deploy Cluster External Provider" class="btn btn-default" href="${createLink(uri: '/services/cluster/external/'+cluster.id, absolute: true)}" ><i class='fa fa-cloud-upload' ></i></a>
+	                                  <a title="Deploy" class="btn btn-default" href="${createLink(uri: '/services/cluster/deploy/'+cluster.id, absolute: true)}" ><i class='fa fa-play' ></i></a>
+	                                  <!--  <a title="Deploy Cluster External Provider" class="btn btn-default" href="${createLink(uri: '/services/cluster/external/'+cluster.id, absolute: true)}" ><i class='fa fa-cloud-upload' ></i></a>-->
 	                                  </g:if>
                                   </div>
 								  </td>  

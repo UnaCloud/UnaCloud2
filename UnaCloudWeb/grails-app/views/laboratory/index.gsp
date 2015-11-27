@@ -34,12 +34,12 @@
 	                              	  <h3>
 	                                      ${lab.name}
 	                                  </h3>
-	                                  <h5>
+	                                  <h4>
 	                                      ${lab.numberOfMachines()} Host
-	                                  </h5>
-	                                  <h5>
+	                                  </h4>
+	                                  <h4>
 	                                      ${lab.numberOfIps()} IPs
-	                                  </h5>
+	                                  </h4>
 	                              </div>
 	                              <div class="icon">
 	                                  <i class="ion ion-laptop"></i>
