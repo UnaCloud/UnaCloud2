@@ -20,6 +20,11 @@ class ClusterController {
 	 */
 	UserRestrictionService userRestrictionService
 	
+	/**
+	 * Representation of Lab service
+	 */
+	LaboratoryService laboratoryService
+	
 	//-----------------------------------------------------------------
 	// Actions MVC
 	//-----------------------------------------------------------------
@@ -120,7 +125,28 @@ class ClusterController {
 				return
 			}			
 			def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(session.user)
-			def labsAvoided = userRestrictionService.getAvoidLabs(session.user)
+			def labsAvoided = userRestrictionService.getAvoidLabs(session.user)			
+			def quantitiesTree = new TreeMap<String, Integer>()
+			def quantitiesAvailableTree = new TreeMap<String, Integer>()
+			labsAvoided.each {
+				def results = laboratoryService.calculateDeploys(it,hwdProfilesAvoided, false)	
+				def resultsAvailable = laboratoryService.calculateDeploys(it,hwdProfilesAvoided, true)
+				for(HardwareProfile hwd in hwdProfilesAvoided){
+					if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
+					else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
+					if(!quantitiesAvailableTree.get(hwd.name))quantitiesAvailableTree.put(hwd.name,resultsAvailable.get(hwd.name))
+					else quantitiesAvailableTree.put(hwd.name,resultsAvailable.get(hwd.name)+quantitiesAvailableTree.get(hwd.name))
+				}
+			}
+			def quantities = []
+			def quantitiesAvailable = []
+			def high = false;
+			for(HardwareProfile hwd in hwdProfilesAvoided){
+				quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
+				if(quantitiesAvailableTree.get(hwd.name)>0)high = true
+				quantitiesAvailable.add(['name':hwd.name,'quantity':quantitiesAvailableTree.get(hwd.name)])
+			}
+			[quantities:quantities,quantitiesAvailable:quantitiesAvailable,hardwareProfiles: HardwareProfile.list(),cluster:cluster,high:high]
 		}else{
 			redirect(uri:"/services/cluster/list", absolute:true)
 		}		

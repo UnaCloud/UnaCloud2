@@ -15,6 +15,10 @@ import grails.transaction.Transactional
 @Transactional
 class LaboratoryService {
 
+	//-----------------------------------------------------------------
+	// Methods
+	//-----------------------------------------------------------------
+	
     /**
 	 * Return the lab name list
 	 * @return lab name list
@@ -124,7 +128,11 @@ class LaboratoryService {
 	def setValues(Laboratory lab, String name, NetworkQualityEnum netConfig, highAvailability){
 		lab.putAt("name", name)
 		lab.putAt("networkQuality", netConfig)
-		lab.putAt("highAvailability", highAvailability)
+		if(lab.highAvailability!=highAvailability){
+			for(PhysicalMachine machine in lab.physicalMachines)
+				machine.putAt("highAvailability", highAvailability)
+			lab.putAt("highAvailability", highAvailability)
+		}		
 	}
 	
 	/**
@@ -218,6 +226,32 @@ class LaboratoryService {
 			machineList.add(pm);
 		}
 		QueueTaskerControl.taskMachines(machineList,task as String, user)
+	}
+	
+	/**
+	 * Calculate the quantity of available deployments by hardware profiles
+	 * @param lab
+	 * @param hwProfiles
+	 * @param highAvailability
+	 * @return
+	 */
+	def calculateDeploys(Laboratory lab, def hwProfiles, highAvailability){
+		TreeMap<String, Integer> results = new TreeMap<String,Integer>();	
+		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == highAvailability?1:0}.each{			
+			def pmId = it.id;
+			//How much resources in host are available in this moment
+			def executionValues = it.availableResources()
+			for(HardwareProfile hwd in hwProfiles){
+				def quantityRam = Math.floor(executionValues.ram/hwd.ram)
+				def quantityCores = Math.floor(executionValues.cores/hwd.cores)
+				if(results.get(hwd.name)==null)results.put(hwd.name, (quantityRam>quantityCores?quantityCores:quantityRam))
+				else results.put(hwd.name,results.get(hwd.name)+(quantityRam>quantityCores?quantityCores:quantityRam));
+			}			
+		}
+		for(HardwareProfile hwd in hwProfiles)
+			if(results.get(hwd.name)==null)results.put(hwd.name, 0);
+		
+		return results
 	}
 	
 	/**

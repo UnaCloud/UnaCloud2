@@ -109,4 +109,9 @@ class PhysicalMachine {
 		return laboratory;
 	}
 	
+	def availableResources(){
+		def usedResources = VirtualMachineExecution.executeQuery('select sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from VirtualMachineExecution as vme where vme.executionNode.id = :node_id',[node_id:this.id])
+		return [ram:usedResources[0][0]!=null?ram-usedResources[0][0]:ram,cores:usedResources[0][1]!=null?cores-usedResources[0][1]:cores]
+	}
+	
 }

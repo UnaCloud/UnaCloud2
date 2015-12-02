@@ -26,7 +26,8 @@
     	 		</div> 	
     	 	</div> 	
              <div class="col-lg-6 col-sm-6 col-xs-12">   
-             		<div id="label-message"></div>               		     
+             		<div id="label-message"></div>   
+             		<g:render template="/share/message"/>               		     
              		<div class="box box-primary">     	
              			<div class="box-header">
              				<h5 class="box-title">Upload your image</h5> 							    			

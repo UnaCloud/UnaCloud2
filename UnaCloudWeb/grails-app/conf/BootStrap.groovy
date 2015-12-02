@@ -23,12 +23,14 @@ import unacloud.enums.ExternalCloudTypeEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
+import unacloud.init.DatabaseService
 import unacloud.utils.Hasher;
 import unacloud.pmallocators.AllocatorEnum;
 
 class BootStrap {
 	UserService userService 
 	UserGroupService userGroupService
+	DatabaseService databaseService
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
@@ -86,8 +88,8 @@ class BootStrap {
 			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10").save()
 			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10").save()
 		}
-		//databaseService.initDatabase()
-		//DataServerSocket.startServices(variableManagerService.getIntValue("DATA_SOCKET"));
+		
+		databaseService.initDatabase()
 	}
 	def destroy = {
 	}

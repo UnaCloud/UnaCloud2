@@ -38,7 +38,7 @@ class UrlMappings {
 		"/services/cluster/external/$id"(controller:"Cluster",action:"externalDeployOptions")		
 		
 		/** services - deployments **/
-		
+		"/services/deployment/new"(controller:'Deployment',action:"deploy")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")

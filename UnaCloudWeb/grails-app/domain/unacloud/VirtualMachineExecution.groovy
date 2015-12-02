@@ -38,7 +38,7 @@ class VirtualMachineExecution {
 	Date stopTime
 	
 	/**
-	 * Actual node state (COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
+	 * Actual node state (REQUESTED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
 	 */
 	VirtualMachineExecutionStateEnum status
 	
@@ -58,10 +58,17 @@ class VirtualMachineExecution {
 	 */
 	MonitorSystem monitorSystem
 	
+	/**
+	 * deployed Image 
+	 */
+	static belongsTo = [deployImage: DeployedImage]
+	
+	
 	static constraints = {
 		executionNode nullable: true
 		monitorSystem nullable: true
 		stopTime nullable: true 
+		startTime nullable:true
 	}
 	
 	//-----------------------------------------------------------------
