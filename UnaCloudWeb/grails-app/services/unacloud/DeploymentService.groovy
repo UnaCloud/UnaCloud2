@@ -44,22 +44,31 @@ class DeploymentService {
 			if(!(it.hp in hwdProfilesAvoided)) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
 		}
 				
+		def labsAvoided = userRestrictionService.getAvoidLabs(user)
+		if(labsAvoided.size()==0) throw new Exception('No physical machines available')
+		
 		println "Deploying"
 		DeployedCluster depCluster= new DeployedCluster(cluster: cluster)
-		depCluster.images=[]
-		/*
-		 * Iterates over each option in parameters and looks for the
-		 * matching image, creating the respective deployed image
-		 */
+		depCluster.images=[]		
+		
 		requests.eachWithIndex(){ request,i->
-			def depImage= new DeployedImage(image:request.image,deployCluster:depCluster,highAvaliavility:request.high)
+			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high)
+			depImage.save(failOnError: true)
 			for(int j=0;j<request.instances;j++){				
 				def virtualMachine = new VirtualMachineExecution(name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,deployImage:depImage, interfaces:[])
 				virtualMachine.save(failOnError: true)				
 			}
+						
+			ArrayList<PhysicalMachine> pms = new ArrayList<>()
+			labsAvoided.each{
+				pms.addAll(it.getAvailableMachines(request.high))
+			}
+			
+			depCluster.images.add(depImage)
 		}
 		depCluster.save(failOnError: true)
-
+		
+		
 //		/*
 //		 * Makes allocation and user restriction validations for each image
 //		 */

@@ -79,4 +79,13 @@ class Laboratory {
 		return physicalMachines.sort()
 	}
 	
+	/**
+	 * Return the list of available physical machines
+	 * @param isHigh
+	 * @return
+	 */
+	def List <PhysicalMachine> getAvailableMachines(isHigh){
+		return physicalMachines.findAll{it.state==PhysicalMachineStateEnum.ON && it.highAvailability==isHigh}
+	}
+	
 }

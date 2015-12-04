@@ -2,6 +2,7 @@ package unacloud
 
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.UserRestrictionEnum;
+import unacloud.pmallocators.AllocatorEnum;
 import grails.transaction.Transactional
 
 @Transactional
@@ -23,6 +24,11 @@ class UserRestrictionService {
 	
 	LaboratoryService laboratoryService
 	
+	/**
+	 * Representation of Server Variable services
+	 */
+	
+	ServerVariableService serverVariableService
 	
 	//-----------------------------------------------------------------
 	// Actions
@@ -45,7 +51,11 @@ class UserRestrictionService {
 			return hardwareProfileService.getHardwareProfilesByName(restriction.getValues())
     }
 	
-	
+	/**
+	 * Return the list of valid Laboratories to deploy virtual executions
+	 * @param user
+	 * @return
+	 */
 	def getAvoidLabs(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.ALLOWED_LABS)
 		if(!restriction){
@@ -56,5 +66,22 @@ class UserRestrictionService {
 			return laboratoryService.getLabsByName(listLabs.isEmpty()?null:listLabs.split(','))
 		}else
 			return laboratoryService.getLabsByName(restriction.getValues())
+	}
+	
+	/**
+	 * Return the allocator configured in restrictions for user, in case there is not configured an
+	 * allocator restriction for user it takes default allocator in server variable
+	 * @param user
+	 * @return
+	 */
+	def getAllocator(User user){
+		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.ALLOCATOR)
+		if(!restriction){
+			def groups = user.getGroupsWithRestriction(UserRestrictionEnum.ALLOCATOR)
+			if(groups.size()>0)
+				return AllocatorEnum.getAllocatorByName(groups.get(0).getRestriction(UserRestrictionEnum.ALLOCATOR).value)				
+			return AllocatorEnum.getAllocatorByName(serverVariableService.getDefaultAllocator().variable);
+		}else
+			return AllocatorEnum.getAllocatorByName(restriction.value)
 	}
 }
