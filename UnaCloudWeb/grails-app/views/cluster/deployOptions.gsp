@@ -21,7 +21,7 @@
              			<h5 class="box-title">Available Deployments</h5>            									    			
              		</div>            		
     				<div class="box-body">
-    					<p class="help-block">Limit of instances to deploy that you can request by hardware profile.</p>
+    					<p class="help-block"><strong>MAXIMUN INSTANCES</strong> to deploy per hardware profile.</p>
     					<label>Opportunistic</label>
     					<div>
     					<g:each in="${quantities}" var="val">

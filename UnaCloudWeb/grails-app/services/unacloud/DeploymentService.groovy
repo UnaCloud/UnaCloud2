@@ -70,9 +70,9 @@ class DeploymentService {
 		println "Deploying"
 		DeployedCluster depCluster= new DeployedCluster(cluster: cluster)
 		depCluster.images=[]		
-		
+		depCluster.save(failOnError: true)
 		requests.eachWithIndex(){ request,i->
-			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high)
+			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,deployCluster:depCluster)
 			depImage.save(failOnError: true)
 			for(int j=0;j<request.instances;j++){				
 				def virtualMachine = new VirtualMachineExecution(name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,deployImage:depImage,startTime: new Date(), interfaces:[])
@@ -92,9 +92,10 @@ class DeploymentService {
 		depCluster.save(failOnError: true)
 	
 		Deployment dep
+		dep = new Deployment(user:user,cluster: depCluster, startTime: new Date(),status: DeploymentStateEnum.ACTIVE)
+		dep.save(failOnError: true)
 		if(!Environment.isDevelopmentMode()){
-			dep = new Deployment(user:user,cluster: depCluster, startTime: new Date(),status: DeploymentStateEnum.ACTIVE)		
-			dep.save(failOnError: true)
+			
 			
 			QueueTaskerControl.deployCluster(dep,user)
 		}		
