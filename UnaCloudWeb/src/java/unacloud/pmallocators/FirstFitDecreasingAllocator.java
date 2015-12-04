@@ -34,9 +34,6 @@ public class FirstFitDecreasingAllocator extends VirtualMachineAllocator {
 				return Integer.compare(v2.getHardwareProfile().getCores(),v1.getHardwareProfile().getCores());
 			}
 		});
-		for(PhysicalMachine pm:physicalMachines){
-			System.out.println(pm.getDatabaseId()+"\t"+pm.getCores()+"\t"+pm.getRam()+"\t"+physicalMachineDescriptions.get(pm.getDatabaseId()));
-		}
 		vmCycle:for(VirtualMachineExecution vme:virtualMachineList){
 			for(PhysicalMachine pm:physicalMachines){
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());

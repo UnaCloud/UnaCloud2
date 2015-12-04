@@ -1,8 +1,13 @@
 package unacloud
 
+import unacloud.allocation.IPAllocatorService
+import unacloud.allocation.PhysicalMachineAllocatorService
+import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.task.queue.QueueTaskerControl;
 import webutils.ImageRequestOptions;
 import grails.transaction.Transactional
+import grails.util.Environment;
 
 @Transactional
 class DeploymentService {	
@@ -20,6 +25,18 @@ class DeploymentService {
 	 * Representation of User Restriction service
 	 */
 	UserRestrictionService userRestrictionService
+	
+	/**
+	 * Representation of the physical machine allocator service
+	 */
+	
+	PhysicalMachineAllocatorService physicalMachineAllocatorService
+	
+	/**
+	 * Representation of the IP allocator service
+	 */
+	
+	IPAllocatorService ipAllocatorService
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -45,8 +62,11 @@ class DeploymentService {
 		}
 				
 		def labsAvoided = userRestrictionService.getAvoidLabs(user)
-		if(labsAvoided.size()==0) throw new Exception('No physical machines available')
+		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
 		
+		def ipsAvailable = []
+		
+				
 		println "Deploying"
 		DeployedCluster depCluster= new DeployedCluster(cluster: cluster)
 		depCluster.images=[]		
@@ -55,46 +75,30 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high)
 			depImage.save(failOnError: true)
 			for(int j=0;j<request.instances;j++){				
-				def virtualMachine = new VirtualMachineExecution(name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,deployImage:depImage, interfaces:[])
+				def virtualMachine = new VirtualMachineExecution(name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,deployImage:depImage,startTime: new Date(), interfaces:[])
 				virtualMachine.save(failOnError: true)				
 			}
 						
-			ArrayList<PhysicalMachine> pms = new ArrayList<>()
+			List<PhysicalMachine> pms = new ArrayList<>()
 			labsAvoided.each{
 				pms.addAll(it.getAvailableMachines(request.high))
 			}
+			if(pms.size()==0) throw new Exception('Not enough physical machines available')
 			
+			physicalMachineAllocatorService.allocatePhysicalMachines(user,depImage.virtualMachines,pms)
+			ipAllocatorService.allocateIPAddresses(depImage)			
 			depCluster.images.add(depImage)
 		}
 		depCluster.save(failOnError: true)
+	
+		Deployment dep
+		if(!Environment.isDevelopmentMode()){
+			dep = new Deployment(user:user,cluster: depCluster, startTime: new Date(),status: DeploymentStateEnum.ACTIVE)		
+			dep.save(failOnError: true)
+			
+			QueueTaskerControl.deployCluster(dep,user)
+		}		
 		
-		
-//		/*
-//		 * Makes allocation and user restriction validations for each image
-//		 */
-//		for (image in depCluster.images)
-//		deploymentProcessorService.doDeployment(image,user,false)
-//		/*
-//		 * Creates deployment entity and links it to the user
-//		 */
-//		long stopTimeMillis= new Date().getTime()
-//		def stopTime= new Date(stopTimeMillis +time)
-//		
-//		Deployment dep
-//		if(!Environment.isDevelopmentMode()){
-//			dep = new Deployment(cluster: depCluster, startTime: new Date(),stopTime: stopTime,status: DeploymentStateEnum.ACTIVE)
-//		
-//			dep.save(failOnError: true)
-//			if(user.deployments==null)
-//				user.deployments=[]
-//			user.deployments.add(dep)
-//			user.save(failOnError: true)
-//			/*
-//			 * Finally it sends the deployment message to the agents
-//			 */
-//			runAsync{ deployerService.deploy(dep) }
-//		}		
-//		
-//		return dep
+		return dep
 	}
 }

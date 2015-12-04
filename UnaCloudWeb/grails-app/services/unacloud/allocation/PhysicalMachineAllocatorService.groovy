@@ -43,29 +43,31 @@ class PhysicalMachineAllocatorService {
 	 * add instance type
 	 */
 	
-	def allocatePhysicalMachines(User user, ArrayList<VirtualMachineExecution> vms,List<PhysicalMachine> pms,boolean addInstancesDeployment){
+	def allocatePhysicalMachines(User user, List<VirtualMachineExecution> vms,List<PhysicalMachine> pms,boolean addInstancesDeployment){
 		
-		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = getPhysicalMachineUsage()			
+		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = getPhysicalMachineUsage(pms)			
 		AllocatorEnum allocator = userRestrictionService.getAllocator(user)	
 		allocator.getAllocator().startAllocation(vms,pms,pmDescriptions);
 	}
 	
 	/**
 	 * Calculates the usage of the infrastructure
+	 * @param physical machine list
 	 * @return pmDescriptions map with information of every physical machine
 	 * remaining capacity
 	 */
 	
-	def getPhysicalMachineUsage(){
+	def getPhysicalMachineUsage(List<PhysicalMachine> pms){
+		String listId = ""
+		for(int i = 0; i<pms.size();i++){
+			listId+=pms[i].id
+			if(i!=pms.size()-1)listId+=","
+		}
 		def sql = new Sql(dataSource)
 		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions=new TreeMap<>();
 		
-		sql.eachRow('select execution_node_id,count(*) as vms,sum(ram) as ram,sum(cores) as cores from virtual_machine_execution join hardware_profile on virtual_machine_execution.hardware_profile_id= hardware_profile.id where status != \''+VirtualMachineExecutionStateEnum.FINISHED+'\' group by execution_node_id'){ row ->
+		sql.eachRow('select execution_node_id,count(*) as vms,sum(ram) as ram,sum(cores) as cores from virtual_machine_execution join hardware_profile on virtual_machine_execution.hardware_profile_id= hardware_profile.id where status != \''+VirtualMachineExecutionStateEnum.FINISHED+'\' and execution_node_id in ('+listId+') group by execution_node_id'){ row ->
 			if(row.execution_node_id!=null)pmDescriptions.put(row.execution_node_id, new PhysicalMachineAllocationDescription(row.execution_node_id,row.cores.toInteger(),row.ram.toInteger(),row.vms.toInteger()));
-		}
-		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
-		for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
-			println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
 		}
 		return pmDescriptions;
 	}

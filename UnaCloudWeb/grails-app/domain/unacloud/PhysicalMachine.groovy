@@ -110,8 +110,9 @@ class PhysicalMachine {
 	}
 	
 	def availableResources(){
-		def usedResources = VirtualMachineExecution.executeQuery('select sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from VirtualMachineExecution as vme where vme.executionNode.id = :node_id',[node_id:this.id])
-		return [ram:usedResources[0][0]!=null?ram-usedResources[0][0]:ram,cores:usedResources[0][1]!=null?cores-usedResources[0][1]:cores]
+		def usedResources = VirtualMachineExecution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from VirtualMachineExecution as vme where vme.executionNode.id = :node_id',[node_id:this.id])
+		print usedResources
+		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
 	}
 	
 }
