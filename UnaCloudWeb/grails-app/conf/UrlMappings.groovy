@@ -2,11 +2,7 @@ class UrlMappings {
 	
 	static excludes = ["/virtualMachineImage/update"]
 	static mappings = {
-		/**"/$controller/$action?/$id?"{
-			constraints {
-				// apply constraints here
-			}
-		}**/
+		
 		"/"(controller:"user", action:"home")
 		"/login"(view:"/index")
 		"/user/login"(controller:'user',action:'login')
@@ -39,6 +35,7 @@ class UrlMappings {
 		
 		/** services - deployments **/
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")
+		"/services/deployment/list"(controller:'Deployment',action:"list")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")

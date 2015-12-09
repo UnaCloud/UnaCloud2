@@ -19,7 +19,7 @@ class Repository {
 	/**
 	 * Repository path
 	 */
-	String root
+	String path
 	
 	/**
 	 * Images stored in this repository

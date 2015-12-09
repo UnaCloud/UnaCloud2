@@ -16,10 +16,17 @@ class NetInterface {
 	 * Ip configure in this interface
 	 */
 	ExecutionIP ip
+	
 	/**
 	 * name of the interface
 	 */
 	String name
+	
+	/**
+	 * representation of Deployment
+	 */
+	
+	static belongsTo = [virtualExecution:VirtualMachineExecution]
 
     static constraints = {
     }

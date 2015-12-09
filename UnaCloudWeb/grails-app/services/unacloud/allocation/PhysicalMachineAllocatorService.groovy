@@ -43,9 +43,8 @@ class PhysicalMachineAllocatorService {
 	 * add instance type
 	 */
 	
-	def allocatePhysicalMachines(User user, List<VirtualMachineExecution> vms,List<PhysicalMachine> pms,boolean addInstancesDeployment){
-		
-		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = getPhysicalMachineUsage(pms)			
+	def allocatePhysicalMachines(User user, List<VirtualMachineExecution> vms,List<PhysicalMachine> pms, Map<Long,PhysicalMachineAllocationDescription> pmDescriptions){
+				
 		AllocatorEnum allocator = userRestrictionService.getAllocator(user)	
 		allocator.getAllocator().startAllocation(vms,pms,pmDescriptions);
 	}
@@ -58,13 +57,16 @@ class PhysicalMachineAllocatorService {
 	 */
 	
 	def getPhysicalMachineUsage(List<PhysicalMachine> pms){
+		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions=new TreeMap<>();
+		
+		if(pms.size()==0)return pmDescriptions
+		
 		String listId = ""
 		for(int i = 0; i<pms.size();i++){
 			listId+=pms[i].id
 			if(i!=pms.size()-1)listId+=","
 		}
 		def sql = new Sql(dataSource)
-		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions=new TreeMap<>();
 		
 		sql.eachRow('select execution_node_id,count(*) as vms,sum(ram) as ram,sum(cores) as cores from virtual_machine_execution join hardware_profile on virtual_machine_execution.hardware_profile_id= hardware_profile.id where status != \''+VirtualMachineExecutionStateEnum.FINISHED+'\' and execution_node_id in ('+listId+') group by execution_node_id'){ row ->
 			if(row.execution_node_id!=null)pmDescriptions.put(row.execution_node_id, new PhysicalMachineAllocationDescription(row.execution_node_id,row.cores.toInteger(),row.ram.toInteger(),row.vms.toInteger()));

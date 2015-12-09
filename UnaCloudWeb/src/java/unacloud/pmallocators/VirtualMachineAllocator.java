@@ -28,11 +28,12 @@ public abstract class VirtualMachineAllocator{
 	protected abstract void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
 	protected boolean fitVMonPM(VirtualMachineExecution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
 		
-		System.out.println("vm cores"+vme.getHardwareProfile().getCores()+"vm ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());		
+		System.out.println("Required: vm cores"+vme.getHardwareProfile().getCores()+"vm ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
+		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())
-		return isThereEnoughIps(pm);
-		else if (pmad!= null && pmad.getCores() + vme.getHardwareProfile().getCores() <= pm.getCores()&& pmad.getRam() + vme.getHardwareProfile().getRam() <= pm.getRam() &&pmad.vms+1 < pm.getpCores())
-		return isThereEnoughIps(pm);
+			return isThereEnoughIps(pm);
+		else if (pmad!= null && pmad.getCores() + vme.getHardwareProfile().getCores() <= pm.getCores()&& pmad.getRam() + vme.getHardwareProfile().getRam() <= pm.getRam() && pmad.getVms()+1 <= pm.getpCores())
+			return isThereEnoughIps(pm);
 		else return false;
 	}
 	private boolean isThereEnoughIps(PhysicalMachine pm){
@@ -40,7 +41,7 @@ public abstract class VirtualMachineAllocator{
 		if(ips==null)ipsNeeded.put(pm.getLaboratory().getDatabaseId(), 1);
 		else ipsNeeded.put(pm.getLaboratory().getDatabaseId(), ips+1);			
 		if(ipsNeeded.get(pm.getLaboratory().getDatabaseId())>pm.getLaboratory().getAvailableIps().size())
-		return false;
+			return false;
 		else 
 			return true;
 	}
