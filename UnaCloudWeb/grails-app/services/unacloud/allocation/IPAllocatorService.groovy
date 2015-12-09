@@ -10,7 +10,7 @@ import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorException
 
 @Transactional
-class IPAllocatorService {
+class IpAllocatorService {
 
     //-----------------------------------------------------------------
 	// Methods
@@ -23,29 +23,29 @@ class IPAllocatorService {
 	 * @param addInstancesDeployment indicates if the deployment is new or added 
 	 * instances type
 	 * @return 
-	 */
-	
+	 */	
 	//TODO manage net interfaces configuration
-	def allocateIPAddresses(DeployedImage image){
+	
+	def allocateIPAddresses(virtualExecutions){
 		
-		for(VirtualMachineExecution vme in image.virtualMachines){
+		for(VirtualMachineExecution vme in virtualExecutions){
 			if(vme.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)){
 				List <ExecutionIP> ips= vme.executionNode.laboratory.getAvailableIps()
 				for(ip in ips){
 					if(ip.state==IPEnum.AVAILABLE){
-						NetInterface netInterface = new NetInterface(name:'eth0',ip:ip)
+						NetInterface netInterface = new NetInterface(name:'eth0',ip:ip,virtualExecution:vme)
 						vme.interfaces.add(netInterface)
-						ip.state=IPEnum.RESERVED
+						ip.putAt('state',IPEnum.RESERVED)
 						String[] subname= ip.ip.split("\\.")
-						vme.putAt("name", vme.name+subname[2]+subname[3]) 
+						vme.setName(vme.name+subname[2]+subname[3]) 
 						break
 					}
 				}
 				if (vme.interfaces.size()==0){ 
-					for(VirtualMachineExecution vm in image.virtualMachines){
+					for(VirtualMachineExecution vm in virtualExecutions){
 						if(vme.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)){
 							for(NetInterface net in vme.interfaces){
-								net.ip.state=IPEnum.AVAILABLE
+								net.ip.putAt('state',IPEnum.AVAILABLE)
 							}
 						}						
 					}

@@ -92,6 +92,10 @@ class DeploymentController {
 		redirect(uri:"/services/cluster/list", absolute:true)		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	def list(){
 		
 	}
