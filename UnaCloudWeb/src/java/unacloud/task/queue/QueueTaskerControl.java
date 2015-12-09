@@ -2,6 +2,7 @@ package unacloud.task.queue;
 
 import java.util.List;
 
+import unacloud.Deployment;
 import unacloud.PhysicalMachine;
 import unacloud.User;
 import unacloud.VirtualMachineImage;
@@ -40,6 +41,15 @@ public class QueueTaskerControl {
 		System.out.println(task);
 		System.out.println(machines);
 		System.out.println(user);
+	}
+	
+	/**
+	 * Put a task to deploy a cluster
+	 * @param deployment
+	 * @param user
+	 */
+	public static void deployCluster(Deployment deployment, User user){
+		
 	}
 	
 }

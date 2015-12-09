@@ -36,6 +36,7 @@ class Deployment {
 	
 	static constraints = {	
 		stopTime nullable:true 
+		cluster nullable:true
     }
 	
 	//-----------------------------------------------------------------

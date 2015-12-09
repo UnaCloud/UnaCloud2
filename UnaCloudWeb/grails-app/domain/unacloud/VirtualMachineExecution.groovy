@@ -98,4 +98,12 @@ class VirtualMachineExecution {
 		return (millisTime/60/60)+1
 	}
 	
+	
+	def saveExecution(){
+		for(NetInterface netInterface in interfaces){
+			netInterface.save(failOnerror:true)
+		}
+		this.save(failOnError:true)
+	}
+	
 }

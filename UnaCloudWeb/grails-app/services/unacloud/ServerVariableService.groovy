@@ -6,6 +6,6 @@ import grails.transaction.Transactional
 class ServerVariableService {
 
     def getDefaultAllocator() {
-		return ServerVariable.findByName("VM_ALLOCATOR_NAME")
+		return ServerVariable.findByName("VM_DEFAULT_ALLOCATOR")
     }
 }

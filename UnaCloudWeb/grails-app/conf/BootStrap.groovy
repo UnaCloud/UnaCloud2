@@ -63,7 +63,7 @@ class BootStrap {
 		}
 
 		if(Repository.count()==0){
-			new Repository(name: unacloud.Constants.MAIN_REPOSITORY, capacity: 20, root: prop.getProperty("repository")).save();
+			new Repository(name: unacloud.Constants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty("repository")).save();
 		}
 		if(ServerVariable.count() ==0){
 			new ServerVariable(name:'CLOUDER_SERVER_PORT',serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty("CLOUDER_SERVER_PORT")).save()

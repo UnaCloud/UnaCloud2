@@ -85,7 +85,17 @@ class Laboratory {
 	 * @return
 	 */
 	def List <PhysicalMachine> getAvailableMachines(isHigh){
-		return physicalMachines.findAll{it.state==PhysicalMachineStateEnum.ON && it.highAvailability==isHigh}
+		return physicalMachines.findAll{it.state==PhysicalMachineStateEnum.ON && it.highAvailability==isHigh}.sort()
 	}
 	
+	/**
+	 * Retrun the list of available ips in lab
+	 * @param isHigh
+	 * @return
+	 */
+	def List <ExecutionIP> getAvailableIps(){
+		List <ExecutionIP> ips = new ArrayList<>()
+		for(IPPool pool: ipPools)ips.addAll(pool.ips.findAll{it.state == IPEnum.AVAILABLE}.sort())
+		return ips
+	}
 }

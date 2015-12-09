@@ -16,7 +16,6 @@ class DeployedCluster {
 	/**
 	 * representation of Deployment 
 	 */
-	Deployment deployment
 	
 	static belongsTo = [deployment:Deployment]
 	
@@ -29,6 +28,7 @@ class DeployedCluster {
     }
 	
 	static mapping = {
+		cluster nullable:true
 		sort 'cluster_id':'desc'
 	}
 }

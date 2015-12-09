@@ -1,5 +1,6 @@
 package unacloud
 
+import unacloud.enums.ClusterEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
@@ -54,7 +55,7 @@ class DeploymentController {
 		if(cluster){			
 			def user= User.get(session.user.id)	
 			//validates if user is owner to deploy cluster
-			if(cluster in user.userClusters){
+			if(cluster in user.userClusters && cluster.state.equals(ClusterEnum.AVAILABLE)){
 				//Validates if images are available in the platform
 				def unavailable = cluster.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}
 				if(unavailable.size()!=cluster.images.size()){
@@ -70,23 +71,33 @@ class DeploymentController {
 						requests[idx]=new ImageRequestOptions(it, hp,params.get('instances_'+it.id).toInteger(), params.get('host_'+it.id),(params.get('highAvailability_'+it.id))!=null);
 					}		
 					deploymentService.deploy(cluster, user, params.time.toLong()*60*60*1000, requests)
+					redirect(uri:"/services/deployment/list", absolute:true)
+					return
 					
 				} catch (Exception e) {
 					e.printStackTrace()
 					if(e.message==null)
-					flash.message= e.getCause()
+						flash.message= e.getCause()
 					else
-					flash.message=e.message
+						flash.message=e.message
 					redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)
 					return
 				}
 			}else{
-				flash.message='You don\'t have permissions to deploy this cluster'
+				flash.message='You don\'t have permissions to deploy this cluster or cluster is not available'
 				redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)
 				return
 			}	
 		}
 		redirect(uri:"/services/cluster/list", absolute:true)		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	def list(){
+		
 	}
 	
 }
