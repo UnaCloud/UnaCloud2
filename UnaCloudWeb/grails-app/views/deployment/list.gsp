@@ -76,7 +76,7 @@
 			                                  	 <table class="table insert-table">
 				                                  	<tbody> 
 				                                  	<g:each in="${deployment.cluster.images}" status="index" var="image"> 
-					                                  	<tr style="height:50%">
+					                                  	<tr>
 						                                  	<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 						                                  	<small>${image.image.accessProtocol}</small></td>
 					                                  	</tr>
