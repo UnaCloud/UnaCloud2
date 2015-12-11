@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
+import unacloud.enums.IPEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 
 class VirtualMachineExecution {
@@ -98,12 +99,25 @@ class VirtualMachineExecution {
 		return (millisTime/60/60)+1
 	}
 	
-	
+	/**
+	 * Save entity with netinterfaces
+	 * @return
+	 */
 	def saveExecution(){
 		for(NetInterface netInterface in interfaces){
 			netInterface.save(failOnerror:true)
 		}
 		this.save(failOnError:true)
+	}
+	
+	/**
+	 * Set status to finished and breaks free IP from net interfaces.
+	 * @return
+	 */
+	def finishExecution(){
+		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
+		for(NetInterface interfaces in interfaces)
+			interfaces.ip.putAt("state",IPEnum.AVAILABLE)
 	}
 	
 }

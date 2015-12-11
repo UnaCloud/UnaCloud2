@@ -1,7 +1,7 @@
 package unacloud.enums;
 
 public enum DeploymentStateEnum {
-	ACTIVE("ACTIVE"),FINISHED("FINISHED"),IN_PROCESS("REQUESTED");
+	ACTIVE("ACTIVE"),FINISHED("FINISHED");
 	
 	private String name;
 	

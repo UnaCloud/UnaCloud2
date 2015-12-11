@@ -38,5 +38,7 @@ class DeployedImage {
 	// Methods
 	//-----------------------------------------------------------------
 	
-
+	def getActiveExecutions(){
+		return virtualMachines.findAll{it.status !=VirtualMachineExecutionStateEnum.FINISHED}.sort{it.id}
+	}
 }
