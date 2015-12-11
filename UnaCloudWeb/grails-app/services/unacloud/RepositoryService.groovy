@@ -21,7 +21,12 @@ class RepositoryService {
 	 * @param path repository path
 	 */
 	def create(name, path){
-		new Repository(name: name, path:path).save()
+		if (Repository.findByName(name)==null) {
+			new Repository(name: name, path:path).save()
+		} else {
+			// Error. No se como hacerlo.
+		}
+		
 	}
 	
 	/**

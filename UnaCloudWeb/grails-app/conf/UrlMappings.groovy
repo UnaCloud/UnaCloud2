@@ -101,6 +101,7 @@ class UrlMappings {
 		"/admin/repository/list"(controller:'repository',action:"list")
 		"/admin/repository/new"(controller:'repository',action:"create")
 		"/admin/repository/delete/$id"(controller:'repository',action:"delete")
+		"/admin/repository/save"(controller:'repository',action:"save")
 		
 		/** config - variables**/		
 		"/config/variables"(controller:'configuration',action:"listVariables")

@@ -30,16 +30,20 @@
                               </tr>
                           </thead>
                           <tbody>
-                          <g:each in="${repositories}" var="repo"> 
+                          <g:each in="${repos}" var="repo"> 
                               <tr>
                                  <td>${repo.name}</td>
                                  <td>${repo.path}</td>
-                                 <td class="column-center">                                  
+                                 <td class="column-center"> 
+                                 
+                                 <g:if test="${!repo.isDefault()}">
+                                                                  
 	                                 <div class="btn-group">
-		                                 <a title="Delete" class="delete_os btn btn-default" data-id="${repo.id}" href="${createLink(uri: '/admin/repository/delete/', absolute: true)}" >
+		                                 <a title="Delete" class="delete_repo btn btn-default" data-id="${repo.id}" href="${createLink(uri: '/admin/repository/delete/', absolute: true)}" >
 		                                 	<i class='fa fa-trash-o'></i>
 		                                 </a>
 	                                 </div>
+	                                 </g:if>
 								 </td>  
                               </tr>                                                          
                           </g:each>                                   

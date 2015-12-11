@@ -14,10 +14,11 @@ class RepositoryController {
 	
 	/**
 	 * Representation of group services
-	 
+	 */ 
 	
-	UserGroupService userGroupService */
+	UserGroupService userGroupService 
 	
+
 	//-----------------------------------------------------------------
 	// Actions
 	//-----------------------------------------------------------------
@@ -50,13 +51,13 @@ class RepositoryController {
 	}
 	
 	/**
-	 * render form to create a new OS
+	 * render form to create a new repository
 	 */
 	def create() {
 	}
 	
 	/**
-	 * Creates a new OS. Redirects to os list when finished
+	 * Creates a new OS. Redirects to repositories list when finished
 	 */
 	def save() {
 		if(params.name&&params.configurer){
@@ -74,7 +75,7 @@ class RepositoryController {
 	}
 	
 	/**
-	 * Deletes the selected OS. Redirects to index when finished
+	 * Deletes the selected repositorie. Redirects to index when finished
 	 */
 	
 	def delete(){
