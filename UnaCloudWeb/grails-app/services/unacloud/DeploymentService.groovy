@@ -125,4 +125,19 @@ class DeploymentService {
 		
 		return dep
 	}
+	
+	/**
+	 * Return the list of active deployments that owner is different from parameter user
+	 * @param user owner to filter list
+	 * @return list of deployments
+	 */
+	def getActiveDeployments(User user){
+		List deployments= new ArrayList()
+		def deps = Deployment.where{status==DeploymentStateEnum.ACTIVE && user != user}.findAll()
+		for (Deployment dep in deps){
+			if(dep.isActive())
+				deployments.add(dep)
+		}
+		return deployments
+	}
 }

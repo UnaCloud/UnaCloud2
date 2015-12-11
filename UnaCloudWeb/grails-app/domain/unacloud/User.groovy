@@ -2,6 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
+import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
@@ -117,5 +118,18 @@ class User {
 	 */
 	def getGroupsWithRestriction(UserRestrictionEnum restriction){ 
 		return UserGroup.where {users{id==this.id} && restrictions{name==restriction.toString()}}.findAll()
+	}
+	
+	/**
+	 * return the active deployments belonging to the user
+	 * @return active deployments related to user
+	 */
+	def getActiveDeployments(){
+		List activeDeployments= new ArrayList()
+		for (deployment in deployments){
+			if(deployment.isActive()) activeDeployments.add(deployment)
+			else deployment.putAt('status', DeploymentStateEnum.FINISHED)
+		}
+		return activeDeployments
 	}
 }

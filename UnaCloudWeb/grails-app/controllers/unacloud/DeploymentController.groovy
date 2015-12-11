@@ -92,12 +92,20 @@ class DeploymentController {
 		redirect(uri:"/services/cluster/list", absolute:true)		
 	}
 	
+	
 	/**
-	 * 
-	 * @return
+	 * Deployment list action. Controls view all function 
+	 * @return deployments that must be shown according to view all checkbox
 	 */
+	
 	def list(){
-		
+		if((params.viewAll==null || params.viewAll=="false")||(params.viewAll=="true"&&!session.user.isAdmin())){
+			[myDeployments: session.user.getActiveDeployments()]
+		}
+		else if(params.viewAll=="true"){	
+			def deployments = deploymentService.getActiveDeployments(session.user)	
+			[myDeployments: session.user.getActiveDeployments(),deployments: deployments]
+		}
 	}
 	
 }
