@@ -78,5 +78,9 @@ table thead .info{
 .box-info h3{
 	margin:10px !important;	
 }
+.embeded_table td{
+	height: 35px;
+    overflow: hidden;
+}
 
 

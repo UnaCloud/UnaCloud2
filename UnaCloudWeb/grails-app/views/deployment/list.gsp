@@ -18,17 +18,157 @@
      	 <div class="row">     		     
          	<div class="col-xs-12">  
             	<g:render template="/share/message"/> 
-             	<form method="post" id="form_deployments">
-             		<div class="box box-primary"> 
-             			<div class="box-header">
-                           <h3 class="box-title">My deployments</h3>
-                        </div><!-- /.box-header -->             			
-             			<div class="box-body"> 		           	 	 
-                        	<div class=" table-responsive">
-			                     <table id="unacloudTable" class="table table-bordered table-striped">
-			                          <thead>
-			                          	  <g:if test="${myDeployments.size()>0}">
-			                              <tr class="info">
+            	<g:if test="${deployments==null}">
+            	<div class="box box-primary"> 
+             		<div class="box-header">
+                        <h3 class="box-title">My deployments</h3>
+                    </div><!-- /.box-header -->             			
+             		<div class="box-body"> 
+             	</g:if>
+             	<g:else>
+             	<div class="nav-tabs-custom">
+                     <ul class="nav nav-tabs">
+                         <li class="active"><a href="#tab_my" data-toggle="tab">My Deployments</a></li>
+                         <li><a href="#tab_deploy" data-toggle="tab">Users Deployments</a></li>
+                     </ul>
+                     <div class="tab-content">
+                         <div class="tab-pane active" id="tab_my">
+             	</g:else>
+		             	<div class=" table-responsive">
+		                	<form method="post" id="form_deployments">
+		                    	<table id="unacloudTable" class="table table-bordered table-striped">
+		                          	<thead>
+		                          		<tr class="info">
+										  	<td colspan="12">
+											  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
+											  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
+			                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab//stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
+			                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
+			                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
+												</div>		  	
+										  	</td>
+									  	</tr>
+		                              	<tr>
+		                                	<th></th>
+		                                  	<th>Cluster</th>
+		                                  	<th>Image</th>
+		                                  	<th>Access by</th>
+		                                  	<th>Hostname</th>
+		                                 	<th>Status</th>
+		                                  	<th>Time Left</th>
+		                                  	<th>IP</th>
+		                                  	<th>Actions</th>
+		                              	</tr>
+		                          	</thead>
+		                          	<tbody>
+		                          	<g:each in="${myDeployments}" status="i" var="deployment"> 
+		                              	<g:each in="${deployment.cluster.images}" var="image"> 
+		                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
+		                              	<tr>			                              	
+		                              		<td class="column-center">	
+								      			<input type="checkbox" name="image_${image.id}" class="all"/>  
+								      		</td>
+								      		<td><small>${deployment.cluster.cluster.name}</small></td>
+								      		<td><small>${image.image.name}</small></td>
+								      		<td><small>${image.image.accessProtocol}</small></td>
+								       		<td style="padding:0px !important">
+		                                  	 	<table class="table insert-table embeded_table">
+			                                  		<tbody> 				                                 				                                  	
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>
+				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+				                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
+					                                  		<small>${execution.name}</small></td>
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
+		                                  	 	</table>
+		                                	 </td>
+		                                	 <td style="padding:0px !important">
+		                                  	 	<table class="table insert-table  embeded_table">
+			                                  		<tbody> 				                                 				                                  	
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>
+			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+						                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+						                                   </g:if>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
+						                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+						                                   </g:elseif>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
+						                                  	 <span class="label label-success">${execution.status.toString()}</span>
+						                                   </g:elseif>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
+						                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+						                                   </g:elseif>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
+						                                  	 <span class="label label-default">${execution.status.toString()}</span>
+						                                   </g:elseif>
+														   </td>
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
+		                                  	 	</table>
+		                                	 </td>
+		                                 	 <td style="padding:0px !important">
+		                                  	 	<table class="table insert-table embeded_table">
+			                                  		<tbody> 				                                 				                                  	
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>
+				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  			<small>${execution.remainingTime()}</small>
+															</td>
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
+		                                  		</table>
+		                                 	</td>
+		                                	<td style="padding:0px !important">
+		                                  		<table class="table insert-table embeded_table">
+			                                  		<tbody> 				                                 				                                  	
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>
+				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  			<small>${execution.mainIp().ip}</small>
+															</td>
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
+		                                  	 	</table>
+		                                 	</td>
+		                                 	<td style="padding:0px !important">
+		                                  		<table class="table insert-table embeded_table">
+			                                  		<tbody> 				                                 				                                  	
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>
+				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  		<a title="Download" class="download_image btn btn-default" data-id="${execution.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>
+		                									</td>
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
+		                                  	 	</table>
+		                                 	</td>
+		                              	</tr>	
+		                              	</g:each>
+								    </g:each>			                                                        
+		                    		</tbody>
+		                		</table>
+		                	</form> 
+		            	</div> 
+             	<g:if test="${deployments==null}">
+           	   		</div>                         	
+	     		</div>	
+             	</g:if>
+             	<g:else>
+             			</div><!-- /.tab-pane -->
+                    	<div class="tab-pane" id="tab_deploy">  
+             				<div class=" table-responsive">
+			                	<form method="post" id="form_deployments">
+			                    	<table id="unacloudTable2" class="table table-bordered table-striped">
+			                          	<thead>
+			                          		<tr class="info">
 											  	<td colspan="12">
 												  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
 												  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
@@ -37,80 +177,122 @@
 				                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
 													</div>		  	
 											  	</td>
-										  </tr>
-										  </g:if>
-			                              <tr>
-			                                  <th></th>
-			                                  <th>Cluster</th>
-			                                  <th>Image</th>
-			                                  <th>Access by</th>
-			                                  <th>Hostname</th>
-			                                  <th>Status</th>
-			                                  <th>Time Left</th>
-			                                  <th>IP</th>
-			                                  <th>Actions</th>
-			                              </tr>
-			                          </thead>
-			                          <tbody>
-			                          <g:each in="${myDeployments}" status="i" var="deployment"> 
-			                          	  <input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
-			                              <tr>
-			                              	  <td class="column-center">	
-									      		<input type="checkbox" name="cluster_${deployment.cluster.id}" class="all"/>  
-									      	  </td>
-									      	  <td><small>${deployment.cluster.cluster.name}</small></td>									      	  
-									      	  <td style="padding:0px !important">
-			                                  	 <table class="table insert-table">
-				                                  	<tbody> 
-				                                  	<g:each in="${deployment.cluster.images}" status="index" var="image"> 
-					                                  	<tr>						                                  	
-						                                  	<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-						                                  	<input type="checkbox" name="image_${image.id}" class="all"/> 
-						                                  	<small>${image.image.name }</small></td>
-					                                  	</tr>
-					                                </g:each> 
-				                                  	</tbody>
-			                                  	 </table>
-			                                  </td>								      	  
-									      	  <td style="padding:0px !important">
-			                                  	 <table class="table insert-table">
-				                                  	<tbody> 
-				                                  	<g:each in="${deployment.cluster.images}" status="index" var="image"> 
-					                                  	<tr>
-						                                  	<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-						                                  	<small>${image.image.accessProtocol}</small></td>
-					                                  	</tr>
-					                                </g:each> 
-				                                  	</tbody>
-			                                  	 </table>
-			                                  </td>			                                  
-			                                  <td style="padding:0px !important">
-			                                  	 <table class="table insert-table">
-				                                  	<tbody> 
-				                                  	<g:each in="${deployment.cluster.images}" status="index" var="image"> 					                                  	
-				                                  		<g:each in="${image.getActiveExecutions()}" status="index_col" var="execution">
+										  	</tr>
+			                              	<tr>
+			                                	<th></th>
+			                                	<th>Owner</th>
+			                                  	<th>Cluster</th>
+			                                  	<th>Image</th>
+			                                  	<th>Access by</th>
+			                                  	<th>Hostname</th>
+			                                 	<th>Status</th>
+			                                  	<th>Time Left</th>
+			                                  	<th>IP</th>
+			                                  	<th>Actions</th>
+			                              	</tr>
+			                          	</thead>
+			                          	<tbody>
+			                          	<g:each in="${deployments}" status="i" var="deployment"> 
+			                              	<g:each in="${deployment.cluster.images}" var="image"> 
+			                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
+			                              	<tr>			                              	
+			                              		<td class="column-center">	
+									      			<input type="checkbox" name="image_${image.id}" class="all"/>  
+									      		</td>
+									      		<td><small>${deployment.user.username}</small></td>
+									      		<td><small>${deployment.cluster.cluster.name}</small></td>
+									      		<td><small>${image.image.name}</small></td>
+									      		<td><small>${image.image.accessProtocol}</small></td>
+									       		<td style="padding:0px !important">
+			                                  	 	<table class="table insert-table embeded_table">
+				                                  		<tbody> 				                                 				                                  	
+				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 				                                  		    <tr>
-				                                  			<g:if test="${index_col==0 && index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
-					                                  		<small>${execution.name}</small></td>
+					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
+						                                  		<small>${execution.name}</small></td>
 					                                  		</tr>
-				                                  		</g:each> 
-					                                </g:each> 
-				                                  	</tbody>
-			                                  	 </table>
-			                                  </td>
-			                                  <td></td>
-			                                  <td></td>
-			                                  <td></td>
-			                                  <td></td>
-			                                </tr>	
-									     </g:each>			                                                        
-			                    	</tbody>
-			                	</table>
-			            	</div><!-- /.box-body -->                         
-		                </div>                         	
-		     		</div>
-             	</form>  
+				                                  			</g:each> 
+				                                  		</tbody>
+			                                  	 	</table>
+			                                	 </td>
+			                                	 <td style="padding:0px !important">
+			                                  	 	<table class="table insert-table  embeded_table">
+				                                  		<tbody> 				                                 				                                  	
+				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  		    <tr>
+				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+							                                   </g:if>
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
+							                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+							                                   </g:elseif>
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
+							                                  	 <span class="label label-success">${execution.status.toString()}</span>
+							                                   </g:elseif>
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
+							                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+							                                   </g:elseif>
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
+							                                  	 <span class="label label-default">${execution.status.toString()}</span>
+							                                   </g:elseif>
+															   </td>
+					                                  		</tr>
+				                                  			</g:each> 
+				                                  		</tbody>
+			                                  	 	</table>
+			                                	 </td>
+			                                 	 <td style="padding:0px !important">
+			                                  	 	<table class="table insert-table embeded_table">
+				                                  		<tbody> 				                                 				                                  	
+				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  		    <tr>
+					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+						                                  			<small>${execution.remainingTime()}</small>
+																</td>
+					                                  		</tr>
+				                                  			</g:each> 
+				                                  		</tbody>
+			                                  		</table>
+			                                 	</td>
+			                                	<td style="padding:0px !important">
+			                                  		<table class="table insert-table embeded_table">
+				                                  		<tbody> 				                                 				                                  	
+				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  		    <tr>
+					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+						                                  			<small>${execution.mainIp().ip}</small>
+																</td>
+					                                  		</tr>
+				                                  			</g:each> 
+				                                  		</tbody>
+			                                  	 	</table>
+			                                 	</td>
+			                                 	<td style="padding:0px !important">
+			                                  		<table class="table insert-table embeded_table">
+				                                  		<tbody> 				                                 				                                  	
+				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  		    <tr>
+					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+						                                  		<a title="Download" class="download_image btn btn-default" data-id="${execution.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>
+			                									</td>
+					                                  		</tr>
+				                                  			</g:each> 
+				                                  		</tbody>
+			                                  	 	</table>
+			                                 	</td>
+			                              	</tr>	
+			                              	</g:each>
+									    </g:each>			                                                        
+			                    		</tbody>
+			                		</table>
+			                	</form> 
+			            	</div>              	
+             			</div><!-- /.tab-pane -->
+                	</div><!-- /.tab-content -->
+                </div><!-- nav-tabs-custom --> 
+             	</g:else>
              </div>
          </div>	
 	</section><!-- /.content -->    

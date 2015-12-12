@@ -81,6 +81,7 @@ class VirtualMachineExecution {
 	 * @return formated remaining time
 	 */
 	def remainingTime(){
+		if(stopTime==null)return '--'
 		long millisTime=(stopTime.getTime()-System.currentTimeMillis())/1000
 		String s = ""+millisTime%60;
         String m = ""+((long)(millisTime/60))%60;
@@ -116,8 +117,16 @@ class VirtualMachineExecution {
 	 */
 	def finishExecution(){
 		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
-		for(NetInterface interfaces in interfaces)
-			interfaces.ip.putAt("state",IPEnum.AVAILABLE)
+		for(NetInterface netinterface in interfaces)
+			netinterface.ip.putAt("state",IPEnum.AVAILABLE)
+	}
+	
+	/**
+	 * Return main IP configured in Net interfaces
+	 * @return
+	 */
+	def mainIp(){
+		return interfaces.getAt(0).ip
 	}
 	
 }

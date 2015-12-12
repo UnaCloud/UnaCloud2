@@ -3,6 +3,7 @@
 @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic);
 
 @import url(http://fonts.googleapis.com/css?family=Kaushan+Script);
+
  *   AdminLTE v1.2
  *   Author: AlmsaeedStudio.com
  *   License: Open source - MIT
@@ -63,7 +64,7 @@ body > .header {
 }
 /*right side - contins main content*/
 .right-side {
-  background-color: #E5E5E5;
+  background-color: #f9f9f9;
   margin-left: 220px;
 }
 /*left side - contains sidebar*/
@@ -118,7 +119,7 @@ body.fixed .wrapper {
 /* Content */
 .content {
   padding: 20px 15px;
-  background: #FFF;
+  background: #f9f9f9;
 }
 /* Utility */
 /* H1 - H6 font */
@@ -652,6 +653,10 @@ body > .header .logo .icon {
 .dropdown-menu > li > a:hover {
   background-color: #3c8dbc;
   color: #f9f9f9;
+}
+/*Drodown in navbars*/
+.skin-blue .navbar .dropdown-menu > li > a {
+  color: #444444;
 }
 /*
     Navbar custom dropdown menu
@@ -2414,6 +2419,160 @@ Component: timeline
     white-space: normal!important;
   }
 }
+/* 
+    Skins
+    -----
+*/
+/* 
+    Skin Blue 
+    ---------
+*/
+/* skin-blue navbar */
+.skin-blue .navbar {
+  background-color: #3c8dbc;
+}
+.skin-blue .navbar .nav a {
+  color: rgba(255, 255, 255, 0.8);
+}
+.skin-blue .navbar .nav > li > a:hover,
+.skin-blue .navbar .nav > li > a:active,
+.skin-blue .navbar .nav > li > a:focus,
+.skin-blue .navbar .nav .open > a,
+.skin-blue .navbar .nav .open > a:hover,
+.skin-blue .navbar .nav .open > a:focus {
+  background: rgba(0, 0, 0, 0.1);
+  color: #f6f6f6;
+}
+.skin-blue .navbar .navbar-right > .nav {
+  margin-right: 10px;
+}
+.skin-blue .navbar .sidebar-toggle .icon-bar {
+  background: rgba(255, 255, 255, 0.8);
+}
+.skin-blue .navbar .sidebar-toggle:hover .icon-bar {
+  background: #f6f6f6 !important;
+}
+/* skin-blue logo */
+.skin-blue .logo {
+  background-color: #367fa9;
+  color: #f9f9f9;
+}
+.skin-blue .logo > a {
+  color: #f9f9f9;
+}
+.skin-blue .logo:hover {
+  background: #357ca5;
+}
+/* skin-blue content header */
+.skin-blue .right-side > .content-header {
+  background: #fbfbfb;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+/* Skin-blue user panel */
+.skin-blue .user-panel > .image > img {
+  border: 1px solid #dfdfdf;
+}
+.skin-blue .user-panel > .info,
+.skin-blue .user-panel > .info > a {
+  color: #555555;
+}
+/* skin-blue sidebar */
+.skin-blue .sidebar {
+  border-bottom: 1px solid #fff;
+}
+.skin-blue .sidebar > .sidebar-menu > li {
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #dbdbdb;
+}
+.skin-blue .sidebar > .sidebar-menu > li:first-of-type {
+  border-top: 1px solid #dbdbdb;
+}
+.skin-blue .sidebar > .sidebar-menu > li:first-of-type > a {
+  border-top: 1px solid #fff;
+}
+.skin-blue .sidebar > .sidebar-menu > li > a {
+  margin-right: 1px;
+}
+.skin-blue .sidebar > .sidebar-menu > li > a:hover,
+.skin-blue .sidebar > .sidebar-menu > li.active > a {
+  color: #222;
+  background: #f9f9f9;
+}
+.skin-blue .sidebar > .sidebar-menu > li > .treeview-menu {
+  margin: 0 1px;
+  background: #f9f9f9;
+}
+.skin-blue .left-side {
+  background: #f4f4f4;
+  -webkit-box-shadow: inset -3px 0px 8px -4px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset -3px 0px 8px -4px rgba(0, 0, 0, 0.1);
+  box-shadow: inset -3px 0px 8px -4px rgba(0, 0, 0, 0.07);
+}
+.skin-blue .sidebar a {
+  color: #555555;
+}
+.skin-blue .sidebar a:hover {
+  text-decoration: none;
+}
+.skin-blue .treeview-menu > li > a {
+  color: #777;
+}
+.skin-blue .treeview-menu > li.active > a,
+.skin-blue .treeview-menu > li > a:hover {
+  color: #111;
+}
+.skin-blue .sidebar-form {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border: 1px solid #dbdbdb;
+  margin: 10px 10px;
+}
+.skin-blue .sidebar-form input[type="text"],
+.skin-blue .sidebar-form .btn {
+  box-shadow: none;
+  background-color: #fafafa;
+  border: 1px solid #fafafa;
+  height: 35px;
+}
+.skin-blue .sidebar-form input[type="text"] {
+  color: #666;
+  -webkit-border-top-left-radius: 2px !important;
+  -webkit-border-top-right-radius: 0 !important;
+  -webkit-border-bottom-right-radius: 0 !important;
+  -webkit-border-bottom-left-radius: 2px !important;
+  -moz-border-radius-topleft: 2px !important;
+  -moz-border-radius-topright: 0 !important;
+  -moz-border-radius-bottomright: 0 !important;
+  -moz-border-radius-bottomleft: 2px !important;
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 2px !important;
+}
+.skin-blue .sidebar-form input[type="text"]:focus,
+.skin-blue .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  background-color: #fff;
+  color: #666;
+}
+.skin-blue .sidebar-form input[type="text"]:focus + .input-group-btn .btn {
+  border-left-color: #fff;
+}
+.skin-blue .sidebar-form .btn {
+  color: #999;
+  -webkit-border-top-left-radius: 0 !important;
+  -webkit-border-top-right-radius: 2px !important;
+  -webkit-border-bottom-right-radius: 2px !important;
+  -webkit-border-bottom-left-radius: 0 !important;
+  -moz-border-radius-topleft: 0 !important;
+  -moz-border-radius-topright: 2px !important;
+  -moz-border-radius-bottomright: 2px !important;
+  -moz-border-radius-bottomleft: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
+  border-bottom-left-radius: 0 !important;
+}
 /*
     Skin Black
     --------
@@ -2458,8 +2617,8 @@ Component: timeline
 }
 /* skin-black content header */
 .skin-black .right-side > .content-header {
-  background: transparent;
-  box-shadow: none;
+  background: #FFF;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1)
 }
 /* Skin-red user panel */
 .skin-black .user-panel > .image > img {
@@ -2489,6 +2648,7 @@ Component: timeline
 }
 .skin-black .sidebar > .sidebar-menu > li > a:hover,
 .skin-black .sidebar > .sidebar-menu > li.active > a {
+
   color: #444444;
   background:#E5E5E5;
   /**background: #4E80A9;**/
@@ -2573,6 +2733,70 @@ Component: timeline
   border-bottom-right-radius: 2px !important;
   border-bottom-left-radius: 0 !important;
   border-left: 0;
+}
+/*!
+ * iCheck v1.0.1, http://git.io/arlzeA
+ * =================================
+ * Powerful jQuery and Zepto plugin for checkboxes and radio buttons customization
+ *
+ * (c) 2013 Damir Sultanov, http://fronteed.com
+ * MIT Licensed
+ */
+/* iCheck plugin Minimal skin, black
+----------------------------------- */
+.icheckbox_minimal,
+.iradio_minimal {
+  display: inline-block;
+  *display: inline;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.7) url(iCheck/minimal/minimal.png) no-repeat;
+  border: none;
+  cursor: pointer;
+}
+.icheckbox_minimal {
+  background-position: 0 0;
+}
+.icheckbox_minimal.hover {
+  background-position: -20px 0;
+}
+.icheckbox_minimal.checked {
+  background-position: -40px 0;
+}
+.icheckbox_minimal.disabled {
+  background-position: -60px 0;
+  cursor: default;
+}
+.icheckbox_minimal.checked.disabled {
+  background-position: -80px 0;
+}
+.iradio_minimal {
+  background-position: -100px 0;
+}
+.iradio_minimal.hover {
+  background-position: -120px 0;
+}
+.iradio_minimal.checked {
+  background-position: -140px 0;
+}
+.iradio_minimal.disabled {
+  background-position: -160px 0;
+  cursor: default;
+}
+.iradio_minimal.checked.disabled {
+  background-position: -180px 0;
+}
+/* Retina support */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (-moz-min-device-pixel-ratio: 1.5), only screen and (-o-min-device-pixel-ratio: 3/2), only screen and (min-device-pixel-ratio: 1.5) {
+  .icheckbox_minimal,
+  .iradio_minimal {
+    background-image: url('iCheck/minimal/minimal@2x.png');
+    -webkit-background-size: 200px 20px;
+    background-size: 200px 20px;
+  }
 }
 
 .pace .pace-progress {
