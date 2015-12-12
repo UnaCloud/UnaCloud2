@@ -56,7 +56,7 @@
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
-                                   <g:img dir="images/user" file="icon_user.png" class="img-circle" alt="User Image" />
+                                    <i class="fa fa-smile-o"></i>
                                     <p>
                                         ${session.user.name } - ${session.user.description}
                                         <small>Member since ${session.user.registerDate}</small>
@@ -84,11 +84,8 @@
                 <section class="sidebar">
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
-                        <div class="pull-left image">
-                            <g:img dir="images/user" file="icon_user.png" class="img-circle" alt="User Image"/>
-                        </div>
                         <div class="pull-left info">
-                            <p>Hello, ${session.user.username}</p>
+                           <h4><i class="fa fa-smile-o"> Hello, ${session.user.username}</i></h4>
                         </div>
                     </div>
                     <!-- sidebar menu: : style can be found in sidebar.less -->

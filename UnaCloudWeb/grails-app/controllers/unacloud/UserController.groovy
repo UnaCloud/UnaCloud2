@@ -59,14 +59,21 @@ class UserController {
 		}, except: [
 			'login',
 			'logout',
-			'home'
+			'index'
 		]]
 	
 	/**
-	 * Default action
+	 * Init action. Selects redirection depending on session status
 	 */
 	def index() {
-		redirect(uri:"/error", absolute:true)
+		if(session.user){
+			redirect(uri:"/home", absolute:true)
+			return true
+		}
+		else{
+			redirect(uri:"/login", absolute:true)
+			return true
+		}
 	}
 	
 	/**
@@ -110,17 +117,10 @@ class UserController {
 	}
 	
 	/**
-	 * Home action. Selects redirection depending on session status and privileges
+	 * Home action. 
 	 */
 	
 	def home(){
-		if(!session.user){
-			flash.message="Your session has expired"
-			redirect(uri:"/login", absolute:true)
-			return false
-		}else{
-			User user = session.user;		
-		}		
 	}	
 	/**
 	 * render create view

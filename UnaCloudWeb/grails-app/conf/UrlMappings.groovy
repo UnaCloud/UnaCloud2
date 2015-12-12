@@ -3,7 +3,8 @@ class UrlMappings {
 	static excludes = ["/virtualMachineImage/update"]
 	static mappings = {
 		
-		"/"(controller:"user", action:"home")
+		"/"(controller:"user", action:"index")
+		"/home"(controller:"user", action:"home")
 		"/login"(view:"/index")
 		"/user/login"(controller:'user',action:'login')
 		"/logout"(controller:'user',action:"logout")

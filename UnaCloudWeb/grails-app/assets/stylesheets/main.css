@@ -136,7 +136,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: 'Open Sans', 'Roboto';
+  font-family: 'Open Sans', 'Roboto' !important;
 }
 /* Page Header */
 .page-header {
@@ -150,7 +150,7 @@ h6,
 }
 /* All images should be responsive */
 img {
-  max-width: 100%important;
+  max-width: 100% !important;
 }
 .sort-highlight {
   background: #f4f4f4;
@@ -883,13 +883,9 @@ body > .header .logo .icon {
   background: #3c8dbc;
   text-align: center;
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header > img {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header > i {
   z-index: 5;
-  height: 90px;
-  width: 90px;
-  border: 8px solid;
-  border-color: transparent;
-  border-color: rgba(255, 255, 255, 0.2);
+  font-size: 70px;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
   z-index: 5;
