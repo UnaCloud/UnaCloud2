@@ -76,10 +76,10 @@
                                   <div class="btn-group">
                                   <g:if test="${!user.status.equals(UserStateEnum.BLOCKED)}">
                                   	<g:if test="${session.user.id!=user.id}">
-	                                  <a title="Delete" class="delete_user btn btn-default" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
+	                                  <a title="Delete" class="delete_user btn btn-default" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-pencil-square' ></i></a>
 	                                </g:if>
-	                                <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-gear' ></i></a>
 	                              </g:if>
 	                              </div>
 								  </td>  

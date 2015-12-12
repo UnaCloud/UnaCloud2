@@ -50,9 +50,9 @@
 												  	<td colspan="12">
 													  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
 													  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
-					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
-					                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
-					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
+					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
+					                                   	 	<a title="Clean host cache" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-eraser" ></i></a>
+					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-level-up"></i></a>
 														</div>		  	
 												  	</td>
 											  </tr>
@@ -105,8 +105,8 @@
 											      </td>
 				                                  <td class="column-center"> 
 					                               	  <div class="btn-group">
-						                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-						                                  <a title="Edit" class="btn btn-default"  href="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id, absolute: true)}" ><i class="fa fa-pencil-square" ></i></a>
+						                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+						                                  <a title="Edit" class="btn btn-default"  href="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
 						                              </div>
 												  </td>
 				                              </tr>
@@ -138,8 +138,8 @@
 			                                  <td><small>${pool.mask}</small></td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id, absolute: true)}" ><i class="fa fa-pencil-square" ></i></a>
+					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
 					                              </div>
 											  </td>
 			                              </tr>

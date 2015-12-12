@@ -40,7 +40,7 @@
                                  <g:if test="${!repo.isDefault()}">
                                                                   
 	                                 <div class="btn-group">
-		                                 <a title="Delete" class="delete_repo btn btn-default" data-id="${repo.id}" href="${createLink(uri: '/admin/repository/delete/', absolute: true)}" >
+		                                 <a title="Delete" class="delete_repo btn btn-default" data-id="${repo.id}" href="${createLink(uri: '/admin/repository/delete/', absolute: true)}" data-toggle="tooltip">
 		                                 	<i class='fa fa-trash-o'></i>
 		                                 </a>
 	                                 </div>

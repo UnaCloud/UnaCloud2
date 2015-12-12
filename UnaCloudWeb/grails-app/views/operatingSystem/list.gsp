@@ -36,8 +36,8 @@
                                  <td>${os.configurer}</td>
                                  <td class="column-center">                                  
 	                                 <div class="btn-group">
-		                                 <a title="Delete" class="delete_os btn btn-default" data-id="${os.id}" href="${createLink(uri: '/admin/os/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-		                                 <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/os/edit/'+os.id, absolute: true)}" ><i class='fa fa-pencil' ></i></a>	                                
+		                                 <a title="Delete" class="delete_os btn btn-default" data-id="${os.id}" href="${createLink(uri: '/admin/os/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+		                                 <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/os/edit/'+os.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-pencil' ></i></a>	                                
 	                                 </div>
 								 </td>  
                               </tr>                                                          
