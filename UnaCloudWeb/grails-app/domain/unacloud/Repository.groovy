@@ -28,5 +28,13 @@ class Repository {
 	
     static constraints = {
 	}
-
+	
+	/**
+	 *
+	 * @return true is the repository is default, false is not
+	 */
+	
+	def boolean isDefault(){
+		return this == Repository.findByName(Constants.MAIN_REPOSITORY);		
+	}
 }

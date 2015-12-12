@@ -95,6 +95,14 @@ class UrlMappings {
 		"/admin/lab/$id/pool/$pool/delete/ip/$ip"(controller:'laboratory',action:"ipDelete")
 		"/admin/lab/$id/pool/$pool/set/ip/$ip"(controller:'laboratory',action:"ipSet")
 		
+		
+		/** admin - Repositories management**/
+		// Agregado por Carlos E. Gomez - diciembre 11 de 2015
+		"/admin/repository/list"(controller:'repository',action:"list")
+		"/admin/repository/new"(controller:'repository',action:"create")
+		"/admin/repository/delete/$id"(controller:'repository',action:"delete")
+		"/admin/repository/save"(controller:'repository',action:"save")
+		
 		/** config - variables**/		
 		"/config/variables"(controller:'configuration',action:"listVariables")
 		"/config/variables/set"(controller:'configuration',action:"setVariable")

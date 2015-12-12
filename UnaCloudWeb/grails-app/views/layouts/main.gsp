@@ -125,11 +125,44 @@
 	                                <i class="fa fa-angle-left pull-right"></i>
 	                            </a>
 	                            <ul class="treeview-menu">
-	                                <li id="admin-user-tree"><a href="${createLink(uri: '/admin/user/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Users</a></li>
-	                                <li id="admin-group-tree"><a href="${createLink(uri: '/admin/group/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Groups</a></li>
-	                                <li id="admin-hypervisor-tree"><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hypervisors</a></li>
-	                                <li id="admin-os-tree"><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> OS</a></li>
-	                                <li id="admin-lab-tree"><a href="${createLink(uri: '/admin/lab/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Infrastructure</a></li>
+	                                <li id="admin-user-tree">
+	                                	<a href="${createLink(uri: '/admin/user/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			Users
+	                                	</a>
+	                                </li>
+	                                <li id="admin-group-tree">
+	                                	<a href="${createLink(uri: '/admin/group/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			Groups
+	                                	</a>
+	                                </li>
+	                                <li id="admin-hypervisor-tree">
+	                                	<a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			Hypervisors
+	                                	</a>
+	                                </li>
+	                                <li id="admin-os-tree">
+	                                	<a href="${createLink(uri: '/admin/os/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			OS
+	                                	</a>
+	                                </li>
+	                                <li id="admin-lab-tree">
+	                                	<a href="${createLink(uri: '/admin/lab/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			Infrastructure
+	                                	</a>
+	                                </li>	      
+	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015 -->                    
+	                                <li id="admin-lab-tree">
+	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
+	                                		<i class="fa fa-angle-double-right"></i>
+	                                			Repositories
+	                                	</a>
+	                                </li>
+	                                
 	                                <!-- <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
 	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
 	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                

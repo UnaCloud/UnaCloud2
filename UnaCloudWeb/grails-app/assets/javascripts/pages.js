@@ -21,6 +21,12 @@ $(document).on('ready',function(){
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Image')	
 	});
 
+	$(".delete_repo").click(function (event){
+		event.preventDefault();
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Repository')	
+	});
+
+
 	$(".delete_hypervisor").click(function (event){
 		event.preventDefault();
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Hypervisor')	
