@@ -15,11 +15,12 @@
     </section>
     <!-- Main content -->
     <section class="content">
-     	<div class="row">     		     
+     	<div class="row ">     		     
              <div class="col-xs-12">  
              	<g:render template="/share/message"/>                       
                   <a href="${createLink(uri: '/services/image/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New Image</a>
                   <hr>
+                  <div class="box box-solid">
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">
                           <thead>
@@ -73,6 +74,7 @@
                           </tbody>
                       </table>
                   </div><!-- /.box-body -->
+                  </div><!-- /.box -->
              </div>
         </div>     	
 	</section><!-- /.content -->   

@@ -20,6 +20,7 @@
              	  <g:render template="/share/message"/>                       
                   <a href="${createLink(uri: '/admin/repository/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New Repository</a>
                   <hr>
+                  <div class="box box-solid">
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">
                           <thead>
@@ -50,6 +51,7 @@
                           </tbody>
                       </table>
                   </div><!-- /.box-body -->
+                  </div><!-- /.box-->
              </div>
         </div>     	
 	</section><!-- /.content -->    
