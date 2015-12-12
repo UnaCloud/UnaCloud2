@@ -99,10 +99,10 @@ class DeploymentController {
 	 */
 	
 	def list(){
-		if((params.viewAll==null || params.viewAll=="false")||(params.viewAll=="true"&&!session.user.isAdmin())){
+		if(!session.user.isAdmin()){
 			[myDeployments: session.user.getActiveDeployments()]
 		}
-		else if(params.viewAll=="true"){	
+		else {	
 			def deployments = deploymentService.getActiveDeployments(session.user)	
 			[myDeployments: session.user.getActiveDeployments(),deployments: deployments]
 		}
