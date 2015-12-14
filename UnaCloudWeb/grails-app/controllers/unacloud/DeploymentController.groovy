@@ -122,8 +122,9 @@ class DeploymentController {
 			if (it.key.contains("execution_")){
 				if (it.value.contains("on")){
 					VirtualMachineExecution vm = VirtualMachineExecution.get((it.key - "execution_") as Integer)
-					if(vm != null && (vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED||vm.status.equals(VirtualMachineExecutionStateEnum.FAILED))){
-						if(vm.deployImage.deployment.user == user || user.isAdmin())executions.add(vm)
+					if(vm != null && (vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||vm.status.equals(VirtualMachineExecutionStateEnum.FAILED))){
+						if(vm.deployImage.deployment.user == user || user.isAdmin())
+							executions.add(vm)
 					}
 				}
 			}

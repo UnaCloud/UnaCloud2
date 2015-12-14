@@ -62,13 +62,14 @@
 		                          	<tbody>
 		                          	<g:each in="${myDeployments}" status="i" var="deployment"> 
 		                              	<g:each in="${deployment.images}" var="image"> 
-		                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
+		                              	<g:if test="${image.getActiveExecutions().size()>0}">
+							           	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 		                              	<tr>			                              	
 		                              		<td class="column-center">	
 								      			<input data-id="${image.id}" type="checkbox" name="image_${image.id}" class="all image_check"/>  
 								      		</td>
 								      		<td><small>${deployment.cluster.name}</small></td>
-								      		<td><small>${image.image.name}</small></td>
+								      		<td><small>${image.image.name}</small> <a title="Add executions" class="add_execution" href="${createLink(uri: '/services/deployment/'+image.id+'/add', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-plus-square' ></i></a>		                									</td>
 								      		<td><small>${image.image.accessProtocol}</small></td>
 								       		<td style="padding:0px !important">
 		                                  	 	<table class="table insert-table embeded_table">
@@ -151,7 +152,8 @@
 			                                  		</tbody>
 		                                  	 	</table>
 		                                 	</td>
-		                              	</tr>	
+		                              	</tr>	  		
+							            </g:if>		                              	
 		                              	</g:each>
 								    </g:each>			                                                        
 		                    		</tbody>
@@ -195,6 +197,7 @@
 			                          	<tbody>
 			                          	<g:each in="${deployments}" status="i" var="deployment"> 
 			                              	<g:each in="${deployment.images}" var="image"> 
+			                              	<g:if test="${image.getActiveExecutions().size()>0}">
 			                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 			                              	<tr>			                              	
 			                              		<td class="column-center">	
@@ -284,6 +287,7 @@
 			                                  	 	</table>
 			                                 	</td>
 			                              	</tr>	
+			                              	</g:if>				                              	
 			                              	</g:each>
 									    </g:each>			                                                        
 			                    		</tbody>

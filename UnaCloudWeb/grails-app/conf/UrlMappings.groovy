@@ -38,6 +38,8 @@ class UrlMappings {
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")
 		"/services/deployment/list"(controller:'Deployment',action:"list")
 		"/services/deployment/stop"(controller:'Deployment',action:"stop")
+		"/services/deployment/$id/add"(controller:'Deployment',action:"addInstaces")
+		"/services/deployment/$id/add/save"(controller:'Deployment',action:"addInstaces")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")
