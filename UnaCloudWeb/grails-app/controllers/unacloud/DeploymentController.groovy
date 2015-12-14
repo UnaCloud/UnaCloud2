@@ -2,6 +2,7 @@ package unacloud
 
 import unacloud.enums.ClusterEnum;
 import unacloud.enums.UserStateEnum;
+import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
@@ -106,6 +107,33 @@ class DeploymentController {
 			def deployments = deploymentService.getActiveDeployments(session.user)	
 			[myDeployments: session.user.getActiveDeployments(),deployments: deployments]
 		}
+	}
+	
+	
+	/**
+	 * Stop execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
+	 * stopped. Redirects to index when the operation is finished.
+	 */
+	
+	def stop(){
+		def user= User.get(session.user.id)
+		List<VirtualMachineExecution> executions = new ArrayList<>();
+		params.each {
+			if (it.key.contains("execution_")){
+				if (it.value.contains("on")){
+					VirtualMachineExecution vm = VirtualMachineExecution.get((it.key - "execution_") as Integer)
+					if(vm != null && (vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED||vm.status.equals(VirtualMachineExecutionStateEnum.FAILED))){
+						if(vm.deployImage.deployment.user == user || user.isAdmin())executions.add(vm)
+					}
+				}
+			}
+		}	
+		if(executions.size()>0){
+			flash.message='Your request has been processed'
+			flash.type='info'
+			deploymentService.stopVirtualMachineExecutions(executions)
+		}else flash.message='Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
+		redirect(uri:"/services/deployment/list", absolute:true)
 	}
 	
 }

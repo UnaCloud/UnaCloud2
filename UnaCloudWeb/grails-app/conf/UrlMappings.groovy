@@ -37,6 +37,7 @@ class UrlMappings {
 		/** services - deployments **/
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")
 		"/services/deployment/list"(controller:'Deployment',action:"list")
+		"/services/deployment/stop"(controller:'Deployment',action:"stop")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")

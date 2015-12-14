@@ -34,6 +34,7 @@
                      <div class="tab-content">
                          <div class="tab-pane active" id="tab_my">
              	</g:else>
+             		<!-- INIT TABLE -->
 		             	<div class=" table-responsive">
 		                	<form method="post" id="form_deployments">
 		                    	<table id="unacloudTable" class="table table-bordered table-striped">
@@ -42,10 +43,8 @@
 										  	<td colspan="12">
 											  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
 											  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
-			                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab//stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
-			                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
-			                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
-												</div>		  	
+			                                 	 	<a title="Stop Executions" class="stop-executions btn btn-default" href="${createLink(uri: '/services/deployment/stop', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
+			                                   	</div>		  	
 										  	</td>
 									  	</tr>
 		                              	<tr>
@@ -62,13 +61,13 @@
 		                          	</thead>
 		                          	<tbody>
 		                          	<g:each in="${myDeployments}" status="i" var="deployment"> 
-		                              	<g:each in="${deployment.cluster.images}" var="image"> 
+		                              	<g:each in="${deployment.images}" var="image"> 
 		                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 		                              	<tr>			                              	
 		                              		<td class="column-center">	
-								      			<input type="checkbox" name="image_${image.id}" class="all"/>  
+								      			<input data-id="${image.id}" type="checkbox" name="image_${image.id}" class="all image_check"/>  
 								      		</td>
-								      		<td><small>${deployment.cluster.cluster.name}</small></td>
+								      		<td><small>${deployment.cluster.name}</small></td>
 								      		<td><small>${image.image.name}</small></td>
 								      		<td><small>${image.image.accessProtocol}</small></td>
 								       		<td style="padding:0px !important">
@@ -77,7 +76,7 @@
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
+				                                  			<input type="checkbox" name="execution_${execution.id}" class="all image_${image.id}"/> 
 					                                  		<small>${execution.name}</small></td>
 				                                  		</tr>
 			                                  			</g:each> 
@@ -90,20 +89,22 @@
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
-						                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_FINISH)||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)}">
+						                                 	 <span class="label label-warning">${execution.status.name}</span>
 						                                   </g:if>
-						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
-						                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
+						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+						                                  	 <span class="label label-primary">${execution.status.name}</span>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
-						                                  	 <span class="label label-success">${execution.status.toString()}</span>
+						                                  	 <span class="label label-success">${execution.status.name}</span>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
-						                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+						                                  	 <span class="label label-danger">${execution.status.name}</span>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
-						                                  	 <span class="label label-default">${execution.status.toString()}</span>
+						                                  	 <span class="label label-default">${execution.status.name}</span>
 						                                   </g:elseif>
 														   </td>
 				                                  		</tr>
@@ -193,14 +194,14 @@
 			                          	</thead>
 			                          	<tbody>
 			                          	<g:each in="${deployments}" status="i" var="deployment"> 
-			                              	<g:each in="${deployment.cluster.images}" var="image"> 
+			                              	<g:each in="${deployment.images}" var="image"> 
 			                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 			                              	<tr>			                              	
 			                              		<td class="column-center">	
 									      			<input type="checkbox" name="image_${image.id}" class="all"/>  
 									      		</td>
 									      		<td><small>${deployment.user.username}</small></td>
-									      		<td><small>${deployment.cluster.cluster.name}</small></td>
+									      		<td><small>${deployment.cluster.name}</small></td>
 									      		<td><small>${image.image.name}</small></td>
 									      		<td><small>${image.image.accessProtocol}</small></td>
 									       		<td style="padding:0px !important">

@@ -42,7 +42,7 @@ class ClusterService {
 	def deleteCluster(Cluster cluster, User user){
 		if (cluster.isDeployed())throw new Exception("The cluster is currently deployed")
 		else if(!cluster.user.id.equals(user.id))throw new Exception("Forbidden action: you can not delete this cluster")
-		DeployedCluster.executeUpdate("update DeployedCluster dc set dc.cluster=null where dc.cluster.id= :id",[id:cluster.id]);	
+		Deployment.executeUpdate("update Deployment dc set dc.cluster=null where dc.cluster.id= :id",[id:cluster.id]);	
 		cluster.delete()
 	}
 }

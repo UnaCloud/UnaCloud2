@@ -103,14 +103,11 @@ class DeploymentService {
 		}	
 		Date start = new Date()
 		Date stop = new Date(start.getTime()+time)
-		Deployment dep = new Deployment(user:user,startTime: start, stopTime: stop,status: DeploymentStateEnum.ACTIVE)
-		dep.save(failOnError: true)
-		
-		DeployedCluster depCluster= new DeployedCluster(cluster: cluster,deployment:dep)
-		depCluster.save(failOnError: true)
-		
+		Deployment dep = new Deployment(user:user,startTime: start, stopTime: stop,status: DeploymentStateEnum.ACTIVE, cluster:cluster)
+		dep.save(failOnError: true)		
+				
 		for(DeployedImage image in images){
-			image.deployedCluster = depCluster
+			image.deployment = dep
 			image.save(failOnError: true)
 			for(VirtualMachineExecution execution in image.virtualMachines){
 				execution.deployImage = image
@@ -139,5 +136,13 @@ class DeploymentService {
 				deployments.add(dep)
 		}
 		return deployments
+	}
+	/**
+	 * 
+	 * @param executions
+	 * @return
+	 */
+	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions){
+		
 	}
 }

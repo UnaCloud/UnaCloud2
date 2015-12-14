@@ -28,7 +28,7 @@ class DeployedImage {
 	/**
 	 * Representation of deployed cluster 
 	 */
-    static belongsTo = [deployedCluster: DeployedCluster]
+    static belongsTo = [deployment: Deployment]
 	
 	static constraints = {
 		image nullable:true

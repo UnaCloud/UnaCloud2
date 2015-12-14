@@ -64,6 +64,13 @@ $(document).on('ready',function(){
 		submitConfirm(form, href, 'All selected host machines will be stopped. Do you want to continue?');
 	});
 	
+	$(".stop-executions").click(function (event){		
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_deployments');
+		submitConfirm(form, href, 'All selected executions will be stopped. Do you want to continue?');
+	});
+	
 	$(".cache-agents").click(function (event){		
 		event.preventDefault();
 		var href = $(this).attr("href");
@@ -160,6 +167,16 @@ function tableChecker(){
 		if(checks>=1)$('#btn-group-agent').removeClass("hide-segment");
 		else $('#btn-group-agent').addClass("hide-segment");
 	});
+	$('.image_check').click(function (event) {		
+        var selected = this.checked;
+        var id = $(this).data("id");
+        $('.image_'+id+':checkbox').each(function () {  
+        	if(!this.checked&&selected)checks++;
+            else checks--;
+         	this.checked = selected; 
+        });
+	});	
+	
 }
 
 function checkSelected(){
