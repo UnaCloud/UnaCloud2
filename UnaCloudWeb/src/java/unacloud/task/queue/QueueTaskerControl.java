@@ -52,4 +52,12 @@ public class QueueTaskerControl {
 		
 	}
 	
+	/**
+	 * Put a task to stop deployments in array
+	 * @param deployments
+	 */
+	public static void stopDeployments(Deployment[] deployments){
+		
+	}
+	
 }

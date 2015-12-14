@@ -117,6 +117,7 @@ class VirtualMachineExecution {
 	 */
 	def finishExecution(){
 		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
+		this.putAt("stopTime", new Date())
 		for(NetInterface netinterface in interfaces)
 			netinterface.ip.putAt("state",IPEnum.AVAILABLE)
 	}

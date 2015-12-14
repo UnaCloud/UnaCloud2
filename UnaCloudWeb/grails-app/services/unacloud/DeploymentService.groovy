@@ -138,11 +138,24 @@ class DeploymentService {
 		return deployments
 	}
 	/**
-	 * 
+	 * Create a task to stop virtual machines executions in list
+	 * If state is FAILED changes to FINISHED else to REQUEST_FINISH
 	 * @param executions
 	 * @return
 	 */
 	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions){
-		
+		TreeMap<Deployment, Integer> deployments = new TreeMap<Deployment, Integer>();
+		for(VirtualMachineExecution vm in executions){
+			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
+				vm.finishExecution()
+			}else if(vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)){
+				vm.status = VirtualMachineExecutionStateEnum.REQUEST_FINISH
+				if(deployments.containsKey(vm.deployImage.deployment))deployments.put(vm.deployImage.deployment,deployments.get(vm.deployImage.deployment)+1)
+				else deployments.put(vm.deployImage.deployment,1)
+			}
+		}
+		if(deployments.navigableKeySet().size()>0){
+			QueueTaskerControl.stopDeployments(deployments.navigableKeySet().toArray())
+		}
 	}
 }

@@ -2,6 +2,6 @@ package unacloud.utils;
 
 public class CalendarUtils {
 	
-	public static int MINUTE = 1000*60;
+	public static long MINUTE = 1000*60;
 
 }
