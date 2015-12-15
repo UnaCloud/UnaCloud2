@@ -240,17 +240,14 @@ class LaboratoryService {
 		def availableIps = lab.getAvailableIps()
 		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == highAvailability?1:0}.each{			
 			def pmId = it.id;
-			//How much resources in host are available in this moment
-			
-			def availableResources = it.availableResources()
-			
+			//How much resources in host are available in this moment			
+			def availableResources = it.availableResources()			
 			for(HardwareProfile hwd in hwProfiles){
 				def quantityRam = Math.floor(availableResources.ram/hwd.ram)
 				def quantityCores = Math.floor(availableResources.cores/hwd.cores)
 				def quantity = (quantityRam>quantityCores?quantityCores:quantityRam)
 				def finalQuantity = quantity>availableResources.vms?availableResources.vms:quantity
-				if(finalQuantity<0)finalQuantity = 0
-				
+				if(finalQuantity<0)finalQuantity = 0				
 				if(results.get(hwd.name)==null)					
 					results.put(hwd.name, finalQuantity)
 				else

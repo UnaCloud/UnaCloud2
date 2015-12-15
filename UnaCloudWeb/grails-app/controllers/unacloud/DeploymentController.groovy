@@ -22,6 +22,11 @@ class DeploymentController {
 	 */
 	LaboratoryService laboratoryService
 	
+	/**
+	 * Representation of User Restriction service
+	 */
+	UserRestrictionService userRestrictionService
+	
 	//-----------------------------------------------------------------
 	// Actions MVC
 	//-----------------------------------------------------------------
@@ -137,4 +142,38 @@ class DeploymentController {
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
 	
+	/**
+	 * Render form to add instances to a current deployed image
+	 * @param deployed image
+	 * @return render form
+	 */
+	def addInstances(){
+		DeployedImage image = DeployedImage.get(params.id);
+		if(image){
+			def user= User.get(session.user.id)
+			if(image.deployment.user==user||user.isAdmin()){
+				def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(image.deployment.user)
+				def labsAvoided = userRestrictionService.getAvoidLabs(image.deployment.user)
+				def quantitiesTree = new TreeMap<String, Integer>()
+				labsAvoided.each {
+					def results = laboratoryService.calculateDeploys(it,hwdProfilesAvoided, image.highAvaliavility)					
+					for(HardwareProfile hwd in hwdProfilesAvoided){
+						if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
+						else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
+					}
+				}
+				def quantities = []
+				def high = false;
+				for(HardwareProfile hwd in hwdProfilesAvoided){
+					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
+				}
+				[quantities:quantities,image:image]
+			}else{
+				flash.message='You do not have privileges to edit this deployed image'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}else{
+			redirect(uri:"/services/deployment/list", absolute:true)
+		}
+	}
 }

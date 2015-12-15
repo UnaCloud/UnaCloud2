@@ -22,22 +22,13 @@
              		</div>            		
     				<div class="box-body">
     					<p class="help-block"><strong>MAXIMUN INSTANCES</strong> to deploy per hardware profile.</p>
-    					<label>Opportunistic</label>
     					<div>
     					<g:each in="${quantities}" var="val">
 	    					<div class="box-info <g:if test="${val.quantity>0}"> bg-green</g:if>">
 	                        	<h3><g:formatNumber number="${val.quantity}" format="0" /></h3>${val.name}	                        	
 	                        </div>
                         </g:each>
-                        </div>                        
-                        <label>High Availability</label>
-                        <div>
-                        <g:each in="${quantitiesAvailable}" var="val">
-	    					<div class="box-info<g:if test="${val.quantity>0}"> bg-green</g:if>">	    					
-	                           <h3><g:formatNumber number="${val.quantity}" format="0" /></h3>${val.name}
-	                        </div>
-                        </g:each>
-                        </div>
+                        </div>     
     	 			</div> 	
     	 		</div> 	
     	 	</div> 	
@@ -47,11 +38,11 @@
     	 			<form id="form-new" method="post" action="${createLink(uri: '/services/deployment/'+image.id+'/add/save', absolute: true)}" role="form"> 
     	 				<input type=hidden name="id" value="${image.id}"> 
             			<div class="box-header">
-            				<h5 class="box-title">Image: ${image.name}</h5> 	
-            				<h6 class="box-title">Currently you have ${image.getActiveExecutions().size()} activates in this deployed image</h6> 						    			
+            				<h5 class="box-title">${image.image.name}</h5><br>            									    			
             			</div>		
                  		<!-- form start -->
                  		<div class="box-body">
+                 			<p class="help-block">Currently you have <strong>${image.getActiveExecutions().size()} ACTIVE EXECUTIONS</strong> in this deployed image</p> 	
 		                	<div class="form-group">
 		                		<label>Instances to deploy</label>
 		                    	<input type="text" class="form-control" name="instances_${image.id}" placeholder="Number of deployments. i.e. 1, 3, 15">

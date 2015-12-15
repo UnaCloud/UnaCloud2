@@ -76,6 +76,7 @@ class Deployment {
 					}						
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.DEPLOYED){
 					if(vm.stopTime==null){
+						vm.putAt("stopTime", new Date())
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
 					}else if(vm.stopTime.after(currentDate)){
@@ -99,6 +100,11 @@ class Deployment {
 					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Finish execution request failed')
+					}
+				}
+				else if(vm.status ==VirtualMachineExecutionStateEnum.FAILED){
+					if(vm.stopTime!=null&&vm.stopTime.after(currentDate)){
+						vm.finishExecution()
 					}
 				}
 			}
