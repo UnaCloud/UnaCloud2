@@ -86,11 +86,13 @@ class Deployment {
 					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Copy image request failed')
+						//TODO delete image
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.COPYING){
 					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Copy image failed')
+						//TODO delete image
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.FINISHING){
 					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){

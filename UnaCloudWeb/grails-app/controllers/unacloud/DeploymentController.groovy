@@ -62,7 +62,11 @@ class DeploymentController {
 		if(cluster){			
 			def user= User.get(session.user.id)	
 			//validates if user is owner to deploy cluster
-			if(cluster in user.userClusters && cluster.state.equals(ClusterEnum.AVAILABLE)){
+			println cluster
+			println user.userClusters
+			println cluster.state
+			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
+				println 'entre'
 				//Validates if images are available in the platform
 				def unavailable = cluster.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}
 				if(unavailable.size()!=cluster.images.size()){
@@ -213,5 +217,29 @@ class DeploymentController {
 		}else{
 			redirect(uri:"/services/deployment/list", absolute:true)
 		}
+	}
+	
+	
+	def createCopy(){
+		VirtualMachineExecution execution = VirtualMachineExecution.get(params.id)
+		if(execution){
+			def user= User.get(session.user.id)
+			if(execution.deployImage.deployment.user==user||user.isAdmin()){
+				try{					
+					deploymentService.createCopy(execution, execution.deployImage.deployment.user, params.name)
+					flash.message='Your request has been sent'
+					flash.type='info'
+				}catch(Exception e){
+					if(e.message==null)
+						flash.message= e.getCause()
+					else
+						flash.message=e.message
+				}
+			}else{
+				flash.message='You do not have privileges to create a copy from this execution'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}
+		redirect(uri:"/services/deployment/list", absolute:true)
 	}
 }

@@ -40,6 +40,7 @@ class UrlMappings {
 		"/services/deployment/stop"(controller:'Deployment',action:"stop")
 		"/services/deployment/$id/add"(controller:'Deployment',action:"addInstances")
 		"/services/deployment/$id/add/save"(controller:'Deployment',action:"saveInstances")
+		"/services/deployment/download/$id"(controller:'Deployment',action:"createCopy")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")

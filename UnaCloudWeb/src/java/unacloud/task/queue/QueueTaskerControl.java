@@ -6,6 +6,7 @@ import unacloud.DeployedImage;
 import unacloud.Deployment;
 import unacloud.PhysicalMachine;
 import unacloud.User;
+import unacloud.VirtualMachineExecution;
 import unacloud.VirtualMachineImage;
 
 /**
@@ -70,4 +71,13 @@ public class QueueTaskerControl {
 		
 	}
 	
+	/**
+	 * Put a task to create a copy from a current execution deployed
+	 * @param execution
+	 * @param image
+	 * @param user
+	 */
+	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){
+		
+	}
 }

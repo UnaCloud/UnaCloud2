@@ -4,6 +4,7 @@ import unacloud.allocation.IpAllocatorService
 import unacloud.allocation.PhysicalMachineAllocatorService
 import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.enums.VirtualMachineImageEnum;
 import unacloud.pmallocators.AllocatorException
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 import unacloud.task.queue.QueueTaskerControl;
@@ -40,6 +41,12 @@ class DeploymentService {
 	
 	IpAllocatorService ipAllocatorService
 	
+	/**
+	 * Representation of the repository service
+	 */
+	
+	RepositoryService repositoryService
+	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -62,8 +69,8 @@ class DeploymentService {
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
-		requests.each{			
-			if(!(it.hp in hwdProfilesAvoided)) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
+		requests.eachWithIndex(){ request,i->	
+			if(hwdProfilesAvoided.find{it.id==request.hp}!=null) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
 		}
 				
 		def labsAvoided = userRestrictionService.getAvoidLabs(user)
@@ -212,5 +219,26 @@ class DeploymentService {
 		if(deployments.navigableKeySet().size()>0){
 			QueueTaskerControl.stopDeployments(deployments.navigableKeySet().toArray())
 		}
+	}
+	
+	/**
+	 * Create a task to make a copy from a current execution
+	 * @param execution to create a copy from its image
+	 * @param user user owner
+	 * @param newName name for image copy
+	 * @return
+	 * @throws Exception
+	 */
+	//TODO add repository validation
+	def createCopy(VirtualMachineExecution execution, User user, String newName)throws Exception{
+		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
+		def repository = repositoryService.getMainRepository()
+		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
+			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
+			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository)
+		image.save(failOnError:true)
+		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
+		execution.putAt("message", 'Request to copy')
+		QueueTaskerControl.createCopyFromExecution(execution,image,user)
 	}
 }

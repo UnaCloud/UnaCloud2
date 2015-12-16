@@ -143,6 +143,39 @@ $(document).on('ready',function(){
 		$('.'+parent.attr('id')).prop('disabled', true);
 	});	
 	
+	$(".download_btn").on("click",function(event){
+		event.preventDefault();
+		var execution = $(this).data("id");
+		var href = $(this).attr("href");
+		var imagename = $(this).data("imagename");
+		bootbox.dialog({
+			title: "Save Image Copy",
+			message:  "<form id='form_copy' method='post'>"+
+							"<div class='box-body'>"+
+							"<div class='form-group'>"+
+				        		"<label>Write the name that will be used to save the copy</label>"+
+				            	"<input class='form-control' id='imageName' name='name' type='text' value='"+imagename+"'>"+
+				            "</div>"+	
+				            "</div>"+	
+						"</form>",
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-success",
+					callback: function () {
+						var form = $('#form_copy');
+						form.attr('action',href+execution);
+						form.submit()
+					}
+				},
+				cancel: {
+					label: "Cancel",
+					className: "btn-danger",								
+				},
+			}
+		});
+	});	
+	
 	tableChecker();
 });
 
