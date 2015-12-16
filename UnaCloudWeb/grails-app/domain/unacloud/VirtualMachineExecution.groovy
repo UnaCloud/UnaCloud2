@@ -81,7 +81,7 @@ class VirtualMachineExecution {
 	 * @return formated remaining time
 	 */
 	def remainingTime(){
-		if(stopTime==null)return '--'
+		if(stopTime==null||status!=VirtualMachineExecutionStateEnum.DEPLOYED)return '--'
 		long millisTime=(stopTime.getTime()-System.currentTimeMillis())/1000
 		String s = ""+millisTime%60;
         String m = ""+((long)(millisTime/60))%60;
@@ -104,11 +104,11 @@ class VirtualMachineExecution {
 	 * Save entity with netinterfaces
 	 * @return
 	 */
-	def saveExecution(){
+	def saveExecution(){		
+		this.save(failOnError:true)
 		for(NetInterface netInterface in interfaces){
 			netInterface.save(failOnerror:true)
 		}
-		this.save(failOnError:true)
 	}
 	
 	/**

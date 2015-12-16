@@ -21,7 +21,7 @@
              			<h5 class="box-title">Available Deployments</h5>            									    			
              		</div>            		
     				<div class="box-body">
-    					<p class="help-block"><strong>MAXIMUN INSTANCES</strong> to deploy per hardware profile.</p>
+    					<p class="help-block"><strong>MAXIMUN INSTANCES</strong> to deploy.</p>
     					<div>
     					<g:each in="${quantities}" var="val">
 	    					<div class="box-info <g:if test="${val.quantity>0}"> bg-green</g:if>">

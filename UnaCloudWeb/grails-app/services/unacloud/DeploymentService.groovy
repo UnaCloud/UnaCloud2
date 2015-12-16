@@ -57,6 +57,9 @@ class DeploymentService {
 	
 	def synchronized deploy(Cluster cluster, User user, long time, ImageRequestOptions[] requests) throws Exception, AllocatorException{
 		
+		Date start = new Date()
+		Date stop = new Date(start.getTime()+time)
+		
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
 		requests.each{			
@@ -67,15 +70,15 @@ class DeploymentService {
 		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
 		
 		List<PhysicalMachine> pms = new ArrayList<>()
-		List<PhysicalMachine> pmsHigh = new ArrayList<>()
-		
-		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)
-		Map<Long,PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
+		List<PhysicalMachine> pmsHigh = new ArrayList<>()		
 		
 		labsAvoided.each{
 			pms.addAll(it.getAvailableMachines(false))
 			pmsHigh.addAll(it.getAvailableMachines(true))
-		}
+		}		
+		
+		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)
+		Map<Long,PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
 		def images = []
 		requests.eachWithIndex(){ request,i->
@@ -83,7 +86,7 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,startTime: new Date(), interfaces:[])
+				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,startTime: new Date(),stopTime:stop, interfaces:[])
 				executions.add(virtualExecution)
 			}
 			depImage.virtualMachines=executions
@@ -101,8 +104,7 @@ class DeploymentService {
 			ipAllocatorService.allocateIPAddresses(depImage.virtualMachines)
 			
 		}	
-		Date start = new Date()
-		Date stop = new Date(start.getTime()+time)
+		
 		Deployment dep = new Deployment(user:user,startTime: start, stopTime: stop,status: DeploymentStateEnum.ACTIVE, cluster:cluster)
 		dep.save(failOnError: true)		
 				
@@ -115,12 +117,65 @@ class DeploymentService {
 			}
 		}
 		
-		if(!Environment.isDevelopmentMode()){	
-			
+		if(!Environment.isDevelopmentMode()){				
 			QueueTaskerControl.deployCluster(dep,user)
 		}		
 		
 		return dep
+	}
+	
+	/**
+	 * Add new instances in ImageRequestOptions array to a DeployedImage
+	 * @param image
+	 * @param user
+	 * @param time
+	 * @param requests
+	 * @return
+	 */
+	def synchronized addInstances(DeployedImage image, User user, long time, ImageRequestOptions request){
+		
+		Date start = new Date()
+		Date stop = new Date(start.getTime()+time)
+		
+		//Validates that hardware profile is available for user and there are enough host to deploy
+		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
+		if(!(request.hp in hwdProfilesAvoided)) throw new Exception('You don\'t have permissions to use selected deployed image')		
+				
+		def labsAvoided = userRestrictionService.getAvoidLabs(user)
+		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
+		
+		List<PhysicalMachine> pms = new ArrayList<>()
+		
+		labsAvoided.each{
+			pms.addAll(it.getAvailableMachines(image.highAvaliavility))
+		}
+		if(pms.size()==0) throw new Exception('Not enough physical machines available')
+		
+		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)	
+					
+		def executions = []
+		for(int j=0;j<request.instances;j++){
+			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,startTime: new Date(), stopTime:stop,interfaces:[])
+			executions.add(virtualExecution)
+		}
+		
+		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
+		for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
+			println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
+		}
+		
+		physicalMachineAllocatorService.allocatePhysicalMachines(user,executions.sort(),pms,pmDescriptions)
+		ipAllocatorService.allocateIPAddresses(executions.sort())	
+			
+		for(VirtualMachineExecution execution in executions){
+			execution.saveExecution()
+		}
+		image.virtualMachines.addAll(executions)
+		image.save(failOnError:true)
+		if(!Environment.isDevelopmentMode()){
+			QueueTaskerControl.addInstancesToDeploy(image,user)
+		}
+		
 	}
 	
 	/**

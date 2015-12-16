@@ -2,6 +2,7 @@ package unacloud.task.queue;
 
 import java.util.List;
 
+import unacloud.DeployedImage;
 import unacloud.Deployment;
 import unacloud.PhysicalMachine;
 import unacloud.User;
@@ -57,6 +58,15 @@ public class QueueTaskerControl {
 	 * @param deployments
 	 */
 	public static void stopDeployments(Deployment[] deployments){
+		
+	}
+	
+	/**
+	 * Put a task to add instances to a selected deployed image
+	 * @param image
+	 * @param user
+	 */
+	public static void addInstancesToDeploy(DeployedImage image, User user){
 		
 	}
 	

@@ -26,7 +26,7 @@ class Deployment {
 	Date stopTime
 	
 	/**
-	 * represent status of the deployment (ACTIVE, REQUESTED or FINISHED)
+	 * represent status of the deployment (ACTIVE, FINISHED)
 	 */
 	DeploymentStateEnum status
 	
@@ -103,7 +103,7 @@ class Deployment {
 					}
 				}
 				else if(vm.status ==VirtualMachineExecutionStateEnum.FAILED){
-					if(vm.stopTime!=null&&vm.stopTime.after(currentDate)){
+					if(vm.stopTime!=null&&vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}
 				}

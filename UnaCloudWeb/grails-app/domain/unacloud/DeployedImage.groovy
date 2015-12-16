@@ -38,7 +38,28 @@ class DeployedImage {
 	// Methods
 	//-----------------------------------------------------------------
 	
+	/**
+	 * Return the list of executions with status FINISHED or FAILED
+	 * @return
+	 */
 	def getActiveExecutions(){
 		return virtualMachines.findAll{it.status !=VirtualMachineExecutionStateEnum.FINISHED}.sort{it.id}
+	}
+	
+	/**
+	 * Return the current hardware profile configured in executions
+	 * @return
+	 */
+	def getDeployedHarwdProfile(){
+		return virtualMachines.first().getHardwareProfile()
+	}
+	
+	/**
+	 * Return the current hardware profile configured in executions
+	 * @return
+	 */
+	def getDeployedHostname(){
+		def ip = virtualMachines.first().mainIp().ip.split('\\.')
+		return virtualMachines.first().getName().substring(0, virtualMachines.first().getName().length()-(ip[2].length()+ip[3].length()))
 	}
 }

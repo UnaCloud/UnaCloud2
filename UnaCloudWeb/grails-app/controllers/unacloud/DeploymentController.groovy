@@ -1,6 +1,7 @@
 package unacloud
 
 import unacloud.enums.ClusterEnum;
+import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
@@ -149,10 +150,12 @@ class DeploymentController {
 	 */
 	def addInstances(){
 		DeployedImage image = DeployedImage.get(params.id);
-		if(image){
+		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
 			def user= User.get(session.user.id)
 			if(image.deployment.user==user||user.isAdmin()){
-				def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(image.deployment.user)
+				
+				def hwdProfilesAvoided = []
+				hwdProfilesAvoided.add(image.getDeployedHarwdProfile())
 				def labsAvoided = userRestrictionService.getAvoidLabs(image.deployment.user)
 				def quantitiesTree = new TreeMap<String, Integer>()
 				labsAvoided.each {
@@ -168,6 +171,41 @@ class DeploymentController {
 					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
 				}
 				[quantities:quantities,image:image]
+			}else{
+				flash.message='You do not have privileges to edit this deployed image'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}else{
+			redirect(uri:"/services/deployment/list", absolute:true)
+		}
+	}
+	
+	/**
+	 * Add new instances to a selected deployed image
+	 * @return
+	 */
+	def saveInstances(){
+		DeployedImage image = DeployedImage.get(params.id);
+		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
+			def user= User.get(session.user.id)
+			if(image.deployment.user==user||user.isAdmin()){
+				try {
+					//validates if cluster is good configured
+					def request=new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(),params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(),image.highAvaliavility);
+				
+					deploymentService.addInstances(image,user, params.time.toLong()*60*60*1000,request)
+					redirect(uri:"/services/deployment/list", absolute:true)
+					return
+					
+				} catch (Exception e) {
+					e.printStackTrace()
+					if(e.message==null)
+						flash.message= e.getCause()
+					else
+						flash.message=e.message
+					redirect(uri:"/services/deployment/"+image.id+'/add', absolute:true)
+				}
+				
 			}else{
 				flash.message='You do not have privileges to edit this deployed image'
 				redirect(uri:"/services/deployment/list", absolute:true)
