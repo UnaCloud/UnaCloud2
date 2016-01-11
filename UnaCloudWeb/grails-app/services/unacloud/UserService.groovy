@@ -96,7 +96,12 @@ class UserService {
 		if(password){			
 			user.setPassword( Hasher.hashSha256(password))
 		}
-		user.save(failOnError:true)
+		try{
+			user.save(failOnError:true)
+		}catch(Exception e){
+			user.merge(flush:true)
+		}		
+		return user
 	}
 	
 	/**
@@ -134,5 +139,22 @@ class UserService {
 				old.save(failOnError: true)
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @param user to be modified
+	 * @param password current Password
+	 * @param newPassword new Password
+	 * @return
+	 */
+	def changePassword(User user, String password, String newPassword){
+		if(!user.password.equals(Hasher.hashSha256(password)))throw new Exception('Current Password is invalid')
+		user.setPassword(Hasher.hashSha256(newPassword))
+		try{
+			user.save(failOnError:true)
+		}catch(Exception e){
+			user.merge(flush:true)
+		}	
 	}
 }

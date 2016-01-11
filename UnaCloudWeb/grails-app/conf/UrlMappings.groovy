@@ -14,6 +14,9 @@ class UrlMappings {
 		
 		/** services - user**/
 		"/user/profile/"(controller:'user',action:'profile')
+		"/user/profile/save"(controller:'user',action:'changeProfile')
+		"/user/profile/change"(controller:'user',action:'changePassword')
+		"/user/profile/change/save"(controller:'user',action:'savePassword')
 		
 		/** services - my images**/
 		"/services/image/list"(controller:'VirtualMachineImage',action:"list")

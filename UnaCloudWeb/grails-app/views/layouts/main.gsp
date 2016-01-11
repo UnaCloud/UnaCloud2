@@ -65,7 +65,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="${createLink(uri: '/user/profile', absolute: true)}" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
                                    		<a href="${createLink(uri: '/logout', absolute: true)}" class="btn btn-default btn-flat">Sign Out</a>                                       

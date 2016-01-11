@@ -265,4 +265,56 @@ class UserController {
 		}
 	}
 	
+	/**
+	 * Render page with current user session attributes
+	 * @return
+	 */
+	def profile(){
+		session.user.refresh()
+		[user: session.user]
+	}
+	
+	/**
+	 * Set changed values in profile
+	 * @return
+	 */
+	def changeProfile(){
+		if(params.name&&params.username&&params.description){			
+			try{
+				session.user = userService.setValues(session.user,params.username, params.name, params.description, null, params.email)
+				flash.message="Profile values have been modified"
+				flash.type="success"
+			}catch(Exception e){
+				e.printStackTrace()
+				flash.message=e.message
+			}
+		}else flash.message="Email is optional, other values are required"
+		redirect(uri:"/user/profile", absolute:true)
+	}
+	
+	/**
+	 * Render page to change password
+	 * @return
+	 */
+	def changePassword(){		
+	}
+	
+	/**
+	 * Validates and saves new password
+	 * @return
+	 */
+	def savePassword(){
+		if(params.passwd&&params.newPasswd&&params.confirmPasswd){
+			if(params.confirmPasswd.equals(params.newPasswd)){
+				try{
+					userService.changePassword(session.user, params.passwd, params.newPasswd)
+					flash.message="Password has been modified"
+					flash.type="success"
+				}catch(Exception e){
+					flash.message=e.message
+				}
+			}else flash.message="Password fields don't match"
+		}else flash.message="All fields are required"
+		redirect(uri:"/user/profile/change", absolute:true)
+	}
 }
