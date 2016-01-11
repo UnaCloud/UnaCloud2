@@ -35,11 +35,11 @@ class UserService {
 	 * @param password user password
 	 */
 	
-    def addUser(String username, String name, String description, String password) {
+    def addUser(String username, String name, String description, String password,String email) {
 	   String charset = (('A'..'Z') + ('0'..'9')).join()
 	   Integer length = 32
 	   String randomString = RandomStringUtils.random(length, charset.toCharArray())
-	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date())
+	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date(),email:email)
 	   user.images=[]
 	   user.restrictions=[]
 	   user.userClusters=[]
@@ -88,10 +88,11 @@ class UserService {
 	 * @param password new password
 	 */
 	
-	def setValues(User user, String username, String name, String description, String password){	
+	def setValues(User user, String username, String name, String description, String password, String email){	
 		user.setName(name)
 		user.setDescription(description)
 		user.setUsername(username)
+		user.setEmail(email)
 		if(password){			
 			user.setPassword( Hasher.hashSha256(password))
 		}

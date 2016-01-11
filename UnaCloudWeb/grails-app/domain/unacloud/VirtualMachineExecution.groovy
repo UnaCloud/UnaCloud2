@@ -130,4 +130,12 @@ class VirtualMachineExecution {
 		return interfaces.getAt(0).ip
 	}
 	
+	/**
+	 * Return time of last statefrom node
+	 * @return
+	 */
+	def Date getLastStateTime(){
+		def requestExec = ExecutionRequest.find(sort:'requestTime', order: "desc"){execution==this}
+		return requestExec.requestTime
+	}
 }

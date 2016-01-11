@@ -57,12 +57,12 @@ class Deployment {
 			for(VirtualMachineExecution vm in image.getActiveExecutions()){				
 				Date currentDate = new Date()
 				if(vm.status ==VirtualMachineExecutionStateEnum.REQUESTED){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.CONFIGURING){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Request timeout')
 					}					
@@ -70,7 +70,7 @@ class Deployment {
 					if(vm.stopTime==null){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
-					}else if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}						
@@ -83,23 +83,23 @@ class Deployment {
 						vm.finishExecution()
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_COPY){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Copy image request failed')
 						//TODO delete image
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.COPYING){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Copy image failed')
 						//TODO delete image
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.FINISHING){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.finishExecution()
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_FINISH){
-					if(currentDate.getTime()-vm.startTime.getTime()>vm.status.getTime()){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Finish execution request failed')
 					}

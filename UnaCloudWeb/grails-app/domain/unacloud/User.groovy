@@ -44,6 +44,11 @@ class User {
 	String description
 	
 	/**
+	 * User email
+	 */
+	String email
+	
+	/**
 	 * list of images, restrictions, clusters and deployments belonging to this user
 	 */
 	static hasMany = [images: VirtualMachineImage, restrictions: UserRestriction, userClusters: Cluster, deployments: Deployment]
@@ -55,6 +60,7 @@ class User {
 	
 	static constraints = {
 		username unique: true
+		email nullable:true
     }
 	
 	//-----------------------------------------------------------------

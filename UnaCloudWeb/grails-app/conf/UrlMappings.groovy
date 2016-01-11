@@ -12,6 +12,9 @@ class UrlMappings {
 		"404"(view:'/error')
 		"500"(view:'/error')
 		
+		/** services - user**/
+		"/user/profile/"(controller:'user',action:'profile')
+		
 		/** services - my images**/
 		"/services/image/list"(controller:'VirtualMachineImage',action:"list")
 		"/services/image/new"(controller:"VirtualMachineImage",action:"newUploadImage")

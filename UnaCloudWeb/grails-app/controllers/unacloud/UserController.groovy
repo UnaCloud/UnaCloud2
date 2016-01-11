@@ -136,7 +136,7 @@ class UserController {
 	def save(){
 		if(params.name&&params.username&&params.passwd&&params.description){	
 			try{
-				userService.addUser(params.username, params.name,params.description,params.passwd)
+				userService.addUser(params.username, params.name,params.description,params.passwd,params.email)
 				redirect(uri:"/admin/user/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message
@@ -188,7 +188,7 @@ class UserController {
 			if(!params.passwd||(params.passwd&&params.passwd.equals(params.cpasswd))){
 				if (user&&user.id!=session.user.id){		
 					try{						
-						userService.setValues(user,params.username, params.name, params.description, params.password)
+						userService.setValues(user,params.username, params.name, params.description, params.password, params.email)
 						flash.message="The user has been modified"
 						flash.type="success"
 					}catch(Exception e){
