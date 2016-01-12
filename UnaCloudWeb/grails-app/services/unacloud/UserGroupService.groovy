@@ -62,13 +62,26 @@ class UserGroupService {
 		}
 		return usersGroup;
 	}
+	
 	/**
-	 * Method to valid if a user is part of the administrators group
+	 * Method to valid if a user is part of administrators group
 	 * @param user: to be valid
 	 * @return true is admin, false is not
 	 */
 	def boolean isAdmin(User user){
 		return getAdminGroup().users.find{it.id == user.id}?true:false;
+	}
+	
+	/**
+	 * Method to valid if a userId belongs to a user that is part of administrators group
+	 * @param userId
+	 * @return
+	 */
+	def boolean isAdmin(long userId){
+		println 'Entre'
+		User user = User.get(userId)
+		if(!user)return false
+		return isAdmin(user)
 	}
 	
 	/**
@@ -93,8 +106,7 @@ class UserGroupService {
 	/**
 	 * Deletes the given group
 	 * @param group to be deleted
-	 */
-	
+	 */	
 	def deleteGroup(UserGroup group){
 		for(restriction in group.restrictions)
 			restriction.delete()
@@ -106,8 +118,7 @@ class UserGroupService {
 	 * @param group group to be edited
 	 * @param users new list of users
 	 * @param name new name
-	 */
-	
+	 */	
 	def setValues(UserGroup group, users, String name){
 		group.putAt("visualName", name)
 		Set newUsers= []
@@ -126,8 +137,7 @@ class UserGroupService {
 	 * @param group with the new restriction
 	 * @param name restriction name
 	 * @param value restriction value
-	 */
-	
+	 */	
 	def setRestriction(UserGroup group, String name, String value){
 		print value
 		UserRestriction old = group.restrictions.find{it.name==name}

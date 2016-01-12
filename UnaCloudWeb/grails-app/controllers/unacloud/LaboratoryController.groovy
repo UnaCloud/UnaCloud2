@@ -35,7 +35,8 @@ class LaboratoryController {
 			return false
 		}
 		else{
-			if(!userGroupService.isAdmin(session.user)){
+			def user = User.get(session.user.id)
+			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
@@ -412,7 +413,8 @@ class LaboratoryController {
 			}
 			if(hostList.size()>0){
 				try{
-					laboratoryService.createRequestTasktoMachines(hostList,params.process,session.user)
+					def user = User.get(session.user.id)
+					laboratoryService.createRequestTasktoMachines(hostList,params.process,user)
 					flash.message="Your request have been sent."
 					flash.type = "info"
 				}catch(Exception e){

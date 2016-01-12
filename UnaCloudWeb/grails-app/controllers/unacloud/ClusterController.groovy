@@ -54,7 +54,8 @@ class ClusterController {
 	 * @return list of all clusters owned by user
 	 */
 	def list() {
-		[clusters: session.user.getOrderedClusters()]
+		def user = User.get(session.user.id)
+		[clusters: user.getOrderedClusters()]
 	}
 	
 	/**
@@ -62,7 +63,8 @@ class ClusterController {
 	 * @return list of ordered images that user can add to a new cluster
 	 */
 	def newCluster(){
-		[images:  session.user.getAvailableImages()]
+		def user = User.get(session.user.id)
+		[images: user.getAvailableImages()]
 	}
 	
 	/**
@@ -123,9 +125,10 @@ class ClusterController {
 				flash.message= "Some images in cluster are not available at this moment. Please, change cluster or remove images in cluster."
 				redirect(uri:"/services/cluster/list", absolute:true)
 				return
-			}			
-			def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(session.user)
-			def labsAvoided = userRestrictionService.getAvoidLabs(session.user)			
+			}	
+			def user = User.get(session.user.id)
+			def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
+			def labsAvoided = userRestrictionService.getAvoidLabs(user)			
 			def quantitiesTree = new TreeMap<String, Integer>()
 			def quantitiesAvailableTree = new TreeMap<String, Integer>()
 			labsAvoided.each {

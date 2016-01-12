@@ -4,6 +4,7 @@ import unacloud.pmallocators.AllocatorEnum;
 import unacloud.UserService;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
+import webutils.UserSession;
 
 class UserController {
 	
@@ -49,8 +50,9 @@ class UserController {
 				redirect(uri:"/login", absolute:true)
 				return false
 			}
-			else{			
-				if(!userGroupService.isAdmin(session.user)){
+			else{
+				def user = User.get(session.user.id)
+				if(!userGroupService.isAdmin(user)){
 					flash.message="You must be administrator to see this content"
 					redirect(uri:"/error", absolute:true)
 					return false
@@ -92,8 +94,9 @@ class UserController {
 	def login(){
 		def user = userService.getUser(params.username,params.password)
 		if (user){
-			if(user.status==UserStateEnum.AVAILABLE){				
-				session.user = user
+			if(user.status==UserStateEnum.AVAILABLE){	
+				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString())			
+				session.user = userSession
 				flash.message=user.name
 				redirect(uri: '/', absolute: true)
 			}else{
@@ -270,8 +273,8 @@ class UserController {
 	 * @return
 	 */
 	def profile(){
-		session.user.refresh()
-		[user: session.user]
+		def user = User.get(session.user.id)
+		[user: user]
 	}
 	
 	/**
@@ -281,7 +284,8 @@ class UserController {
 	def changeProfile(){
 		if(params.name&&params.username&&params.description){			
 			try{
-				session.user = userService.setValues(session.user,params.username, params.name, params.description, null, params.email)
+				def user = User.get(session.user.id)
+				userService.setValues(user,params.username, params.name, params.description, null, params.email)
 				flash.message="Profile values have been modified"
 				flash.type="success"
 			}catch(Exception e){
@@ -307,7 +311,8 @@ class UserController {
 		if(params.passwd&&params.newPasswd&&params.confirmPasswd){
 			if(params.confirmPasswd.equals(params.newPasswd)){
 				try{
-					userService.changePassword(session.user, params.passwd, params.newPasswd)
+					def user = User.get(session.user.id)
+					userService.changePassword(user, params.passwd, params.newPasswd)
 					flash.message="Password has been modified"
 					flash.type="success"
 				}catch(Exception e){

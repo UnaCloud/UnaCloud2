@@ -43,7 +43,8 @@ class DeploymentController {
 			return false
 		}
 		session.user.refresh()
-		if(!session.user.status.equals(UserStateEnum.AVAILABLE)){
+		def user = User.get(session.user.id)
+		if(!user.status.equals(UserStateEnum.AVAILABLE)){
 			flash.message="You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)
 			return false
@@ -62,11 +63,7 @@ class DeploymentController {
 		if(cluster){			
 			def user= User.get(session.user.id)	
 			//validates if user is owner to deploy cluster
-			println cluster
-			println user.userClusters
-			println cluster.state
 			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
-				println 'entre'
 				//Validates if images are available in the platform
 				def unavailable = cluster.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}
 				if(unavailable.size()!=cluster.images.size()){
@@ -110,12 +107,13 @@ class DeploymentController {
 	 */
 	
 	def list(){
-		if(!session.user.isAdmin()){
-			[myDeployments: session.user.getActiveDeployments()]
+		def user = User.get(session.user.id)
+		if(!user.isAdmin()){
+			[myDeployments: user.getActiveDeployments()]
 		}
 		else {	
-			def deployments = deploymentService.getActiveDeployments(session.user)	
-			[myDeployments: session.user.getActiveDeployments(),deployments: deployments]
+			def deployments = deploymentService.getActiveDeployments(user)	
+			[myDeployments: user.getActiveDeployments(),deployments: deployments]
 		}
 	}
 	

@@ -44,8 +44,9 @@ class VirtualMachineImageController {
 	 * Virtual machine image index action
 	 * @return list of all images related to user
 	 */
-	def list() {		 
-		[images: session.user.getOrderedImages()]
+	def list() {	
+		def user = User.get(session.user.id)
+		[images: user.getOrderedImages()]
 	}
 	/**
 	 * New uploaded image form action
