@@ -34,6 +34,7 @@ class OperatingSystemController {
 		}
 		else{
 			def user = User.get(session.user.id)
+			session.user.refresh(user)
 			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)

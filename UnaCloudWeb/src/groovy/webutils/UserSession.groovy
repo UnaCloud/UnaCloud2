@@ -16,9 +16,10 @@ class UserSession {
 	String name
 	String username
 	String description
-	String registerDate	
+	String registerDate
+	boolean isAdmin
 		
-	public UserSession(long id, String name, String username, String description, String registerDate){
+	public UserSession(long id, String name, String username, String description, String registerDate, boolean admin){
 		this.id = id
 		this.name = name
 		this.username = username
@@ -31,18 +32,14 @@ class UserSession {
 	 * @return
 	 */
 	public boolean isAdmin(){
-		println 'Session'
-		UserGroupService userGroupService = new UserGroupService()
-		println userGroupService
-		return userGroupService.isAdmin(id)
+		return isAdmin
 	}
 
-	public void refresh(){
-		UserService userService = new UserService()
-		User user = userService.getUser(id)
+	public void refresh(User user){
 		this.name = user.name
 		this.username = user.username
 		this.description = user.description
 		this.registerDate = user.registerDate
+		this.isAdmin = user.isAdmin()
 	}
 }

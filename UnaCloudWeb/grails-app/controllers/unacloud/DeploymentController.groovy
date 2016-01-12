@@ -41,9 +41,9 @@ class DeploymentController {
 			flash.message="You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
-		}
-		session.user.refresh()
+		}		
 		def user = User.get(session.user.id)
+		session.user.refresh(user)
 		if(!user.status.equals(UserStateEnum.AVAILABLE)){
 			flash.message="You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)

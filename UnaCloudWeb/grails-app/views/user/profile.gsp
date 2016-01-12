@@ -29,16 +29,21 @@
            		<div class="box box-primary">  
                  	<form method="POST" id="form-edit-profile" action="${createLink(uri: '/user/profile/save', absolute: true)}"  role="form">
                  		<input name="id" type="hidden" value="${user.id}"/>  
-                     	<div class="box-body">	 
-                     		<p class="help-block">You are member since ${user.registerDate}</p> 
+                     	<div class="box-body">	
+                     		<div class="form-group">
+                            	<label>Username: </label> ${user.username}
+                         	</div> 
+                     		<div class="form-group">
+                            	<label>Member since: </label>  ${user.registerDate} 
+                         	</div>
+                         	<div class="form-group">
+                            	<label>Api key: </label>  ${user.apiKey} 
+                         	</div>
+                         	<hr>
                      		<div class="form-group">
                             	<label>Full name</label>
                             	<input type="text" class="form-control var-0" name="name" value="${user.name}" placeholder="User fullname" disabled>
-                         	</div>
-                         	<div class="form-group">
-                            	<label>Username</label>
-                            	<input type="text" class="form-control var-0" name="username" value="${user.username}" placeholder="Username" disabled>
-                         	</div>
+                         	</div>                         	
                          	<div class="form-group">
                             	<label>Email</label>
                             	<input type="text" class="form-control var-0" name="email" value="${user.email}" placeholder="email" disabled>

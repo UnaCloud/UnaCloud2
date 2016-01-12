@@ -39,7 +39,8 @@ class ClusterController {
 			redirect(uri:"/login", absolute:true)
 			return false
 		}
-		session.user.refresh()
+		def user = User.get(session.user.id)
+		session.user.refresh(user)
 	}
 	/**
 	 * Action by default

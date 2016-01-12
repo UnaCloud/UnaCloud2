@@ -42,8 +42,7 @@ class UserController {
 	
 	/**
 	 * Makes session verifications before executing user administration actions
-	 */
-	
+	 */	
 	def beforeInterceptor = [action:{
 			if(!session.user){
 				flash.message="You must log in first"
@@ -52,6 +51,7 @@ class UserController {
 			}
 			else{
 				def user = User.get(session.user.id)
+				session.user.refresh(user)
 				if(!userGroupService.isAdmin(user)){
 					flash.message="You must be administrator to see this content"
 					redirect(uri:"/error", absolute:true)
@@ -89,13 +89,12 @@ class UserController {
 	/**
 	 * Validates passwords and changes session user. Redirects to home page
 	 * if credentials are correct, or to login page if they're not
-	 */
-	
+	 */	
 	def login(){
 		def user = userService.getUser(params.username,params.password)
 		if (user){
 			if(user.status==UserStateEnum.AVAILABLE){	
-				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString())			
+				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString(),user.isAdmin())			
 				session.user = userSession
 				flash.message=user.name
 				redirect(uri: '/', absolute: true)
@@ -282,10 +281,11 @@ class UserController {
 	 * @return
 	 */
 	def changeProfile(){
-		if(params.name&&params.username&&params.description){			
+		if(params.name&&params.description){			
 			try{
 				def user = User.get(session.user.id)
-				userService.setValues(user,params.username, params.name, params.description, null, params.email)
+				userService.setValues(user,user.username, params.name, params.description, null, params.email)
+				session.user.refresh(user)
 				flash.message="Profile values have been modified"
 				flash.type="success"
 			}catch(Exception e){
@@ -313,6 +313,7 @@ class UserController {
 				try{
 					def user = User.get(session.user.id)
 					userService.changePassword(user, params.passwd, params.newPasswd)
+					session.user.refresh(user)
 					flash.message="Password has been modified"
 					flash.type="success"
 				}catch(Exception e){
