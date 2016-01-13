@@ -16,5 +16,6 @@ public enum VirtualMachineImageEnum {
 	
 	private VirtualMachineImageEnum(String name){
 		this.name = name;
-	}
+	}	
+	
 }

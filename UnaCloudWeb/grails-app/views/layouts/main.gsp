@@ -34,7 +34,7 @@
     
         <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="/" class="logo"><i class="fa fa-cloud"></i>
+            <a href="${createLink(uri: '/home', absolute: true)}" class="logo"><i class="fa fa-cloud"></i>
                 UnaCloud
             </a>
             <!-- Header Navbar: style can be found in header.less -->

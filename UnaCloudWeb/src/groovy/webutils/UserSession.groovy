@@ -7,7 +7,7 @@ import unacloud.UserService
 /**
  * Class that represent a user instance to be saved in session.
  * This class has the purpose to avoid duplicated instance and exception
- * @author CesarAugusto
+ * @author Cesar
  *
  */
 class UserSession {
@@ -35,6 +35,10 @@ class UserSession {
 		return isAdmin
 	}
 
+	/**
+	 * Update this entity based in a user entity sent by parameters
+	 * @param user
+	 */
 	public void refresh(User user){
 		this.name = user.name
 		this.username = user.username

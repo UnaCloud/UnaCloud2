@@ -64,7 +64,7 @@ class VirtualMachineImage {
 	String token
 	
 	/**
-	 *Virtual machine state (DISABLE, AVAILABLE, COPYING) 
+	 *Virtual machine state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
 	 */
 	VirtualMachineImageEnum state = VirtualMachineImageEnum.AVAILABLE;
 	

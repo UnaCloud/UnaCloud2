@@ -1,9 +1,12 @@
 package unacloud
 
+import java.util.TreeMap;
+
 import unacloud.pmallocators.AllocatorEnum;
 import unacloud.UserService;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
+import unacloud.enums.VirtualMachineImageEnum;
 import webutils.UserSession;
 
 class UserController {
@@ -123,6 +126,50 @@ class UserController {
 	 */
 	
 	def home(){
+		
+		def user = User.get(session.user.id)
+		
+		TreeMap<String, Integer> treeImages = new TreeMap<String, Integer>();
+		if(user.images.size()>0){
+			treeImages.put('ALL',user.images.size())
+			for(VirtualMachineImage image in user.images){
+				if(treeImages.get(image.state.name)==null)treeImages.put(image.state.name,0)
+				treeImages.put(image.state.name,treeImages.get(image.state.name)+1)
+			}
+		}	
+		
+		TreeMap<String, Integer> treeClusters = new TreeMap<String, Integer>();
+		if(user.userClusters.size()>0){
+			treeClusters.put('ALL',user.userClusters.size())
+			treeClusters.put('DEPLOYED',0)
+			for(Cluster cluster in user.userClusters){
+				if(treeClusters.get(cluster.state.name)==null)treeClusters.put(cluster.state.name,0)
+				treeClusters.put(cluster.state.name,treeClusters.get(cluster.state.name)+1)
+				if(cluster.isDeployed())treeClusters.put('DEPLOYED',treeClusters.get('DEPLOYED')+1)
+			}
+		}
+		
+		TreeMap<String, Integer> treeDeployments = new TreeMap<String, Integer>();
+		if(user.deployments.size()>0){
+			treeDeployments.put('ALL',user.deployments.size())
+			for(Deployment deployment in user.deployments){
+				if(treeDeployments.get(deployment.status.name)==null)treeDeployments.put(deployment.status.name,0)
+				treeDeployments.put(deployment.status.name,treeDeployments.get(deployment.status.name)+1)
+			}
+		}
+		
+		if(user.isAdmin()){
+			def boxes  = []
+			boxes.add([name:'Users',quantity:User.count(),color:'aqua',url:'/admin/user/list',icon:'ion-person'])
+			boxes.add([name:'Groups',quantity:UserGroup.count(),color:'green',url:'/admin/group/list',icon:'ion-person-stalker'])
+			boxes.add([name:'Hypervisors',quantity:Hypervisor.count(),color:'yellow',url:'/admin/hypervisor/list',icon:'ion-star'])
+			boxes.add([name:'Operating Systems',quantity:OperatingSystem.count(),color:'blue',url:'/admin/os/list',icon:'ion-load-a'])			
+			boxes.add([name:'Hosts',quantity:PhysicalMachine.count(),color:'teal',url:'/admin/lab/list',icon:'ion-monitor'])
+			boxes.add([name:'Repositories',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
+			[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments,boxes:boxes]
+		}else		
+		 	[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments]
+		
 	}	
 	/**
 	 * render create view

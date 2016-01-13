@@ -82,5 +82,9 @@ table thead .info{
 	height: 35px;
     overflow: hidden;
 }
+.title-link{
+	text-decoration: none !important;
+	color: white !important;
+}
 
 
