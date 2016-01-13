@@ -138,4 +138,12 @@ class User {
 		}
 		return activeDeployments
 	}
+	
+	/**
+	 * Method used to return databaseId
+	 * @return
+	 */
+	def Long getId(){
+		return id;
+	}
 }

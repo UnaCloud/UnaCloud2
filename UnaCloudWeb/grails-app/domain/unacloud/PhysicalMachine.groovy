@@ -109,9 +109,21 @@ class PhysicalMachine {
 		return laboratory;
 	}
 	
+	/**
+	 * Calculates the available resources in physical machine querying current resources used by executions
+	 * @return
+	 */
 	def availableResources(){
 		def usedResources = VirtualMachineExecution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from VirtualMachineExecution as vme where vme.executionNode.id = :node_id and vme.status!=\'FINISHED\'',[node_id:this.id])		
 		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
+	}
+	
+	/**
+	 * Returns database id
+	 * @return
+	 */
+	def Long getId(){
+		return id;
 	}
 	
 }

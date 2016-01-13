@@ -24,6 +24,9 @@ import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
 import unacloud.init.DatabaseService
+import unacloud.task.queue.QueueRabbitManager;
+import unacloud.task.queue.QueueTaskerControl;
+import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
 import unacloud.pmallocators.AllocatorEnum;
 
@@ -75,19 +78,36 @@ class BootStrap {
 			new ServerVariable(name:'CLOUDER_SERVER_IP',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("CLOUDER_SERVER_IP")).save()
 			new ServerVariable(name:'AGENT_VERSION',serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty("AGENT_VERSION")).save()
 			new ServerVariable(name:'SERVER_URL',serverVariableType: ServerVariableTypeEnum.STRING,variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty("SERVER_URL")).save()
+			new ServerVariable(name:'VM_DEFAULT_ALLOCATOR',serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.toString(), serverOnly: true).save()
+			
+			//** Variable to configure monitoring **//
 			new ServerVariable(name:'MONITORING_ENABLE',serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty("MONITORING_ENABLE"), serverOnly: true).save()
 			new ServerVariable(name:'MONITORING_DATABASE_NAME',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_NAME")).save()
 			new ServerVariable(name:'MONITORING_DATABASE_PASSWORD',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_PASSWORD")).save()
 			new ServerVariable(name:'MONITORING_DATABASE_USER',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_USER")).save()
 			new ServerVariable(name:'MONITORING_SERVER_IP',serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty("MONITORING_SERVER_IP")).save()
 			new ServerVariable(name:'MONITORING_SERVER_PORT',serverVariableType: ServerVariableTypeEnum.INT,variable: prop.getProperty("MONITORING_SERVER_PORT")).save()
-			new ServerVariable(name:'VM_DEFAULT_ALLOCATOR',serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.RANDOM, serverOnly: true).save()
+		
+			//** Variables to configure control **//
+			new ServerVariable(name:'CLOUDER_CONTROL_PORT',serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty("CLOUDER_CONTROL_PORT")).save()
+			new ServerVariable(name:'CLOUDER_CONTROL_IP',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("CLOUDER_CONTROL_IP")).save()
+			new ServerVariable(name:'QUEUE_CONTROL_IP',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("QUEUE_CONTROL_IP")).save()
+			new ServerVariable(name:'QUEUE_CONTROL_PORT',serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty("QUEUE_CONTROL_PORT")).save()
+			new ServerVariable(name:'QUEUE_CONTROL_USER',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("QUEUE_CONTROL_USER")).save()
+			new ServerVariable(name:'QUEUE_CONTROL_PASS',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("QUEUE_CONTROL_PASS")).save()
 		}			
 		if(Hypervisor.count() == 0){
 			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4").save()
 			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10").save()
 			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10").save()
 		}
+		
+		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER'),ServerVariable.findByName('QUEUE_CONTROL_PASS'),
+			ServerVariable.findByName('QUEUE_CONTROL_IP'),Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT')),'AGENT_CONTROL');		
+		QueueTaskerControl.setQueueConnection(queueControl)		
+		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER'),ServerVariable.findByName('QUEUE_CONTROL_PASS'),
+			ServerVariable.findByName('QUEUE_CONTROL_IP'),Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT')),'FILE_MANAGER');		
+		QueueTaskerFile.setQueueConnection(queueFile)
 		
 		databaseService.initDatabase()
 	}

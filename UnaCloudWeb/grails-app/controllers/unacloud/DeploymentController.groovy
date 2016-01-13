@@ -140,7 +140,7 @@ class DeploymentController {
 		if(executions.size()>0){
 			flash.message='Your request has been processed'
 			flash.type='info'
-			deploymentService.stopVirtualMachineExecutions(executions)
+			deploymentService.stopVirtualMachineExecutions(executions,user)
 		}else flash.message='Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
@@ -217,7 +217,10 @@ class DeploymentController {
 		}
 	}
 	
-	
+	/**
+	 * Validates if user has permissions and call to deploymentService to create a new task to create a copy
+	 * @return
+	 */
 	def createCopy(){
 		VirtualMachineExecution execution = VirtualMachineExecution.get(params.id)
 		if(execution){

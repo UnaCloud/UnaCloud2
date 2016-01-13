@@ -120,4 +120,12 @@ class VirtualMachineImage {
 			cluster.putAt("state", ClusterEnum.FREEZE);
 		}
 	}
+	
+	/**
+	 * Returns database id
+	 * @return
+	 */
+	def Long getId(){
+		return id;
+	}
 }	

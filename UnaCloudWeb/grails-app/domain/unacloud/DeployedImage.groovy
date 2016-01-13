@@ -62,4 +62,12 @@ class DeployedImage {
 		def ip = virtualMachines.first().mainIp().ip.split('\\.')
 		return virtualMachines.first().getName().substring(0, virtualMachines.first().getName().length()-(ip[2].length()+ip[3].length()))
 	}
+	
+	/**
+	 * Returns database id
+	 * @return
+	 */
+	def Long getId(){
+		return id;
+	}
 }

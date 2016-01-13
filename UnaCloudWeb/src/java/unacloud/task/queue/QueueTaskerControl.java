@@ -15,6 +15,19 @@ import unacloud.VirtualMachineImage;
  *
  */
 public class QueueTaskerControl {
+	
+	/**
+	 * Represents class to connect to queue provider
+	 */
+	private static QueueTaskerConnection controlQueue;
+	
+	/**
+	 * Set the queue manager used to send task. This method should only be called one time.
+	 * @param newQueue
+	 */
+	public static void setQueueConnection(QueueTaskerConnection newQueue){
+		controlQueue = newQueue;
+	}
 
 	/**
 	 * Put a task to Remove an image from all machines connected
@@ -22,7 +35,8 @@ public class QueueTaskerControl {
 	 * @param user who asks the task
 	 */
 	public static void clearCache(VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("clearCache", user.getId()+"", new String[]{image.getId()+""});
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
@@ -30,7 +44,8 @@ public class QueueTaskerControl {
 	 * @param user User that will be removed
 	 */
 	public static void deleteUser(User user, User admin){
-		
+		QueueMessage message = new QueueMessage("deleteUser", admin.getId()+"", new String[]{user.getId()+""});
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
@@ -40,9 +55,13 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void taskMachines(List<PhysicalMachine> machines, String task, User user){
-		System.out.println(task);
-		System.out.println(machines);
-		System.out.println(user);
+		String[] parts = new String[machines.size()+1];
+		parts[0]=task;
+		for (int i = 0; i < machines.size(); i++) {
+			parts[i+1]=machines.get(i).getId()+"";
+		}		
+		QueueMessage message = new QueueMessage("sendTask", user.getId()+"", parts);
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
@@ -51,15 +70,21 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void deployCluster(Deployment deployment, User user){
-		
+		QueueMessage message = new QueueMessage("deployCluster", user.getId()+"", new String[]{deployment.getId()+""});
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
 	 * Put a task to stop deployments in array
 	 * @param deployments
 	 */
-	public static void stopDeployments(Deployment[] deployments){
-		
+	public static void stopDeployments(Deployment[] deployments, User user){
+		String[] parts = new String[deployments.length];
+		for (int i = 0; i < deployments.length; i++) {
+			parts[i]=deployments[i].getId()+"";
+		}		
+		QueueMessage message = new QueueMessage("stopDeployments", user.getId()+"", parts);
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
@@ -68,7 +93,8 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void addInstancesToDeploy(DeployedImage image, User user){
-		
+		QueueMessage message = new QueueMessage("addInstances", user.getId()+"", new String[]{image.getId()+""});
+		controlQueue.sendMessage(message);
 	}
 	
 	/**
@@ -78,6 +104,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("createCopy", user.getId()+"", new String[]{execution.getId()+"",image.getId()+""});
+		controlQueue.sendMessage(message);
 	}
 }

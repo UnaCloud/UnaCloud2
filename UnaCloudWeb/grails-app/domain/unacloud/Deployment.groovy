@@ -79,20 +79,34 @@ class Deployment {
 						vm.putAt("stopTime", new Date())
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
-					}else if(vm.stopTime.after(currentDate)){
+					}else if(vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_COPY){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Copy image request failed')
-						//TODO delete image
+						if(vm.message.contains("Copy request to image ")){
+							try{
+								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
+								VirtualMachineImage.get(imageId).delete()
+							}catch(Exception e){
+								e.printStackTrace()
+							}							
+						}
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.COPYING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Copy image failed')
-						//TODO delete image
+						if(vm.message.contains("Copy request to image ")){
+							try{
+								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
+								VirtualMachineImage.get(imageId).delete()
+							}catch(Exception e){
+								e.printStackTrace()
+							}							
+						}
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.FINISHING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
@@ -128,4 +142,11 @@ class Deployment {
 		return false
 	}
 	
+	/**
+	 * Returns database id
+	 * @return
+	 */
+	def Long getId(){
+		return id;
+	}
 }

@@ -205,7 +205,7 @@ class DeploymentService {
 	 * @param executions
 	 * @return
 	 */
-	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions){
+	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions, User requester){
 		TreeMap<Deployment, Integer> deployments = new TreeMap<Deployment, Integer>();
 		for(VirtualMachineExecution vm in executions){
 			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
@@ -217,7 +217,7 @@ class DeploymentService {
 			}
 		}
 		if(deployments.navigableKeySet().size()>0){
-			QueueTaskerControl.stopDeployments(deployments.navigableKeySet().toArray())
+			QueueTaskerControl.stopDeployments(deployments.navigableKeySet().toArray(), requester)
 		}
 	}
 	
@@ -238,7 +238,7 @@ class DeploymentService {
 			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository)
 		image.save(failOnError:true)
 		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
-		execution.putAt("message", 'Request to copy')
+		execution.putAt("message", 'Copy request to image '+image.id)
 		QueueTaskerControl.createCopyFromExecution(execution,image,user)
 	}
 }

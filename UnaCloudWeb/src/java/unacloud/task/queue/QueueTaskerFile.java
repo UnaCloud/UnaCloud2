@@ -11,6 +11,19 @@ import unacloud.VirtualMachineImage;
 public class QueueTaskerFile {
 	
 	/**
+	 * Represents class to connect to queue provider
+	 */
+	private static QueueTaskerConnection fileQueue;
+	
+	/**
+	 * Set the queue manager used to send task. This method should only be called one time.
+	 * @param newQueue
+	 */
+	public static void setQueueConnection(QueueTaskerConnection newQueue){
+		fileQueue = newQueue;
+	}
+	
+	/**
 	 * Create a task to copy an image from a private folder to public one.
 	 * @param image to copy
 	 * @param user image owner

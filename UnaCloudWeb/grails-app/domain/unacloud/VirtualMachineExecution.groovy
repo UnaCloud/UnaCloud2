@@ -138,4 +138,12 @@ class VirtualMachineExecution {
 		def requestExec = ExecutionRequest.find(sort:'requestTime', order: "desc"){execution==this}
 		return requestExec.requestTime
 	}
+	
+	/**
+	 * Returns database id
+	 * @return
+	 */
+	def Long getId(){
+		return id;
+	}
 }
