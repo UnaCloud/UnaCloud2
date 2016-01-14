@@ -124,9 +124,9 @@ class DeploymentService {
 			}
 		}
 		
-		if(!Environment.isDevelopmentMode()){				
+		//if(!Environment.isDevelopmentMode()){				
 			QueueTaskerControl.deployCluster(dep,user)
-		}		
+		//}		
 		
 		return dep
 	}
@@ -179,9 +179,9 @@ class DeploymentService {
 		}
 		image.virtualMachines.addAll(executions)
 		image.save(failOnError:true)
-		if(!Environment.isDevelopmentMode()){
+		//if(!Environment.isDevelopmentMode()){
 			QueueTaskerControl.addInstancesToDeploy(image,user)
-		}
+		//}
 		
 	}
 	

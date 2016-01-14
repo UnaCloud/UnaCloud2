@@ -143,7 +143,7 @@ class User {
 	 * Method used to return databaseId
 	 * @return
 	 */
-	def Long getId(){
+	def Long getDatabaseId(){
 		return id;
 	}
 }

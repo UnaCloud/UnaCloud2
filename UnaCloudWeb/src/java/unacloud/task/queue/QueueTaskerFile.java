@@ -29,7 +29,8 @@ public class QueueTaskerFile {
 	 * @param user image owner
 	 */
 	public static void createPublicCopy(VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("createPublic", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		fileQueue.sendMessage(message);
 	}
 	/**
 	 * Create a task to copy a public image to a private one.
@@ -38,7 +39,8 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void createCopyFromPublic(VirtualMachineImage publicImage, VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("createCopy", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+"",publicImage.getDatabaseId()+""});
+		fileQueue.sendMessage(message);
 	}
 	/**
 	 * Create a task to delete image image from repositories
@@ -46,7 +48,8 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deleteImage(VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("deleteImage", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		fileQueue.sendMessage(message);
 	}
 	
 	/**
@@ -55,7 +58,8 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deletePublicImage(VirtualMachineImage image, User user){
-		
+		QueueMessage message = new QueueMessage("deletePublic", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		fileQueue.sendMessage(message);
 	}
 
 //	/**

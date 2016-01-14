@@ -118,12 +118,4 @@ class PhysicalMachine {
 		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
 	}
 	
-	/**
-	 * Returns database id
-	 * @return
-	 */
-	def Long getId(){
-		return id;
-	}
-	
 }

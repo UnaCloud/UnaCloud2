@@ -102,11 +102,11 @@ class BootStrap {
 			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10").save()
 		}
 		
-		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER'),ServerVariable.findByName('QUEUE_CONTROL_PASS'),
-			ServerVariable.findByName('QUEUE_CONTROL_IP'),Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT')),'AGENT_CONTROL');		
+		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER').variable,ServerVariable.findByName('QUEUE_CONTROL_PASS').variable,
+			ServerVariable.findByName('QUEUE_CONTROL_IP').variable,Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT').variable),'AGENT_CONTROL');		
 		QueueTaskerControl.setQueueConnection(queueControl)		
-		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER'),ServerVariable.findByName('QUEUE_CONTROL_PASS'),
-			ServerVariable.findByName('QUEUE_CONTROL_IP'),Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT')),'FILE_MANAGER');		
+		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER').variable,ServerVariable.findByName('QUEUE_CONTROL_PASS').variable,
+			ServerVariable.findByName('QUEUE_CONTROL_IP').variable,Integer.parseInt(ServerVariable.findByName('QUEUE_CONTROL_PORT').variable),'FILE_MANAGER');		
 		QueueTaskerFile.setQueueConnection(queueFile)
 		
 		databaseService.initDatabase()

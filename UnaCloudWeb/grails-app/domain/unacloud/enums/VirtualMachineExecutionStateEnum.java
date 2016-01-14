@@ -12,7 +12,8 @@ public enum VirtualMachineExecutionStateEnum {
 	FINISHING("FINISHING",CalendarUtils.MINUTE*4),
 	FINISHED("FINISHED",0),
 	REQUEST_COPY("TO COPY",CalendarUtils.MINUTE*2),
-	COPYING("COPYING",CalendarUtils.MINUTE*30);
+	COPYING("COPYING",CalendarUtils.MINUTE*30),
+	RECONNECTING("RECONNECTING",CalendarUtils.MINUTE*15);
 	
 	private long time;
 	public String name;

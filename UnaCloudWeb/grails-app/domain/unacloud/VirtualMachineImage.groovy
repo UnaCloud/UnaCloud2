@@ -125,7 +125,7 @@ class VirtualMachineImage {
 	 * Returns database id
 	 * @return
 	 */
-	def Long getId(){
+	def Long getDatabaseId(){
 		return id;
 	}
 }	

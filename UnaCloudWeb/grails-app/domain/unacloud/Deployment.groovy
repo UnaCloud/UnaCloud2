@@ -82,6 +82,11 @@ class Deployment {
 					}else if(vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}
+				}else if(vm.status ==VirtualMachineExecutionStateEnum.RECONNECTING){
+					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("message",'Connection lost')
+					}	
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_COPY){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
@@ -146,7 +151,7 @@ class Deployment {
 	 * Returns database id
 	 * @return
 	 */
-	def Long getId(){
+	def Long getDatabaseId(){
 		return id;
 	}
 }

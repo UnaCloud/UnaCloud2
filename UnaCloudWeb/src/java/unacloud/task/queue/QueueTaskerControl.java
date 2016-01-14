@@ -35,7 +35,7 @@ public class QueueTaskerControl {
 	 * @param user who asks the task
 	 */
 	public static void clearCache(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("clearCache", user.getId()+"", new String[]{image.getId()+""});
+		QueueMessage message = new QueueMessage("clearCache", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -44,7 +44,7 @@ public class QueueTaskerControl {
 	 * @param user User that will be removed
 	 */
 	public static void deleteUser(User user, User admin){
-		QueueMessage message = new QueueMessage("deleteUser", admin.getId()+"", new String[]{user.getId()+""});
+		QueueMessage message = new QueueMessage("deleteUser", admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -58,9 +58,9 @@ public class QueueTaskerControl {
 		String[] parts = new String[machines.size()+1];
 		parts[0]=task;
 		for (int i = 0; i < machines.size(); i++) {
-			parts[i+1]=machines.get(i).getId()+"";
+			parts[i+1]=machines.get(i).getDatabaseId()+"";
 		}		
-		QueueMessage message = new QueueMessage("sendTask", user.getId()+"", parts);
+		QueueMessage message = new QueueMessage("sendTask", user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -70,7 +70,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void deployCluster(Deployment deployment, User user){
-		QueueMessage message = new QueueMessage("deployCluster", user.getId()+"", new String[]{deployment.getId()+""});
+		QueueMessage message = new QueueMessage("deployCluster", user.getDatabaseId()+"", new String[]{deployment.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -81,9 +81,9 @@ public class QueueTaskerControl {
 	public static void stopDeployments(Deployment[] deployments, User user){
 		String[] parts = new String[deployments.length];
 		for (int i = 0; i < deployments.length; i++) {
-			parts[i]=deployments[i].getId()+"";
+			parts[i]=deployments[i].getDatabaseId()+"";
 		}		
-		QueueMessage message = new QueueMessage("stopDeployments", user.getId()+"", parts);
+		QueueMessage message = new QueueMessage("stopDeployments", user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -93,7 +93,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void addInstancesToDeploy(DeployedImage image, User user){
-		QueueMessage message = new QueueMessage("addInstances", user.getId()+"", new String[]{image.getId()+""});
+		QueueMessage message = new QueueMessage("addInstances", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -104,7 +104,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("createCopy", user.getId()+"", new String[]{execution.getId()+"",image.getId()+""});
+		QueueMessage message = new QueueMessage("createCopy", user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 }

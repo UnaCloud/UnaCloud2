@@ -135,7 +135,7 @@ class VirtualMachineExecution {
 	 * @return
 	 */
 	def Date getLastStateTime(){
-		def requestExec = ExecutionRequest.find(sort:'requestTime', order: "desc"){execution==this}
+		def requestExec = ExecutionRequest.where{execution==this}.find(sort:'requestTime', order: "desc")
 		return requestExec.requestTime
 	}
 	
@@ -143,7 +143,7 @@ class VirtualMachineExecution {
 	 * Returns database id
 	 * @return
 	 */
-	def Long getId(){
+	def Long getDatabaseId(){
 		return id;
 	}
 }
