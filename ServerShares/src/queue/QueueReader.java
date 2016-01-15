@@ -1,4 +1,4 @@
-package unacloud.task.queue;
+package queue;
 
 public interface QueueReader {
 

@@ -5,6 +5,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
 
+import queue.QueueRabbitManager;
 import unacloud.ExternalCloudProvider;
 import unacloud.UserGroup
 import unacloud.UserGroupService
@@ -24,7 +25,6 @@ import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
 import unacloud.init.DatabaseService
-import unacloud.task.queue.QueueRabbitManager;
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;

@@ -1,5 +1,8 @@
 package unacloud.task.queue;
 
+import queue.QueueMessage;
+import queue.QueueMessageType;
+import queue.QueueTaskerConnection;
 import unacloud.User;
 import unacloud.VirtualMachineImage;
 
@@ -29,7 +32,7 @@ public class QueueTaskerFile {
 	 * @param user image owner
 	 */
 	public static void createPublicCopy(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("createPublic", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_PUBLIC_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		fileQueue.sendMessage(message);
 	}
 	/**
@@ -39,7 +42,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void createCopyFromPublic(VirtualMachineImage publicImage, VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("createCopy", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+"",publicImage.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY_FROM_PUBLIC, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+"",publicImage.getDatabaseId()+""});
 		fileQueue.sendMessage(message);
 	}
 	/**
@@ -48,7 +51,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deleteImage(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("deleteImage", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		fileQueue.sendMessage(message);
 	}
 	
@@ -58,7 +61,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deletePublicImage(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("deletePublic", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_PUBLIC_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		fileQueue.sendMessage(message);
 	}
 

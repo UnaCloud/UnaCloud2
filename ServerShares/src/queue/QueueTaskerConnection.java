@@ -1,4 +1,4 @@
-package unacloud.task.queue;
+package queue;
 
 /**
  * Abstract class to represent connection to Queue
@@ -28,12 +28,12 @@ public abstract class QueueTaskerConnection {
 	 * Abstract method to be implemented by other classes to send message
 	 * @param message
 	 */
-	protected abstract void sendMessage(QueueMessage message);
+	public abstract void sendMessage(QueueMessage message);
 	
 	/**
 	 * Abstract method to be implemented by other classes to receive message
 	 * @param object which implements QueueReader to process messages
 	 */
-	protected abstract void getMessage(QueueReader reader);
+	public abstract void getMessage(QueueReader reader);
 	
 }

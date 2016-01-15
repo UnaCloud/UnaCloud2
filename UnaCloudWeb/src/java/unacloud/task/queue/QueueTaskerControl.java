@@ -2,6 +2,9 @@ package unacloud.task.queue;
 
 import java.util.List;
 
+import queue.QueueMessage;
+import queue.QueueMessageType;
+import queue.QueueTaskerConnection;
 import unacloud.DeployedImage;
 import unacloud.Deployment;
 import unacloud.PhysicalMachine;
@@ -35,7 +38,7 @@ public class QueueTaskerControl {
 	 * @param user who asks the task
 	 */
 	public static void clearCache(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("clearCache", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.CLEAR_CACHE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -44,7 +47,7 @@ public class QueueTaskerControl {
 	 * @param user User that will be removed
 	 */
 	public static void deleteUser(User user, User admin){
-		QueueMessage message = new QueueMessage("deleteUser", admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_USER, admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -60,7 +63,7 @@ public class QueueTaskerControl {
 		for (int i = 0; i < machines.size(); i++) {
 			parts[i+1]=machines.get(i).getDatabaseId()+"";
 		}		
-		QueueMessage message = new QueueMessage("sendTask", user.getDatabaseId()+"", parts);
+		QueueMessage message = new QueueMessage(QueueMessageType.SEND_TASK, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -70,7 +73,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void deployCluster(Deployment deployment, User user){
-		QueueMessage message = new QueueMessage("deployCluster", user.getDatabaseId()+"", new String[]{deployment.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.DEPLOY_CLUSTER, user.getDatabaseId()+"", new String[]{deployment.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -83,7 +86,7 @@ public class QueueTaskerControl {
 		for (int i = 0; i < deployments.length; i++) {
 			parts[i]=deployments[i].getDatabaseId()+"";
 		}		
-		QueueMessage message = new QueueMessage("stopDeployments", user.getDatabaseId()+"", parts);
+		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -93,7 +96,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void addInstancesToDeploy(DeployedImage image, User user){
-		QueueMessage message = new QueueMessage("addInstances", user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 	
@@ -104,7 +107,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage("createCopy", user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",image.getDatabaseId()+""});
+		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 }

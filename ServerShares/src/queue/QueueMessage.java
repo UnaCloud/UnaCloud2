@@ -1,8 +1,8 @@
-package unacloud.task.queue;
+package queue;
 
 public class QueueMessage {
 
-	private String type;	
+	private QueueMessageType type;	
 	private String requester;	
 	private String[] messageParts;
 
@@ -12,7 +12,7 @@ public class QueueMessage {
 		
 	}
 	
-	public QueueMessage(String type, String requester, String[] messageParts) {
+	public QueueMessage(QueueMessageType type, String requester, String[] messageParts) {
 		super();
 		this.type = type;
 		this.requester = requester;
@@ -21,7 +21,7 @@ public class QueueMessage {
 	
 	public String getMessage(){
 		StringBuilder message = new StringBuilder();
-		message.append(type).append(delimiter).append(requester);
+		message.append(type.name()).append(delimiter).append(requester);
 		for(String data: messageParts){
 			message.append(delimiter).append(data);
 		}
@@ -30,7 +30,7 @@ public class QueueMessage {
 	
 	public void setMessage(String data){
 		String[] parts = data.split(delimiter);
-		type=parts[0];
+		type=QueueMessageType.getType(parts[0]);
 		requester=parts[1];
 		messageParts = new String[parts.length-2];
 		for (int i = 2, j = 0; i < parts.length; i++, j++) {

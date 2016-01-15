@@ -1,4 +1,4 @@
-package unacloud.task.queue;
+package queue;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	}
 
 	@Override
-	protected void sendMessage(QueueMessage message) {
+	public void sendMessage(QueueMessage message) {
 		Connection connection = null;
 		Channel channel = null;
 		try {
@@ -36,7 +36,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	}
 
 	@Override
-	protected void getMessage(final QueueReader reader) {
+	public void getMessage(final QueueReader reader) {
 		Connection connection = null;
 		Channel channel = null;
 		try {
