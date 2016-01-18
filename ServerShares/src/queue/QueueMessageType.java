@@ -7,6 +7,9 @@ package queue;
  */
 public enum QueueMessageType {
 
+	/**
+	 * Types for Agent control
+	 */
 	CLEAR_CACHE,
 	DELETE_USER,
 	SEND_TASK,
@@ -14,6 +17,9 @@ public enum QueueMessageType {
 	STOP_DEPLOYS,
 	ADD_INSTANCES,
 	CREATE_COPY,
+	/**
+	 * Types for File Manager control
+	 */
 	CREATE_PUBLIC_IMAGE,
 	CREATE_COPY_FROM_PUBLIC,
 	DELETE_IMAGE,

@@ -3,7 +3,7 @@ package unacloud.enums;
 import unacloud.utils.CalendarUtils;
 
 public enum VirtualMachineExecutionStateEnum {
-	REQUESTED("REQUESTED",CalendarUtils.MINUTE*2),
+	QUEQUED("QUEQUED",CalendarUtils.MINUTE*2),
 	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*30),
 	DEPLOYING("DEPLOYING",CalendarUtils.MINUTE*4),
 	DEPLOYED("DEPLOYED",0),

@@ -3,3 +3,4 @@ UnaCloudWeb/target-eclipse/*
 *.class
 UnaCloudWeb/target/stacktrace.log
 UnaCloudWeb/grails-app/conf/config.properties
+UnaCloudControl/controlConfig.properties

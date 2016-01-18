@@ -14,7 +14,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	
 	ConnectionFactory factory ;
 
-	protected QueueRabbitManager(String username, String password, String ip,
+	public QueueRabbitManager(String username, String password, String ip,
 			int port, String queueName) {
 		super(username, password, ip, port, queueName);
 		createFactory();

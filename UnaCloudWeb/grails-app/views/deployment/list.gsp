@@ -90,7 +90,7 @@
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)
+			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEQUED)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_FINISH)||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)}">
 						                                 	 <span class="label label-warning">${execution.status.name}</span>
 						                                   </g:if>
