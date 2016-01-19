@@ -17,12 +17,19 @@ public final class DatabaseConnection {
 	private String username ;
 	private String password ;
 	
-	private static final BasicDataSource dataSource = new BasicDataSource();
+	private BasicDataSource dataSource;
+	public static DatabaseConnection instance;
+	
+	public static DatabaseConnection getInstance(){
+		if(instance==null)instance = new DatabaseConnection();
+		return instance;
+	}
 	
 	/**
 	 * Sets values in data source connection pool
 	 */
 	private void setConnection() {
+		dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl(host);
         dataSource.setUsername(username);
@@ -35,13 +42,13 @@ public final class DatabaseConnection {
 		this.password = password;
 		setConnection();
 	}
-	
+		
 	/**
 	 * Return connection to pool
 	 * @return
 	 * @throws SQLException in case connection 
 	 */
-	public static Connection connection() throws SQLException{
+	public Connection getConnection() throws SQLException{
 		return dataSource.getConnection();
 	}
 

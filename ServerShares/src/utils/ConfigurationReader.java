@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -27,8 +28,7 @@ public class ConfigurationReader {
 	 */
 	public ConfigurationReader(String filename, String[] variables) throws IOException{
 		Properties prop = new Properties();
-		String propFileName = filename;
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+		InputStream inputStream = new FileInputStream(filename);
 		prop.load(inputStream);
 		for(String value:variables){
 			String data = prop.getProperty(value);

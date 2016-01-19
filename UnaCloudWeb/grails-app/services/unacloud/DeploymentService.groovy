@@ -93,7 +93,7 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,startTime: new Date(),stopTime:stop, interfaces:[])
+				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: new Date(),stopTime:stop, interfaces:[])
 				executions.add(virtualExecution)
 			}
 			depImage.virtualMachines=executions
