@@ -64,14 +64,14 @@ public class QueueTaskerFile {
 		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_PUBLIC_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		fileQueue.sendMessage(message);
 	}
-
-//	/**
-//	 * Used to delete public image files from main repository templates
-//	 * @param publicImage
-//	 */
-//	private void deletePublicImage(VirtualMachineImage publicImage){
-//		def repository= Repository.findByName("Main Repository")
-//		File f = new java.io.File(repository.root+"imageTemplates"+separator+publicImage.name+separator);
-//		f.deleteDir();
-//	}
+	
+	/**
+	 * Put a task to remove an user, its machines, clusters and deployments
+	 * @param user User that will be removed
+	 */
+	public static void deleteUser(User user, User admin){
+		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_USER, admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
+		fileQueue.sendMessage(message);
+	}
+	
 }

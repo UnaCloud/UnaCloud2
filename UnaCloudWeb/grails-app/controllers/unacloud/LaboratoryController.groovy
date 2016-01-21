@@ -2,6 +2,7 @@ package unacloud
 
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.enums.PhysicalMachineStateEnum;
+import unacloud.enums.TaskEnum;
 
 class LaboratoryController {
 	
@@ -54,7 +55,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Create lab form action.
+	 * Creates lab form action.
 	 * @return list of network configurations
 	 */
 	def create(){
@@ -62,7 +63,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Save created lab action. Redirects to list when finished 
+	 * Saves created lab action. Redirects to list when finished 
 	 */
 	def save(){
 		if(params.name&&NetworkQualityEnum.getNetworkQuality(params.net)!=null
@@ -96,7 +97,7 @@ class LaboratoryController {
 	}	
 	
 	/**
-	 * Delete a laboratory, validates if lab have machines
+	 * Deletes a laboratory, validates if lab have machines
 	 */
 	def delete(){
 		def lab = Laboratory.get(params.id)
@@ -115,7 +116,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * return form data to edit lab
+	 * returns form data to edit lab
 	 * @return
 	 */
 	def edit(){
@@ -127,7 +128,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * return form data to edit lab
+	 * returns form data to edit lab
 	 * @return
 	 */
 	def saveEdit(){
@@ -153,7 +154,7 @@ class LaboratoryController {
 	}	
 
 	/**
-	 * Edit the status of a laboratory
+	 * Edits the status of a laboratory
 	 * @return
 	 */
 	def setStatus(){
@@ -173,7 +174,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Show list of ips
+	 * Shows list of ips
 	 */
 	def ipList(){
 		Laboratory lab = Laboratory.get(params.id)
@@ -186,7 +187,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Delete a valid IP in a lab
+	 * Deletes a valid IP in a lab
 	 * 
 	 * @return
 	 */
@@ -208,7 +209,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Change the state of a IP from AVAILABLE to DISABLE and vis
+	 * Changes the state of a IP from AVAILABLE to DISABLE and vis
 	 * @return
 	 */
 	def ipSet(){
@@ -229,7 +230,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Delete a valid Pool in a lab
+	 * Deletes a valid Pool in a lab
 	 *
 	 * @return
 	 */
@@ -251,7 +252,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Render form to create a new IP Pool
+	 * Renders form to create a new IP Pool
 	 * @return
 	 */
 	def createPool(){
@@ -261,7 +262,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Save new IP Pool in a Lab
+	 * Saves new IP Pool in a Lab
 	 * @return
 	 */
 	def savePool(){
@@ -284,7 +285,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Delete a valid Host (Physical Machine) in a lab
+	 * Deletes a valid Host (Physical Machine) in a lab
 	 *
 	 * @return
 	 */
@@ -306,7 +307,7 @@ class LaboratoryController {
 	}
 	
      /**
-	 * Edit physical machine form action
+	 * Edits physical machine form action
 	 * @return physical machine, laboratory which it belongs and list of all 
 	 * operating systems
 	 */
@@ -321,7 +322,7 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Create physical machine form action
+	 * Creates physical machine form action
 	 * @return selected laboratory an list of operating systems
 	 */
 	def createMachine() {
@@ -330,8 +331,7 @@ class LaboratoryController {
 			[lab: lab,oss: OperatingSystem.list()]
 		}else{
 			redirect(uri:"/admin/lab/list", absolute:true)
-		}
-		
+		}		
 	}
 	
 	/**
@@ -364,7 +364,7 @@ class LaboratoryController {
 		}
 	}
 	/**
-	 * Save new values in an edit host
+	 * Saves new values in an edit host
 	 * @return
 	 */
 	def saveEditMachine(){
@@ -395,12 +395,12 @@ class LaboratoryController {
 	}
 	
 	/**
-	 * Stop, Update agent or Clear Cache in selected machines. Returns to lab when finishes
+	 * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes
 	 */
 	
 	def updateMachines(){
 		def lab = Laboratory.get(params.id)
-		if(lab&&params.process in ['stop','update','cache']){
+		if(lab&&TaskEnum.getEnum(params.process)!=null){
 			def hostList = []
 			params.each {
 				if (it.key.contains("machine")){
@@ -415,7 +415,7 @@ class LaboratoryController {
 			if(hostList.size()>0){
 				try{
 					def user = User.get(session.user.id)
-					laboratoryService.createRequestTasktoMachines(hostList,params.process,user)
+					laboratoryService.createRequestTasktoMachines(hostList,TaskEnum.getEnum(params.process),user)
 					flash.message="Your request have been sent."
 					flash.type = "info"
 				}catch(Exception e){

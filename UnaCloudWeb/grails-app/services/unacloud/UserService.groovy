@@ -5,6 +5,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
+import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
 
 class UserService {
@@ -61,7 +62,7 @@ class UserService {
 	}
 	
 	/**
-	 * Desing an apikey for user
+	 * Creates an apikey for user
 	 * @return
 	 */
 	def designAPIKey(){
@@ -75,8 +76,13 @@ class UserService {
 	 * @param user user to be removed
 	 */	
 	def deleteUser(User user){
-		QueueTaskerControl.deleteUser(user);
-		user.putAt("status", UserStateEnum.BLOCKED);
+		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
+		if(user.images.size()>0){
+			QueueTaskerFile.deleteUser(user);
+			user.putAt("status", UserStateEnum.DISABLE);
+		}else{
+			user.delete()
+		}		
 	}
 	
 	/**

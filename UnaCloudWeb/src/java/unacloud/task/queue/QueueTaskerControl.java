@@ -11,6 +11,7 @@ import unacloud.PhysicalMachine;
 import unacloud.User;
 import unacloud.VirtualMachineExecution;
 import unacloud.VirtualMachineImage;
+import unacloud.enums.TaskEnum;
 
 /**
  * Class used to put task in queue messaging service that will be read by Control project
@@ -40,26 +41,18 @@ public class QueueTaskerControl {
 	public static void clearCache(VirtualMachineImage image, User user){
 		QueueMessage message = new QueueMessage(QueueMessageType.CLEAR_CACHE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
-	}
-	
-	/**
-	 * Put a task to remove an user, its machines, clusters and deployments
-	 * @param user User that will be removed
-	 */
-	public static void deleteUser(User user, User admin){
-		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_USER, admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
-		controlQueue.sendMessage(message);
-	}
+	}	
 	
 	/**
 	 * Put a task to machines to stop, update agent or remove its cache
 	 * @param machines
 	 * @param task
 	 * @param user
+	 * @throws Exception in case task is null or number of machines is 0
 	 */
-	public static void taskMachines(List<PhysicalMachine> machines, String task, User user){
+	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user){		
 		String[] parts = new String[machines.size()+1];
-		parts[0]=task;
+		parts[0]=task.getName();
 		for (int i = 0; i < machines.size(); i++) {
 			parts[i+1]=machines.get(i).getDatabaseId()+"";
 		}		

@@ -220,12 +220,13 @@ class LaboratoryService {
 	 * @return
 	 */
 	def createRequestTasktoMachines(machines, task, user){
+		if(task==null||machines.size()==0)throw new Exception("Invalid values");
 		List<PhysicalMachine> machineList = new ArrayList<PhysicalMachine>();
 		for(PhysicalMachine pm: machines){
 			pm.putAt("state", PhysicalMachineStateEnum.PROCESSING)
 			machineList.add(pm);
 		}
-		QueueTaskerControl.taskMachines(machineList,task as String, user)
+		QueueTaskerControl.taskMachines(machineList,task, user)
 	}
 	
 	/**

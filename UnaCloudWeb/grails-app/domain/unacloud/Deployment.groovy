@@ -1,6 +1,5 @@
 package unacloud
 
-//import back.services.ExternalCloudCallerService;
 import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.utils.CalendarUtils;
@@ -154,4 +153,13 @@ class Deployment {
 	def Long getDatabaseId(){
 		return id;
 	}
+	
+//	/**
+//	 * Delete all history for deployment and images.
+//	 * It is necessary this method due to belong property among classes
+//	 * @return
+//	 */
+//	def deleteDeploy(){
+//		
+//	}
 }
