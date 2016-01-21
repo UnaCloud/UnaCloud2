@@ -85,9 +85,6 @@
 											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.OFF) }">
 											   			<span class="label label-danger">${machine.state.toString()}</span>
 											   		</g:if>
-											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.PROCESSING) }">
-											   			<span class="label label-warning">${machine.state.toString()}</span>
-											   		</g:if>
 				                                  </td>
 				                                  <td class="column-center">	
 										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>  

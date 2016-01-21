@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+
 import grails.transaction.Transactional
 
 // Creada por Carlos E. Gomez - diciembre 11 de 2015
@@ -12,8 +14,7 @@ class RepositoryService {
 	 */
 	def Repository getMainRepository(){
 		return Repository.findByName(Constants.MAIN_REPOSITORY)
-	}
-	
+	}	
 	
 	/**
 	 * Creates a new repository
@@ -25,8 +26,7 @@ class RepositoryService {
 			new Repository(name: name, path:path).save()
 		} else {
 			// Error. No se como hacerlo.
-		}
-		
+		}		
 	}
 	
 	/**
@@ -38,7 +38,5 @@ class RepositoryService {
 		if (repo != getMainRepository() ) {
 			repo.delete()
 		}		
-	}
-
-	
+	}	
 }

@@ -11,7 +11,7 @@ import unacloud.entities.PhysicalMachine;
 import uniandes.ControlManager;
 
 /**
- * Classes to send message to a list of machines
+ * Classes to send message to list of machines
  * @author Cesar
  *
  */

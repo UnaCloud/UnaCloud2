@@ -2,6 +2,8 @@ package unacloud
 
 import org.apache.commons.io.FileUtils
 
+import com.losandes.utils.Constants;
+
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
@@ -62,9 +64,7 @@ class VirtualMachineImageService {
 			if(image.isPublic){
 				QueueTaskerFile.createPublicCopy(image, user)
 				image.freeze()
-			}
-//				def templateFile= new java.io.File(repo.root+"imageTemplates"+separator+image.name+separator+it.getOriginalFilename())
-//				FileUtils.copyFile(newFile, templateFile)				
+			}			
 			if (fileName.endsWith(".vmx")||fileName.endsWith(".vbox")){
 				image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+fileName)		
 			}
@@ -90,17 +90,6 @@ class VirtualMachineImageService {
 				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 
 				password:  publicImage.password)
 			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)
-//			java.io.File folder= new java.io.File(publicImage.mainFile.substring(0, publicImage.mainFile.lastIndexOf(separator.toString())))
-//			println folder.toString()
-//			//TODO define repository assignment schema
-//			folder.listFiles().each
-//			{
-//				def file= new java.io.File(repo.root+"imageTemplates"+separator+publicImage.name+separator+it.getName())
-//				def newFile= new java.io.File(repo.root+image.name+"_"+user.username+separator+it.getName())
-//				FileUtils.copyFile(file, newFile)
-//				if (it.getName().endsWith(".vmx")||it.getName().endsWith(".vbox"))
-//					image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+newFile.getName())
-//			}
 			image.save(failOnError:true)
 			return true
 		}else return false	
@@ -131,25 +120,7 @@ class VirtualMachineImageService {
 		image.freeze()
 		return true;
 	}
-//		try{//delete files
-//			File f = new java.io.File(image.mainFile);
-//			f.getParentFile().deleteDir();
-//		}catch(Exception e){
-//			e.printStackTrace();
-//		}
-//		if(image.isPublic){//Delete public copy
-//			try{
-//				deletePublicImage(image);
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//		}
-//		repository.images.remove(image)
-//		repository.save()
-//		user.images.remove(image)
-//		user.save()
-//		image.delete()
-//	}
+	
 	/**
 	 * Send a task to remove image from cache in all physical machines
 	 * @param image

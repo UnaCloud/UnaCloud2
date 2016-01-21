@@ -33,7 +33,7 @@ public class QueueTaskerControl {
 	}
 
 	/**
-	 * Put a task to Remove an image from all machines connected
+	 * Put a task to Remove an image from all connected machines 
 	 * @param image that will be removed from cache
 	 * @param user who asks the task
 	 */

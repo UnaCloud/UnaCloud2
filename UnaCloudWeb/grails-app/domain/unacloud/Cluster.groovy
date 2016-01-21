@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import unacloud.enums.ClusterEnum;
 import unacloud.enums.DeploymentStateEnum;
+import unacloud.enums.VirtualMachineImageEnum;
 
 class Cluster {
 	
@@ -52,6 +53,18 @@ class Cluster {
 		Long clusterId = this.id;
 		def deployments= Deployment.where{status == DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
 		return deployments&&deployments.size()>0?true:false
+	}
+	
+	/**
+	 * Validates if cluster is FREEZE. If all images are available changes status to AVAILABLE
+	 * @return
+	 */
+	def update(){
+		if(state.equals(ClusterEnum.FREEZE)
+			&&images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.size()==0){
+			state=ClusterEnum.AVAILABLE;
+			this.save(failOnError:true)
+		}
 	}
 	
 }

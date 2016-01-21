@@ -7,10 +7,12 @@ package queue;
  */
 public enum QueueMessageType {
 
+	//Types for Agent control
 	/**
-	 * Types for Agent control
+	 * Remove an image from all physical machines
 	 */
 	CLEAR_CACHE,
+	
 	DELETE_USER,
 	SEND_TASK,
 	DEPLOY_CLUSTER,

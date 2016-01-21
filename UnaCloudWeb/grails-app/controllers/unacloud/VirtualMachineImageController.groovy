@@ -110,7 +110,8 @@ class VirtualMachineImageController {
 		}
 	}
 	/**
-	 * Request delete image files from every physical machine
+	 * Requests delete image files from every ACTIVE physical machine
+	 * Verifies if image is AVAILABLE
 	 */	
 	def clearFromCache(){
 		VirtualMachineImage image = VirtualMachineImage.get(params.id);

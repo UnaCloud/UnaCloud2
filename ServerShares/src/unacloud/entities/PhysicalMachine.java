@@ -5,8 +5,8 @@ import java.util.Date;
 import unacloud.enums.PhysicalMachineStateEnum;
 
 /**
- * Class to represent in back an entity from project domain
- * Represent PhysicalMachine
+ * Class to represent an entity from domain of project 
+ * Represents PhysicalMachine
  * @author Cesar
  *
  */

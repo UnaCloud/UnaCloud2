@@ -7,11 +7,14 @@ import java.util.concurrent.Executors;
 import com.losandes.utils.Constants;
 
 import communication.UnaCloudAbstractResponse;
-import communication.messages.ao.ClearVMCacheMessage;
+import communication.messages.ao.ClearImageFromCacheMessage;
 import db.PhysicalMachineManager;
+import db.VirtualImageManager;
 import queue.QueueMessage;
 import queue.QueueReader;
 import unacloud.entities.PhysicalMachine;
+import unacloud.entities.VirtualMachineImage;
+import unacloud.enums.VirtualMachineImageEnum;
 import uniandes.communication.MessageSender;
 import uniandes.communication.ResponseProcessor;
 
@@ -55,31 +58,33 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Get list of machines in queuemessage and process request to clear cache from agents
+	 * Get list of machines in queuemessage and process request to remove an image from agents cache
 	 * @param message
 	 */
 	private void clearCache(QueueMessage message){
-		try {
-			Long[] ids = new Long[message.getMessageParts().length];
-			for (int i = 0; i < ids.length; i++) {				
-				ids[i]= Long.parseLong(message.getMessageParts()[i]);
-			}
-			try {
-				List<PhysicalMachine> machines=PhysicalMachineManager.getPhysicalMachineList(ids);
+		try {		
+			Long id =  Long.parseLong(message.getMessageParts()[0]);
+			VirtualMachineImage image = new VirtualMachineImage(id, null, null, VirtualMachineImageEnum.REMOVING_CACHE);
+			VirtualImageManager.setVirtualMachine(image);
+			try {				
+				List<PhysicalMachine> machines=PhysicalMachineManager.getAllPhysicalMachine();			
 				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
-					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearVMCacheMessage(), new ResponseProcessor() {			
+					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(id), new ResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-							//TODO manage response
+							VirtualMachineImage image = new VirtualMachineImage(id, null, null, VirtualMachineImageEnum.AVAILABLE);
+							VirtualImageManager.setVirtualMachine(image);
 						}
 						@Override
 						public void attendError(String message, Long id) {
-							//TODO manage error
+							VirtualMachineImage image = new VirtualMachineImage(id, null, null, VirtualMachineImageEnum.AVAILABLE);
+							VirtualImageManager.setVirtualMachine(image);
 						}
 					}));
 				}				
 			} catch (Exception e) {
-				
+				image.setState(VirtualMachineImageEnum.AVAILABLE);
+				VirtualImageManager.setVirtualMachine(image);
 			}			
 		} catch (Exception e) {
 			e.printStackTrace();

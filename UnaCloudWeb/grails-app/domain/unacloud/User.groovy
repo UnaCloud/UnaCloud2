@@ -97,7 +97,9 @@ class User {
 			this.userClusters = []
 			this.save()
 		}
-		return this.userClusters.sort{it.name}
+		def clusters = this.userClusters.sort{it.name}
+		for(Cluster cl in clusters)cl.update()
+		return clusters
 	}
 	
 	/**
