@@ -11,7 +11,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
  * @author Cesar
  *
  */
-public final class DatabaseConnection {
+public class DatabaseConnection {
 	
 	private String host;
 	private String username ;
@@ -19,6 +19,9 @@ public final class DatabaseConnection {
 	
 	private BasicDataSource dataSource;
 	public static DatabaseConnection instance;
+	
+	public DatabaseConnection(){
+	}
 	
 	public static DatabaseConnection getInstance(){
 		if(instance==null)instance = new DatabaseConnection();
@@ -29,17 +32,28 @@ public final class DatabaseConnection {
 	 * Sets values in data source connection pool
 	 */
 	private void setConnection() {
+
+		System.out.println("hola");
 		dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		
         dataSource.setUrl(host);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
 	}
-	
+	/**
+	 * Set variables to be used in connection.
+	 * @param db
+	 * @param port
+	 * @param ip
+	 * @param username
+	 * @param password
+	 */
 	public void connect(String db, int port, String ip, String username, String password){
 		this.host = "jdbc:mysql://"+ip+":"+port+"/"+db+"?useUnicode=yes&characterEncoding=UTF-8";
 		this.username = username;
 		this.password = password;
+		System.out.println(host);
 		setConnection();
 	}
 		

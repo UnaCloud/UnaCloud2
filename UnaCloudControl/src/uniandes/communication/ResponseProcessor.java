@@ -3,22 +3,22 @@ package uniandes.communication;
 import communication.UnaCloudAbstractResponse;
 
 /**
- * Interface to be implemented by classes that process responses from agents
+ * Abstract class to be used that process responses from agents
  * @author Cesar
  *
  */
-public interface ResponseProcessor {
+public abstract class ResponseProcessor {
 	
 	/**
 	 * Attends response
 	 * @param response
 	 */
-	public void attendResponse(UnaCloudAbstractResponse response);
+	public abstract void attendResponse(UnaCloudAbstractResponse response, Long id);
 	
 	/**
 	 * Manage error in process
 	 * @param message
 	 */
-	public void attendError(String message);
+	public abstract void attendError(String message, Long id);
 
 }

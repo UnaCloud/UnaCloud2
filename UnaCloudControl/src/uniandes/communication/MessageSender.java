@@ -38,7 +38,7 @@ public class MessageSender extends Thread{
 				oos.writeObject(message);
 				oos.flush();
 				try {
-					processor.attendResponse((UnaCloudAbstractResponse) ois.readObject());
+					processor.attendResponse((UnaCloudAbstractResponse) ois.readObject(),pm.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}				
@@ -46,7 +46,7 @@ public class MessageSender extends Thread{
 			}catch(Exception e){
 				e.printStackTrace();
 				System.out.println("Error connectiong to "+pm.getIp());		
-				processor.attendError(e.getMessage());
+				processor.attendError(e.getMessage(),pm.getId());
 			}
 			try{
 				Thread.sleep(500);

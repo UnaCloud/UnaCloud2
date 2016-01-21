@@ -42,13 +42,22 @@ public class PhysicalMachineManager {
 	 * @return
 	 */
 	public static List<PhysicalMachine> getPhysicalMachineList(Long[] idList){
+		if(idList.length==0)return null;
 		try {
 			List<PhysicalMachine> list = new ArrayList<PhysicalMachine>();
 			Connection con = DatabaseConnection.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i vm ON pm.ip_id = i.id WHERE pm.id in ?;");
-			ps.setArray(1, con.createArrayOf("bigint", idList));
-			ResultSet rs = ps.executeQuery();			
-			if(rs.next())list.add(new PhysicalMachine(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
+			StringBuilder builder = new StringBuilder();
+			for(Long pm: idList){
+				builder.append("?,");
+			}
+			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
+			PreparedStatement ps = con.prepareStatement(query);
+			int index = 1;
+			for(Long idpm: idList){
+				ps.setLong(index++, idpm);
+			}
+			ResultSet rs = ps.executeQuery();		
+			while(rs.next())list.add(new PhysicalMachine(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();

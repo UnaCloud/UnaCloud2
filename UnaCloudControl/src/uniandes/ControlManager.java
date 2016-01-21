@@ -49,7 +49,12 @@ public class ControlManager {
 		QueueMessageReceiver.getInstance().startReceiver();				
 	}
 	
+	/**
+	 * Initial configuration for Database connection pool
+	 * @throws Exception
+	 */
 	public void startDatabaseService() throws Exception{
+		DatabaseConnection.getInstance();
 		DatabaseConnection.getInstance().connect(reader.getStringVariable(Constants.DB_NAME), reader.getIntegerVariable(Constants.DB_PORT),
 				reader.getStringVariable(Constants.DB_URL), reader.getStringVariable(Constants.DB_USERNAME), reader.getStringVariable(Constants.DB_PASS));
 	}
@@ -60,7 +65,7 @@ public class ControlManager {
 	 */
 	private String[] variableList(){
 		return new String[]{Constants.QUEUE_USERNAME,Constants.QUEUE_PASS,Constants.QUEUE_URL,Constants.QUEUE_PORT,Constants.DB_NAME,
-				Constants.DB_PASS,Constants.DB_PORT,Constants.DB_PORT,Constants.DB_USERNAME,Constants.AGENT_PORT};
+				Constants.DB_PASS,Constants.DB_PORT,Constants.DB_URL,Constants.DB_USERNAME,Constants.AGENT_PORT};
 	}
 	
 

@@ -1,12 +1,14 @@
 package uniandes.queue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.losandes.utils.Constants;
+
 import communication.UnaCloudAbstractResponse;
 import communication.messages.ao.ClearVMCacheMessage;
+import db.PhysicalMachineManager;
 import queue.QueueMessage;
 import queue.QueueReader;
 import unacloud.entities.PhysicalMachine;
@@ -57,20 +59,31 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void clearCache(QueueMessage message){
-		List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
-		for(String id: message.getMessageParts()){
-			
-		}
-		MessageSender sender = new MessageSender(machines, new ClearVMCacheMessage(), new ResponseProcessor() {			
-			@Override
-			public void attendResponse(UnaCloudAbstractResponse response) {
-				
+		try {
+			Long[] ids = new Long[message.getMessageParts().length];
+			for (int i = 0; i < ids.length; i++) {				
+				ids[i]= Long.parseLong(message.getMessageParts()[i]);
 			}
-			@Override
-			public void attendError(String message) {
+			try {
+				List<PhysicalMachine> machines=PhysicalMachineManager.getPhysicalMachineList(ids);
+				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
+					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearVMCacheMessage(), new ResponseProcessor() {			
+						@Override
+						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+							//TODO manage response
+						}
+						@Override
+						public void attendError(String message, Long id) {
+							//TODO manage error
+						}
+					}));
+				}				
+			} catch (Exception e) {
 				
-			}
-		});
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 }

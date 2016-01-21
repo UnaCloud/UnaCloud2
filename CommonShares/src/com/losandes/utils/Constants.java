@@ -110,5 +110,6 @@ public class Constants {
 	public static final String DB_PORT = "DBPORT";
 	public static final String DB_NAME = "DBNAME";	
 	public static final String AGENT_PORT = "APORT";
+	public static final int AGENT_QUANTITY_MESSAGE = 5;
 
 }//end of Constants

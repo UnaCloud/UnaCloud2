@@ -1,6 +1,5 @@
 package uniandes;
 
-import db.PhysicalMachineManager;
 
 /**
  * Start class to initialize all services from UnaCloud Control
@@ -16,9 +15,8 @@ public class Init {
 	public static void main(String[] args) {
 		
 		try {
-			//ControlManager.getInstance().startQueueService();
 			ControlManager.getInstance().startDatabaseService();
-			PhysicalMachineManager.getPhysicalMachineList(new Long[]{1l});
+			ControlManager.getInstance().startQueueService();			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
