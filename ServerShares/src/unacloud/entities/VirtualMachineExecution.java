@@ -1,6 +1,8 @@
 package unacloud.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 
@@ -19,10 +21,12 @@ public class VirtualMachineExecution {
 	private Date stopTime;
 	private PhysicalMachine node;
 	private VirtualMachineExecutionStateEnum state;
+	private String hostName;
+	private List<NetInterface> interfaces;
 	
 	public VirtualMachineExecution(Long id, int cores, int ram, Date startTime,
 			Date stopTime, PhysicalMachine node,
-			VirtualMachineExecutionStateEnum state) {
+			VirtualMachineExecutionStateEnum state, String hostName) {
 		super();
 		this.id = id;
 		this.cores = cores;
@@ -31,6 +35,8 @@ public class VirtualMachineExecution {
 		this.stopTime = stopTime;
 		this.node = node;
 		this.state = state;
+		this.hostName = hostName;
+		interfaces = new ArrayList<NetInterface>();
 	}
 
 	public Long getId() {
@@ -89,4 +95,28 @@ public class VirtualMachineExecution {
 		this.state = state;
 	}
 
+	public String getHostName() {
+		return hostName;
+	}
+	
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+	
+	public List<NetInterface> getInterfaces() {
+		return interfaces;
+	}
+	
+	public void setInterfaces(List<NetInterface> interfaces) {
+		this.interfaces = interfaces;
+	}
+	
+	/**
+	 * Return time execution in hours
+	 * @return
+	 */
+	public Long getTimeInHours(){
+		long millisTime=(stopTime.getTime()-startTime.getTime())/1000;
+		return (millisTime/60/60)+1;
+	}
 }

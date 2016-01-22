@@ -1,10 +1,14 @@
 package uniandes.queue;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import com.losandes.utils.Constants;
+import com.losandes.utils.Time;
 
 import communication.UnaCloudAbstractMessage;
 import communication.UnaCloudAbstractResponse;
@@ -12,14 +16,22 @@ import communication.messages.ao.ClearImageFromCacheMessage;
 import communication.messages.ao.ClearVMCacheMessage;
 import communication.messages.ao.StopAgentMessage;
 import communication.messages.ao.UpdateAgentMessage;
+import communication.messages.vmo.VirtualMachineStartMessage;
+import communication.messages.vmo.VirtualNetInterfaceComponent;
+import db.DeploymentManager;
 import db.PhysicalMachineManager;
 import db.VirtualImageManager;
 import queue.QueueMessage;
 import queue.QueueReader;
+import unacloud.entities.DeployedImage;
+import unacloud.entities.Deployment;
+import unacloud.entities.NetInterface;
 import unacloud.entities.PhysicalMachine;
+import unacloud.entities.VirtualMachineExecution;
 import unacloud.entities.VirtualMachineImage;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.TaskEnum;
+import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 import uniandes.communication.MessageSender;
 import uniandes.communication.ResponseProcessor;
@@ -44,7 +56,7 @@ public class QueueMessageProcessor implements QueueReader{
 			sendTaskToAgents(message);
 			break;
 		case DEPLOY_CLUSTER:
-			System.out.println("Deploy cluster");
+			doDeploy(message);
 			break;
 		case STOP_DEPLOYS:	
 			System.out.println("Stop deploy");
@@ -126,6 +138,53 @@ public class QueueMessageProcessor implements QueueReader{
 					}
 				}));
 			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Method to send message to agents to start deploy in physical machines
+	 * @param message
+	 */
+	private void doDeploy(QueueMessage message){
+		try {
+			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
+			Deployment deploy = DeploymentManager.getDeployment(deploymentId);
+			if(deploy!=null){
+				for(DeployedImage image :deploy.getImages()){
+					for(final VirtualMachineExecution execution : image.getExecutions()){
+						VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
+						vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
+						vmsm.setHostname(execution.getHostName());
+						vmsm.setVmCores(execution.getCores());
+						vmsm.setVmMemory(execution.getRam());
+						vmsm.setVirtualMachineExecutionId(execution.getId());
+						vmsm.setVirtualMachineImageId(image.getImage().getId());
+						List<VirtualNetInterfaceComponent> interfaces = new ArrayList<VirtualNetInterfaceComponent>();
+						for(NetInterface interf: execution.getInterfaces())
+							interfaces.add(new VirtualNetInterfaceComponent(interf.getIp(), interf.getNetMask(),interf.getName()));
+						vmsm.setInterfaces(interfaces);						
+						List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+						machines.add(execution.getNode());
+						threadPool.submit(new MessageSender(machines, 
+								vmsm, new ResponseProcessor() {			
+							@Override
+							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.CONFIGURING, null));
+								//TODO realizar el cambio de hora
+							}
+							@Override
+							public void attendError(String message, Long id) {
+								PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineManager.setPhysicalMachine(pm);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null));
+								//TODO set stop and start time
+							}
+						}));
+					}
+				}				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -54,6 +54,5 @@ public class VirtualMachineImage {
 
 	public void setState(VirtualMachineImageEnum state) {
 		this.state = state;
-	}
-
+	}	
 }

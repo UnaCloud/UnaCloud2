@@ -146,4 +146,12 @@ class VirtualMachineExecution {
 	def Long getDatabaseId(){
 		return id;
 	}
+	
+	/**
+	 * Method used to validates if execution must show its details based in status
+	 * @return
+	 */
+	def boolean showDetails(){
+		return status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)||status.equals(VirtualMachineExecutionStateEnum.FAILED)
+	}
 }

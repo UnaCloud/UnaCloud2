@@ -93,16 +93,16 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: new Date(),stopTime:stop, interfaces:[])
+				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: start,stopTime:stop, interfaces:[])
 				executions.add(virtualExecution)
 			}
 			depImage.virtualMachines=executions
 			images.add(depImage)	
 				
-			println 'Load Map with used machines '+pmDescriptions.entrySet().size()
-			for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
-				println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
-			}
+//			println 'Load Map with used machines '+pmDescriptions.entrySet().size()
+//			for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
+//				println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
+//			}
 			
 			if(!depImage.highAvaliavility&&pms.size()==0) throw new Exception('Not enough physical machines available')
 			if(depImage.highAvaliavility&&pmsHigh.size()==0) throw new Exception('Not enough high availability physical machines available')

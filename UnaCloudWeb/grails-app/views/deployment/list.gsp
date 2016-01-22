@@ -75,10 +75,10 @@
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
+			                                  		    <tr>			                                  		   
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 				                                  			<input type="checkbox" name="execution_${execution.id}" class="all image_${image.id}"/> 
-					                                  		<small>${execution.name}</small></td>
+					                                  		<small>${execution.name}</small></td>					                                  	
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
@@ -118,9 +118,11 @@
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
+			                                  		    <g:if test="${execution.showDetails()}">
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 					                                  			<small>${execution.remainingTime()}</small>
 															</td>
+														</g:if>
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
