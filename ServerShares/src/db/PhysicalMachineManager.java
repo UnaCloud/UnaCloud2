@@ -24,7 +24,7 @@ public class PhysicalMachineManager {
 	public static PhysicalMachine getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i vm ON pm.ip_id = i.id WHERE pm.state == ? and pm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state == ? and pm.id = ?;");
 			ps.setString(1, machineState.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
@@ -33,8 +33,7 @@ public class PhysicalMachineManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		}
-		
+		}		
 	}
 	
 	/**

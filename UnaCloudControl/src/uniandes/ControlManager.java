@@ -5,8 +5,8 @@ import com.losandes.utils.Constants;
 
 import db.DatabaseConnection;
 import queue.QueueRabbitManager;
+import unacloud.utils.ConfigurationReader;
 import uniandes.queue.QueueMessageReceiver;
-import utils.ConfigurationReader;
 
 /**
  * Class used to start and manage services in Control project
