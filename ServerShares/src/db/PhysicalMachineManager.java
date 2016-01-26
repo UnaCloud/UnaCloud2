@@ -47,7 +47,7 @@ public class PhysicalMachineManager {
 			List<PhysicalMachine> list = new ArrayList<PhysicalMachine>();
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			StringBuilder builder = new StringBuilder();
-			for(Long pm: idList){
+			for(@SuppressWarnings("unused") Long pm: idList){
 				builder.append("?,");
 			}
 			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state == ? and pm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";

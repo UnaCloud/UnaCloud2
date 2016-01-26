@@ -23,10 +23,11 @@ public class VirtualMachineExecution {
 	private VirtualMachineExecutionStateEnum state;
 	private String hostName;
 	private List<NetInterface> interfaces;
+	private String message;
 	
 	public VirtualMachineExecution(Long id, int cores, int ram, Date startTime,
 			Date stopTime, PhysicalMachine node,
-			VirtualMachineExecutionStateEnum state, String hostName) {
+			VirtualMachineExecutionStateEnum state, String hostName, String message) {
 		super();
 		this.id = id;
 		this.cores = cores;
@@ -37,6 +38,7 @@ public class VirtualMachineExecution {
 		this.state = state;
 		this.hostName = hostName;
 		interfaces = new ArrayList<NetInterface>();
+		this.message = message;
 	}
 
 	public Long getId() {
@@ -111,6 +113,14 @@ public class VirtualMachineExecution {
 		this.interfaces = interfaces;
 	}
 	
+	public String getMessage() {
+		return message;
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 	/**
 	 * Return time execution in hours
 	 * @return
@@ -118,5 +128,13 @@ public class VirtualMachineExecution {
 	public Long getTimeInHours(){
 		long millisTime=(stopTime.getTime()-startTime.getTime())/1000;
 		return (millisTime/60/60)+1;
+	}
+	
+	/**
+	 * Return time execution in milliseconds
+	 * @return
+	 */
+	public Long getTime(){
+		return stopTime.getTime()-startTime.getTime();
 	}
 }

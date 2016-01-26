@@ -74,10 +74,10 @@ public class QueueTaskerControl {
 	 * Put a task to stop deployments in array
 	 * @param deployments
 	 */
-	public static void stopDeployments(Deployment[] deployments, User user){
-		String[] parts = new String[deployments.length];
-		for (int i = 0; i < deployments.length; i++) {
-			parts[i]=deployments[i].getDatabaseId()+"";
+	public static void stopExecutions(VirtualMachineExecution[] executions, User user){
+		String[] parts = new String[executions.length];
+		for (int i = 0; i < executions.length; i++) {
+			parts[i]=executions[i].getDatabaseId()+"";
 		}		
 		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
@@ -88,8 +88,13 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void addInstancesToDeploy(DeployedImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+	public static void addInstancesToDeploy(VirtualMachineExecution[] executions, User user, DeployedImage image){
+		String[] parts = new String[executions.length+1];
+		parts[0]=image.getDatabaseId()+"";
+		for (int i = 0, j = 1; i < executions.length; i++, j++) {
+			parts[j]=executions[i].getDatabaseId()+"";
+		}	
+		QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
 	}
 	

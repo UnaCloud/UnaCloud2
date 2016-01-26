@@ -50,7 +50,7 @@ public class DeploymentManager {
 			rs.close();
 			ps.close();
 			if(deploy!=null){
-				ps = con.prepareStatement("SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state"
+				ps = con.prepareStatement("SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token"
 						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id INNER JOIN deployed_image dp ON dp.id = vme.deploy_image_id "
 						+ "INNER JOIN virtual_machine_image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.status = ?;");
 				ps.setLong(1, id);
@@ -59,11 +59,11 @@ public class DeploymentManager {
 				TreeMap<Long, DeployedImage> executions = new TreeMap<Long, DeployedImage>();
 				while(rs.next()){
 					PhysicalMachine pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON);
-					if(pm==null)setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null));
+					if(pm==null)setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"));
 					else{
-						VirtualMachineExecution vme = new VirtualMachineExecution(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8));
+						VirtualMachineExecution vme = new VirtualMachineExecution(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8),rs.getString(13));
 						if(executions.get(rs.getLong(9))==null)
-							executions.put(rs.getLong(9), new DeployedImage(new VirtualMachineImage(rs.getLong(9), rs.getString(10), rs.getString(11), VirtualMachineImageEnum.getEnum(rs.getString(12))),new ArrayList<VirtualMachineExecution>()));
+							executions.put(rs.getLong(9), new DeployedImage(new VirtualMachineImage(rs.getLong(9), rs.getString(10), rs.getString(11), VirtualMachineImageEnum.getEnum(rs.getString(12)), rs.getString(14)),new ArrayList<VirtualMachineExecution>()));
 						executions.get(rs.getLong(9)).getExecutions().add(vme);						
 					}
 				}
@@ -93,10 +93,12 @@ public class DeploymentManager {
 			int start = 0;
 			int stop = 0;
 			int state = 0;
+			int message = 0;
 			if(execution.getStartTime()!=null){query+=" set vme.start_time = ? ";start = 1;}
 			if(execution.getStopTime()!=null){query+=(start>0?",":"")+" set vme.stop_time = ? ";stop=start+1;};
 			if(execution.getState()!=null){query+=(start>0||stop>0?",":"")+" set vme.status= ? ";state=stop+1;};
-			if(state>0||stop>0||start>0){
+			if(execution.getMessage()!=null){query+=(start>0||stop>0||state>0?",":"")+" set vme.message= ? ";message=state+1;};
+			if(state>0||stop>0||start>0||message>0){
 				query += "where vme.id = ? and vme.id > 0;";
 				Connection con = DatabaseConnection.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement(query);
@@ -104,6 +106,7 @@ public class DeploymentManager {
 				if(start>0){ps.setDate(start, new java.sql.Date(execution.getStartTime().getTime()));id++;};
 				if(stop>0){ps.setDate(stop, new java.sql.Date(execution.getStopTime().getTime()));id++;};
 				if(state>0){ps.setString(state, execution.getState().name());id++;}
+				if(message>0){ps.setString(message, execution.getMessage());id++;}
 				ps.setLong(id, execution.getId());
 				System.out.println("Change "+ps.executeUpdate()+" lines");
 				return true;
@@ -128,6 +131,84 @@ public class DeploymentManager {
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next())list.add(new NetInterface(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4)));
 			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Return a list of deployed virtual machine executions requested by parameter ids
+	 * @param ids
+	 * @param state
+	 * @return
+	 */
+	public static List<VirtualMachineExecution> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state){
+		try {			
+			Connection con = DatabaseConnection.getInstance().getConnection();
+			StringBuilder builder = new StringBuilder();
+			for(@SuppressWarnings("unused") Long id: ids){
+				builder.append("?,");
+			}
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
+						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
+						+ "WHERE vme.status = ? AND vme.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setString(1, state.name());
+			int index = 2;
+			for(Long idvme: ids){
+				ps.setLong(index++, idvme);
+			}
+			ResultSet rs = ps.executeQuery();
+			List<VirtualMachineExecution> executions = new ArrayList<VirtualMachineExecution>();
+			while(rs.next()){
+				PhysicalMachine pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON);
+				if(pm==null){
+					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
+						setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"));					
+					if(state.equals(VirtualMachineExecutionStateEnum.QUEQUED))				
+						setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"));	
+				}else{
+					VirtualMachineExecution vme = new VirtualMachineExecution(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+					executions.add(vme);		
+				}
+			}		
+			return executions;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Return a virtual machine executions based in id and state sent by params
+	 * @param id
+	 * @param state
+	 * @return
+	 */
+	public static VirtualMachineExecution getExecution(Long id, VirtualMachineExecutionStateEnum state){
+		try {			
+			Connection con = DatabaseConnection.getInstance().getConnection();	
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
+						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
+						+ "WHERE vme.status = ? AND vme.id =?);";
+			PreparedStatement ps = con.prepareStatement(query);
+			ps.setString(1, state.name());
+			ps.setLong(2, id);
+			ResultSet rs = ps.executeQuery();	
+			VirtualMachineExecution execution = null;
+			if(rs.next()){
+				PhysicalMachine pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON);
+				if(pm==null){
+					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
+						setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"));					
+					if(state.equals(VirtualMachineExecutionStateEnum.QUEQUED))				
+						setVirtualMachineExecution(new VirtualMachineExecution(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"));	
+				}else{
+					execution = new VirtualMachineExecution(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+				}
+			}		
+			return execution;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.utils.RandomUtils;
+
 import unacloud.allocation.IpAllocatorService
 import unacloud.allocation.PhysicalMachineAllocatorService
 import unacloud.enums.DeploymentStateEnum;
@@ -162,7 +164,7 @@ class DeploymentService {
 					
 		def executions = []
 		for(int j=0;j<request.instances;j++){
-			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.REQUESTED,startTime: new Date(), stopTime:stop,interfaces:[])
+			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: new Date(), stopTime:stop,interfaces:[])
 			executions.add(virtualExecution)
 		}
 		
@@ -180,7 +182,7 @@ class DeploymentService {
 		image.virtualMachines.addAll(executions)
 		image.save(failOnError:true)
 		//if(!Environment.isDevelopmentMode()){
-			QueueTaskerControl.addInstancesToDeploy(image,user)
+			QueueTaskerControl.addInstancesToDeploy(executions,user)
 		//}
 		
 	}
@@ -206,18 +208,16 @@ class DeploymentService {
 	 * @return
 	 */
 	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions, User requester){
-		TreeMap<Deployment, Integer> deployments = new TreeMap<Deployment, Integer>();
 		for(VirtualMachineExecution vm in executions){
 			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
 				vm.finishExecution()
+				executions.remove(vm)
 			}else if(vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)){
-				vm.status = VirtualMachineExecutionStateEnum.REQUEST_FINISH
-				if(deployments.containsKey(vm.deployImage.deployment))deployments.put(vm.deployImage.deployment,deployments.get(vm.deployImage.deployment)+1)
-				else deployments.put(vm.deployImage.deployment,1)
+				vm.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_FINISH)				
 			}
 		}
-		if(deployments.navigableKeySet().size()>0){
-			QueueTaskerControl.stopDeployments(deployments.navigableKeySet().toArray(), requester)
+		if(executions.size()>0){
+			QueueTaskerControl.stopExecutions(executions, requester)
 		}
 	}
 	
@@ -232,10 +232,12 @@ class DeploymentService {
 	//TODO add repository validation
 	def createCopy(VirtualMachineExecution execution, User user, String newName)throws Exception{
 		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
+		if(VirtualMachineImage.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
 		def repository = repositoryService.getMainRepository()
+		String token = RandomUtils.generateRandomString(32);
 		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
-			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository)
+			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository,token:token)
 		image.save(failOnError:true)
 		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
 		execution.putAt("message", 'Copy request to image '+image.id)
