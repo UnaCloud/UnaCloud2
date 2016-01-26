@@ -64,7 +64,7 @@ class VirtualMachineImageController {
 	}
 	
 	/**
-	 * Create a copy from a public image. Redirects to index when finished
+	 * Create a image copy from a public one. Redirects to index when finished
 	 */
 	def copyPublic(){
 		def resp

@@ -76,7 +76,7 @@ class VirtualMachineImageService {
     }
 	
 	/**
-	 * Creates a new image based on a public one
+	 * Creates a new image from on a public one
 	 * @param name image name
 	 * @param publicImage public image used as template
 	 * @param user owner user

@@ -46,7 +46,7 @@ public class QueueTaskerFile {
 		fileQueue.sendMessage(message);
 	}
 	/**
-	 * Create a task to delete image image from repositories
+	 * Create a task to delete image from repositories
 	 * @param image
 	 * @param user
 	 */
