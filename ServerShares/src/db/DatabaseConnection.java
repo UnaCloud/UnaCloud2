@@ -33,10 +33,8 @@ public class DatabaseConnection {
 	 */
 	private void setConnection() {
 
-		System.out.println("hola");
 		dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");		
         dataSource.setUrl(host);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
@@ -53,7 +51,6 @@ public class DatabaseConnection {
 		this.host = "jdbc:mysql://"+ip+":"+port+"/"+db+"?useUnicode=yes&characterEncoding=UTF-8";
 		this.username = username;
 		this.password = password;
-		System.out.println(host);
 		setConnection();
 	}
 		

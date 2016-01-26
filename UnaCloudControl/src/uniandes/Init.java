@@ -12,12 +12,9 @@ public class Init {
 	 * Method to initialize all services 
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) {		
 		try {
-			ControlManager.getInstance().startDatabaseService();
-			ControlManager.getInstance().startQueueService();			
-			
+			ControlManager.getInstance();					
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

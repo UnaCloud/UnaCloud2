@@ -1,71 +1,59 @@
-package uniandes;
+package uniandes.unacloud;
 
 
-import manager.ProjectManager;
+import queue.QueueMessageReceiver;
+import queue.QueueRabbitManager;
 
 import com.losandes.utils.Constants;
 
 import db.DatabaseConnection;
-import queue.QueueMessageReceiver;
-import queue.QueueRabbitManager;
-import uniandes.queue.QueueMessageProcessor;
+import manager.ProjectManager;
 
 /**
- * Class used to start and manage services in Control project
+ * Initializes and control all services in project
  * @author Cesar
  *
  */
-public class ControlManager extends ProjectManager{
+public class FileManager extends ProjectManager{
 	
-	public static ControlManager control;
+	private static FileManager fileManager;
 	
-	public ControlManager() {
+	public FileManager() {
 		super();
 	}
 	
-	public static ControlManager getInstance(){
+	public static FileManager getInstance(){
 		try {
-			if(control==null)control = new ControlManager();
-			return control;
+			if(fileManager==null)fileManager = new FileManager();
+			return fileManager;
 		} catch (Exception e) {
 			return null;
 		}		
 	}	
-	
+
 	@Override
-	protected String getPortNameVariable() {
+	protected String getPortNameVariable() {		
 		return Constants.AGENT_PORT;
 	}
 
 	@Override
-	protected String getPropetiesFileName() {
-		return "controlConfig.properties";
+	protected String getPropetiesFileName() {		
+		return "fileManager.properties";
 	}
 
-	/**
-	 * Return the list of variables required by services
-	 * @return
-	 */
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{Constants.QUEUE_USERNAME,Constants.QUEUE_PASS,Constants.QUEUE_URL,Constants.QUEUE_PORT,Constants.DB_NAME,
 				Constants.DB_PASS,Constants.DB_PORT,Constants.DB_URL,Constants.DB_USERNAME,Constants.AGENT_PORT};
-    }
+	}
 
-	/**
-	 * Initial configuration for Database connection pool
-	 * @throws Exception
-	 */
 	@Override
 	protected void startDatabaseService() throws Exception {
+		DatabaseConnection.getInstance();
 		DatabaseConnection.getInstance().connect(reader.getStringVariable(Constants.DB_NAME), reader.getIntegerVariable(Constants.DB_PORT),
 				reader.getStringVariable(Constants.DB_URL), reader.getStringVariable(Constants.DB_USERNAME), reader.getStringVariable(Constants.DB_PASS));
 	}
 
-	/**
-	 * Start the queue connection service to receive messages
-	 * @throws Exception
-	 */
 	@Override
 	protected void startQueueService() throws Exception {
 		QueueRabbitManager rabbitManager = new QueueRabbitManager(reader.getStringVariable(Constants.QUEUE_USERNAME),
@@ -73,14 +61,13 @@ public class ControlManager extends ProjectManager{
 				reader.getIntegerVariable(Constants.QUEUE_PORT), "AGENT_CONTROL");
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		queueReceiver.startReceiver(new QueueMessageProcessor());		
+		queueReceiver.startReceiver(new QueueMessageFileProcessor());	
 	}
-	
 
 	@Override
 	protected void startCommunicationService() throws Exception {
+		// TODO Auto-generated method stub
 		
 	}
-	
 
 }
