@@ -14,14 +14,16 @@ public class VirtualMachineImage {
 	private String user;
 	private String password;
 	private VirtualMachineImageEnum state;
+	private String token;
 	
 	public VirtualMachineImage(Long id, String user, String password,
-			VirtualMachineImageEnum state) {
+			VirtualMachineImageEnum state, String token) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.password = password;
 		this.state = state;
+		this.token = token;
 	}
 
 	public Long getId() {
@@ -55,4 +57,12 @@ public class VirtualMachineImage {
 	public void setState(VirtualMachineImageEnum state) {
 		this.state = state;
 	}	
+	
+	public String getToken() {
+		return token;
+	}
+	
+	public void setToken(String token) {
+		this.token = token;
+	}
 }

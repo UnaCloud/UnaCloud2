@@ -59,7 +59,7 @@ class VirtualMachineImage {
 	int imageVersion
 	
 	/**
-	 * token to validate image message send by client
+	 * token to validate image message sent by client
 	 */	
 	String token
 	
