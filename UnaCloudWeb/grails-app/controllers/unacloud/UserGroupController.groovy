@@ -199,6 +199,8 @@ class UserGroupController {
 					def allocator = AllocatorEnum.getAllocatorByName(value)
 					userGroupService.setRestriction(group,UserRestrictionEnum.ALLOCATOR.toString(),allocator?allocator.getName():null)
 					modify = true
+				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.REPOSITORY){
+					//TODO implemented
 				}
 			}
 			if(modify){

@@ -30,6 +30,12 @@ class UserRestrictionService {
 	
 	ServerVariableService serverVariableService
 	
+	/**
+	 * Representation of Server Variable services
+	 */
+	
+	RepositoryService repositoryService
+	
 	//-----------------------------------------------------------------
 	// Actions
 	//-----------------------------------------------------------------
@@ -69,7 +75,7 @@ class UserRestrictionService {
 	}
 	
 	/**
-	 * Return the allocator configured in restrictions for user, in case there is not configured an
+	 * Return the configured allocator in restrictions for user, in case there is not configured an
 	 * allocator restriction for user it takes default allocator in server variable
 	 * @param user
 	 * @return
@@ -83,5 +89,16 @@ class UserRestrictionService {
 			return AllocatorEnum.getAllocatorByName(serverVariableService.getDefaultAllocator().variable);
 		}else
 			return AllocatorEnum.getAllocatorByName(restriction.value)
+	}
+	
+	/**
+	 * Return the configured repository in restrictions for user, in case 
+	 * @param user
+	 * @return
+	 */
+	def getRepository(User user){
+		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.REPOSITORY)
+		if(!restriction)return repositoryService.getRepositoryByName(restriction.value)
+		else return repositoryService.getMainRepository()
 	}
 }

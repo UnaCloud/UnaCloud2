@@ -10,14 +10,17 @@ import org.apache.commons.io.FileUtils;
 import com.losandes.utils.Constants;
 
 import db.HypervisorManager;
+import db.RepositoryManager;
 import db.VirtualImageManager;
 import queue.QueueMessage;
 import queue.QueueReader;
 import unacloud.entities.Hypervisor;
+import unacloud.entities.Repository;
 import unacloud.entities.VirtualMachineImage;
 import unacloud.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
-import uniandes.unacloud.db.entities.Repository;
+import uniandes.unacloud.db.entities.User;
 import uniandes.unacloud.db.entities.VirtualImageFile;
 
 /**
@@ -70,7 +73,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 				VirtualImageFile image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
 				if(image!=null){
 					if(!image.isPublic()){
-						Repository main = VirtualMachineImageManager.getMainRepository();
+						Repository main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
 						File file = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName());
 						if(!file.exists()){
 							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
@@ -108,23 +111,22 @@ public class QueueMessageFileProcessor implements QueueReader{
 				VirtualImageFile privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true);
 				if(publicImage!=null&&privateImage!=null){
 					if(publicImage.isPublic()){
-						Repository main = VirtualMachineImageManager.getMainRepository();
+						Repository main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
 						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+publicImage.getName());
 						List<Hypervisor>hypervisors = HypervisorManager.getAllHypervisors();
 						if(folder.exists()&&hypervisors.size()>0){							
 							String regex = "";
 							for(Hypervisor hv:hypervisors)regex+=".*"+hv.getExtension()+(hypervisors.indexOf(hv)<hypervisors.size()-1?"|":"");
+							User user = UserManager.getUserWithRepository(privateImage.getOwner().getId());
 							String mainFile = null;
 							for(File imagefile: folder.listFiles()){
-								File newFile = new File(main.getRoot()+privateImage.getName()+"_"+privateImage.getOwner().getUsername()+File.separator+imagefile.getName());
+								File newFile = new File(user.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+imagefile.getName());
 								FileUtils.copyFile(imagefile, newFile);
 								if(imagefile.getName().matches(regex)){
-									//mainFile = 
-								}
-							//	if (imagefile.getName().endsWith(".vmx")||it.getName().endsWith(".vbox"))
-							//		i.putAt("mainFile", repository.root+i.name+"_"+user.username+separator+newFile.getName());
+									mainFile = user.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+newFile.getName();
+								}							
 							}
-							//VirtualMachineImageManager.setVirtualMachine(new VirtualImageFile(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null));
+							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFile(id, state, token, repository, isPublic, disk, mainFile, name));
 						}else{
 							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFile(publicImage.getId(), null, null, null, false, null, null, null));
 							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImage(privateImage.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));

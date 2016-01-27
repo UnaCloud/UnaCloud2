@@ -26,6 +26,12 @@ class VirtualMachineImageService {
 	 */
 	RepositoryService repositoryService
 	
+	/**
+	 * User restriction service representation
+	 */
+	UserRestrictionService userRestrictionService
+	
+	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -84,7 +90,7 @@ class VirtualMachineImageService {
 	def newPublic(name, imageId, User user){
 		def publicImage = VirtualMachineImage.get(imageId)
 		if(publicImage){
-			def repo= repositoryService.getMainRepository()
+			def repo= userRestrictionService.getRepository(user)
 			def image= new VirtualMachineImage(state: VirtualMachineImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
 				owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),isPublic: false, imageVersion: 0,
 				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 

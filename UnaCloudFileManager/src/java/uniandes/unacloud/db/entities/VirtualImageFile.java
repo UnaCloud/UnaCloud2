@@ -1,5 +1,6 @@
 package uniandes.unacloud.db.entities;
 
+import unacloud.entities.Repository;
 import unacloud.entities.VirtualMachineImage;
 import unacloud.enums.VirtualMachineImageEnum;
 

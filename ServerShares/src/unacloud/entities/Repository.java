@@ -1,4 +1,4 @@
-package uniandes.unacloud.db.entities;
+package unacloud.entities;
 
 /**
  * Class to represent Repository entity in database

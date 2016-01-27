@@ -1,5 +1,7 @@
 package uniandes.unacloud.db.entities;
 
+import unacloud.entities.Repository;
+
 /**
  * Class to represent an User from database.
  * @author Cesar

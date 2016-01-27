@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+
 class Repository {
 	
 	//-----------------------------------------------------------------
@@ -27,6 +29,7 @@ class Repository {
 	static hasMany = [images: VirtualMachineImage]
 	
     static constraints = {
+		name unique:true
 	}
 	
 	/**

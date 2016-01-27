@@ -5,15 +5,30 @@ import com.losandes.utils.Constants;
 import grails.transaction.Transactional
 
 // Creada por Carlos E. Gomez - diciembre 11 de 2015
+/**
+ * 
+ * @author Carlos
+ * Refactor by Cesar Forero 
+ *
+ */
 @Transactional
 class RepositoryService {
+	
+	/**
+	 * Returns a repository entity queried by name
+	 * @param name
+	 * @return
+	 */
+	def Repository getRepositoryByName(String name){
+		return Repository.findByName(name)
+	}
     	
 	/**
-	 * Return main repository entity
+	 * Returns main repository entity
 	 * @return repository
 	 */
 	def Repository getMainRepository(){
-		return Repository.findByName(Constants.MAIN_REPOSITORY)
+		return getRepositoryByName(Constants.MAIN_REPOSITORY)
 	}	
 	
 	/**
@@ -24,9 +39,7 @@ class RepositoryService {
 	def create(name, path){
 		if (Repository.findByName(name)==null) {
 			new Repository(name: name, path:path).save()
-		} else {
-			// Error. No se como hacerlo.
-		}		
+		} 	
 	}
 	
 	/**
