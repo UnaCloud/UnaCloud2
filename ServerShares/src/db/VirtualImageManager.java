@@ -22,7 +22,7 @@ public class VirtualImageManager {
 	public static VirtualMachineImage getVirtualMachine(Long id, VirtualMachineImageEnum state){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state == ? and vm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
@@ -43,7 +43,7 @@ public class VirtualImageManager {
 	public static boolean setVirtualMachine(VirtualMachineImage image){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "update virtual_machine_image vm set vm.state = ? and where vm.id = ? and vm.id > 0;";
+			String query = "update virtual_machine_image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
@@ -64,7 +64,7 @@ public class VirtualImageManager {
 	public static boolean deleteVirtualMachineImage(VirtualMachineImage image){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "delete virtual_machine_image where state = ? and where vm.id = ? and vm.id > 0;";
+			String query = "delete virtual_machine_image where state = ? and vm.id = ? and vm.id > 0;";
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());

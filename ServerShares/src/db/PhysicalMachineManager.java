@@ -24,7 +24,7 @@ public class PhysicalMachineManager {
 	public static PhysicalMachine getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state == ? and pm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? and pm.id = ?;");
 			ps.setString(1, machineState.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
@@ -50,7 +50,7 @@ public class PhysicalMachineManager {
 			for(@SuppressWarnings("unused") Long pm: idList){
 				builder.append("?,");
 			}
-			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state == ? and pm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
+			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? and pm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, machineState.name());
 			int index = 2;
@@ -74,7 +74,7 @@ public class PhysicalMachineManager {
 		try {
 			List<PhysicalMachine> list = new ArrayList<PhysicalMachine>();
 			Connection con = DatabaseConnection.getInstance().getConnection();			
-			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state == ? ;";
+			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? ;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, machineState.name());
 			ResultSet rs = ps.executeQuery();		
@@ -103,7 +103,7 @@ public class PhysicalMachineManager {
 				query += "where pm.id = ? and pm.id > 0;";
 				Connection con = DatabaseConnection.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement(query);
-				int id = 0;
+				int id = 1;
 				if(status>0){ps.setString(status, machine.getStatus().name());id++;};
 				if(report>0){ps.setDate(report, new java.sql.Date(machine.getLastReport().getTime()));id++;};
 				ps.setLong(id, machine.getId());

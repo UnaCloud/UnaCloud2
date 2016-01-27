@@ -16,6 +16,11 @@ class Hypervisor {
 	 */
 	String hypervisorVersion
 	
+	/**
+	 * extension from main file
+	 */
+	String mainExtension
+	
     static constraints = {
 		name nullable:false
     }

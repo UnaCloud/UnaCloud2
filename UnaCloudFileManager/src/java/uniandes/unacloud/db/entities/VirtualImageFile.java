@@ -13,19 +13,30 @@ import unacloud.enums.VirtualMachineImageEnum;
 public class VirtualImageFile extends VirtualMachineImage{
 	
 	private Repository repository;
-	private boolean isPublic;
+	private Boolean isPublic;
 	private Long fixDisk;
 	private String mainFile;
+	private String name;
+	private User owner;
 	
 	public VirtualImageFile(Long id, 
-			VirtualMachineImageEnum state, String token, Repository repository, boolean isPublic, Long disk, String mainFile) {
+			VirtualMachineImageEnum state, String token, Repository repository, Boolean isPublic, Long disk, String mainFile, String name) {
 		super(id, null, null, state, token);
 		this.repository = repository;
 		this.isPublic = isPublic;
 		this.fixDisk = disk;
 		this.mainFile = mainFile;
+		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public Repository getRepository() {
 		return repository;
 	}
@@ -34,11 +45,11 @@ public class VirtualImageFile extends VirtualMachineImage{
 		this.repository = repository;
 	}
 
-	public boolean isPublic() {
+	public Boolean isPublic() {
 		return isPublic;
 	}
 
-	public void setPublic(boolean isPublic) {
+	public void setPublic(Boolean isPublic) {
 		this.isPublic = isPublic;
 	}
 
@@ -57,5 +68,12 @@ public class VirtualImageFile extends VirtualMachineImage{
 	public void setMainFile(String mainFile) {
 		this.mainFile = mainFile;
 	}
-
+	
+	public User getOwner() {
+		return owner;
+	}
+	
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 }

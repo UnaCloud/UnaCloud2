@@ -89,8 +89,8 @@ class VirtualMachineImageService {
 				owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),isPublic: false, imageVersion: 0,
 				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 
 				password:  publicImage.password)
-			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)
 			image.save(failOnError:true)
+			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)			
 			return true
 		}else return false	
 	}
@@ -138,11 +138,10 @@ class VirtualMachineImageService {
 	 * @param password new image password
 	 */
 	
-	def setValues(VirtualMachineImage image, name, user, password, isPublic){
+	def setValues(VirtualMachineImage image, name, user, password){
 		image.putAt("name", name)
 		image.putAt("user", user)
 		image.putAt("password", password)
-		image.putAt("isPublic", isPublic)
 	}
 	
 	/**

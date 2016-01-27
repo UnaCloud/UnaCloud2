@@ -64,7 +64,7 @@ class VirtualMachineImageController {
 	}
 	
 	/**
-	 * Create a image copy from a public one. Redirects to index when finished
+	 * Creates a copy from a public image. Redirects to index when finished
 	 */
 	def copyPublic(){
 		def resp
@@ -151,11 +151,11 @@ class VirtualMachineImageController {
 			if(image.owner.id==session.user.id){
 				boolean toPublic = params.isPublic!=null;
 				def res = null;
+				virtualMachineImageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
 				if(image.isPublic!=toPublic){				
 					virtualMachineImageService.alterImagePrivacy(toPublic,image)
 					flash.message="Image files will be change its privacy, this will be take a few minutes";
-				}else flash.message="Your changes has been saved";
-				virtualMachineImageService.setValues(image,params.name,params.user,(params.password?params.password:image.password),(params.isPublic!=null))
+				}else flash.message="Your changes has been saved";				
 			    flash.type="success";
 				redirect(uri:"/services/image/list/", absolute:true)
 			}else{
@@ -220,7 +220,7 @@ class VirtualMachineImageController {
 				if(validate){
 					try{
 						def createPublic = virtualMachineImageService.
-						uploadImage(files, params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
+							uploadImage(files, params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
 						if(createPublic!=null){
 							resp = [success:true,'redirect':'list','cPublic':createPublic];
 						}else resp = [success:true,'redirect':'list'];

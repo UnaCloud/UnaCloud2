@@ -97,9 +97,9 @@ class BootStrap {
 			new ServerVariable(name:'QUEUE_CONTROL_PASS',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("QUEUE_CONTROL_PASS")).save()
 		}			
 		if(Hypervisor.count() == 0){
-			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4").save()
-			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10").save()
-			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10").save()
+			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox").save()
+			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx").save()
+			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx").save()
 		}
 		
 		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName('QUEUE_CONTROL_USER').variable,ServerVariable.findByName('QUEUE_CONTROL_PASS').variable,

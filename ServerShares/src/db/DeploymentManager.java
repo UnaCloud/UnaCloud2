@@ -36,7 +36,7 @@ public class DeploymentManager {
 		try {
 			Deployment deploy = null;
 			Connection con = DatabaseConnection.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("SELECT dp.id, dp.start_time, dp.stop_time, dp.status FROM deployment dp WHERE dp.status == ? and dp.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT dp.id, dp.start_time, dp.stop_time, dp.status FROM deployment dp WHERE dp.status = ? and dp.id = ?;");
 			ps.setString(1, DeploymentStateEnum.ACTIVE.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
@@ -96,13 +96,13 @@ public class DeploymentManager {
 			int message = 0;
 			if(execution.getStartTime()!=null){query+=" set vme.start_time = ? ";start = 1;}
 			if(execution.getStopTime()!=null){query+=(start>0?",":"")+" set vme.stop_time = ? ";stop=start+1;};
-			if(execution.getState()!=null){query+=(start>0||stop>0?",":"")+" set vme.status= ? ";state=stop+1;};
-			if(execution.getMessage()!=null){query+=(start>0||stop>0||state>0?",":"")+" set vme.message= ? ";message=state+1;};
+			if(execution.getState()!=null){query+=(start>0||stop>0?",":"")+" set vme.status= ? ";state=stop>0?stop+1:start+1;};
+			if(execution.getMessage()!=null){query+=(start>0||stop>0||state>0?",":"")+" set vme.message= ? ";message=state>0?state+1:stop>0?stop+1:start+1;};
 			if(state>0||stop>0||start>0||message>0){
 				query += "where vme.id = ? and vme.id > 0;";
 				Connection con = DatabaseConnection.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement(query);
-				int id = 0;
+				int id = 1;
 				if(start>0){ps.setDate(start, new java.sql.Date(execution.getStartTime().getTime()));id++;};
 				if(stop>0){ps.setDate(stop, new java.sql.Date(execution.getStopTime().getTime()));id++;};
 				if(state>0){ps.setString(state, execution.getState().name());id++;}
@@ -125,7 +125,7 @@ public class DeploymentManager {
 		try {
 			List<NetInterface> list = new ArrayList<NetInterface>();
 			Connection con = DatabaseConnection.getInstance().getConnection();			
-			String query = "SELECT ni.id, ni.name, i.ip, ipl.mask FROM net_interface ni INNER JOIN ip i ON ni.ip_id = i.id INNER JOIN ippool ipl ON i.ip_pool_id = ipl.id WHERE ni.virtual_execution_id == ? ;";
+			String query = "SELECT ni.id, ni.name, i.ip, ipl.mask FROM net_interface ni INNER JOIN ip i ON ni.ip_id = i.id INNER JOIN ippool ipl ON i.ip_pool_id = ipl.id WHERE ni.virtual_execution_id = ? ;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, execution.getId());
 			ResultSet rs = ps.executeQuery();		
