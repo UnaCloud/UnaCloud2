@@ -88,12 +88,12 @@ class VirtualMachineImageController {
 			redirect(uri:"/services/image/public", absolute:true)
 		}
 	}
+	
 	/**
 	 * Verifies if the image is being used, then acquires the repository when it is
 	 * deposited and send deletion request. Redirects to index when finished or to
 	 * and error message if the validation processes failed
-	 */
-	
+	 */	
 	def delete(){
 		def image = VirtualMachineImage.get(params.id)
 		if (!image||!image.state==VirtualMachineImageEnum.AVAILABLE)
@@ -109,6 +109,7 @@ class VirtualMachineImageController {
 			redirect(uri:"/services/image/list", absolute:true)		
 		}
 	}
+	
 	/**
 	 * Requests delete image files from every ACTIVE physical machine
 	 * Verifies if image is AVAILABLE

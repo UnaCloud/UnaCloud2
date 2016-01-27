@@ -122,8 +122,8 @@ class VirtualMachineImageService {
 			return false;
 		}
 		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id:image.id]);
-		QueueTaskerFile.deleteImage(image, user)
 		image.freeze()
+		QueueTaskerFile.deleteImage(image, user)		
 		return true;
 	}
 	
@@ -158,12 +158,12 @@ class VirtualMachineImageService {
 	 * @param user
 	 */
 	def alterImagePrivacy(toPublic, VirtualMachineImage image){
+		image.freeze()
 		if(!toPublic && image.isPublic){
 			QueueTaskerFile.deletePublicImage(image, image.owner);
 		}else if(toPublic && !image.isPublic){
 			QueueTaskerFile.createPublicCopy(image, image.owner);
-		}	
-		image.freeze()
+		}			
 	}
 	
 	/**
@@ -183,8 +183,8 @@ class VirtualMachineImageService {
 			newFile.mkdirs()
 			it.transferTo(newFile)
 			if(image.isPublic){
-				 QueueTaskerFile.createPublicCopy(image, user)
-				 image.freeze()
+				image.freeze()
+				QueueTaskerFile.createPublicCopy(image, user)				 
 			}
 			if (file.endsWith(".vmx")||file.endsWith(".vbox"))
 			image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+file)
