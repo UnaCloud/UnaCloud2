@@ -153,7 +153,35 @@ public class QueueMessageFileProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void deleteImage(QueueMessage message){
-		
+		threadPool.submit(new MessageProcessor(message) {			
+			@Override
+			protected void processMessage(QueueMessage message) throws Exception{
+				Long imageId = Long.parseLong(message.getMessageParts()[0]);
+				VirtualImageFile image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
+				if(image!=null){
+					try {
+						File file = new File(image.getMainFile());
+						if(file!=null)file.getParentFile().delete();
+					} catch (Exception e) {
+						System.err.println("No delete original image files "+image.getMainFile());
+					}
+					try {
+						if(image.isPublic()){
+							Repository main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+							File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+							if(folder.exists())folder.delete();	
+						}
+					} catch (Exception e) {
+						System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+					}					
+					VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImage(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+				}
+			}			
+			@Override
+			protected void processError(Exception e) {
+				//TODO notification
+			}
+		});	
 	}
 	
 	/**
@@ -176,22 +204,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
 				VirtualImageFile image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
 				if(image!=null){
-					if(!image.isPublic()){
+					if(image.isPublic()){
 						Repository main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
-						File file = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName());
-						if(!file.exists()){
-							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
-							for(File imagefile: folder.listFiles()){
-								File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+imagefile.getName());
-								FileUtils.copyFile(imagefile, newFile);
-							}
-							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFile(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null));
-						}else{
-							VirtualImageManager.setVirtualMachine(new VirtualMachineImage(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
-						}
-					}else{
-						VirtualImageManager.setVirtualMachine(new VirtualMachineImage(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
+						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+						if(folder.exists())folder.delete();	
 					}
+					VirtualImageManager.setVirtualMachine(new VirtualMachineImage(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
 				}
 			}			
 			@Override
