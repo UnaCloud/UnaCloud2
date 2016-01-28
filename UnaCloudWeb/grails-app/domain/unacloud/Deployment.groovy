@@ -1,5 +1,7 @@
 package unacloud
 
+import org.springframework.http.client.InterceptingClientHttpRequest.RequestExecution;
+
 import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.utils.CalendarUtils;
@@ -154,12 +156,23 @@ class Deployment {
 		return id;
 	}
 	
-//	/**
-//	 * Delete all history for deployment and images.
-//	 * It is necessary this method due to belong property among classes
-//	 * @return
-//	 */
-//	def deleteDeploy(){
-//		
-//	}
+	/**
+	 * Delete all history for deployment and images.
+	 * It is necessary this method due to belong property among classes
+	 * @return
+	 */
+	def deleteDeploy(){
+		for(DeployedImage image: images){
+			image.virtualMachines.each{
+				def exec = it
+				exec.monitorSystem.delete()
+				ExecutionRequest.where{execution==exec}.list().each {
+					it.delete();
+				}
+				exec.delete();
+			}
+			image.delete()
+		}
+		this.delete()
+	}
 }

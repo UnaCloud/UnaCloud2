@@ -17,6 +17,7 @@ import queue.QueueReader;
 import unacloud.entities.HypervisorEntity;
 import unacloud.entities.RepositoryEntity;
 import unacloud.entities.VirtualMachineImageEntity;
+import unacloud.enums.UserStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
@@ -130,14 +131,14 @@ public class QueueMessageFileProcessor implements QueueReader{
 							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null));
 						}else{
 							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null));
-							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(privateImage.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
 						}
 					}else{
-						VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(privateImage.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+						VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
 					}
 				}else{
 					if(privateImage!=null){
-						VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(privateImage.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+						VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
 					}
 				}
 			}			
@@ -193,8 +194,31 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				Long userId = Long.parseLong(message.getMessageParts()[0]);
-				
-				//TODO complete process
+				UserEntity user = UserManager.getUser(userId);
+				if(user!=null&&user.getState().equals(UserStateEnum.DISABLE)){
+					List<VirtualImageFileEntity> images = VirtualMachineImageManager.getAllVirtualMachinesByUser(user.getId());
+					for(VirtualImageFileEntity image: images){
+						if(image!=null){
+							try {
+								File file = new File(image.getMainFile());
+								if(file!=null)file.getParentFile().delete();
+							} catch (Exception e) {
+								System.err.println("No delete original image files "+image.getMainFile());
+							}
+							try {
+								if(image.isPublic()){
+									RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+									File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+									if(folder.exists())folder.delete();	
+								}
+							} catch (Exception e) {
+								System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+							}					
+							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+						}
+					}
+					UserManager.deleteUser(user);
+				}
 			}			
 			@Override
 			protected void processError(Exception e) {

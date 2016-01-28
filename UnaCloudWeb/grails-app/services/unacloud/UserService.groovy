@@ -77,9 +77,9 @@ class UserService {
 	 */	
 	def deleteUser(User user){
 		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
-		//TODO validate if images are available
-		if(user.images.size()>0){
-			user.deprecate()			
+		if(user.getNotAvailableImages().size()>0)throw new Exception('It is necessary that all virtual machines has AVAILABLE state')
+		user.deprecate()
+		if(user.images.size()>0){						
 			QueueTaskerFile.deleteUser(user);			
 		}else{
 			user.delete()
@@ -108,7 +108,7 @@ class UserService {
 	}
 	
 	/**
-	 * Search the restriction in user
+	 * Searches a restriction in user
 	 * @param user
 	 * @param restriction
 	 * @return restriction, null if it does not exist
@@ -145,7 +145,7 @@ class UserService {
 	}
 	
 	/**
-	 * 
+	 * Changes a current password in user
 	 * @param user to be modified
 	 * @param password current Password
 	 * @param newPassword new Password
@@ -158,7 +158,7 @@ class UserService {
 	}
 	
 	/**
-	 * Return a requested user based in userId
+	 * Returns a requested user based in userId
 	 * @param userId
 	 * @return
 	 */

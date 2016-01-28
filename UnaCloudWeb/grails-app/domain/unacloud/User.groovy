@@ -118,6 +118,18 @@ class User {
 	}
 	
 	/**
+	 * Return the list of images owned by user sorted by name and state different to AVAILABLE
+	 * @return
+	 */
+	def getNotAvailableImages(){
+		if(!this.images){
+			this.images = []
+			this.save()
+		}
+		return this.images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.sort{it.name}
+	}
+	
+	/**
 	 * Return a restriction of user, null if does not exist
 	 */
 	def getRestriction(UserRestrictionEnum restriction){
@@ -157,8 +169,9 @@ class User {
 	 * @return
 	 */
 	def deprecate(){
-		for(VirtualMachineImage image in images)image.putAt("", "")
 		this.putAt("status", UserStateEnum.DISABLE);
-		//TODO disable all elements
+		for(UserRestriction restriction in restrictions)restriction.delete()
+		for(Deployment deploy in deployments)deploy.deleteDeploy()
+		for(VirtualMachineImage image in images)image.putAt("state", VirtualMachineImageEnum.IN_QUEUE)		
 	}
 }

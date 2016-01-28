@@ -1,6 +1,7 @@
 package uniandes.unacloud.db.entities;
 
 import unacloud.entities.RepositoryEntity;
+import unacloud.enums.UserStateEnum;
 
 
 /**
@@ -13,11 +14,13 @@ public class UserEntity {
 	private Long id;
 	private String username;	
 	private RepositoryEntity repository;
+	private UserStateEnum state;
 	
-	public UserEntity(Long id, String username) {
+	public UserEntity(Long id, String username, UserStateEnum state) {
 		super();
 		this.id = id;
 		this.username = username;
+		this.state = state;
 	}
 
 	public Long getId() {
@@ -42,6 +45,14 @@ public class UserEntity {
 	
 	public void setRepository(RepositoryEntity repository) {
 		this.repository = repository;
+	}
+	
+	public UserStateEnum getState() {
+		return state;
+	}
+	
+	public void setState(UserStateEnum state) {
+		this.state = state;
 	}
 
 }

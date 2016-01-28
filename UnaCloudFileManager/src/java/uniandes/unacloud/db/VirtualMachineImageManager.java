@@ -3,6 +3,8 @@ package uniandes.unacloud.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import unacloud.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.entities.UserEntity;
@@ -25,6 +27,7 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 	 * Method used to return a virtual machine image entity with information about file and repository
 	 * @return
 	 */
+	//TODO improve query to repository, use hash map
 	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
@@ -34,7 +37,7 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 			ResultSet rs = ps.executeQuery();			
 			if(rs.next()){
 				VirtualImageFileEntity image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5)), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
-				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null));
+				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null,null));
 				return image;
 			}
 			return null;
@@ -79,6 +82,28 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 			e.printStackTrace();			
 		}		
 		return false;
+	}
+	
+	/**
+	 * Return a list of virtual machines owned by user
+	 * @param userId
+	 * @return
+	 */
+	//TODO improve query to repository, use hash map
+	public static List<VirtualImageFileEntity> getAllVirtualMachinesByUser(Long userId){
+		try {
+			List<VirtualImageFileEntity> list = new ArrayList<VirtualImageFileEntity>();
+			Connection con = DatabaseConnection.getInstance().getConnection();			
+			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name FROM virtual_machine_image vm WHERE vm.owner_id = ?;";
+			PreparedStatement ps = con.prepareStatement(query);			
+			ps.setLong(1, userId);
+			ResultSet rs = ps.executeQuery();		
+			while(rs.next())list.add(new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(2)), rs.getString(3), RepositoryManager.getRepository(rs.getLong(4)), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8)));
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 }
