@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import unacloud.entities.PhysicalMachine;
+import unacloud.entities.PhysicalMachineEntity;
 import unacloud.enums.PhysicalMachineStateEnum;
 
 /**
@@ -21,14 +21,14 @@ public class PhysicalMachineManager {
 	 * @param id physical machine id
 	 * @return physical machine entity
 	 */
-	public static PhysicalMachine getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState){
+	public static PhysicalMachineEntity getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? and pm.id = ?;");
 			ps.setString(1, machineState.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
-			if(rs.next())return new PhysicalMachine(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4)));
+			if(rs.next())return new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4)));
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,10 +41,10 @@ public class PhysicalMachineManager {
 	 * @param idList
 	 * @return
 	 */
-	public static List<PhysicalMachine> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState){
+	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState){
 		if(idList.length==0)return null;
 		try {
-			List<PhysicalMachine> list = new ArrayList<PhysicalMachine>();
+			List<PhysicalMachineEntity> list = new ArrayList<PhysicalMachineEntity>();
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			StringBuilder builder = new StringBuilder();
 			for(@SuppressWarnings("unused") Long pm: idList){
@@ -58,7 +58,7 @@ public class PhysicalMachineManager {
 				ps.setLong(index++, idpm);
 			}
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachine(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,15 +70,15 @@ public class PhysicalMachineManager {
 	 * @param idList
 	 * @return
 	 */
-	public static List<PhysicalMachine> getAllPhysicalMachine(PhysicalMachineStateEnum machineState){		
+	public static List<PhysicalMachineEntity> getAllPhysicalMachine(PhysicalMachineStateEnum machineState){		
 		try {
-			List<PhysicalMachine> list = new ArrayList<PhysicalMachine>();
+			List<PhysicalMachineEntity> list = new ArrayList<PhysicalMachineEntity>();
 			Connection con = DatabaseConnection.getInstance().getConnection();			
 			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? ;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, machineState.name());
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachine(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,7 +91,7 @@ public class PhysicalMachineManager {
 	 * @param machine
 	 * @return
 	 */
-	public static boolean setPhysicalMachine(PhysicalMachine machine){
+	public static boolean setPhysicalMachine(PhysicalMachineEntity machine){
 		if(machine.getId()==null||machine.getId()<1)return false;
 		try {
 			String query = "update physical_machine pm "; 

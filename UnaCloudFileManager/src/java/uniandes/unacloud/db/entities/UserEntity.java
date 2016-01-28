@@ -1,19 +1,20 @@
 package uniandes.unacloud.db.entities;
 
-import unacloud.entities.Repository;
+import unacloud.entities.RepositoryEntity;
+
 
 /**
  * Class to represent an User from database.
  * @author Cesar
  *
  */
-public class User {
+public class UserEntity {
 	
 	private Long id;
 	private String username;	
-	private Repository repository;
+	private RepositoryEntity repository;
 	
-	public User(Long id, String username) {
+	public UserEntity(Long id, String username) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -35,11 +36,11 @@ public class User {
 		this.username = username;
 	}	
 	
-	public Repository getRepository() {
+	public RepositoryEntity getRepository() {
 		return repository;
 	}
 	
-	public void setRepository(Repository repository) {
+	public void setRepository(RepositoryEntity repository) {
 		this.repository = repository;
 	}
 

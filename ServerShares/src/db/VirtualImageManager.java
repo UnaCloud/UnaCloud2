@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import unacloud.entities.VirtualMachineImage;
+import unacloud.entities.VirtualMachineImageEntity;
 import unacloud.enums.VirtualMachineImageEnum;
 
 /**
@@ -19,14 +19,14 @@ public class VirtualImageManager {
 	 * @param id physical machine id
 	 * @return physical machine entity
 	 */
-	public static VirtualMachineImage getVirtualMachine(Long id, VirtualMachineImageEnum state){
+	public static VirtualMachineImageEntity getVirtualMachine(Long id, VirtualMachineImageEnum state){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
-			if(rs.next())return new VirtualMachineImage(rs.getLong(1), rs.getString(2), rs.getString(3), state, rs.getString(4));
+			if(rs.next())return new VirtualMachineImageEntity(rs.getLong(1), rs.getString(2), rs.getString(3), state, rs.getString(4));
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class VirtualImageManager {
 	 * @param machine
 	 * @return
 	 */
-	public static boolean setVirtualMachine(VirtualMachineImage image){
+	public static boolean setVirtualMachine(VirtualMachineImageEntity image){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "update virtual_machine_image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
@@ -61,7 +61,7 @@ public class VirtualImageManager {
 	 * @param image
 	 * @return
 	 */
-	public static boolean deleteVirtualMachineImage(VirtualMachineImage image){
+	public static boolean deleteVirtualMachineImage(VirtualMachineImageEntity image){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "delete virtual_machine_image where state = ? and vm.id = ? and vm.id > 0;";

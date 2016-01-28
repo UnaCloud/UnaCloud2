@@ -5,14 +5,14 @@ package unacloud.entities;
  * @author Cesar
  *
  */
-public class Repository {
+public class RepositoryEntity {
 	
 	private Long id;
 	private String name;
 	private int capacity;
 	private String root;
 	
-	public Repository(Long id, String name, int capacity, String root) {
+	public RepositoryEntity(Long id, String name, int capacity, String root) {
 		super();
 		this.id = id;
 		this.name = name;

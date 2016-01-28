@@ -8,7 +8,7 @@ import unacloud.enums.VirtualMachineImageEnum;
  * @author Cesar
  *
  */
-public class VirtualMachineImage {
+public class VirtualMachineImageEntity {
 	
 	private Long id;
 	private String user;
@@ -16,7 +16,7 @@ public class VirtualMachineImage {
 	private VirtualMachineImageEnum state;
 	private String token;
 	
-	public VirtualMachineImage(Long id, String user, String password,
+	public VirtualMachineImageEntity(Long id, String user, String password,
 			VirtualMachineImageEnum state, String token) {
 		super();
 		this.id = id;

@@ -5,20 +5,20 @@ package unacloud.entities;
  * @author Cesar
  *
  */
-public class NetInterface {
+public class NetInterfaceEntity {
 	
 	private Long id;
 	private String ip;
 	private String netMask;
 	private String name;	
 	
-	public NetInterface(Long id, String name, String ip, String netMask) {
+	public NetInterfaceEntity(Long id, String name, String ip, String netMask) {
 		this.id = id;
 		this.ip = ip;
 		this.netMask = netMask;
 		this.name = name;
 	}
-	public NetInterface() {
+	public NetInterfaceEntity() {
 
 	}
 	public Long getId() {

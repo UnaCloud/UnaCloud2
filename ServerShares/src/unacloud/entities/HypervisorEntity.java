@@ -6,7 +6,7 @@ package unacloud.entities;
  * @author Cesar
  *
  */
-public class Hypervisor {
+public class HypervisorEntity {
 	
 	private Long id;
 	private String version;
@@ -14,7 +14,7 @@ public class Hypervisor {
 	private String extension;
 	
 	
-	public Hypervisor(Long id, String version, String name, String extension) {
+	public HypervisorEntity(Long id, String version, String name, String extension) {
 		super();
 		this.id = id;
 		this.version = version;

@@ -11,16 +11,16 @@ import unacloud.enums.DeploymentStateEnum;
  * @author Cesar
  *
  */
-public class Deployment {
+public class DeploymentEntity {
 	
 	private Long id;
 	private Date startTime;
 	private Date stopTime;
 	private DeploymentStateEnum state;
-	private List<DeployedImage> images;
+	private List<DeployedImageEntity> images;
 	
-	public Deployment(Long id, Date startTime, Date stopTime,
-			DeploymentStateEnum state, List<DeployedImage> images) {
+	public DeploymentEntity(Long id, Date startTime, Date stopTime,
+			DeploymentStateEnum state, List<DeployedImageEntity> images) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
@@ -29,7 +29,7 @@ public class Deployment {
 		this.images = images;
 	}
 
-	public Deployment() {
+	public DeploymentEntity() {
 		
 	}
 
@@ -65,11 +65,11 @@ public class Deployment {
 		this.state = state;
 	}
 
-	public List<DeployedImage> getImages() {
+	public List<DeployedImageEntity> getImages() {
 		return images;
 	}
 
-	public void setImages(List<DeployedImage> images) {
+	public void setImages(List<DeployedImageEntity> images) {
 		this.images = images;
 	}
 	

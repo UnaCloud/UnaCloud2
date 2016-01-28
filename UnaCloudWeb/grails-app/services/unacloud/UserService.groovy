@@ -77,9 +77,10 @@ class UserService {
 	 */	
 	def deleteUser(User user){
 		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
+		//TODO validate if images are available
 		if(user.images.size()>0){
-			QueueTaskerFile.deleteUser(user);
-			user.putAt("status", UserStateEnum.DISABLE);
+			user.deprecate()			
+			QueueTaskerFile.deleteUser(user);			
 		}else{
 			user.delete()
 		}		

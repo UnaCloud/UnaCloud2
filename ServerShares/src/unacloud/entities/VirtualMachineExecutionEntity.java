@@ -12,21 +12,21 @@ import unacloud.enums.VirtualMachineExecutionStateEnum;
  * @author Cesar
  *
  */
-public class VirtualMachineExecution {
+public class VirtualMachineExecutionEntity {
 	
 	private Long id;
 	private int cores;
 	private int ram;
 	private Date startTime;
 	private Date stopTime;
-	private PhysicalMachine node;
+	private PhysicalMachineEntity node;
 	private VirtualMachineExecutionStateEnum state;
 	private String hostName;
-	private List<NetInterface> interfaces;
+	private List<NetInterfaceEntity> interfaces;
 	private String message;
 	
-	public VirtualMachineExecution(Long id, int cores, int ram, Date startTime,
-			Date stopTime, PhysicalMachine node,
+	public VirtualMachineExecutionEntity(Long id, int cores, int ram, Date startTime,
+			Date stopTime, PhysicalMachineEntity node,
 			VirtualMachineExecutionStateEnum state, String hostName, String message) {
 		super();
 		this.id = id;
@@ -37,7 +37,7 @@ public class VirtualMachineExecution {
 		this.node = node;
 		this.state = state;
 		this.hostName = hostName;
-		interfaces = new ArrayList<NetInterface>();
+		interfaces = new ArrayList<NetInterfaceEntity>();
 		this.message = message;
 	}
 
@@ -81,11 +81,11 @@ public class VirtualMachineExecution {
 		this.stopTime = stopTime;
 	}
 
-	public PhysicalMachine getNode() {
+	public PhysicalMachineEntity getNode() {
 		return node;
 	}
 
-	public void setNode(PhysicalMachine node) {
+	public void setNode(PhysicalMachineEntity node) {
 		this.node = node;
 	}
 
@@ -105,11 +105,11 @@ public class VirtualMachineExecution {
 		this.hostName = hostName;
 	}
 	
-	public List<NetInterface> getInterfaces() {
+	public List<NetInterfaceEntity> getInterfaces() {
 		return interfaces;
 	}
 	
-	public void setInterfaces(List<NetInterface> interfaces) {
+	public void setInterfaces(List<NetInterfaceEntity> interfaces) {
 		this.interfaces = interfaces;
 	}
 	

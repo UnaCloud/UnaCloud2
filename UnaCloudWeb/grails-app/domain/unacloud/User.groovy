@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.losandes.utils.Constants;
 
+import unacloud.entities.VirtualMachineImageEntity;
 import unacloud.enums.DeploymentStateEnum;
 import unacloud.enums.UserRestrictionEnum;
 import unacloud.enums.UserStateEnum;
@@ -149,5 +150,15 @@ class User {
 	 */
 	def Long getDatabaseId(){
 		return id;
+	}
+	
+	/**
+	 * Disable all components that user is owner
+	 * @return
+	 */
+	def deprecate(){
+		for(VirtualMachineImage image in images)image.putAt("", "")
+		this.putAt("status", UserStateEnum.DISABLE);
+		//TODO disable all elements
 	}
 }

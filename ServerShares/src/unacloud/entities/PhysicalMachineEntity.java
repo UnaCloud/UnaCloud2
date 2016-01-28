@@ -10,17 +10,17 @@ import unacloud.enums.PhysicalMachineStateEnum;
  * @author Cesar
  *
  */
-public class PhysicalMachine {
+public class PhysicalMachineEntity {
 	
 	private Long id;
 	private String ip;
 	private Date lastReport;
 	private PhysicalMachineStateEnum status;
 	
-	public PhysicalMachine() {
+	public PhysicalMachineEntity() {
 	}
 	
-	public PhysicalMachine(Long id, String ip, Date lastReport,
+	public PhysicalMachineEntity(Long id, String ip, Date lastReport,
 			PhysicalMachineStateEnum status) {
 		super();
 		this.id = id;

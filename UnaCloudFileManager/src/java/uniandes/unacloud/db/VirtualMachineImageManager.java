@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import unacloud.enums.VirtualMachineImageEnum;
-import uniandes.unacloud.db.entities.User;
-import uniandes.unacloud.db.entities.VirtualImageFile;
+import uniandes.unacloud.db.entities.UserEntity;
+import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 import db.DatabaseConnection;
 import db.RepositoryManager;
 import db.VirtualImageManager;
@@ -25,7 +25,7 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 	 * Method used to return a virtual machine image entity with information about file and repository
 	 * @return
 	 */
-	public static VirtualImageFile getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser){
+	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser){
 		try {
 			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
@@ -33,8 +33,8 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();			
 			if(rs.next()){
-				VirtualImageFile image = new VirtualImageFile(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5)), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
-				if(withUser)image.setOwner(new User(rs.getLong(8),null));
+				VirtualImageFileEntity image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5)), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null));
 				return image;
 			}
 			return null;
@@ -50,7 +50,7 @@ public class VirtualMachineImageManager extends VirtualImageManager{
 	 * @param machine
 	 * @return
 	 */
-	public static boolean setVirtualMachine(VirtualImageFile image){
+	public static boolean setVirtualMachine(VirtualImageFileEntity image){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "update virtual_machine_image vm ";

@@ -1,7 +1,7 @@
 package uniandes.unacloud.db.entities;
 
-import unacloud.entities.Repository;
-import unacloud.entities.VirtualMachineImage;
+import unacloud.entities.RepositoryEntity;
+import unacloud.entities.VirtualMachineImageEntity;
 import unacloud.enums.VirtualMachineImageEnum;
 
 /**
@@ -11,17 +11,17 @@ import unacloud.enums.VirtualMachineImageEnum;
  * @author Cesar
  *
  */
-public class VirtualImageFile extends VirtualMachineImage{
+public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	
-	private Repository repository;
+	private RepositoryEntity repository;
 	private Boolean isPublic;
 	private Long fixDisk;
 	private String mainFile;
 	private String name;
-	private User owner;
+	private UserEntity owner;
 	
-	public VirtualImageFile(Long id, 
-			VirtualMachineImageEnum state, String token, Repository repository, Boolean isPublic, Long disk, String mainFile, String name) {
+	public VirtualImageFileEntity(Long id, 
+			VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name) {
 		super(id, null, null, state, token);
 		this.repository = repository;
 		this.isPublic = isPublic;
@@ -38,11 +38,11 @@ public class VirtualImageFile extends VirtualMachineImage{
 		this.name = name;
 	}
 	
-	public Repository getRepository() {
+	public RepositoryEntity getRepository() {
 		return repository;
 	}
 
-	public void setRepository(Repository repository) {
+	public void setRepository(RepositoryEntity repository) {
 		this.repository = repository;
 	}
 
@@ -70,11 +70,11 @@ public class VirtualImageFile extends VirtualMachineImage{
 		this.mainFile = mainFile;
 	}
 	
-	public User getOwner() {
+	public UserEntity getOwner() {
 		return owner;
 	}
 	
-	public void setOwner(User owner) {
+	public void setOwner(UserEntity owner) {
 		this.owner = owner;
 	}
 }

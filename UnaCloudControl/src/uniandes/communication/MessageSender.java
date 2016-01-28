@@ -7,7 +7,7 @@ import java.util.List;
 
 import communication.UnaCloudAbstractMessage;
 import communication.UnaCloudAbstractResponse;
-import unacloud.entities.PhysicalMachine;
+import unacloud.entities.PhysicalMachineEntity;
 import uniandes.ControlManager;
 
 /**
@@ -17,12 +17,12 @@ import uniandes.ControlManager;
  */
 public class MessageSender extends Thread{
 	
-	private List<PhysicalMachine> machines;
+	private List<PhysicalMachineEntity> machines;
 	private UnaCloudAbstractMessage message;
 	private ResponseProcessor processor;
 	
 	
-	public MessageSender(List<PhysicalMachine> machines,UnaCloudAbstractMessage message, ResponseProcessor processor) {
+	public MessageSender(List<PhysicalMachineEntity> machines,UnaCloudAbstractMessage message, ResponseProcessor processor) {
 		this.machines = machines;
 		this.message = message;
 		this.processor = processor;
@@ -30,7 +30,7 @@ public class MessageSender extends Thread{
 	
 	@Override
 	public void run() {
-		for(PhysicalMachine pm: machines){
+		for(PhysicalMachineEntity pm: machines){
 			try{
 				Socket s=new Socket(pm.getIp(),ControlManager.getInstance().getPort());
 				s.setSoTimeout(15000);

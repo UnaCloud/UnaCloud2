@@ -28,12 +28,12 @@ import db.PhysicalMachineManager;
 import db.VirtualImageManager;
 import queue.QueueMessage;
 import queue.QueueReader;
-import unacloud.entities.DeployedImage;
-import unacloud.entities.Deployment;
-import unacloud.entities.NetInterface;
-import unacloud.entities.PhysicalMachine;
-import unacloud.entities.VirtualMachineExecution;
-import unacloud.entities.VirtualMachineImage;
+import unacloud.entities.DeployedImageEntity;
+import unacloud.entities.DeploymentEntity;
+import unacloud.entities.NetInterfaceEntity;
+import unacloud.entities.PhysicalMachineEntity;
+import unacloud.entities.VirtualMachineExecutionEntity;
+import unacloud.entities.VirtualMachineImageEntity;
 import unacloud.enums.PhysicalMachineStateEnum;
 import unacloud.enums.TaskEnum;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
@@ -84,22 +84,22 @@ public class QueueMessageProcessor implements QueueReader{
 	private void clearCache(QueueMessage message){
 		try {		
 			final Long imageId =  Long.parseLong(message.getMessageParts()[0]);
-			VirtualMachineImage image = new VirtualMachineImage(imageId, null, null, VirtualMachineImageEnum.REMOVING_CACHE, null);
+			VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.REMOVING_CACHE, null);
 			VirtualImageManager.setVirtualMachine(image);
 			try {				
-				List<PhysicalMachine> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON);			
+				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON);			
 				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
 					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(imageId), new ResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-							VirtualMachineImage image = new VirtualMachineImage(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
+							VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
 							VirtualImageManager.setVirtualMachine(image);
 						}
 						@Override
 						public void attendError(String message, Long id) {
-							VirtualMachineImage image = new VirtualMachineImage(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
+							VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
 							VirtualImageManager.setVirtualMachine(image);
-							PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm);
 						}
 					}));
@@ -124,7 +124,7 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<PhysicalMachine> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING);			
+			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING);			
 			for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
@@ -133,12 +133,12 @@ public class QueueMessageProcessor implements QueueReader{
 						absMessage, new ResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.ON);
+						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.ON);
 						PhysicalMachineManager.setPhysicalMachine(pm);
 					}
 					@Override
 					public void attendError(String message, Long id) {
-						PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 						PhysicalMachineManager.setPhysicalMachine(pm);
 					}
 				}));
@@ -155,10 +155,10 @@ public class QueueMessageProcessor implements QueueReader{
 	private void doDeploy(QueueMessage message){
 		try {
 			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
-			Deployment deploy = DeploymentManager.getDeployment(deploymentId);
+			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId);
 			if(deploy!=null){
-				for(DeployedImage image :deploy.getImages()){
-					for(final VirtualMachineExecution execution : image.getExecutions()){
+				for(DeployedImageEntity image :deploy.getImages()){
+					for(final VirtualMachineExecutionEntity execution : image.getExecutions()){
 						VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
 						vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
 						vmsm.setHostname(execution.getHostName());
@@ -167,10 +167,10 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm.setVirtualMachineExecutionId(execution.getId());
 						vmsm.setVirtualMachineImageId(image.getImage().getId());
 						List<VirtualNetInterfaceComponent> interfaces = new ArrayList<VirtualNetInterfaceComponent>();
-						for(NetInterface interf: execution.getInterfaces())
+						for(NetInterfaceEntity interf: execution.getInterfaces())
 							interfaces.add(new VirtualNetInterfaceComponent(interf.getIp(), interf.getNetMask(),interf.getName()));
 						vmsm.setInterfaces(interfaces);						
-						List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+						List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 						machines.add(execution.getNode());
 						threadPool.submit(new MessageSender(machines, 
 								vmsm, new ResponseProcessor() {			
@@ -178,13 +178,13 @@ public class QueueMessageProcessor implements QueueReader{
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 								Date stopTime = new Date();
 								stopTime.setTime(stopTime.getTime()+execution.getTime());
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null, "Initializing"));
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null, "Initializing"));
 							}
 							@Override
 							public void attendError(String message, Long id) {
-								PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm);
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"));
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"));
 							}
 						}));
 					}
@@ -205,23 +205,23 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 0; i < message.getMessageParts().length; i++) {
 				ids[i]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecution> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.DEPLOYED);
-			for(final VirtualMachineExecution execution: executions){
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.DEPLOYED);
+			for(final VirtualMachineExecutionEntity execution: executions){
 				VirtualMachineStopMessage vmsm=new VirtualMachineStopMessage();
 				vmsm.setVirtualMachineExecutionId(execution.getId());
-				List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 				machines.add(execution.getNode());
 				threadPool.submit(new MessageSender(machines, 
 						vmsm, new ResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, "Finished by request"));
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, "Finished by request"));
 					}
 					@Override
 					public void attendError(String message, Long id) {
-						PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 						PhysicalMachineManager.setPhysicalMachine(pm);
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Losing connection from server"));
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Losing connection from server"));
 					}
 				}));
 			}
@@ -241,8 +241,8 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecution> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEQUED);
-			for(final VirtualMachineExecution execution : executions) {
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEQUED);
+			for(final VirtualMachineExecutionEntity execution : executions) {
 				VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
 				vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
 				vmsm.setHostname(execution.getHostName());
@@ -251,10 +251,10 @@ public class QueueMessageProcessor implements QueueReader{
 				vmsm.setVirtualMachineExecutionId(execution.getId());
 				vmsm.setVirtualMachineImageId(deployedImageId);
 				List<VirtualNetInterfaceComponent> interfaces = new ArrayList<VirtualNetInterfaceComponent>();
-				for(NetInterface interf: execution.getInterfaces())
+				for(NetInterfaceEntity interf: execution.getInterfaces())
 					interfaces.add(new VirtualNetInterfaceComponent(interf.getIp(), interf.getNetMask(),interf.getName()));
 				vmsm.setInterfaces(interfaces);						
-				List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 				machines.add(execution.getNode());
 				threadPool.submit(new MessageSender(machines, 
 						vmsm, new ResponseProcessor() {			
@@ -262,13 +262,13 @@ public class QueueMessageProcessor implements QueueReader{
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						Date stopTime = new Date();
 						stopTime.setTime(stopTime.getTime()+execution.getTime());
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null,"Initializing"));
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null,"Initializing"));
 					}
 					@Override
 					public void attendError(String message, Long id) {
-						PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 						PhysicalMachineManager.setPhysicalMachine(pm);
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"));
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"));
 					}
 				}));
 			}
@@ -285,34 +285,34 @@ public class QueueMessageProcessor implements QueueReader{
 		try {
 			Long executionId = Long.parseLong(message.getMessageParts()[0]);
 			Long imageId = Long.parseLong(message.getMessageParts()[1]);
-			final VirtualMachineExecution execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY);
+			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY);
 			if(execution!=null){
-				final VirtualMachineImage image = VirtualImageManager.getVirtualMachine(imageId, VirtualMachineImageEnum.COPYING);
+				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(imageId, VirtualMachineImageEnum.COPYING);
 				if(image!=null){
 					VirtualMachineSaveImageMessage vmsim = new VirtualMachineSaveImageMessage();
 					vmsim.setTokenCom(image.getToken());
 					vmsim.setImageId(imageId);
 					vmsim.setVirtualMachineExecutionId(execution.getId());
-					List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 					machines.add(execution.getNode());
 					threadPool.submit(new MessageSender(machines, 
 							vmsim, new ResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 							if(response instanceof VirtualMachineSaveImageResponse && ((VirtualMachineSaveImageResponse)response).getState().equals(VirtualMachineState.COPYNG)){
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"));
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"));
 							}else{
-								PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm);
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, ((InvalidOperationResponse)response).getMessage()));
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, ((InvalidOperationResponse)response).getMessage()));
 								VirtualImageManager.deleteVirtualMachineImage(image);
 							}
 						}
 						@Override
 						public void attendError(String message, Long id) {
-							PhysicalMachine pm = new PhysicalMachine(id, null, null, PhysicalMachineStateEnum.OFF);
+							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm);
-							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecution(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Error copying image"));
+							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Error copying image"));
 							VirtualImageManager.deleteVirtualMachineImage(image);
 						}
 					}));
