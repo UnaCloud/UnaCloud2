@@ -10,6 +10,7 @@ import unacloud.enums.VirtualMachineImageEnum;
 import unacloud.pmallocators.AllocatorException
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 import unacloud.task.queue.QueueTaskerControl;
+import unacloud.utils.Hasher;
 import webutils.ImageRequestOptions;
 import grails.transaction.Transactional
 import grails.util.Environment;
@@ -234,7 +235,7 @@ class DeploymentService {
 		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
 		if(VirtualMachineImage.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
 		def repository = repositoryService.getMainRepository()
-		String token = RandomUtils.generateRandomString(32);
+		String token = Hasher.hashSha256(newName+new Date().getTime())
 		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
 			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository,token:token)

@@ -1,5 +1,9 @@
-/grails/
-/org/
-/uniandes/
 /asset/
+/grails/
+/hibernate/
+/hibernate.cfg.xml
+/javascripts/
+/org/
+/spring/
 /unacloud/
+/uniandes/

@@ -13,7 +13,6 @@ class VirtualMachineImageController {
 	/**
 	 * Representation of image services
 	 */
-	
 	VirtualMachineImageService virtualMachineImageService
 	
 	
@@ -199,38 +198,15 @@ class VirtualMachineImageController {
 	def upload(){
 		def resp
 		if( params.name&&!params.name.empty&&params.protocol&&!params.protocol.empty&&
-			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId){
-			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){
-				
-				def files = request.multiFileMap.files
-				def user= User.get(session.user.id)
-				boolean validate=true
-				files.each {
-					if(it.isEmpty()){
-						resp = [success:false,'message':'File cannot be empty.'];
-						validate= false;
-					}
-					else{
-						def fileName=it.getOriginalFilename()
-						if(!(fileName.endsWith("vmx")|| fileName.endsWith("vmdk")||fileName.endsWith("vbox")|| fileName.endsWith("vdi"))){
-							resp = [success:false,'message':'Invalid file type.']
-							validate= false;
-						}
-					}
-				}
-				if(validate){
-					try{
-						def createPublic = virtualMachineImageService.
-							uploadImage(files, params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
-						if(createPublic!=null){
-							resp = [success:true,'redirect':'list','cPublic':createPublic];
-						}else resp = [success:true,'redirect':'list'];
-					}
-					catch(Exception e) {
-						resp = [success:false,'message':e.message]
-					}
-				}
-			}else resp = [success:false,'message':'File(s) to upload is/are missing.'];
+			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId){	
+			def user= User.get(session.user.id)			
+			try{
+				def token = virtualMachineImageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
+				resp = [success:true,'token':token];				
+			}
+			catch(Exception e) {
+				resp = [success:false,'message':e.message]
+			}		
 		}else resp = [success:false,'message':'All fields are required'];
 		render resp as JSON
 	}
@@ -245,30 +221,13 @@ class VirtualMachineImageController {
 	def updateFiles(){
 		def resp
 		VirtualMachineImage image= VirtualMachineImage.get(params.id)
-		if (image!= null&&image.owner.id==session.user.id){
-			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){
-				def files = request.multiFileMap.files
-				boolean validate=true
-				files.each {
-					if(it.isEmpty()){
-						resp =[success:false,'message':'File cannot be empty'];
-						validate = false;
-					}
-					else{
-						def fileName=it.getOriginalFilename()
-						if(!(fileName.endsWith("vmx")|| fileName.endsWith("vmdk")
-							||fileName.endsWith("vbox")|| fileName.endsWith("vdi"))){
-							resp = [success:false,'message':'Invalid file type.']
-							validate= false;
-						}
-					}
-				}
-				if(validate){
-					virtualMachineImageService.updateFiles(image,files,image.owner)
-					resp = [success:true,'redirect':'../list']
-				}
-			}else{
-				resp = [success:false,'message':'File(s) to upload is/are missing.'];		
+		if (image!= null&&image.owner.id==session.user.id){	
+			try{
+				def token = virtualMachineImageService.updateFiles(image)
+				resp = [success:true,'token':token]
+			}
+			catch(Exception e) {
+				resp = [success:false,'message':e.message]
 			}
 		}else{
 			resp = [success:false,'message':'Error! image does not exist.'];	

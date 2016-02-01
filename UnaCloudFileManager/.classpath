@@ -143,8 +143,9 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
-	<classpathentry kind="lib" path="/UnaCloudWeb/lib/commonshares.jar"/>
 	<classpathentry kind="lib" path="/UnaCloudWeb/lib/rabbitmq-client.jar"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry kind="lib" path="/UnaCloudWeb/lib/commonshares.jar"/>
 	<classpathentry kind="lib" path="/UnaCloudWeb/lib/servershares.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

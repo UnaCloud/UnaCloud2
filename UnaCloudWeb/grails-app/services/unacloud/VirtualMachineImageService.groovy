@@ -6,6 +6,7 @@ import com.losandes.utils.Constants;
 
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
+import unacloud.utils.Hasher;
 import unacloud.enums.VirtualMachineExecutionStateEnum;
 import unacloud.enums.VirtualMachineImageEnum;
 import grails.transaction.Transactional
@@ -36,8 +37,7 @@ class VirtualMachineImageService {
 	// Methods
 	//-----------------------------------------------------------------
     /**
-	 * Uploads a new image
-	 * @param files image files
+	 * creates a new image with an unique token 
 	 * @param diskSize image disk size
 	 * @param name image name
 	 * @param isPublic indicates if the image will be uploaded as a public image
@@ -47,38 +47,14 @@ class VirtualMachineImageService {
 	 * @param password image access password
 	 * @param user owner user
 	 */
-	def uploadImage(files, name, isPublic, accessProtocol, operatingSystemId, username, password,User user) {
-		def copy = null;
-		def repo= repositoryService.getMainRepository()
-		if(isPublic){	
-			File file = new File(repo.root+Constants.TEMPLATE_PATH+separator+name);
-			if (file.exists()){
-				isPublic=false;
-				copy = false;
-			}else copy = true
-		}		
-		//TODO define repository assignment schema		
-		def image= new VirtualMachineImage(owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),
+	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, username, password,User user) {
+		Repository repo = userRestrictionService.getRepository(user)
+		String token = Hasher.hashSha256(name+new Date().getTime())
+		def image= new VirtualMachineImage(owner: user, repository:repo, name: name, lastUpdate:new Date(),
 			isPublic: isPublic, imageVersion: 0,accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId),
-			user: username, password: password)
-		def sizeImage = 0;
-		files.each {
-			def fileName=it.getOriginalFilename()
-			java.io.File newFile= new java.io.File(repo.root+image.name+"_"+user.username+separator+fileName+separator)
-			newFile.mkdirs()
-			it.transferTo(newFile)			
-			if(image.isPublic){
-				QueueTaskerFile.createPublicCopy(image, user)
-				image.freeze()
-			}			
-			if (fileName.endsWith(".vmx")||fileName.endsWith(".vbox")){
-				image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+fileName)		
-			}
-			sizeImage += it.getSize()
-		}		
-		image.setFixedDiskSize(sizeImage)
+			user: username, password: password, token:token,fixedDiskSize:0, state: VirtualMachineImageEnum.UNAVAILABLE)	
 		image.save(failOnError: true)
-		return copy;
+		return token;
     }
 	
 	/**
@@ -167,31 +143,15 @@ class VirtualMachineImageService {
 	}
 	
 	/**
-	 * Changes image files for the files uploaded by user
+	 * creates a token to be used to upload image in file manager project
 	 * @param i image to be edited
 	 * @param files new set of files
 	 * @param user owner user
-	 */
-	
-	def updateFiles(VirtualMachineImage image, files, User user){
-		new java.io.File(image.mainFile).getParentFile().deleteDir()
-		def repo= repositoryService.getMainRepository()
-		def sizeImage = 0;
-		files.each {
-			def file=it.getOriginalFilename()
-			java.io.File newFile= new java.io.File(repo.root+image.name+"_"+user.username+separator+file+separator)
-			newFile.mkdirs()
-			it.transferTo(newFile)
-			if(image.isPublic){
-				image.freeze()
-				QueueTaskerFile.createPublicCopy(image, user)				 
-			}
-			if (file.endsWith(".vmx")||file.endsWith(".vbox"))
-			image.putAt("mainFile", repo.root+image.name+"_"+user.username+separator+file)
-			image.putAt("imageVersion", image.imageVersion++)		
-			sizeImage += it.getSize()
-		}		
-		image.setFixedDiskSize(sizeImage)
-		image.save(failOnError: true)		
+	 */	
+	def updateFiles(VirtualMachineImage image){		
+		String token = Hasher.hashSha256(image.getName()+new Date().getTime())
+		image.putAt("token":token)
+		image.putAt("state":VirtualMachineImageEnum.UNAVAILABLE)
+		return token
 	}
 }
