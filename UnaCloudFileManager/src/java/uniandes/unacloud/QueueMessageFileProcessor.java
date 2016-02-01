@@ -83,7 +83,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 								File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+imagefile.getName());
 								FileUtils.copyFile(imagefile, newFile);
 							}
-							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null));
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null),false);
 						}else{
 							VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
 						}
@@ -128,17 +128,17 @@ public class QueueMessageFileProcessor implements QueueReader{
 									mainFile = user.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+newFile.getName();
 								}							
 							}
-							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null));
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null),false);
 						}else{
-							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null));
-							VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null),false);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
 						}
 					}else{
-						VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
 					}
 				}else{
 					if(privateImage!=null){
-						VirtualMachineImageManager.setVirtualMachine(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null));
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
 					}
 				}
 			}			
@@ -228,7 +228,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 	}
 
 	/**
-	 * Delete files from a public image
+	 * Deletes files from a public image
 	 * @param message
 	 */
 	private void deletePublicImage(QueueMessage message) {

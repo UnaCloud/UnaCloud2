@@ -21,7 +21,14 @@ class Hypervisor {
 	 */
 	String mainExtension
 	
+	/**
+	 * extension list of files for this hypervisor
+	 * string with commas
+	 */
+	String filesExtensions
+	
     static constraints = {
 		name nullable:false
+		filesExtensions nullable:true
     }
 }

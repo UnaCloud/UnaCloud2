@@ -12,14 +12,16 @@ public class HypervisorEntity {
 	private String version;
 	private String name;
 	private String extension;
+	private String otherExtensions;
 	
 	
-	public HypervisorEntity(Long id, String version, String name, String extension) {
+	public HypervisorEntity(Long id, String version, String name, String extension, String otherExt) {
 		super();
 		this.id = id;
 		this.version = version;
 		this.name = name;
 		this.extension = extension;
+		this.otherExtensions = otherExt;
 	}
 
 
@@ -60,6 +62,36 @@ public class HypervisorEntity {
 
 	public void setExtension(String extension) {
 		this.extension = extension;
+	}
+	
+	public String getOtherExtensions() {
+		return otherExtensions;
+	}
+	
+	public void setOtherExtensions(String otherExtensions) {
+		this.otherExtensions = otherExtensions;
+	}
+	
+	/**
+	 * Validates if a extension matches with extension list from hypervisor
+	 * @param extension
+	 * @return
+	 */
+	public boolean validatesExtension(String extension){
+		try {
+			if(extension.matches(".*"+this.extension))return true;
+			String regex = "";
+			int index = 0;
+			String[] extensions = otherExtensions.split(",");
+			for(String ext: extensions){
+				regex+=".*"+ext+(index<extensions.length-1?"|":"");	
+				index++;
+			}
+			if(extension.matches(regex))return true;
+			return false;
+		} catch (Exception e) {
+			return false;
+		}		
 	}
 
 }
