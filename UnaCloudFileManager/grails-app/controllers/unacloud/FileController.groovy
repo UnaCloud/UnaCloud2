@@ -40,7 +40,7 @@ class FileController {
 			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){				
 				def files = request.multiFileMap.files
 				boolean validate=true
-				String mainFile = null
+				String mainExtension = null
 				files.each {
 					if(validate){
 						if(it.isEmpty()){
@@ -48,19 +48,26 @@ class FileController {
 							validate= false;
 						}
 						else{
+							boolean goodExtension = false;
 							def fileName=it.getOriginalFilename()
 							List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors();
 							for(HypervisorEntity hyperv in hypervisors)
-							if(!hyperv.validatesExtension(fileName)){
+							if(hyperv.validatesExtension(fileName)){		
+								goodExtension = true;
+								mainExtension = hyperv.extension
+								break;
+							}	
+							if(!goodExtension){													
 								resp = [success:false,'message':'Invalid file type.']
 								validate= false;
 							}
 						}
+						
 					}					
 				}
 				if(validate){
 					try{
-						def createPublic = fileService.upload(files, params.token)
+						def createPublic = fileService.upload(files, params.token,mainExtension)
 						if(createPublic!=null){
 							resp = [success:true,'redirect':'list','cPublic':createPublic];
 						}else resp = [success:true,'redirect':'list'];
@@ -87,6 +94,7 @@ class FileController {
 			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){
 				def files = request.multiFileMap.files
 				boolean validate=true
+				String mainExtension = null
 				files.each {
 					if(validate){
 						if(it.isEmpty()){
@@ -94,10 +102,16 @@ class FileController {
 							validate= false;
 						}
 						else{
+							boolean goodExtension = false;
 							def fileName=it.getOriginalFilename()
 							List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors();
 							for(HypervisorEntity hyperv in hypervisors)
-							if(!hyperv.validatesExtension(fileName)){
+							if(hyperv.validatesExtension(fileName)){		
+								goodExtension = true;
+								mainExtension = hyperv.extension
+								break;
+							}	
+							if(!goodExtension){													
 								resp = [success:false,'message':'Invalid file type.']
 								validate= false;
 							}
@@ -105,7 +119,7 @@ class FileController {
 					}					
 				}
 				if(validate){
-					virtualMachineImageService.updateFiles(image,files,image.owner)
+					fileService.updateFiles(files,params.token,mainExtension)
 					resp = [success:true,'redirect':'../list']
 				}
 			}else{

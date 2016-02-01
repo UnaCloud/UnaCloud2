@@ -46,8 +46,7 @@ class FileService {
 				def fileName=it.getOriginalFilename()
 				File file= new File(image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator+fileName+File.separator)
 				file.mkdirs()
-				it.transferTo(file)
-				
+				it.transferTo(file)				
 				if(image.isPublic()){
 					File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+fileName);
 					FileUtils.copyFile(file, newFile);						
