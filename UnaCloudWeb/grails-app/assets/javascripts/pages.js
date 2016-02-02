@@ -110,11 +110,44 @@ $(document).on('ready',function(){
 		if(form["name"].value&&form["name"].value.length > 0&&
 			form["user"].value&&form["user"].value.length > 0&&
 				form["passwd"].value&&form["passwd"].value.length > 0&&
-					form["protocol"].value&&form["protocol"].value.length > 0 ){			
-			if(form["files"].value&&form["files"].value.length > 0){
-			  uploadForm(form);		
+					form["protocol"].value&&form["protocol"].value.length > 0 ){	
+			 $.post(form.action, form.serialize(), function(data){
+				 if(data.success){
+					 bootbox.dialog({
+							title: "Save Image Copy",
+							message:  "<form id='form_copy' method='post'>"+
+											"<div class='box-body'>"+
+											"<div class='form-group'>"+
+								        		"<label>Write the name that will be used to save the copy</label>"+
+								            	"<input class='form-control' id='imageName' name='name' type='text' value='"+imagename+"'>"+
+								            "</div>"+	
+								            "</div>"+	
+										"</form>",
+							buttons: {
+								success: {
+									label: "Save",
+									className: "btn-success",
+									callback: function () {
+										var form = $('#form_copy');
+										form.attr('action',href+execution);
+										form.submit()
+									}
+								},
+								cancel: {
+									label: "Cancel",
+									className: "btn-danger",								
+								},
+							}
+						});
+				 }else{
+					 addLabel('#label-message','There were an error to create image',true)
+				 }, 'json')	
 			}
-			else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
+				 
+		//	if(form["files"].value&&form["files"].value.length > 0){
+		//	  uploadForm(form);		
+		//	}
+		//	else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
 		}else addLabel('#label-message', 'All fields are required', true);
 	});
 
@@ -212,6 +245,14 @@ function tableChecker(){
 	
 }
 
+function showMessage(data, message){
+	 if(data.success){
+		 addLabel('#label-message',message,false);			
+	 }else{
+		 
+	 }
+}
+
 function checkSelected(){
 	cleanLabel('#label-message');
 	var selected = false;
@@ -292,15 +333,6 @@ function editImage(){
 				else showConfirm('Confirm','Your image will change its privacy policy from private to public and others users will be allowed to copy it. Are you sure you want to change it?', call);	
 			}else call();	
 		}else addLabel('#label-message', 'Name and user are required', true);
-	});
-}
-function calculateDeploy(){
-	$('#option-hw').change(function() {
-		var label = $(this).attr('data-img');
-		var hw = $(this).val();
-		 $.get('../maxDeploys', {hwp:hw}, function(data){
-			 $('#'+label).text(data.max);
-		 }, 'json');
 	});
 }
 

@@ -1,11 +1,16 @@
 package unacloud
 
+import unacloud.utils.UnaCloudVariables;
 import grails.transaction.Transactional
 
 @Transactional
 class ServerVariableService {
 
+	/**
+	 * Return the default allocator configured in database
+	 * @return
+	 */
     def getDefaultAllocator() {
-		return ServerVariable.findByName("VM_DEFAULT_ALLOCATOR")
+		return ServerVariable.findByName(UnaCloudVariables.VM_DEFAULT_ALLOCATOR)
     }
 }

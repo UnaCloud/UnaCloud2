@@ -1,9 +1,9 @@
-/asset/
 /grails/
-/hibernate/
-/hibernate.cfg.xml
-/javascripts/
 /org/
-/spring/
-/unacloud/
 /uniandes/
+/asset/
+/unacloud/
+/controlConfig.properties
+/fileConfig.properties
+/controlConfigExample.properties
+/fileConfigExample.properties

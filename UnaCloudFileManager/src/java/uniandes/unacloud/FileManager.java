@@ -3,6 +3,7 @@ package uniandes.unacloud;
 
 import queue.QueueMessageReceiver;
 import queue.QueueRabbitManager;
+import unacloud.utils.UnaCloudVariables;
 
 import com.losandes.utils.Constants;
 
@@ -38,7 +39,7 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {		
-		return "fileManager.properties";
+		return "fileConfig.properties";
 	}
 
 	@Override
@@ -58,7 +59,7 @@ public class FileManager extends ProjectManager{
 	protected void startQueueService() throws Exception {
 		QueueRabbitManager rabbitManager = new QueueRabbitManager(reader.getStringVariable(Constants.QUEUE_USERNAME),
 				reader.getStringVariable(Constants.QUEUE_PASS), reader.getStringVariable(Constants.QUEUE_URL), 
-				reader.getIntegerVariable(Constants.QUEUE_PORT), "AGENT_CONTROL");
+				reader.getIntegerVariable(Constants.QUEUE_PORT), UnaCloudVariables.QUEUE_FILE);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
 		queueReceiver.startReceiver(new QueueMessageFileProcessor());	

@@ -1,9 +1,12 @@
 package unacloud
 
 import grails.transaction.Transactional
+
 import java.util.zip.ZipEntry
 import java.nio.file.Files;
 import java.util.zip.ZipOutputStream
+
+import unacloud.utils.UnaCloudVariables;
 
 @Transactional
 class ConfigurationService {
@@ -27,7 +30,7 @@ class ConfigurationService {
 	 * @return
 	 */
 	def getAgentVersion(){
-		return ServerVariable.findByName('AGENT_VERSION').variable
+		return ServerVariable.findByName(UnaCloudVariables.AGENT_VERSION).variable
 	}
 	
 	/**
@@ -35,7 +38,7 @@ class ConfigurationService {
 	 * @return
 	 */
 	def setAgentVersion(){
-		ServerVariable agentVersion= ServerVariable.findByName("AGENT_VERSION")
+		ServerVariable agentVersion= ServerVariable.findByName(UnaCloudVariables.AGENT_VERSION)
 		int newVerNumber= ((agentVersion.getVariable()-"2.0.") as Integer)+1
 		String newVersion=  "2.0."+ newVerNumber
 		agentVersion.putAt("variable", newVersion)
@@ -53,7 +56,7 @@ class ConfigurationService {
 		copyFile(zos,"ClientConfigurer.jar",new File(appDir,"agentSources/ClientConfigurer.jar"),true);
 		zos.putNextEntry(new ZipEntry("vars"));
 		PrintWriter pw=new PrintWriter(zos);
-		ServerVariable monitor = ServerVariable.findByName("MONITORING_ENABLE");
+		ServerVariable monitor = ServerVariable.findByName(UnaCloudVariables.MONITORING_ENABLE);
 		boolean monitoring = monitor.variable.equals("true")?true:false;
 		for(ServerVariable sv:ServerVariable.all)
 			if(!sv.isServerOnly()){
