@@ -15,6 +15,10 @@ class VirtualMachineImageController {
 	 */
 	VirtualMachineImageService virtualMachineImageService
 	
+	/**
+	 * Representation of server variable service
+	 */
+	ServerVariableService serverVariableService
 	
 	//-----------------------------------------------------------------
 	// Actions MVC
@@ -202,7 +206,8 @@ class VirtualMachineImageController {
 			def user= User.get(session.user.id)			
 			try{
 				def token = virtualMachineImageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
-				resp = [success:true,'token':token];				
+				def url = serverVariableService.getUrlFileManager()
+				resp = [success:true,'token':token,'url':url+"/upload"];				
 			}
 			catch(Exception e) {
 				resp = [success:false,'message':e.message]
@@ -224,7 +229,8 @@ class VirtualMachineImageController {
 		if (image!= null&&image.owner.id==session.user.id){	
 			try{
 				def token = virtualMachineImageService.updateFiles(image)
-				resp = [success:true,'token':token]
+				def url = serverVariableService.getUrlFileManager()
+				resp = [success:true,'token':token,'url':url+"/update"]
 			}
 			catch(Exception e) {
 				resp = [success:false,'message':e.message]

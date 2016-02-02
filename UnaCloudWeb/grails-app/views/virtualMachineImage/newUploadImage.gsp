@@ -59,11 +59,7 @@
 		                         <div class="form-group">
 		                             <label>Password</label>
 		                             <input type="password" class="form-control" name="passwd" placeholder="Password">
-		                         </div>                    
-		                         <div class="form-group">
-		                             <label>Image File input</label>
-		                             <input id="files" type="file" name="files" multiple>
-		                         </div>
+		                         </div> 
 		                         <div class="form-group">
 		                             <label>
 		                             	<input type="checkbox" name="isPublic"  class="check-blue"/>Public?

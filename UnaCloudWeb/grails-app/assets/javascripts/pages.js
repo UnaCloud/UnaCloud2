@@ -106,7 +106,7 @@ $(document).on('ready',function(){
 
 	$('#button-upload').click(function (event){		
 		cleanLabel('#label-message');
-		var form = document.getElementById("form-new");
+		var form = $('#form-new');
 		if(form["name"].value&&form["name"].value.length > 0&&
 			form["user"].value&&form["user"].value.length > 0&&
 				form["passwd"].value&&form["passwd"].value.length > 0&&
@@ -114,40 +114,32 @@ $(document).on('ready',function(){
 			 $.post(form.action, form.serialize(), function(data){
 				 if(data.success){
 					 bootbox.dialog({
-							title: "Save Image Copy",
-							message:  "<form id='form_copy' method='post'>"+
+							title: "Upload Image",
+							message:  "<form id='form_image' method='post' enctype='multipart/form-data'>"+
 											"<div class='box-body'>"+
-											"<div class='form-group'>"+
-								        		"<label>Write the name that will be used to save the copy</label>"+
-								            	"<input class='form-control' id='imageName' name='name' type='text' value='"+imagename+"'>"+
-								            "</div>"+	
+												"<div class='form-group'>"+
+													"<label>Image File input</label>"+
+													"<input type='file' name='files' multiple>"+
+													"<input type='hidden' name='token' value='"+data.token+"'>"+
+												"</div>"+
 								            "</div>"+	
 										"</form>",
 							buttons: {
 								success: {
-									label: "Save",
+									label: "Upload",
 									className: "btn-success",
 									callback: function () {
-										var form = $('#form_copy');
-										form.attr('action',href+execution);
-										form.submit()
+										var form = $('#form_image');
+										form.attr('action',data.url);
+										uploadForm()
 									}
-								},
-								cancel: {
-									label: "Cancel",
-									className: "btn-danger",								
 								},
 							}
 						});
 				 }else{
-					 addLabel('#label-message','There were an error to create image',true)
-				 }, 'json')	
-			}
-				 
-		//	if(form["files"].value&&form["files"].value.length > 0){
-		//	  uploadForm(form);		
-		//	}
-		//	else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
+					 addLabel('#label-message','There was an error creating image',true)
+				 }				
+			}, 'json')	
 		}else addLabel('#label-message', 'All fields are required', true);
 	});
 

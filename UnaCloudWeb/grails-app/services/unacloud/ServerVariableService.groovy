@@ -13,4 +13,12 @@ class ServerVariableService {
     def getDefaultAllocator() {
 		return ServerVariable.findByName(UnaCloudVariables.VM_DEFAULT_ALLOCATOR)
     }
+	
+	/**
+	 * Return the current web server file url
+	 * @return
+	 */
+	def getUrlFileManager(){
+		return ServerVariable.findByName(UnaCloudVariables.WEB_FILE_SERVER_URL).variable
+	}
 }
