@@ -106,41 +106,38 @@ $(document).on('ready',function(){
 
 	$('#button-upload').click(function (event){		
 		cleanLabel('#label-message');
-		var form = $('#form-new');
-		if(form["name"].value&&form["name"].value.length > 0&&
-			form["user"].value&&form["user"].value.length > 0&&
-				form["passwd"].value&&form["passwd"].value.length > 0&&
-					form["protocol"].value&&form["protocol"].value.length > 0 ){	
-			 $.post(form.action, form.serialize(), function(data){
-				 if(data.success){
-					 bootbox.dialog({
-							title: "Upload Image",
-							message:  "<form id='form_image' method='post' enctype='multipart/form-data'>"+
-											"<div class='box-body'>"+
-												"<div class='form-group'>"+
-													"<label>Image File input</label>"+
-													"<input type='file' name='files' multiple>"+
-													"<input type='hidden' name='token' value='"+data.token+"'>"+
-												"</div>"+
-								            "</div>"+	
-										"</form>",
-							buttons: {
-								success: {
-									label: "Upload",
-									className: "btn-success",
-									callback: function () {
-										var form = $('#form_image');
-										form.attr('action',data.url);
-										uploadForm()
-									}
-								},
+		var form = $('#form-new');	
+		console.log(form.attr('action'))
+		$.post(form.attr('action'), form.serialize(), function(data){
+			console.log(data)
+			if(data.success){
+				bootbox.dialog({
+					title: "Upload Image",
+					message:"<form id='form_image' method='post' enctype='multipart/form-data'>"+
+									"<div class='box-body'>"+
+										"<div class='form-group'>"+
+											"<label>Image File input</label>"+
+											"<input type='file' name='files' multiple>"+
+											"<input type='hidden' name='token' value='"+data.token+"'>"+
+										"</div>"+
+									"</div>"+	
+							"</form>",
+					buttons: {
+						success: {
+							label: "Upload",
+							className: "btn-success",
+							callback: function () {
+								var form = $('#form_image');
+								form.attr('action',data.url);
+								uploadForm(form)
 							}
-						});
-				 }else{
-					 addLabel('#label-message','There was an error creating image',true)
-				 }				
-			}, 'json')	
-		}else addLabel('#label-message', 'All fields are required', true);
+						},
+					}
+				});
+			}else{
+				addLabel('#label-message',data.message,true)
+			}				
+	    }, 'json')	
 	});
 
 	$('#button-update').click(function (event){		
@@ -305,7 +302,7 @@ function uploadForm(form){
     	showError('Error!','Upload failed. Can not connect to server.')
     };
     showLoadingUploading();
-	xhr.open("POST", form.action)	
+	xhr.open("POST", form.attr('action'))	
     xhr.send(formData);
 }
 

@@ -210,6 +210,7 @@ class VirtualMachineImageController {
 				resp = [success:true,'token':token,'url':url+"/upload"];				
 			}
 			catch(Exception e) {
+				e.printStackTrace()
 				resp = [success:false,'message':e.message]
 			}		
 		}else resp = [success:false,'message':'All fields are required'];

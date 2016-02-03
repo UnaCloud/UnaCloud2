@@ -5,7 +5,7 @@ public class UnaCloudVariables {
 	/**
 	 * To connect with web server
 	 */
-	public static final String WEB_SERVER_URL = "WEB_SERVER_PORT";
+	public static final String WEB_SERVER_URL = "WEB_SERVER_URL";
 	/**
 	 * To connect with queue
 	 */
@@ -24,7 +24,7 @@ public class UnaCloudVariables {
 	/**
 	 * To connect with file manager
 	 */
-	public static final String WEB_FILE_SERVER_URL = "WEB_FILE_SERVER_PORT";
+	public static final String WEB_FILE_SERVER_URL = "WEB_FILE_SERVER_URL";
 	public static final String FILE_SERVER_PORT = "FILE_SERVER_PORT";
 	public static final String FILE_SERVER_IP = "FILE_SERVER_IP";
 	public static final String VERSION_MANAGER_PORT = "VERSION_MANAGER_PORT";

@@ -25,9 +25,9 @@
                  	<!-- form start -->
                  	<form id="form-change" action="${createLink(uri: '/services/image/update/save', absolute: true)}" enctype="multipart/form-data" role="form">
                      	 <div class="box-body">	                     		
-            				 <p class="help-block">If you confirm action your image could be saved as Unavailable until you upload image files.</p> 
+            				 <p class="help-block">Use confirm to upload image files.</p> 
             				 <input id="id" name="id" type="hidden" value="${id}">                        	           
-	                         <a id="button-update" class="btn btn-success" style="cursor:pointer">Submit</a>	                         
+	                         <a id="button-update" class="btn btn-success" style="cursor:pointer">Confirm</a>	                         
 	                         <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>
 	                     </div>
                 	</form>

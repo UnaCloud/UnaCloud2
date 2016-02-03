@@ -98,7 +98,8 @@ class UserRestrictionService {
 	 */
 	def getRepository(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.REPOSITORY)
-		if(!restriction)return repositoryService.getRepositoryByName(restriction.value)
-		else return repositoryService.getMainRepository()
+		println restriction
+		if(restriction==null)return repositoryService.getMainRepository()
+		else return repositoryService.getRepositoryByName(restriction.value)		 
 	}
 }

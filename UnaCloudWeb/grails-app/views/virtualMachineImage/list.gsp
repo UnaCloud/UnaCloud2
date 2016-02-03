@@ -58,15 +58,17 @@
 	                                  	<span class="label label-warning">${image.state.name}</span>
 	                                  </g:elseif>
                                   </td>
-                                  <td class="column-center"> 
-                                  <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)}">
+                                  <td class="column-center">                                   
                                  	 <div class="btn-group">
+                                 	 <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)}">
                                  	 	<a title="Delete" class="delete_images btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
                                    	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-default" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
+                                    	<a title="Remove from cache" class="clear_image btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-eraser'></i></a>  
+                                    </g:if> 
+                                     <g:if test="${image.state.equals(VirtualMachineImageEnum.AVAILABLE)||image.state.equals(VirtualMachineImageEnum.UNAVAILABLE)}">
                                         <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-default"  data-toggle="tooltip"><i class="fa fa-upload"></i></a>
-									    <a title="Remove from cache" class="clear_image btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-eraser'></i></a>  
-                                     </div>
-                                  </g:if>
+									 </g:if>
+                                     </div>                                  
 								  </td>
                               </tr>
                           </g:each>                                   
