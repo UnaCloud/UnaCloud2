@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import unacloud.entities.HypervisorEntity;
+import unacloud.share.entities.HypervisorEntity;
 import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.entities.UserEntity;
-import db.HypervisorManager;
+import unacloud.share.db.HypervisorManager;
 import grails.converters.JSON
 
 class FileController {

@@ -2,7 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 class DeployedImage {
 	

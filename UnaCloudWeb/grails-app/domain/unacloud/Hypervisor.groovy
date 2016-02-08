@@ -24,6 +24,7 @@ class Hypervisor {
 	/**
 	 * extension list of files for this hypervisor
 	 * string with commas
+	 * not include main
 	 */
 	String filesExtensions
 	

@@ -1,7 +1,7 @@
 package unacloud
 
-import unacloud.enums.PhysicalMachineStateEnum;
-import unacloud.enums.UserRestrictionEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
 import unacloud.pmallocators.AllocatorEnum;
 import grails.transaction.Transactional
 

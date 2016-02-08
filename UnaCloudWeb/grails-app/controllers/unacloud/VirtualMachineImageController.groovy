@@ -1,6 +1,6 @@
 package unacloud
 
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.task.queue.QueueTaskerControl;
 import grails.converters.JSON
 

@@ -7,7 +7,7 @@ import unacloud.PhysicalMachine
 import unacloud.User
 import unacloud.UserRestrictionService
 import unacloud.VirtualMachineExecution
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorEnum
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 

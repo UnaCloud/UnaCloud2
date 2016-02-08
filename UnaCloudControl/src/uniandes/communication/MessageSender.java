@@ -7,7 +7,7 @@ import java.util.List;
 
 import communication.UnaCloudAbstractMessage;
 import communication.UnaCloudAbstractResponse;
-import unacloud.entities.PhysicalMachineEntity;
+import unacloud.share.entities.PhysicalMachineEntity;
 import uniandes.ControlManager;
 
 /**

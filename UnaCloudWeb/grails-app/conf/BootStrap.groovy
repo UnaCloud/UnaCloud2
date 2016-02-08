@@ -5,7 +5,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
 
-import queue.QueueRabbitManager;
+import unacloud.share.queue.QueueRabbitManager;
 import unacloud.ExternalCloudProvider;
 import unacloud.UserGroup
 import unacloud.UserGroupService
@@ -22,13 +22,13 @@ import unacloud.Repository
 import unacloud.UserService
 import unacloud.enums.ExternalCloudTypeEnum;
 import unacloud.enums.NetworkQualityEnum;
-import unacloud.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.enums.ServerVariableTypeEnum;
 import unacloud.init.DatabaseService
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
-import unacloud.utils.UnaCloudVariables;
+import unacloud.share.utils.UnaCloudVariables;
 import unacloud.pmallocators.AllocatorEnum;
 
 class BootStrap {

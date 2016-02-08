@@ -63,9 +63,9 @@ class HypervisorController {
 	 * @return
 	 */
 	def save(){
-		if(params.name&&params.version){
+		if(params.name&&params.version&&params.ext){
 			try{
-				hypervisorService.create(params.name,params.version)
+				hypervisorService.create(params.name,params.version,params.ext,params.files_ext)
 				redirect(uri:"/admin/hypervisor/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message
@@ -94,11 +94,11 @@ class HypervisorController {
 	 * Redirects to hypervisor list when finished
 	 */
 	def saveEdit(){
-		if(params.name&&params.version){
+		if(params.name&&params.version&&params.ext){
 			try{
 				Hypervisor hypervisor = Hypervisor.get(params.id)
 				if(Hypervisor){
-					hypervisorService.setValues(hypervisor,params.name,params.version)
+					hypervisorService.setValues(hypervisor,params.name,params.version,params.ext,params.files_ext)
 					flash.message="Hypervisor values have been modified"
 					flash.type="success"
 				}	

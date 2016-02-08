@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import com.losandes.utils.Constants;
 
-import unacloud.entities.VirtualMachineImageEntity;
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 
 class User {
 	

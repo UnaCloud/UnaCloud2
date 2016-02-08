@@ -9,16 +9,16 @@ import org.apache.commons.io.FileUtils;
 
 import com.losandes.utils.Constants;
 
-import db.HypervisorManager;
-import db.RepositoryManager;
-import db.VirtualImageManager;
-import queue.QueueMessage;
-import queue.QueueReader;
-import unacloud.entities.HypervisorEntity;
-import unacloud.entities.RepositoryEntity;
-import unacloud.entities.VirtualMachineImageEntity;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.db.HypervisorManager;
+import unacloud.share.db.RepositoryManager;
+import unacloud.share.db.VirtualImageManager;
+import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.QueueReader;
+import unacloud.share.entities.HypervisorEntity;
+import unacloud.share.entities.RepositoryEntity;
+import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
 import uniandes.unacloud.db.entities.UserEntity;

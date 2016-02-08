@@ -3,8 +3,8 @@ package unacloud
 import java.text.DecimalFormat
 
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 
 class VirtualMachineImage {
 	

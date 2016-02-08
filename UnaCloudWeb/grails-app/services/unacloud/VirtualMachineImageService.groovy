@@ -7,8 +7,8 @@ import com.losandes.utils.Constants;
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import grails.transaction.Transactional
 
 @Transactional

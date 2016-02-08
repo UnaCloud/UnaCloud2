@@ -5,7 +5,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 import unacloud.enums.IPEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 class VirtualMachineExecution {
 	

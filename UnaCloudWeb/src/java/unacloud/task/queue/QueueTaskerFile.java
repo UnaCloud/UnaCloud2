@@ -1,8 +1,8 @@
 package unacloud.task.queue;
 
-import queue.QueueMessage;
-import queue.QueueMessageType;
-import queue.QueueTaskerConnection;
+import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.QueueMessageType;
+import unacloud.share.queue.QueueTaskerConnection;
 import unacloud.User;
 import unacloud.VirtualMachineImage;
 

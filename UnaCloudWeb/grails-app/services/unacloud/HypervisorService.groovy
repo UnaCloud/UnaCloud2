@@ -15,8 +15,8 @@ class HypervisorService {
 	 * @param hyperVersion hypervisor's version
 	 */
 	
-	def create(name, hyperVersion) {
-		new Hypervisor(name:name, hypervisorVersion: hyperVersion).save()
+	def create(name, hyperVersion, ext,fileExts) {
+		new Hypervisor(name:name, hypervisorVersion: hyperVersion, mainExtension: ext, filesExtensions: fileExts).save()
     }
 	
 	/**
@@ -25,9 +25,11 @@ class HypervisorService {
 	 * @param name hypervisor's new name
 	 */
 	
-	def setValues(Hypervisor hypervisor, name, hyperVersion){
+	def setValues(Hypervisor hypervisor, name, hyperVersion, mainExt, filesExt){
 		hypervisor.putAt("name", name)
 		hypervisor.putAt("hypervisorVersion", hyperVersion)
+		hypervisor.putAt("mainExtension", mainExt)
+		hypervisor.putAt("filesExtensions", filesExt)
 	}
 	
 	/**

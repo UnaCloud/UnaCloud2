@@ -4,8 +4,8 @@ import org.springframework.aop.ThrowsAdvice;
 
 import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
-import unacloud.enums.PhysicalMachineStateEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
 
 import com.losandes.utils.Ip4Validator

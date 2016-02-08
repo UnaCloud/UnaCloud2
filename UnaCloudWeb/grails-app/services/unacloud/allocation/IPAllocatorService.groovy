@@ -6,7 +6,7 @@ import unacloud.ExecutionIP
 import unacloud.NetInterface
 import unacloud.VirtualMachineExecution
 import unacloud.enums.IPEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorException
 
 @Transactional

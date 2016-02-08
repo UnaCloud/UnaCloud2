@@ -1,8 +1,8 @@
 package uniandes.unacloud.db.entities;
 
-import unacloud.entities.RepositoryEntity;
-import unacloud.entities.VirtualMachineImageEntity;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.entities.RepositoryEntity;
+import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
  * Class to represent a Virtual Image in database.

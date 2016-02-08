@@ -1,14 +1,13 @@
 package uniandes.unacloud;
 
-
-import queue.QueueMessageReceiver;
-import queue.QueueRabbitManager;
-import unacloud.utils.UnaCloudVariables;
+import unacloud.share.queue.QueueMessageReceiver;
+import unacloud.share.queue.QueueRabbitManager;
+import unacloud.share.utils.UnaCloudVariables;
 
 import com.losandes.utils.Constants;
 
-import db.DatabaseConnection;
-import manager.ProjectManager;
+import unacloud.share.db.DatabaseConnection;
+import unacloud.share.manager.ProjectManager;
 
 /**
  * Initializes and control all services in project
@@ -38,8 +37,8 @@ public class FileManager extends ProjectManager{
 	}
 
 	@Override
-	protected String getPropetiesFileName() {		
-		return "fileConfig.properties";
+	protected String getPropetiesFileName() {	
+		return "grails-app/conf/fileConfig.properties";
 	}
 
 	@Override

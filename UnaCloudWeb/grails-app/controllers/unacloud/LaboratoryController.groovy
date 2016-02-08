@@ -1,8 +1,8 @@
 package unacloud
 
 import unacloud.enums.NetworkQualityEnum;
-import unacloud.enums.PhysicalMachineStateEnum;
-import unacloud.enums.TaskEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.TaskEnum;
 
 class LaboratoryController {
 	

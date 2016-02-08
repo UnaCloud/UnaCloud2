@@ -4,9 +4,9 @@ import java.util.TreeMap;
 
 import unacloud.pmallocators.AllocatorEnum;
 import unacloud.UserService;
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.UserSession;
 
 class UserController {

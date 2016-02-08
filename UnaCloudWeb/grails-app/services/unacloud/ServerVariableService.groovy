@@ -1,6 +1,6 @@
 package unacloud
 
-import unacloud.utils.UnaCloudVariables;
+import unacloud.share.utils.UnaCloudVariables;
 import grails.transaction.Transactional
 
 @Transactional

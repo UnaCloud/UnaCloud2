@@ -27,6 +27,8 @@
                                   <th>Name</th>
                                   <th>Version</th>
                                   <th>Actions</th>
+                                  <th>Executable</th>
+                                  <th>Extensions</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -34,6 +36,8 @@
                               <tr>
                                  <td>${hypervisor.name}</td>
                                  <td>${hypervisor.hypervisorVersion}</td>
+                                 <td>${hypervisor.mainExtension}</td>
+                                 <td>${hypervisor.filesExtensions}</td>
                                  <td class="column-center">                                  
 	                                 <div class="btn-group">
 		                                 <a title="Delete" class="delete_hypervisor btn btn-default" data-id="${hypervisor.id}" href="${createLink(uri: '/admin/hypervisor/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>

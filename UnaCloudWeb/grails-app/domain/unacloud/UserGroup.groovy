@@ -1,6 +1,6 @@
 package unacloud
 
-import unacloud.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserRestrictionEnum;
 
 class UserGroup {
 	

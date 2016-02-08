@@ -2,8 +2,8 @@ package unacloud
 
 import org.apache.commons.lang.RandomStringUtils;
 
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;

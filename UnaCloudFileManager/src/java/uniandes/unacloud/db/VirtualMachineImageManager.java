@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
-import db.DatabaseConnection;
-import db.RepositoryManager;
+import unacloud.share.db.DatabaseConnection;
+import unacloud.share.db.RepositoryManager;
 
 /**
  * Generic class used to create queries and updates for VirtualMachineImage entity

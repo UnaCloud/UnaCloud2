@@ -2,7 +2,7 @@ package unacloud
 
 import java.util.Date;
 
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 class ExecutionRequest {
 	

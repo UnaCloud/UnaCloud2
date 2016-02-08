@@ -1,7 +1,7 @@
 package uniandes.unacloud.db.entities;
 
-import unacloud.entities.RepositoryEntity;
-import unacloud.enums.UserStateEnum;
+import unacloud.share.entities.RepositoryEntity;
+import unacloud.share.enums.UserStateEnum;
 
 
 /**

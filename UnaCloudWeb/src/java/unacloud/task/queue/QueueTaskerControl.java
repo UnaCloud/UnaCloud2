@@ -2,16 +2,16 @@ package unacloud.task.queue;
 
 import java.util.List;
 
-import queue.QueueMessage;
-import queue.QueueMessageType;
-import queue.QueueTaskerConnection;
+import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.QueueMessageType;
+import unacloud.share.queue.QueueTaskerConnection;
 import unacloud.DeployedImage;
 import unacloud.Deployment;
 import unacloud.PhysicalMachine;
 import unacloud.User;
 import unacloud.VirtualMachineExecution;
 import unacloud.VirtualMachineImage;
-import unacloud.enums.TaskEnum;
+import unacloud.share.enums.TaskEnum;
 
 /**
  * Class used to put task in queue messaging service that will be read by Control project

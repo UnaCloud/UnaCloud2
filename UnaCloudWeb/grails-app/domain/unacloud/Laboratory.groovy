@@ -4,7 +4,7 @@ import java.util.List;
 
 import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
-import unacloud.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
 
 class Laboratory {
 	

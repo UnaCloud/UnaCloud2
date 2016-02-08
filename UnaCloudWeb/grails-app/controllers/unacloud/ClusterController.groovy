@@ -1,8 +1,8 @@
 package unacloud
 
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.PhysicalMachineStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import javassist.bytecode.stackmap.BasicBlock.Catch;
 
 class ClusterController {

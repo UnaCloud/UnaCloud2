@@ -6,11 +6,11 @@ import org.apache.commons.io.FileUtils;
 
 import com.losandes.utils.Constants;
 
-import db.RepositoryManager;
-import db.VirtualImageManager;
-import unacloud.entities.RepositoryEntity;
-import unacloud.entities.VirtualMachineImageEntity;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.db.RepositoryManager;
+import unacloud.share.db.VirtualImageManager;
+import unacloud.share.entities.RepositoryEntity;
+import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
 import uniandes.unacloud.db.entities.UserEntity

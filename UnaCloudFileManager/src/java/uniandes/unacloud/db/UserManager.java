@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 
 import com.losandes.utils.Constants;
 
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.db.entities.UserEntity;
-import db.DatabaseConnection;
-import db.RepositoryManager;
+import unacloud.share.db.DatabaseConnection;
+import unacloud.share.db.RepositoryManager;
 
 /**
  * Generic class used to query and update User entity in database

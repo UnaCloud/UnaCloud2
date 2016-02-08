@@ -1,10 +1,10 @@
 package unacloud
 
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
 class DeploymentController {

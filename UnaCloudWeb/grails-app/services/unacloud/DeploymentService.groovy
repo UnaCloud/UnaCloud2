@@ -4,9 +4,9 @@ import com.losandes.utils.RandomUtils;
 
 import unacloud.allocation.IpAllocatorService
 import unacloud.allocation.PhysicalMachineAllocatorService
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.pmallocators.AllocatorException
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 import unacloud.task.queue.QueueTaskerControl;

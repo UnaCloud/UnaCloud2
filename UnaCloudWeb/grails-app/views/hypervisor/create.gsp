@@ -26,12 +26,21 @@
 	                 	<form id="form-new" action="${createLink(uri: '/admin/hypervisor/save', absolute: true)}" role="form">
 	                     	<div class="box-body">	                     		
 	                        	<div class="form-group">
-	                            	<label>Hypervisor name</label>
+	                            	<label>Hypervisor name *</label>
 	                            	<input type="text" class="form-control" name="name" placeholder="Hypervisor name">
 	                         	</div>
 	                         	<div class="form-group">
-	                            	<label>Version</label>
+	                            	<label>Version *</label>
 	                            	<input type="text" class="form-control" name="version" placeholder="Hypervisor version">
+	                         	</div>
+	                         	<div class="form-group">
+	                            	<label>Main file extension *</label>
+	                            	<input type="text" class="form-control" name="ext" placeholder="Hypervisor main file extension">
+	                         	</div>
+	                         	<div class="form-group">
+	                            	<label>Other file extensions</label>
+	                            	<p class="help-block">Allowed file extension list for this hypervisor separated by comma (.vbox,.vmk,...), not include main file.</p> 
+	                            	<input type="text" class="form-control" name="version" placeholder="Hypervisor file extension list">
 	                         	</div>
 	                         </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			

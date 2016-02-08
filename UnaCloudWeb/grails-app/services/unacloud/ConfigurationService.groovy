@@ -6,7 +6,7 @@ import java.util.zip.ZipEntry
 import java.nio.file.Files;
 import java.util.zip.ZipOutputStream
 
-import unacloud.utils.UnaCloudVariables;
+import unacloud.share.utils.UnaCloudVariables;
 
 @Transactional
 class ConfigurationService {

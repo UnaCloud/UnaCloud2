@@ -1,7 +1,7 @@
 package unacloud
 
 import unacloud.pmallocators.AllocatorEnum;
-import unacloud.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserRestrictionEnum;
 
 class UserGroupController {
 
