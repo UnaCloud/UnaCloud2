@@ -1,5 +1,13 @@
+/asset/
+/dbdoc/
+/empty.txt
+/fileConfigExample.properties
 /grails/
+/hibernate/
+/hibernate.cfg.xml
+/javascripts/
 /org/
+/spring/
+/uglifyjs/
 /unacloud/
 /uniandes/
-/asset/

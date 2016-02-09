@@ -107,13 +107,11 @@ $(document).on('ready',function(){
 	$('#button-upload').click(function (event){		
 		cleanLabel('#label-message');
 		var form = $('#form-new');	
-		console.log(form.attr('action'))
 		$.post(form.attr('action'), form.serialize(), function(data){
-			console.log(data)
 			if(data.success){
 				bootbox.dialog({
 					title: "Upload Image",
-					message:"<form id='form_image' method='post' enctype='multipart/form-data'>"+
+					message:"<form id='form_image' method='post' action='"+data.url+"' enctype='multipart/form-data'>"+
 									"<div class='box-body'>"+
 										"<div class='form-group'>"+
 											"<label>Image File input</label>"+
@@ -127,9 +125,10 @@ $(document).on('ready',function(){
 							label: "Upload",
 							className: "btn-success",
 							callback: function () {
-								var form = $('#form_image');
-								form.attr('action',data.url);
-								uploadForm(form)
+								var form_image = document.getElementById('form_image');
+								console.log("image: ")
+								console.log(form_image)
+								uploadForm(form_image)
 							}
 						},
 					}
@@ -302,7 +301,7 @@ function uploadForm(form){
     	showError('Error!','Upload failed. Can not connect to server.')
     };
     showLoadingUploading();
-	xhr.open("POST", form.attr('action'))	
+	xhr.open("POST", form.action)	
     xhr.send(formData);
 }
 

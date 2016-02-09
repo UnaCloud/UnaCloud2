@@ -144,12 +144,13 @@
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/commonshares.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/servershares.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/commons-pool2-2.4.2.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/com.mysql.jdbc_5.1.5.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/commons-dbcp2-2.1.1.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/ServerShares/lib/rabbitmq-client.jar"/>
+	<classpathentry kind="lib" path="lib/com.mysql.jdbc_5.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
+	<classpathentry kind="lib" path="lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
+	<classpathentry kind="lib" path="lib/servershares.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

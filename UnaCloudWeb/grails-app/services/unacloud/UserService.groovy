@@ -1,6 +1,6 @@
 package unacloud
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import unacloud.share.enums.UserRestrictionEnum;
 import unacloud.share.enums.UserStateEnum;

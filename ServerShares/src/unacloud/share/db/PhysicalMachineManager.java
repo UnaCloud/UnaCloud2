@@ -94,11 +94,11 @@ public class PhysicalMachineManager {
 	public static boolean setPhysicalMachine(PhysicalMachineEntity machine){
 		if(machine.getId()==null||machine.getId()<1)return false;
 		try {
-			String query = "update physical_machine pm "; 
+			String query = "update physical_machine pm set"; 
 			int status = 0;
 			int report = 0;
-			if(machine.getStatus()!=null){query+=" set pm.state = ? ";status = 1;}
-			if(machine.getLastReport()!=null){query+=(status>0?",":"")+" set pm.last_report = ? ";report=status+1;};
+			if(machine.getStatus()!=null){query+=" pm.state = ? ";status = 1;}
+			if(machine.getLastReport()!=null){query+=(status>0?",":"")+" pm.last_report = ? ";report=status+1;};
 			if(status>0||report>0){
 				query += "where pm.id = ? and pm.id > 0;";
 				Connection con = DatabaseConnection.getInstance().getConnection();

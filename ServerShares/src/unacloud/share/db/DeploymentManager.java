@@ -89,15 +89,15 @@ public class DeploymentManager {
 	public static boolean setVirtualMachineExecution(VirtualMachineExecutionEntity execution){
 		if(execution.getId()==null||execution.getId()<1)return false;
 		try {
-			String query = "update virtual_machine_execution vme "; 
+			String query = "update virtual_machine_execution vme set "; 
 			int start = 0;
 			int stop = 0;
 			int state = 0;
 			int message = 0;
-			if(execution.getStartTime()!=null){query+=" set vme.start_time = ? ";start = 1;}
-			if(execution.getStopTime()!=null){query+=(start>0?",":"")+" set vme.stop_time = ? ";stop=start+1;};
-			if(execution.getState()!=null){query+=(start>0||stop>0?",":"")+" set vme.status= ? ";state=stop>0?stop+1:start+1;};
-			if(execution.getMessage()!=null){query+=(start>0||stop>0||state>0?",":"")+" set vme.message= ? ";message=state>0?state+1:stop>0?stop+1:start+1;};
+			if(execution.getStartTime()!=null){query+=" vme.start_time = ? ";start = 1;}
+			if(execution.getStopTime()!=null){query+=(start>0?",":"")+" vme.stop_time = ? ";stop=start+1;};
+			if(execution.getState()!=null){query+=(start>0||stop>0?",":"")+" vme.status= ? ";state=stop>0?stop+1:start+1;};
+			if(execution.getMessage()!=null){query+=(start>0||stop>0||state>0?",":"")+" vme.message= ? ";message=state>0?state+1:stop>0?stop+1:start+1;};
 			if(state>0||stop>0||start>0||message>0){
 				query += "where vme.id = ? and vme.id > 0;";
 				Connection con = DatabaseConnection.getInstance().getConnection();

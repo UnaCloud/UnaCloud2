@@ -77,19 +77,19 @@ public class VirtualMachineImageManager {
 	public static boolean setVirtualMachineFile(VirtualImageFileEntity image, boolean update){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "update virtual_machine_image vm ";
+			String query = "update virtual_machine_image vm set";
 			int isPublic = 0;
 			int repository = 0;
 			int mainFile = 0;
 			int status = 0;
 			int token = 0;
-			if(image.isPublic()!=null){query+=" set vm.is_public = ? ";isPublic = 1;}
-			if(image.getRepository()!=null){query+=(isPublic>0?",":"")+" set vm.repository_id = ? ";repository = isPublic+1;}
-			if(image.getMainFile()!=null){query+=(isPublic>0||repository>0?",":"")+" set vm.main_file = ? ";mainFile = repository>0?repository+1:isPublic+1;}	
-			if(image.getState()!=null){query+=(isPublic>0||repository>0||mainFile>0?",":"")+" set vm.state = ? ";status = mainFile>0?mainFile+1:repository>0?repository+1:isPublic+1;}
-			if(image.getToken()!=null){query+=(isPublic>0||repository>0||mainFile>0||token>0?",":"")+" set vm.token = ? ";token = status>0?status+1:mainFile>0?mainFile+1:repository>0?repository+1:isPublic+1;}
+			if(image.isPublic()!=null){query+=" vm.is_public = ? ";isPublic = 1;}
+			if(image.getRepository()!=null){query+=(isPublic>0?",":"")+" vm.repository_id = ? ";repository = isPublic+1;}
+			if(image.getMainFile()!=null){query+=(isPublic>0||repository>0?",":"")+" vm.main_file = ? ";mainFile = repository>0?repository+1:isPublic+1;}	
+			if(image.getState()!=null){query+=(isPublic>0||repository>0||mainFile>0?",":"")+" vm.state = ? ";status = mainFile>0?mainFile+1:repository>0?repository+1:isPublic+1;}
+			if(image.getToken()!=null){query+=(isPublic>0||repository>0||mainFile>0||token>0?",":"")+" vm.token = ? ";token = status>0?status+1:mainFile>0?mainFile+1:repository>0?repository+1:isPublic+1;}
 			if(isPublic>0||repository>0||mainFile>0||status>0||token>0){
-				if(update)query+= ", set vm.image_version = vm.image_version + 1 ";
+				if(update)query+= ", vm.image_version = vm.image_version + 1 ";
 				query += "where vm.id = ? and vm.id > 0;";
 				System.out.println(query);
 				Connection con = DatabaseConnection.getInstance().getConnection();
