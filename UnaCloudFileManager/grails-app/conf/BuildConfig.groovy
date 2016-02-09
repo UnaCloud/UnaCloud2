@@ -20,7 +20,7 @@ grails.project.fork = [
     // configure settings for the Console UI JVM
     //console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
-
+//grails.server.port.http = 8090
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -67,6 +67,8 @@ grails.project.dependency.resolution = {
         runtime ":hibernate4:4.3.5.5" // or ":hibernate:3.6.10.17"
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"
+		runtime ":cors:1.3.0"
+		//compile ":jaxrs:0.11"
 
         // Uncomment these to enable additional asset-pipeline capabilities
         //compile ":sass-asset-pipeline:1.9.0"

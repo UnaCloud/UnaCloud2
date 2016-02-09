@@ -36,6 +36,7 @@ class FileController {
 	 */
 	def upload(){
 		def resp
+		println params.token
 		if(params.token&&!params.token.empty){
 			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){				
 				def files = request.multiFileMap.files

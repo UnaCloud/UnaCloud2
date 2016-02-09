@@ -1,7 +1,5 @@
 package unacloud
 
-import org.springframework.http.client.InterceptingClientHttpRequest.RequestExecution;
-
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.utils.CalendarUtils;

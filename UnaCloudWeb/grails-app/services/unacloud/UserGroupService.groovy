@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+
 import unacloud.utils.Hasher;
 import grails.transaction.Transactional
 

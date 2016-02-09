@@ -1,8 +1,5 @@
-/asset/
-/dbdoc/
-/empty.txt
-/fileConfigExample.properties
 /grails/
 /org/
-/uniandes/
 /unacloud/
+/uniandes/
+/asset/
