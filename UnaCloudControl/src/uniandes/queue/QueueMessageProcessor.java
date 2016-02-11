@@ -1,5 +1,6 @@
 package uniandes.queue;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,31 +85,37 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void clearCache(QueueMessage message){
 		try {		
+			Connection con = ControlManager.getInstance().getDBConnection();
 			final Long imageId =  Long.parseLong(message.getMessageParts()[0]);
 			VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.REMOVING_CACHE, null);
-			VirtualImageManager.setVirtualMachine(image, ControlManager.getInstance().getDBConnection());
+			VirtualImageManager.setVirtualMachine(image, con);
 			try {				
-				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, ControlManager.getInstance().getDBConnection());			
+				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);			
 				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
 					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(imageId), new ResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+							Connection con2 = ControlManager.getInstance().getDBConnection();
 							VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
-							VirtualImageManager.setVirtualMachine(image, ControlManager.getInstance().getDBConnection());
+							VirtualImageManager.setVirtualMachine(image, con2);
+							try {con2.close();} catch (Exception e) {}
 						}
 						@Override
 						public void attendError(String message, Long id) {
+							Connection con2 = ControlManager.getInstance().getDBConnection();
 							VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.AVAILABLE, null);
-							VirtualImageManager.setVirtualMachine(image, ControlManager.getInstance().getDBConnection());
+							VirtualImageManager.setVirtualMachine(image, con2);
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
+							PhysicalMachineManager.setPhysicalMachine(pm, con2);
+							try {con2.close();} catch (Exception e) {}
 						}
 					}));
 				}				
 			} catch (Exception e) {
 				image.setState(VirtualMachineImageEnum.AVAILABLE);
-				VirtualImageManager.setVirtualMachine(image, ControlManager.getInstance().getDBConnection());
-			}			
+				VirtualImageManager.setVirtualMachine(image, con);
+			}	
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -120,12 +127,13 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void sendTaskToAgents(QueueMessage message){
 		try {
+			Connection con = ControlManager.getInstance().getDBConnection();
 			TaskEnum task = TaskEnum.getEnum(message.getMessageParts()[0]);
 			Long[] ids = new Long[message.getMessageParts().length-1];
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, ControlManager.getInstance().getDBConnection());			
+			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
 			for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
@@ -134,16 +142,21 @@ public class QueueMessageProcessor implements QueueReader{
 						absMessage, new ResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+						Connection con2 = ControlManager.getInstance().getDBConnection();
 						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.ON);
-						PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
+						PhysicalMachineManager.setPhysicalMachine(pm, con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 					@Override
 					public void attendError(String message, Long id) {
+						Connection con2 = ControlManager.getInstance().getDBConnection();
 						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-						PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
+						PhysicalMachineManager.setPhysicalMachine(pm, con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 				}));
 			}	
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,8 +168,9 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void doDeploy(QueueMessage message){
 		try {
+			Connection con = ControlManager.getInstance().getDBConnection();
 			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
-			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, ControlManager.getInstance().getDBConnection());
+			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
 			if(deploy!=null){
 				for(DeployedImageEntity image :deploy.getImages()){
 					for(final VirtualMachineExecutionEntity execution : image.getExecutions()){
@@ -177,20 +191,25 @@ public class QueueMessageProcessor implements QueueReader{
 								vmsm, new ResponseProcessor() {			
 							@Override
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+								Connection con2 = ControlManager.getInstance().getDBConnection();
 								Date stopTime = new Date();
 								stopTime.setTime(stopTime.getTime()+execution.getTime());
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null, "Initializing"), ControlManager.getInstance().getDBConnection());
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null, "Initializing"), con2);
+								try {con2.close();} catch (Exception e) {}
 							}
 							@Override
 							public void attendError(String message, Long id) {
+								Connection con2 = ControlManager.getInstance().getDBConnection();
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-								PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"), ControlManager.getInstance().getDBConnection());
+								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"), con2);
+								try {con2.close();} catch (Exception e) {}
 							}
 						}));
 					}
 				}				
 			}
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,11 +221,12 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void stopDeploy(QueueMessage message){
 		try {
+			Connection con = ControlManager.getInstance().getDBConnection();
 			Long[] ids = new Long[message.getMessageParts().length];
 			for (int i = 0; i < message.getMessageParts().length; i++) {
 				ids[i]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.DEPLOYED, ControlManager.getInstance().getDBConnection());
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.DEPLOYED, con);
 			for(final VirtualMachineExecutionEntity execution: executions){
 				VirtualMachineStopMessage vmsm=new VirtualMachineStopMessage();
 				vmsm.setVirtualMachineExecutionId(execution.getId());
@@ -216,16 +236,21 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm, new ResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, "Finished by request"), ControlManager.getInstance().getDBConnection());
+						Connection con2 = ControlManager.getInstance().getDBConnection();
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, "Finished by request"), con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 					@Override
 					public void attendError(String message, Long id) {
+						Connection con2 = ControlManager.getInstance().getDBConnection();
 						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-						PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Losing connection from server"), ControlManager.getInstance().getDBConnection());
+						PhysicalMachineManager.setPhysicalMachine(pm, con2);
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Losing connection from server"), con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 				}));
 			}
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -237,12 +262,13 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void addInstances(QueueMessage message){
 		try {
+			Connection con = ControlManager.getInstance().getDBConnection();
 			Long deployedImageId = Long.parseLong(message.getMessageParts()[0]);
 			Long[] ids = new Long[message.getMessageParts().length-1];
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEQUED, ControlManager.getInstance().getDBConnection());
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEQUED, con);
 			for(final VirtualMachineExecutionEntity execution : executions) {
 				VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
 				vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
@@ -261,18 +287,23 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm, new ResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+						Connection con2 = ControlManager.getInstance().getDBConnection();
 						Date stopTime = new Date();
 						stopTime.setTime(stopTime.getTime()+execution.getTime());
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null,"Initializing"), ControlManager.getInstance().getDBConnection());
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null,"Initializing"), con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 					@Override
 					public void attendError(String message, Long id) {
+						Connection con2 = ControlManager.getInstance().getDBConnection();
 						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-						PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"), ControlManager.getInstance().getDBConnection());
+						PhysicalMachineManager.setPhysicalMachine(pm, con2);
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"), con2);
+						try {con2.close();} catch (Exception e) {}
 					}
 				}));
 			}
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -284,11 +315,12 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void requestCopy(QueueMessage message){
 		try {
+			Connection con = ControlManager.getInstance().getDBConnection();
 			Long executionId = Long.parseLong(message.getMessageParts()[0]);
 			Long imageId = Long.parseLong(message.getMessageParts()[1]);
-			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, ControlManager.getInstance().getDBConnection());
+			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, con);
 			if(execution!=null){
-				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(imageId, VirtualMachineImageEnum.COPYING, ControlManager.getInstance().getDBConnection());
+				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(imageId, VirtualMachineImageEnum.COPYING, con);
 				if(image!=null){
 					VirtualMachineSaveImageMessage vmsim = new VirtualMachineSaveImageMessage();
 					vmsim.setTokenCom(image.getToken());
@@ -300,25 +332,30 @@ public class QueueMessageProcessor implements QueueReader{
 							vmsim, new ResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+							Connection con2 = ControlManager.getInstance().getDBConnection();
 							if(response instanceof VirtualMachineSaveImageResponse && ((VirtualMachineSaveImageResponse)response).getState().equals(VirtualMachineState.COPYNG)){
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"), ControlManager.getInstance().getDBConnection());
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"), con2);
 							}else{
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-								PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, ((InvalidOperationResponse)response).getMessage()), ControlManager.getInstance().getDBConnection());
-								VirtualImageManager.deleteVirtualMachineImage(image, ControlManager.getInstance().getDBConnection());
+								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, ((InvalidOperationResponse)response).getMessage()), con2);
+								VirtualImageManager.deleteVirtualMachineImage(image, con2);
 							}
+							try {con2.close();} catch (Exception e) {}
 						}
 						@Override
 						public void attendError(String message, Long id) {
+							Connection con2 = ControlManager.getInstance().getDBConnection();
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, ControlManager.getInstance().getDBConnection());
-							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Error copying image"), ControlManager.getInstance().getDBConnection());
-							VirtualImageManager.deleteVirtualMachineImage(image, ControlManager.getInstance().getDBConnection());
+							PhysicalMachineManager.setPhysicalMachine(pm,con2);
+							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Error copying image"), con2);
+							VirtualImageManager.deleteVirtualMachineImage(image, con2);
+							try {con2.close();} catch (Exception e) {}
 						}
 					}));
 				}				
 			}
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
