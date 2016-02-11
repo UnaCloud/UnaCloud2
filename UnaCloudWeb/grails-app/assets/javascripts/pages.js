@@ -107,45 +107,13 @@ $(document).on('ready',function(){
 	$('#button-upload').click(function (event){		
 		cleanLabel('#label-message');
 		var form = $('#form-new');	
-		$.post(form.attr('action'), form.serialize(), function(data){
-			if(data.success){
-				bootbox.dialog({
-					title: "Upload Image",
-					message:"<form id='form_image' method='post' action='"+data.url+"' enctype='multipart/form-data'>"+
-									"<div class='box-body'>"+
-										"<div class='form-group'>"+
-											"<label>Image File input</label>"+
-											"<input type='file' name='files' multiple>"+
-											"<input type='hidden' name='token' value='"+data.token+"'>"+
-										"</div>"+
-									"</div>"+	
-							"</form>",
-					buttons: {
-						success: {
-							label: "Upload",
-							className: "btn-success",
-							callback: function () {
-								var form_image = document.getElementById('form_image');
-								console.log("image: ")
-								console.log(form_image)
-								uploadForm(form_image)
-							}
-						},
-					}
-				});
-			}else{
-				addLabel('#label-message',data.message,true)
-			}				
-	    }, 'json')	
+		requestFile(form)
 	});
 
 	$('#button-update').click(function (event){		
 		cleanLabel('#label-message');
-		var form = document.getElementById("form-change");		
-		if(form["files"].value&&form["files"].value.length > 0){
-			uploadForm(form);		
-		}
-		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
+		var form = $('#form-change');		
+		requestFile(form)	
 	});	
 	
 	$('.btn-variable').click(function(event){
@@ -272,6 +240,37 @@ function sendConfirm(message,href,data){
 	showConfirm('Confirm',message, function(){		
 		window.location.href = href+data;
 	});
+}
+
+function requestFile(form){
+	$.post(form.attr('action'), form.serialize(), function(data){
+		if(data.success){
+			bootbox.dialog({
+				title: "Upload Image",
+				message:"<form id='form_image' method='post' action='"+data.url+"' enctype='multipart/form-data'>"+
+								"<div class='box-body'>"+
+									"<div class='form-group'>"+
+										"<label>Image File input</label>"+
+										"<input type='file' name='files' multiple>"+
+										"<input type='hidden' name='token' value='"+data.token+"'>"+
+									"</div>"+
+								"</div>"+	
+						"</form>",
+				buttons: {
+					success: {
+						label: "Upload",
+						className: "btn-success",
+						callback: function () {
+							var form_image = document.getElementById('form_image');
+							uploadForm(form_image)
+						}
+					},
+				}
+			});
+		}else{
+			addLabel('#label-message',data.message,true)
+		}				
+    }, 'json')	
 }
 function uploadForm(form){	
 	var formData = new FormData(form);

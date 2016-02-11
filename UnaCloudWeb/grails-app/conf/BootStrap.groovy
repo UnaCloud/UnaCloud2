@@ -100,9 +100,9 @@ class BootStrap {
 		
 		}			
 		if(Hypervisor.count() == 0){
-			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox").save()
-			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx").save()
-			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx").save()
+			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi').save()
+			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
+			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		}
 		
 		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_USER).variable,ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_PASS).variable,

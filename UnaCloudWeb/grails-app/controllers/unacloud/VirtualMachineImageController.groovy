@@ -178,7 +178,9 @@ class VirtualMachineImageController {
 	 * @return id of the image to be edited.
 	 */	
 	def update(){
-		[id:params.id]
+		def image = VirtualMachineImage.get(params.id)
+		if (image)	[image:image]
+		else redirect(uri:"/services/image/list", absolute:true)
 	}
 	
 	/**
@@ -234,6 +236,7 @@ class VirtualMachineImageController {
 				resp = [success:true,'token':token,'url':url+"/update"]
 			}
 			catch(Exception e) {
+				e.printStackTrace()
 				resp = [success:false,'message':e.message]
 			}
 		}else{

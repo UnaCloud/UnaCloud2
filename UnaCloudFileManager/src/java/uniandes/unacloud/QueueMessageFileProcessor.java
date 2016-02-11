@@ -1,6 +1,7 @@
 package uniandes.unacloud;
 
 import java.io.File;
+import java.sql.Connection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,12 +31,7 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
  *
  */
 public class QueueMessageFileProcessor implements QueueReader{
-	
-	public static void main(String[] args) {
-		String h = "hola.vc";
-		if(h.matches(".*.vc"))System.out.println("p");
-	}
-	
+		
 	private ExecutorService threadPool=Executors.newFixedThreadPool(5);
 
 	@Override
@@ -71,11 +67,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
+				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
 				if(image!=null){
 					if(!image.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
 						File file = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName());
 						if(!file.exists()){
 							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
@@ -83,14 +80,15 @@ public class QueueMessageFileProcessor implements QueueReader{
 								File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+imagefile.getName());
 								FileUtils.copyFile(imagefile, newFile);
 							}
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null),false);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, true, null, null, null),false,con);
 						}else{
-							VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
+							VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null),con);
 						}
 					}else{
-						VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
+						VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null),con);
 					}
 				}
+				con.close();
 			}			
 			@Override
 			protected void processError(Exception e) {
@@ -107,19 +105,20 @@ public class QueueMessageFileProcessor implements QueueReader{
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
+				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
 				Long publicImageId = Long.parseLong(message.getMessageParts()[1]);
-				VirtualImageFileEntity publicImage = VirtualMachineImageManager.getVirtualImageWithFile(publicImageId, VirtualMachineImageEnum.AVAILABLE, false);
-				VirtualImageFileEntity privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true);
+				VirtualImageFileEntity publicImage = VirtualMachineImageManager.getVirtualImageWithFile(publicImageId, VirtualMachineImageEnum.AVAILABLE, false,con);
+				VirtualImageFileEntity privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true,con);
 				if(publicImage!=null&&privateImage!=null){
 					if(publicImage.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
 						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+publicImage.getName());
 						if(folder.exists()){
-							List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors();
+							List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);
 							String regex = "";
 							for(HypervisorEntity hv:hypervisors)regex+=".*"+hv.getExtension()+(hypervisors.indexOf(hv)<hypervisors.size()-1?"|":"");
-							UserEntity user = UserManager.getUser(privateImage.getOwner().getId());
+							UserEntity user = UserManager.getUser(privateImage.getOwner().getId(),con);
 							String mainFile = null;
 							for(File imagefile: folder.listFiles()){
 								File newFile = new File(privateImage.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+imagefile.getName());
@@ -128,19 +127,20 @@ public class QueueMessageFileProcessor implements QueueReader{
 									mainFile = user.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+newFile.getName();
 								}							
 							}
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null),false);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null),false,con);
 						}else{
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null),false);
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null),false,con);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
 						}
 					}else{
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
 					}
 				}else{
 					if(privateImage!=null){
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false);
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
 					}
 				}
+				con.close();
 			}			
 			@Override
 			protected void processError(Exception e) {
@@ -157,8 +157,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
+				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
 				if(image!=null){
 					try {
 						File file = new File(image.getMainFile());
@@ -168,15 +169,16 @@ public class QueueMessageFileProcessor implements QueueReader{
 					}
 					try {
 						if(image.isPublic()){
-							RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+							RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
 							File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 							if(folder.exists())folder.delete();	
 						}
 					} catch (Exception e) {
 						System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 					}					
-					VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+					VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null),con);
 				}
+				con.close();
 			}			
 			@Override
 			protected void processError(Exception e) {
@@ -193,10 +195,11 @@ public class QueueMessageFileProcessor implements QueueReader{
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
+				Connection con = FileManager.getInstance().getDBConnection();
 				Long userId = Long.parseLong(message.getMessageParts()[0]);
-				UserEntity user = UserManager.getUser(userId);
+				UserEntity user = UserManager.getUser(userId,con);
 				if(user!=null&&user.getState().equals(UserStateEnum.DISABLE)){
-					List<VirtualImageFileEntity> images = VirtualMachineImageManager.getAllVirtualMachinesByUser(user.getId());
+					List<VirtualImageFileEntity> images = VirtualMachineImageManager.getAllVirtualMachinesByUser(user.getId(),con);
 					for(VirtualImageFileEntity image: images){
 						if(image!=null){
 							try {
@@ -207,18 +210,19 @@ public class QueueMessageFileProcessor implements QueueReader{
 							}
 							try {
 								if(image.isPublic()){
-									RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+									RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
 									File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 									if(folder.exists())folder.delete();	
 								}
 							} catch (Exception e) {
 								System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 							}					
-							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null));
+							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null),con);
 						}
 					}
-					UserManager.deleteUser(user);
+					UserManager.deleteUser(user,con);
 				}
+				con.close();
 			}			
 			@Override
 			protected void processError(Exception e) {
@@ -235,16 +239,18 @@ public class QueueMessageFileProcessor implements QueueReader{
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
+				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
 				if(image!=null){
 					if(image.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY);
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
 						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 						if(folder.exists())folder.delete();	
 					}
-					VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null));
+					VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null),con);
 				}
+				con.close();
 			}			
 			@Override
 			protected void processError(Exception e) {

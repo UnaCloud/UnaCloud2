@@ -17,14 +17,15 @@ public class RepositoryManager {
 	 * Return the main repository in system
 	 * @return
 	 */
-	public static RepositoryEntity getRepositoryByName(String name){
+	public static RepositoryEntity getRepositoryByName(String name,Connection con){
 		try {
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT re.id, re.name, re.capacity, re.path FROM repository re WHERE re.name = ?;");
 			ps.setString(1,name);
-			ResultSet rs = ps.executeQuery();			
-			if(rs.next())return new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
-			return null;
+			ResultSet rs = ps.executeQuery();		
+			RepositoryEntity repo = null;
+			if(rs.next())repo =  new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+			try{rs.close();ps.close();}catch(Exception e){}
+			return repo;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -36,14 +37,15 @@ public class RepositoryManager {
 	 * @param id
 	 * @return
 	 */
-	public static RepositoryEntity getRepository(Long id){
+	public static RepositoryEntity getRepository(Long id,Connection con){
 		try {
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT re.id, re.name, re.capacity, re.path FROM repository re WHERE re.id = ?;");
 			ps.setLong(1, id);
-			ResultSet rs = ps.executeQuery();			
-			if(rs.next())return new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
-			return null;
+			ResultSet rs = ps.executeQuery();	
+			RepositoryEntity repo = null;
+			if(rs.next())repo = new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+			try{rs.close();ps.close();}catch(Exception e){}
+			return repo;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

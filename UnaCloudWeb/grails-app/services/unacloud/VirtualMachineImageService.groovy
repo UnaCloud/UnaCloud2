@@ -150,8 +150,8 @@ class VirtualMachineImageService {
 	 */	
 	def updateFiles(VirtualMachineImage image){		
 		String token = Hasher.hashSha256(image.getName()+new Date().getTime())
-		image.putAt("token":token)
-		image.putAt("state":VirtualMachineImageEnum.UNAVAILABLE)
+		image.putAt("token",token)
+		image.putAt("state",VirtualMachineImageEnum.UNAVAILABLE)
 		return token
 	}
 }

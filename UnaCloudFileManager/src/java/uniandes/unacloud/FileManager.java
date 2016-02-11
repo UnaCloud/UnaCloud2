@@ -49,8 +49,8 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected void startDatabaseService() throws Exception {
-		DatabaseConnection.getInstance();
-		DatabaseConnection.getInstance().connect(reader.getStringVariable(Constants.DB_NAME), reader.getIntegerVariable(Constants.DB_PORT),
+		connection = new DatabaseConnection();
+		connection.connect(reader.getStringVariable(Constants.DB_NAME), reader.getIntegerVariable(Constants.DB_PORT),
 				reader.getStringVariable(Constants.DB_URL), reader.getStringVariable(Constants.DB_USERNAME), reader.getStringVariable(Constants.DB_PASS));
 	}
 

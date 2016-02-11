@@ -19,15 +19,16 @@ public class VirtualImageManager {
 	 * @param id physical machine id
 	 * @return physical machine entity
 	 */
-	public static VirtualMachineImageEntity getVirtualMachine(Long id, VirtualMachineImageEnum state){
+	public static VirtualMachineImageEntity getVirtualMachine(Long id, VirtualMachineImageEnum state,Connection con){
 		try {
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
-			ResultSet rs = ps.executeQuery();			
-			if(rs.next())return new VirtualMachineImageEntity(rs.getLong(1), rs.getString(2), rs.getString(3), state, rs.getString(4));
-			return null;
+			ResultSet rs = ps.executeQuery();		
+			VirtualMachineImageEntity image = null;
+			if(rs.next())image = new VirtualMachineImageEntity(rs.getLong(1), rs.getString(2), rs.getString(3), state, rs.getString(4));
+			try{rs.close();ps.close();}catch(Exception e){}
+			return image;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -40,15 +41,15 @@ public class VirtualImageManager {
 	 * @param machine
 	 * @return
 	 */
-	public static boolean setVirtualMachine(VirtualMachineImageEntity image){
+	public static boolean setVirtualMachine(VirtualMachineImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "update virtual_machine_image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
 			System.out.println("Change "+ps.executeUpdate()+" lines");
+			try{ps.close();}catch(Exception e){}
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();			
@@ -61,15 +62,15 @@ public class VirtualImageManager {
 	 * @param image
 	 * @return
 	 */
-	public static boolean deleteVirtualMachineImage(VirtualMachineImageEntity image){
+	public static boolean deleteVirtualMachineImage(VirtualMachineImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "delete virtual_machine_image where state = ? and vm.id = ? and vm.id > 0;";
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
 			System.out.println("Delete "+ps.executeUpdate()+" lines");
+			try{ps.close();}catch(Exception e){}
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

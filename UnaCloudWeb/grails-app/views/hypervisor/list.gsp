@@ -25,10 +25,10 @@
                           <thead>
                               <tr>
                                   <th>Name</th>
-                                  <th>Version</th>
-                                  <th>Actions</th>
+                                  <th>Version</th>                                  
                                   <th>Executable</th>
-                                  <th>Extensions</th>
+                                  <th>File Extensions</th>
+                                  <th>Actions</th>
                               </tr>
                           </thead>
                           <tbody>

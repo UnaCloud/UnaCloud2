@@ -1,6 +1,9 @@
 package unacloud.share.manager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 
+import unacloud.share.db.DatabaseConnection;
 import unacloud.share.queue.QueueMessageReceiver;
 import unacloud.share.utils.ConfigurationReader;
 
@@ -26,6 +29,11 @@ public abstract class ProjectManager {
 	 * Queue process message object
 	 */
 	protected QueueMessageReceiver queueReceiver;
+	
+	/**
+	 * Database connection processes
+	 */
+	protected DatabaseConnection connection;
 	
 	public ProjectManager() {
 		try {
@@ -73,6 +81,18 @@ public abstract class ProjectManager {
 		return COM_PORT;
 	}
 	
+	/**
+	 * Returns current database connection
+	 * @return
+	 */
+	public Connection getDBConnection(){
+		try {
+			return connection.getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	/**
 	 * Method used to start queue communication service
 	 */

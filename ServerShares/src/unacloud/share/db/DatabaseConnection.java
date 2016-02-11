@@ -18,26 +18,23 @@ public class DatabaseConnection {
 	private String password ;
 	
 	private BasicDataSource dataSource;
-	public static DatabaseConnection instance;
 	
 	public DatabaseConnection(){
-	}
-	
-	public static DatabaseConnection getInstance(){
-		if(instance==null)instance = new DatabaseConnection();
-		return instance;
 	}
 	
 	/**
 	 * Sets values in data source connection pool
 	 */
 	private void setConnection() {
-
 		dataSource = new BasicDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");		
         dataSource.setUrl(host);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
+        dataSource.setInitialSize(2);
+        dataSource.setMaxWaitMillis(1000*10);
+        dataSource.setMaxIdle(2);
+        dataSource.setMinIdle(2);
 	}
 	/**
 	 * Set variables to be used in connection.

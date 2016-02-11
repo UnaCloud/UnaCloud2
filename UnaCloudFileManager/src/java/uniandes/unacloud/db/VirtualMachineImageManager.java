@@ -6,10 +6,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import unacloud.share.entities.RepositoryEntity;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
-import unacloud.share.db.DatabaseConnection;
 import unacloud.share.db.RepositoryManager;
 
 /**
@@ -26,19 +26,19 @@ public class VirtualMachineImageManager {
 	 * @return
 	 */
 	//TODO improve query to repository, use hash map
-	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser){
+	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser,Connection con){
 		try {
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
-			ResultSet rs = ps.executeQuery();			
+			ResultSet rs = ps.executeQuery();
+			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				VirtualImageFileEntity image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5)), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
 				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null,null));
-				return image;
 			}
-			return null;
+			try{rs.close();ps.close();}catch(Exception e){}
+			return image;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -49,19 +49,19 @@ public class VirtualMachineImageManager {
 	 * Method used to return a virtual machine image entity based in a token 
 	 * @return
 	 */
-	//TODO improve query to repository, use hash map
-	public static VirtualImageFileEntity getVirtualImageWithFile(String token){
+	public static VirtualImageFileEntity getVirtualImageWithFile(String token,Connection con){
 		try {
-			Connection con = DatabaseConnection.getInstance().getConnection();
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.state, vm.name, vm.owner_id FROM virtual_machine_image vm WHERE vm.token = ? ;");
 			ps.setString(1,token);
-			ResultSet rs = ps.executeQuery();			
+			ResultSet rs = ps.executeQuery();	
+			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				VirtualImageFileEntity image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token, RepositoryManager.getRepository(rs.getLong(5)), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token,new RepositoryEntity(rs.getLong(8),null, 0, null), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
 				image.setOwner(new UserEntity(rs.getLong(8),null,null));
-				return image;
-			}
-			return null;
+			}			 
+			try{rs.close();ps.close();}catch(Exception e){}
+			image.setRepository(RepositoryManager.getRepository(image.getRepository().getId(),con));
+			return image;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -74,7 +74,7 @@ public class VirtualMachineImageManager {
 	 * @param machine
 	 * @return
 	 */
-	public static boolean setVirtualMachineFile(VirtualImageFileEntity image, boolean update){
+	public static boolean setVirtualMachineFile(VirtualImageFileEntity image, boolean update,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
 			String query = "update virtual_machine_image vm set";
@@ -92,7 +92,6 @@ public class VirtualMachineImageManager {
 				if(update)query+= ", vm.image_version = vm.image_version + 1 ";
 				query += "where vm.id = ? and vm.id > 0;";
 				System.out.println(query);
-				Connection con = DatabaseConnection.getInstance().getConnection();
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
 				if(isPublic>0){ps.setBoolean(isPublic, image.isPublic());id++;}
@@ -102,6 +101,7 @@ public class VirtualMachineImageManager {
 				if(token>0){ps.setString(token, image.getToken());id++;}
 				ps.setLong(id, image.getId());
 				System.out.println("Change "+ps.executeUpdate()+" lines");
+				try{ps.close();}catch(Exception e){}
 				return true;
 			}
 		} catch (Exception e) {
@@ -116,15 +116,15 @@ public class VirtualMachineImageManager {
 	 * @return
 	 */
 	//TODO improve query to repository, use hash map
-	public static List<VirtualImageFileEntity> getAllVirtualMachinesByUser(Long userId){
+	public static List<VirtualImageFileEntity> getAllVirtualMachinesByUser(Long userId,Connection con){
 		try {
-			List<VirtualImageFileEntity> list = new ArrayList<VirtualImageFileEntity>();
-			Connection con = DatabaseConnection.getInstance().getConnection();			
+			List<VirtualImageFileEntity> list = new ArrayList<VirtualImageFileEntity>();	
 			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name FROM virtual_machine_image vm WHERE vm.owner_id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, userId);
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(2)), rs.getString(3), RepositoryManager.getRepository(rs.getLong(4)), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8)));
+			while(rs.next())list.add(new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(2)), rs.getString(3), RepositoryManager.getRepository(rs.getLong(4),con), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8)));
+			try{rs.close();ps.close();}catch(Exception e){}
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
