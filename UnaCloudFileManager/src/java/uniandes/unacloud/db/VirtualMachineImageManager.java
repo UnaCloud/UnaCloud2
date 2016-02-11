@@ -56,11 +56,10 @@ public class VirtualMachineImageManager {
 			ResultSet rs = ps.executeQuery();	
 			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token,new RepositoryEntity(rs.getLong(8),null, 0, null), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token,RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
 				image.setOwner(new UserEntity(rs.getLong(8),null,null));
 			}			 
 			try{rs.close();ps.close();}catch(Exception e){}
-			image.setRepository(RepositoryManager.getRepository(image.getRepository().getId(),con));
 			return image;
 		} catch (Exception e) {
 			e.printStackTrace();

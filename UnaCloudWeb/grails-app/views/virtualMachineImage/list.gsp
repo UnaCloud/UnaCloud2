@@ -35,7 +35,7 @@
                           <tbody>
                           <g:each in="${images}" var="image"> 
                               <tr>
-                                  <td>${image.name} <g:if test="${image.isPublic}"><i class='fa fa-globe text-green' title="This image is public"></i></g:if></td>
+                                  <td>${image.name} <g:if test="${image.isPublic}"><i class='fa fa-globe text-green' title="This image is public" data-toggle="tooltip"></i></g:if></td>
                                   <td>${image.operatingSystem.name}</td>
                                   <td>${image.getSize()}</td>
                                   <td>

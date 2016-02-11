@@ -27,4 +27,8 @@ public enum VirtualMachineImageEnum {
 		if(IN_QUEUE.name().equals(name))return IN_QUEUE;
 		return null;
 	}
+	
+	public String getName(){
+		return this.name;
+	}
 }

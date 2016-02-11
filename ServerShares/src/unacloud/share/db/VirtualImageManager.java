@@ -65,7 +65,7 @@ public class VirtualImageManager {
 	public static boolean deleteVirtualMachineImage(VirtualMachineImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "delete virtual_machine_image where state = ? and vm.id = ? and vm.id > 0;";
+			String query = "delete from virtual_machine_image where state = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());

@@ -80,6 +80,7 @@ class User {
 		if(group)return group.users.find{it.id == this.id}?true:false;
 		return false
 	}
+	
 	/**
 	 * Return the list of images owned by user sorted by name
 	 * @return
@@ -91,6 +92,7 @@ class User {
 		}
 		return this.images.sort{it.name}
 	}
+	
 	/**
 	 * Return the list of clusters owned by user sorted by name
 	 * @return
@@ -170,8 +172,23 @@ class User {
 	 */
 	def deprecate(){
 		this.putAt("status", UserStateEnum.DISABLE);
-		for(UserRestriction restriction in restrictions)restriction.delete()
-		for(Deployment deploy in deployments)deploy.deleteDeploy()
+		for(UserRestriction restriction in restrictions)	
+			restriction.delete()		
+		restrictions = []
+		for(Deployment deploy in deployments)
+			deploy.deleteDeploy()
+		deployments=[]
 		for(VirtualMachineImage image in images)image.putAt("state", VirtualMachineImageEnum.IN_QUEUE)		
+		this.save()
+	}
+	
+	/**
+	 * Validates if currently user has an image with the same name.
+	 * This avoids to override files in same folder.
+	 * @param name
+	 * @return
+	 */
+	def existImage(String name){
+		return images.find{it.name==name}!=null
 	}
 }

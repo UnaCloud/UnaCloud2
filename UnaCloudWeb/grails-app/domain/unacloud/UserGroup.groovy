@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+
 import unacloud.share.enums.UserRestrictionEnum;
 
 class UserGroup {

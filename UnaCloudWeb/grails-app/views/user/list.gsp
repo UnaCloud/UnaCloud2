@@ -36,7 +36,7 @@
                           <tbody>
                           <g:each in="${users}" var="user"> 
                               <tr>
-                                 <td>${user.name} <g:if test="${user.isAdmin()}"><i class='fa fa-trophy text-orange' title="Admin user"></i></g:if></td>
+                                 <td>${user.name} <g:if test="${user.isAdmin()}"><i class='fa fa-trophy text-orange' title="Admin user"  data-toggle="tooltip"></i></g:if></td>
                                  <td>${user.username}</td>
                                  <td>
 	                                  <g:if test="${user.status.equals(UserStateEnum.AVAILABLE)}">

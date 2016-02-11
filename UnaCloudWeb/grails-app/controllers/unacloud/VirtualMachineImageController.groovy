@@ -37,6 +37,7 @@ class VirtualMachineImageController {
 		def user = User.get(session.user.id)
 		session.user.refresh(user)
 	}
+	
 	/**
 	 * Action by default
 	 * 
@@ -44,6 +45,7 @@ class VirtualMachineImageController {
 	def index(){
 		redirect(uri:"/services/image/list", absolute:true)
 	}
+	
 	/**
 	 * Virtual machine image index action
 	 * @return list of all images related to user
@@ -52,6 +54,7 @@ class VirtualMachineImageController {
 		def user = User.get(session.user.id)
 		[images: user.getOrderedImages()]
 	}
+	
 	/**
 	 * New uploaded image form action
 	 * @return list of OS for user selection
@@ -59,6 +62,7 @@ class VirtualMachineImageController {
 	def newUploadImage(){
 		[oss: OperatingSystem.list()]
 	}
+	
 	/**
 	 * New Image from public one action
 	 */
@@ -72,15 +76,15 @@ class VirtualMachineImageController {
 	def copyPublic(){
 		def resp
 		def user = User.get(session.user.id)
-		if(params.name&&!params.name.isEmpty()&&params.pImage){
+		if(params.name&&!params.name.isEmpty()&&params.image){
 			try {
-				if(virtualMachineImageService.newPublic(params.name, params.pImage, user)){
+				if(virtualMachineImageService.newPublic(params.name, params.image, user)){
 					redirect(uri:"/services/image/list", absolute:true)
 				}
 				else{
 					flash.message="Values are not correct"
 					redirect(uri:"/services/image/public", absolute:true)
-				}
+				}				
 			} catch (Exception e) {
 				e.printStackTrace()
 				flash.message="Error: "+e.message
@@ -107,7 +111,7 @@ class VirtualMachineImageController {
 				flash.message="Your image has been disabled, it will be deleted in a few time";
 				flash.type="info";
 			}else{
-				flash.message="The image can not be deleted in this moment";
+				flash.message="The image is being used in a cluster";
 			}	
 			redirect(uri:"/services/image/list", absolute:true)		
 		}
@@ -129,6 +133,7 @@ class VirtualMachineImageController {
 		}
 		redirect(uri:"/services/image/list", absolute:true)
 	}
+	
 	/**
 	 * Validates if image can be edited by user and render view
 	 * @return
@@ -145,23 +150,31 @@ class VirtualMachineImageController {
 		}else
 			redirect(uri:"/services/image/list", absolute:true)
 	}
+	
 	/**
 	 * Save image information changes. Redirect6s to index when finished
-	 */
-	
+	 */	
 	def saveEdit(){
 		def image = VirtualMachineImage.get(params.id)
 		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){
 			if(image.owner.id==session.user.id){
 				boolean toPublic = params.isPublic!=null;
 				def res = null;
-				virtualMachineImageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
-				if(image.isPublic!=toPublic){				
-					virtualMachineImageService.alterImagePrivacy(toPublic,image)
-					flash.message="Image files will be change its privacy, this will be take a few minutes";
-				}else flash.message="Your changes has been saved";				
-			    flash.type="success";
-				redirect(uri:"/services/image/list/", absolute:true)
+				try{
+					virtualMachineImageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
+					if(image.isPublic!=toPublic){				
+						virtualMachineImageService.alterImagePrivacy(toPublic,image)
+						flash.message="Image files will be change its privacy, this will be take a few minutes";
+					}else flash.message="Your changes has been saved";				
+				    flash.type="success";
+					redirect(uri:"/services/image/list/", absolute:true)
+				}
+				catch(Exception e) {
+					flash.type="info";
+					flash.message=e.message					
+					redirect(uri:"/services/image/list/", absolute:true)
+				}
+				
 			}else{
 				flash.message="You are not authorized to edit this image";
 				redirect(uri:"/services/image/list", absolute:true)
@@ -171,8 +184,7 @@ class VirtualMachineImageController {
 			redirect(uri:"/services/image/list", absolute:true)
 		}
 	}
-	
-	
+		
 	/**
 	 * Change image files form action.
 	 * @return id of the image to be edited.
@@ -224,8 +236,7 @@ class VirtualMachineImageController {
 	 * Validates file parameters are correct and save new files for the image.
 	 * Redirects to index when finished or renders an error message if uploaded
 	 * files are not valid.
-	 */
-	
+	 */	
 	def updateFiles(){
 		def resp
 		VirtualMachineImage image= VirtualMachineImage.get(params.id)

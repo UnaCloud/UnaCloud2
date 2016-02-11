@@ -48,6 +48,7 @@ class VirtualMachineImageService {
 	 * @param user owner user
 	 */
 	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, username, password,User user) {
+		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		Repository repo = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(name+new Date().getTime())
 		def image= new VirtualMachineImage(owner: user, repository:repo, name: name, lastUpdate:new Date(),
@@ -64,6 +65,7 @@ class VirtualMachineImageService {
 	 * @param user owner user
 	 */
 	def newPublic(name, imageId, User user){
+		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		def publicImage = VirtualMachineImage.get(imageId)
 		if(publicImage){
 			def repo= userRestrictionService.getRepository(user)
@@ -121,6 +123,7 @@ class VirtualMachineImageService {
 	 */
 	
 	def setValues(VirtualMachineImage image, name, user, password){
+		if(image.name!=name&&image.owner.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		image.putAt("name", name)
 		image.putAt("user", user)
 		image.putAt("password", password)

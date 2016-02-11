@@ -17,7 +17,8 @@
     <section class="content"> 
     	<div class="row">
     		<div class="col-lg-6 col-sm-6 col-xs-12">      			
-    			<div id="label-message"></div>      
+    			<div id="label-message"></div>     
+    			<g:render template="/share/message"/>  
     			<form id="form-create" name="imageNewPublic" action="${createLink(uri: '/services/image/public/copy', absolute: true)}" enctype="multipart/form-data" role="form">
 	                        		     
 		       		<div class="box box-primary">     
@@ -33,7 +34,7 @@
                                         <select name= "image" class="form-control">
                                         <g:each in="${publicImages}" var="image"> 
                                         	<option value="0">--Select a Public Image--</option>
-                                            <option  value="${image.id}">${image.operatingSystem.name} - ${image.name} - ${image.accessProtocol}</option>                                                
+                                            <option value="${image.id}">${image.operatingSystem.name} - ${image.name} - ${image.accessProtocol}</option>                                                
                                         </g:each>    
                                         </select>                                            
                                  	</div>

@@ -51,7 +51,7 @@ class Cluster {
 	def isDeployed(){
 		boolean isDeployed=false
 		Long clusterId = this.id;
-		def deployments= Deployment.where{status == DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
+		def deployments= Deployment.where{status != DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
 		return deployments&&deployments.size()>0?true:false
 	}
 	

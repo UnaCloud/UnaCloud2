@@ -73,7 +73,7 @@ public class UserManager {
 	public static void deleteUser(UserEntity user,Connection con){
 		if(user.getId()==null||user.getId()<1)return;
 		try {
-			String query = "delete user u where u.status = ? and u.id = ? and u.id > 0;";
+			String query = "delete from user where status = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());
 			ps.setLong(2, user.getId());

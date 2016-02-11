@@ -202,12 +202,14 @@ class UserController {
 	 */	
 	def delete(){		
 		def user = User.get(params.id)
-		if (user&&user.id!=session.user.id&&user.status!=UserStateEnum.BLOCKED) {
+		def admin = User.get(session.user.id)
+		if (user&&user.id!=admin.id&&user.status!=UserStateEnum.BLOCKED) {
 			try{
-				userService.deleteUser(user)
+				userService.deleteUser(user,admin)
 				flash.message="The request will be processed in a few time"
 				flash.type="info"
 			}catch(Exception e){
+				e.printStackTrace()
 				flash.message=e.message
 			}
 		}
@@ -237,7 +239,7 @@ class UserController {
 			if(!params.passwd||(params.passwd&&params.passwd.equals(params.cpasswd))){
 				if (user&&user.id!=session.user.id){		
 					try{						
-						userService.setValues(user,params.username, params.name, params.description, params.password, params.email)
+						userService.setValues(user,params.username, params.name, params.description, params.passwd, params.email)
 						flash.message="The user has been modified"
 						flash.type="success"
 					}catch(Exception e){

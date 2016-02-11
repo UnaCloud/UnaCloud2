@@ -163,4 +163,14 @@ class UserGroupService {
 			}
 		}
 	}
+	
+	/**
+	 * Remove user from all groups where it is added
+	 * @param user to be removed
+	 * @return
+	 */
+	def removeUser(User user){
+		def groups = UserGroup.where{users{id == user.id}}.findAll()
+		for(UserGroup group in groups)group.users.remove(user)
+	}
 }
