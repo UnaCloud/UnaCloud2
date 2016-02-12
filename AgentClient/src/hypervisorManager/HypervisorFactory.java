@@ -6,7 +6,7 @@ import java.util.Map;
 import com.losandes.utils.VariableManager;
 
 /**
- * Factory responsible for managing hypervisor classes and instances. This class provides methods to dinamically load hypervisor clasees and instantiate them.
+ * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.
  * @author Clouder
  */
 public class HypervisorFactory {

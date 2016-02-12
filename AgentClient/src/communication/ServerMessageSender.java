@@ -1,6 +1,7 @@
 package communication;
 
-import physicalmachine.Network;
+import com.losandes.utils.OperatingSystem;
+
 import unacloudEnums.VirtualMachineExecutionStateEnum;
 
 /**
@@ -21,6 +22,6 @@ public class ServerMessageSender {
      * @return If the message could be sent or not
      */
     public static boolean reportVirtualMachineState(long virtualMachineCode,VirtualMachineExecutionStateEnum state,String message){
-    	return AbstractGrailsCommunicator.pushInfo("virtualMachineState/updateVirtualMachineState","hostname",Network.getHostname(),"executionId",virtualMachineCode,"state",state.toString(),"message",message);
+    	return AbstractGrailsCommunicator.pushInfo("virtualMachineState/updateVirtualMachineState","hostname",OperatingSystem.getHostname(),"executionId",virtualMachineCode,"state",state.toString(),"message",message);
     }
 }

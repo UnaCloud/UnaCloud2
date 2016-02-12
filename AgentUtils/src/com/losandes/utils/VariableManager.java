@@ -106,7 +106,7 @@ public class VariableManager {
         try(BufferedReader br = new BufferedReader(new FileReader(configFile));) {
             for (String h; (h = br.readLine()) != null;)processLine(map,h);
         } catch (Exception e) {
-            System.err.println("El archivo vars no existe");
+            System.err.println("Vars file doesn't exist");
         }
     }
     private static void processLine(Map<String,Object> map,String line){

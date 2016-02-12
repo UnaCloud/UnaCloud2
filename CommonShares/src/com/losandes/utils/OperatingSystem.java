@@ -18,6 +18,7 @@ public class OperatingSystem {
     private String operatingSystemName;
     private String operatingSystemCurrentUser;
 	private String operatingArchitecture = System.getProperty("os.arch").toLowerCase();
+	private static String hostname;
 
     public OperatingSystem() {
         operatingSystemName = getOperatingSystemName();
@@ -135,6 +136,16 @@ public class OperatingSystem {
         } catch (IOException ex) {
         }
         return userName;
+    }
+    
+    /**
+     * Responsible for obtaining the hostname
+     * @return
+     */
+    public static String getHostname() {
+    	if(hostname!=null)return hostname;
+    	hostname=LocalProcessExecutor.executeCommandOutput("hostname").trim();
+    	return hostname;
     }
     /**
      * Operations to get constants in OS

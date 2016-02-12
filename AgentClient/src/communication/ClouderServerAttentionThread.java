@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import monitoring.PhysicalMachineMonitor;
-
 import com.losandes.utils.OperatingSystem;
 
 import tasks.ExecutorService;
@@ -22,7 +20,6 @@ import communication.messages.AgentMessage;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.PhysicalMachineOperationMessage;
 import communication.messages.VirtualMachineOperationMessage;
-import communication.messages.pmo.PhysicalMachineMonitorMessage;
 import communication.messages.pmo.PhysicalMachineTurnOnMessage;
 import communication.messages.vmo.VirtualMachineAddTimeMessage;
 import communication.messages.vmo.VirtualMachineRestartMessage;
@@ -183,23 +180,6 @@ public class ClouderServerAttentionThread implements Runnable {
                     }
                 }
                 return "Successful operation";
-            case PhysicalMachineOperationMessage.PM_MONITOR:
-                    PhysicalMachineMonitorMessage monitor=(PhysicalMachineMonitorMessage)message;
-                    switch (monitor.getOperation()) {
-	                    case PhysicalMachineMonitorMessage.M_STOP:
-                            PhysicalMachineMonitor.getInstance().stopService(monitor.isEnergy(), monitor.isCpu());
-                            break;
-	                    case PhysicalMachineMonitorMessage.M_START:
-                            PhysicalMachineMonitor.getInstance().startService(monitor.isEnergy(), monitor.isCpu());
-                            break;
-	                    case PhysicalMachineMonitorMessage.M_UPDATE:
-                            PhysicalMachineMonitor.getInstance().updateService(monitor.getMonitorFrequency(), monitor.getMonitorFrecuencyEnergy(),monitor.getRegisterFrequency(), monitor.getRegisterFrecuencyEnergy(),monitor.isEnergy(), monitor.isCpu());
-                            break;
-	                    case PhysicalMachineMonitorMessage.M_ENABLE:
-                            PhysicalMachineMonitor.getInstance().enabledService(monitor.isEnergy(), monitor.isCpu());                           
-                            break;
-                    }
-                    return "Successful operation";
                 //TODO do something
             /*case PM_RETRIEVE_FOLDER:
                 clouderClientOperationResult = "MACHINE_RESTORE";
