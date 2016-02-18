@@ -1,4 +1,4 @@
-package Exceptions;
+package exceptions;
 
 /**
  * Exception representing errors on virtual machine operations like configure, start, stop
