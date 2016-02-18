@@ -1,5 +1,4 @@
 package unacloud.share.enums;
-
 import unacloud.share.utils.CalendarUtils;
 
 public enum VirtualMachineExecutionStateEnum {
@@ -41,5 +40,4 @@ public enum VirtualMachineExecutionStateEnum {
 		if(RECONNECTING.name.equals(name)||RECONNECTING.name().equals(name))return RECONNECTING;
 		return null;
 	}
-			
 }

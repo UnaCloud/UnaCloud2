@@ -5,11 +5,11 @@ import java.util.TimerTask;
 /**
  * Responsible for undeploying a virtual machine execution
  */
-public class Schedule extends TimerTask {
+public class Scheduler extends TimerTask {
 
     private long executionId;
  
-    public Schedule(long executionId) {
+    public Scheduler(long executionId) {
 		this.executionId = executionId;
 	}
 

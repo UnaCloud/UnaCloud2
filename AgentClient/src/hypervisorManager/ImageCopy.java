@@ -4,13 +4,16 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
-import Exceptions.VirtualMachineExecutionException;
-import communication.ServerMessageSender;
-import unacloudEnums.VirtualMachineExecutionStateEnum;
-import virtualMachineConfiguration.AbstractVirtualMachineConfigurator;
+import reportManager.ServerMessageSender;
+
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+
+import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.PersistentExecutionManager;
-import virtualMachineManager.VirtualMachineExecution;
-import virtualMachineManager.VirtualMachineImageStatus;
+import virtualMachineManager.configuration.AbstractVirtualMachineConfigurator;
+import virtualMachineManager.entities.Image;
+import virtualMachineManager.entities.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineImageStatus;
 
 public class ImageCopy implements Serializable{
 	

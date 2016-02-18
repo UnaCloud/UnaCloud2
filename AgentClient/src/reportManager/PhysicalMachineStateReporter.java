@@ -1,4 +1,8 @@
-package reporter;
+package reportManager;
+
+import java.util.List;
+
+import virtualMachineManager.PersistentExecutionManager;
 
 /**
  * Class responsible for report this physical machine status. Every 30 seconds this class sends a keep alive message to UnaCloud server.
@@ -7,7 +11,6 @@ package reporter;
 public class PhysicalMachineStateReporter extends Thread{
 
 	private int REPORT_DELAY=60000;
-	//private int REPORT_FAIL_LIMIT=5;
 
 	private static PhysicalMachineStateReporter instance;
 	public static synchronized PhysicalMachineStateReporter getInstance(){
@@ -26,10 +29,14 @@ public class PhysicalMachineStateReporter extends Thread{
      */
     @Override
     public void run() {
-       System.out.println("PhysicalMachineStateReporter");
+       System.out.println("Start PhysicalMachineStateReporter");
        while(true){
            try{
-               PhysicalMachineState.reportPhyisicalMachineUserLogin();
+        	   List<Long> ids = PersistentExecutionManager.returnIdsExecutions();
+        	   String executions = null;
+        	   for(Long id:ids)executions+=":"+id;
+        	   if(executions!=null)executions.replaceFirst(":", "");
+               ServerMessageSender.reportPhyisicalMachine(executions);
            }catch(Exception sce){
         	   sce.printStackTrace();
            }
@@ -41,7 +48,5 @@ public class PhysicalMachineStateReporter extends Thread{
            }
        }
     }
-
-
 }
 

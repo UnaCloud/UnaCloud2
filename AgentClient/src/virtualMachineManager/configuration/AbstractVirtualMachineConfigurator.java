@@ -1,11 +1,11 @@
-package virtualMachineConfiguration;
+package virtualMachineManager.configuration;
 
 import hypervisorManager.HypervisorOperationException;
 
 import java.io.File;
 import java.util.Random;
 
-import virtualMachineManager.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 public abstract class AbstractVirtualMachineConfigurator{
 	

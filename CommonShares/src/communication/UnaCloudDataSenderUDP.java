@@ -26,7 +26,7 @@ public class UnaCloudDataSenderUDP {
 	public void enableReceiver(int port) throws SocketException{
 		udpReceiver = new DatagramSocket(port);
 		receiver = true;
-		bufer = new byte[1024];
+		bufer = new byte[1024*100];
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class UnaCloudDataSenderUDP {
 	public boolean sendMessage(UnaCloudMessageUDP message){
 		try {
 			DatagramSocket socketUDP = new DatagramSocket();
-			byte[] messageBytes =message.getMessage().getBytes();
+			byte[] messageBytes =message.generateByteMessage();
 			InetAddress host = InetAddress.getByAddress(message.getIp().getBytes());			
 			DatagramPacket packg = new DatagramPacket(messageBytes, message.getMessage().length(), host, message.getPort());
 			socketUDP.send(packg);
@@ -59,9 +59,12 @@ public class UnaCloudDataSenderUDP {
 		if(!receiver)return null;
 		try {
 			DatagramPacket request = new DatagramPacket(bufer, bufer.length);
-			udpReceiver.receive(request);
-			String message = new String(request.getData(), "UTF-8");
-			UnaCloudMessageUDP udpMessage = new UnaCloudMessageUDP(message, request.getAddress().getHostAddress(), 0, request.getAddress().getHostName());
+			udpReceiver.receive(request);							
+			UnaCloudMessageUDP udpMessage = new UnaCloudMessageUDP();
+			udpMessage.setMessageByBytes(request.getData());
+			udpMessage.setIp(request.getAddress().getHostAddress());
+			udpMessage.setHost(request.getAddress().getHostName());
+			udpMessage.setPort(0);
 			return udpMessage;
 		} catch (Exception e) {
 			e.printStackTrace();

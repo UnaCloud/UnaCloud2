@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package virtualMachineConfiguration;
+package virtualMachineManager.configuration;
 
 import java.io.File;
 import java.io.FileNotFoundException;

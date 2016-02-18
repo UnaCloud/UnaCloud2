@@ -91,7 +91,7 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudVariables.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.name, serverOnly: true).save()
 			
 			//** Variable to configure monitoring **//
-			new ServerVariable(name:UnaCloudVariables.MONITORING_ENABLE,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudVariables.MONITORING_ENABLE), serverOnly: true).save()
+			new ServerVariable(name:UnaCloudVariables.MONITORING_ENABLE,serverVariableType: ServerVariableTypeEnum.BOOLEAN,variable:prop.getProperty(UnaCloudVariables.MONITORING_ENABLE), serverOnly: true).save()
 //			new ServerVariable(name:'MONITORING_DATABASE_NAME',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_NAME")).save()
 //			new ServerVariable(name:'MONITORING_DATABASE_PASSWORD',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_PASSWORD")).save()
 //			new ServerVariable(name:'MONITORING_DATABASE_USER',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_USER")).save()

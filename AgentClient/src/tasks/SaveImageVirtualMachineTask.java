@@ -7,14 +7,17 @@ import java.net.Socket;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import reportManager.ServerMessageSender;
+
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.utils.ClientConstants;
+import com.losandes.utils.Constants;
 import com.losandes.utils.VariableManager;
 
-import Exceptions.VirtualMachineExecutionException;
-import communication.ServerMessageSender;
-import unacloudEnums.VirtualMachineExecutionStateEnum;
+import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
-import virtualMachineManager.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 public class SaveImageVirtualMachineTask implements Runnable{
 
@@ -39,27 +42,27 @@ public class SaveImageVirtualMachineTask implements Runnable{
 			System.out.println("Unregister execution: "+machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
 			//Send files
-			final int puerto = VariableManager.global.getIntValue("DATA_SOCKET");
-			final String ip=VariableManager.global.getStringValue("CLOUDER_SERVER_IP");
-			System.out.println("Conectando a "+ip+":"+puerto);
+			final int puerto = VariableManager.global.getIntValue(ClientConstants.FILE_SERVER_PORT);
+			final String ip=VariableManager.global.getStringValue(ClientConstants.FILE_SERVER_IP);
+			System.out.println("Connecting to "+ip+":"+puerto);
 			try(Socket s=new Socket(ip,puerto);OutputStream os=s.getOutputStream()){
 				DataOutputStream ds=new DataOutputStream(os);
-				System.out.println("Conexion exitosa");
-				ds.write(2);
+				System.out.println("Connection succesfull");
+				ds.write(Constants.SEND_IMAGE);
 				ds.flush();
 				System.out.println("Token "+secureToken);
 				ds.writeUTF(secureToken);
 				ds.flush();
 				ZipOutputStream zos=new ZipOutputStream(ds);
 				
-				System.out.println("\tEnviando "+machineExecution.getId());
+				System.out.println("\tSending "+machineExecution.getId());
 				final byte[] buffer=new byte[1024*100];
-				System.out.println("\tEnviando archivos "+machineExecution.getImage().getMainFile());
+				System.out.println("\tSending files"+machineExecution.getImage().getMainFile());
 				
 				try {
 					for(java.io.File f:machineExecution.getImage().getMainFile().getParentFile().listFiles())if(f.isFile()){
 						if(f.getName().endsWith("vmx")||f.getName().endsWith("vbox")||f.getName().endsWith("vdi")){
-							System.out.println("\tEnviando: "+f.getName());
+							System.out.println("\tSending: "+f.getName());
 							zos.putNextEntry(new ZipEntry(f.getName()));
 								
 							try(FileInputStream fis=new FileInputStream(f)){
@@ -68,7 +71,7 @@ public class SaveImageVirtualMachineTask implements Runnable{
 							zos.closeEntry();
 						}					
 					}
-					System.out.println("Archivos enviados");					
+					System.out.println("Files sent");					
 					zos.flush();
 					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FINISHED,"Image has been copied to server");
 					

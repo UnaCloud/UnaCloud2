@@ -1,6 +1,4 @@
-package reporter;
-
-import communication.ServerMessageSender;
+package reportManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,7 +6,8 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import unacloudEnums.VirtualMachineExecutionStateEnum;
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+
 import virtualMachineManager.PersistentExecutionManager;
 
 /**
@@ -25,7 +24,7 @@ public class VirtualMachineStateViewer {
      * @param vmPath The path of the virtual machine that must be checked
      * @param hypervisorName The type of hypervisor used to deploy the virtual machine
      */
-    public VirtualMachineStateViewer(long virtualMachineCode,String vmIP, String message){
+    public VirtualMachineStateViewer(long virtualMachineCode,String vmIP){
         boolean red=false;
         for(int e=0;e<8&&!red;e++){
             if(!(red=pingVerification(vmIP)))try{Thread.sleep(30000);}catch(Exception ex){}
@@ -33,37 +32,10 @@ public class VirtualMachineStateViewer {
         if(red)ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.DEPLOYED,"Machine started");
         else{
             PersistentExecutionManager.removeExecution(virtualMachineCode,false);
-            ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.FAILED,message);
+            ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.FAILED,"Network error, machine initial ping doesn't respond");
         }
     }
 
-    /**
-     * This method uses the vmrun command to ask for a running virtual machine list, then each running virtual machine is compared with the given one and if there is at least one equal it returns true.
-     * @param hypervisorPath The path of the hypervisor executable to ask for its virtual machine list
-     * @param vmPath The path of the virtual machine to be checked
-     * @return Returns true if the virtual machine is started by a vmware product, false otherwise
-     */
-    private boolean vmrunListVerification(String hypervisorPath,String vmPath){
-        boolean ret = false;
-        if(!hypervisorPath.endsWith("/")&&!hypervisorPath.endsWith("\\"))hypervisorPath=hypervisorPath+"/";
-        try {
-            Process p = new ProcessBuilder(hypervisorPath+"vmrun.exe","list").start();
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            int e = Integer.parseInt(br.readLine().split(":")[1].trim()),i=0;
-            File vmx = new File(vmPath);
-            for(String h;i<e&&(h=br.readLine())!=null;i++){
-                if(new File(h).equals(vmx)){
-                    ret=true;
-                    br.close();
-                    p.destroy();
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualMachineStateViewer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return ret;
-    }
 
     /**
      * Pings the given address

@@ -1,10 +1,11 @@
-package communication;
+package communication.receive;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
+import com.losandes.utils.ClientConstants;
 import com.losandes.utils.VariableManager;
 
 import tasks.ExecutorService;
@@ -37,7 +38,7 @@ public class ClouderClientAttention{
      * Responsible for obtaining data connection and listening to Clouder Server
      */
     private ClouderClientAttention() {
-        localPort = VariableManager.global.getIntValue("CLOUDER_CLIENT_PORT");
+        localPort = VariableManager.global.getIntValue(ClientConstants.CLIENT_PORT);
     }
 
     /**
@@ -46,7 +47,7 @@ public class ClouderClientAttention{
     public final void connect() {
         try {
 			serverSocket = new ServerSocket(localPort);
-			System.out.println("Escuchando en "+localPort);
+			System.out.println("Listening in "+localPort);
 	        while (true) {
 	        	try{
 	        		Socket s=serverSocket.accept();
@@ -60,7 +61,6 @@ public class ClouderClientAttention{
 	        }
         } catch (IOException ex) {
         	ex.printStackTrace();
-        	//System.exit(0);
         }
     }
 

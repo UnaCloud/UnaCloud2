@@ -1,6 +1,7 @@
 package virtualMachineManager;
 
 import static com.losandes.utils.Constants.ERROR_MESSAGE;
+import hypervisorManager.HypervisorFactory;
 import hypervisorManager.HypervisorOperationException;
 
 import java.io.File;
@@ -8,16 +9,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TreeMap;
 
-import reporter.VirtualMachineStateViewer;
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+
+import reportManager.ServerMessageSender;
+import reportManager.VirtualMachineStateViewer;
 import tasks.ExecutorService;
 import tasks.SaveImageVirtualMachineTask;
-import unacloudEnums.VirtualMachineExecutionStateEnum;
-import communication.ServerMessageSender;
+import virtualMachineManager.entities.VirtualMachineExecution;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.vmo.VirtualMachineAddTimeMessage;
@@ -43,9 +48,7 @@ public class PersistentExecutionManager {
     private static final String executionsFile = "executions.txt";
     
     private static final Map<Long,VirtualMachineExecution> executionList=new TreeMap<>();
-    
-    private static Thread checker;
-    
+        
     /**
      * Timer used to schedule shutdown events
      */
@@ -111,10 +114,9 @@ public class PersistentExecutionManager {
         try {
             if(!started)execution.getImage().startVirtualMachine();
             executionList.put(execution.getId(),execution);
-            timer.schedule(new Schedule(execution.getId()),new Date(execution.getShutdownTime()+100l));
+            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
             ServerMessageSender.reportVirtualMachineState(execution.getId(),VirtualMachineExecutionStateEnum.DEPLOYING,"Starting virtual machine");
-            new VirtualMachineStateViewer(execution.getId(),execution.getIp(),"Machine not configured");
-            checkingMachines();
+            new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp());
         } catch (HypervisorOperationException e) {
         	e.printStackTrace();
         	execution.getImage().stopAndUnregister();
@@ -124,33 +126,7 @@ public class PersistentExecutionManager {
         saveData();
         return "";
     }
-    /**
-     * TODO: documentation
-     */
-    private static void checkingMachines() {
-		if(checker==null||!checker.isAlive()){
-			checker = new Thread(){
-			   @Override
-			   public void run() {
-				   try {
-					   while(executionList.values().size()>0){
-						   for(VirtualMachineExecution vm: executionList.values()){
-							   new VirtualMachineStateViewer(vm.getId(), vm.getIp(),"Execution does not respond");
-					       }
-						   try {
-							   Thread.sleep(1000*60);//ONE MINUTE TO REPORT AGAIN
-						   } catch (InterruptedException e) {
-							   e.printStackTrace();
-						   }
-					   }		
-				   } catch (Exception e) {
-						e.printStackTrace();
-				   }				  
-			   }				
-			};
-			checker.start();
-		}		
-	}
+   
 
 	/**
      * Extends the time that the virtual machine must be up
@@ -161,7 +137,7 @@ public class PersistentExecutionManager {
     	VirtualMachineExecution execution=executionList.get(timeMessage.getVirtualMachineExecutionId());
     	execution.setExecutionTime(timeMessage.getExecutionTime());
     	execution.setShutdownTime(System.currentTimeMillis()+timeMessage.getExecutionTime().toMillis());
-    	timer.schedule(new Schedule(execution.getId()),new Date(execution.getShutdownTime()+100l));
+    	timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
     	saveData();
         return null;
     }
@@ -175,24 +151,58 @@ public class PersistentExecutionManager {
         }catch(Exception e){}
     }
     /**
-     * Loads the stored virtual machine executions when the physical machine start.
-     * Each loaded execution is used to turn on the corresponding virtual machine
+     * Loads and validates status of all executions saved in file
+     *
+     */
+    public synchronized static void refreshData(){
+    	try {
+			List<Long>ids = ImageCacheManager.getCurrentImages();
+			loadData();
+			List<VirtualMachineExecution> removeExecutions = new ArrayList<VirtualMachineExecution>();
+			List<String> hypervisorExecutions = HypervisorFactory.getCurrentExecutions();
+			for(VirtualMachineExecution execution: executionList.values()){
+				if(!ids.contains(execution.getImageId())){
+					removeExecutions.add(execution);
+				}else{
+					//Its necessary because vbox return hostname and vmware mainfile
+					if(!hypervisorExecutions.contains(execution.getHostname())
+							&&!hypervisorExecutions.contains(execution.getImage().getMainFile()))
+						removeExecutions.add(execution);
+				}				
+			}
+			for(VirtualMachineExecution execution: removeExecutions)removeExecution(execution.getId(),false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    /**
+     * Return a list of id executions that currently are running
+     * @return
+     */
+    public static List<Long> returnIdsExecutions(){
+    	if(executionList.values().size()==0)return new ArrayList<Long>();
+    	refreshData();
+    	List<Long> ids = new ArrayList<Long>();
+    	for(VirtualMachineExecution execution: executionList.values())ids.add(execution.getId());
+    	return ids;
+    }
+    
+    /**
+     * Load data from file to map
      */
     @SuppressWarnings("unchecked")
-	public static void loadData(){
-    	new Thread(){
-    		public void run() {
-    			Map<Long,VirtualMachineExecution> executions=null;
-    	    	try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(executionsFile))){
-    	        	executions=(Map<Long,VirtualMachineExecution>)ois.readObject();
-    	        	if(executions!=null){
-    	        		for(VirtualMachineExecution execution:executions.values())if(execution!=null){
-	        				execution.getImage().stopAndUnregister();
-    	        		}
-    	            }else saveData();
-    	        } catch (Exception ex){}
-    		};
-    	}.start();
+	private static void loadData(){
+    	Map<Long,VirtualMachineExecution> executions=null;
+    	try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(executionsFile))){
+        	executions=(Map<Long,VirtualMachineExecution>)ois.readObject();
+        	if(executions!=null){
+        		for(VirtualMachineExecution execution:executions.values())if(execution!=null){
+    				//execution.getImage().stopAndUnregister();
+        			executionList.put(execution.getId(), execution);
+        		}
+            }else saveData();
+        } catch (Exception ex){}
     }
     /**
      * TODO: documentation
@@ -204,7 +214,7 @@ public class PersistentExecutionManager {
     		VirtualMachineExecution execution=executionList.get(message.getVirtualMachineExecutionId());
     		VirtualMachineSaveImageResponse response = new VirtualMachineSaveImageResponse();
     		if(execution!=null&&execution.getImageId()==message.getImageId()){
-    			System.out.println("Comienza envio de copia con token "+message.getTokenCom());
+    			System.out.println("Start copy service with token "+message.getTokenCom());
 				response.setMessage("Copying image");
 				response.setState(VirtualMachineState.COPYNG);
 				ExecutorService.executeBackgroundTask(new SaveImageVirtualMachineTask(execution,message.getTokenCom()));

@@ -1,12 +1,13 @@
 package tasks;
 
-import communication.ServerMessageSender;
+import reportManager.ServerMessageSender;
 
-import Exceptions.VirtualMachineExecutionException;
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+
+import exceptions.VirtualMachineExecutionException;
 import hypervisorManager.ImageCopy;
-import unacloudEnums.VirtualMachineExecutionStateEnum;
 import virtualMachineManager.ImageCacheManager;
-import virtualMachineManager.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 public class StartVirtualMachineTask implements Runnable{
 	VirtualMachineExecution machineExecution;

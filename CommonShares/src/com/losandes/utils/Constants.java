@@ -4,6 +4,7 @@ import java.io.File;
 
 /**
  * @author Edgar Eduardo Rosales Rosero
+ * @author Cesar
  * Responsible for providing the UnaCloud Server constant values
  */
 public class Constants {
@@ -24,38 +25,7 @@ public class Constants {
     public static final int DGRAM_LENGTH = 1024*10;
     public static final int CLOUDER_CLIENT_TIMEOUT= 1500; //milliseconds
     public static final String MESSAGE_SEPARATOR_TOKEN = "%%";
-    
-    //UnaCloud Client executing modes constants
-    public static final int TURN_ON = 1;
-    public static final int TURN_OFF = 2;
-    public static final int LOGIN = 3;
-    public static final int LOGOUT = 4;
-    public static final String STATE_OFF="Off";
-    public static final String STATE_ON="On";
-    public static final String STATE_LOCK="Lock";
-    public static final String STATE_EXECUTION="In Execution";
-    
-    //UnaCloud queries constants
-    public static final int ADMIN_USER = 1;
-    public static final int CLOUD_USER = 2;
-    public static final int GRID_USER = 3;
-    public static final int CLOUD_TEMPLATE = 1;
-    public static final int GRID_TEMPLATE = 2;
-
-    //UnaCloud Client database operation request constants
-    public static final int TURN_OFF_DB = 0;
-    public static final int TURN_ON_DB = 1;
-    public static final int LOGIN_DB = 2;
-    public static final int LOGOUT_DB = 3;
-    public static final int VIRTUAL_MACHINE_STATE_DB = 5;
-    public static final int VIRTUAL_MACHINE_CPU_STATE = 6;
-    //UnaCloud Server physical machine operation request constants
-    
-    public static final int PM_WRITE_FILE_MULTICAST = 0;//*
-    public static final int PM_WRITE_FILE_UNICAST = 1;
-    public static final int PM_WRITE_FILE_TREE_DISB = 2;
-    public static final int PM_DELETE_FILE = 3;
-        
+                
     //UnaCloud Client location constants
     public static final String BIN="bin";
     public static final String SERVER_PARAMETERS="server_parameters";
@@ -111,5 +81,8 @@ public class Constants {
 	public static final String DB_NAME = "DBNAME";	
 	public static final String AGENT_PORT = "APORT";
 	public static final int AGENT_QUANTITY_MESSAGE = 5;
+	
+	public static final int REQUEST_IMAGE = 1;
+	public static final int SEND_IMAGE = 2;
 
 }//end of Constants

@@ -1,6 +1,8 @@
 package hypervisorManager;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,4 +96,6 @@ abstract class Hypervisor {
             Logger.getLogger(VirtualBox.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+	public abstract List<String> getCurrentExecutions();
 }

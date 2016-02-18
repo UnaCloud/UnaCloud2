@@ -1,12 +1,15 @@
-package virtualMachineManager;
+package virtualMachineManager.entities;
 
 import hypervisorManager.ImageCopy;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.losandes.utils.Time;
 
 import communication.messages.vmo.VirtualMachineStartMessage;
+import communication.messages.vmo.VirtualNetInterfaceComponent;
 
 public class VirtualMachineExecution implements Serializable{
 	
@@ -21,7 +24,7 @@ public class VirtualMachineExecution implements Serializable{
 	int cores;
 	int memory;
     Time executionTime;
-    String ip,netMask;
+    List<NetInterface> interfaces;
     boolean persistent;
     String hostname;
     
@@ -67,18 +70,15 @@ public class VirtualMachineExecution implements Serializable{
 	public void setExecutionTime(Time executionTime) {
 		this.executionTime = executionTime;
 	}
-	public String getIp() {
-		return ip;
+
+	public List<NetInterface> getInterfaces() {
+		return interfaces;
 	}
-	public void setIp(String ip) {
-		this.ip = ip;
+	
+	public void setInterfaces(List<NetInterface> interfaces) {
+		this.interfaces = interfaces;
 	}
-	public String getNetMask() {
-		return netMask;
-	}
-	public void setNetMask(String netMask) {
-		this.netMask = netMask;
-	}
+	
 	public boolean isPersistent() {
 		return persistent;
 	}
@@ -111,6 +111,14 @@ public class VirtualMachineExecution implements Serializable{
 	}
 	
 	/**
+	 * Temporal 
+	 * @return
+	 */
+	public NetInterface getMainInterface(){
+		return interfaces.get(0);
+	}
+	
+	/**
 	 * Returns a virtual machine based on a start message
 	 * @param message message with VM data
 	 * @return VM object based on message
@@ -123,9 +131,21 @@ public class VirtualMachineExecution implements Serializable{
 		vme.setHostname(message.getHostname());
 		vme.setId(message.getVirtualMachineExecutionId());
 		vme.setImageId(message.getVirtualMachineImageId());
-		vme.setIp(message.getVmIP());
-		vme.setNetMask(message.getVirtualMachineNetMask());
+		vme.setInterfaces(getInterfacesFromMessage(message.getInterfaces()));
 		vme.setPersistent(message.isPersistent());
 		return vme;
+	}
+	
+	/**
+	 * Transform  a list of interfaces from message to execution
+	 * @param mInterfaces
+	 * @return
+	 */
+	private static List<NetInterface> getInterfacesFromMessage( List<VirtualNetInterfaceComponent> mInterfaces){
+		List<NetInterface> interfaces = new ArrayList<NetInterface>();
+		for(VirtualNetInterfaceComponent comp: mInterfaces){
+			interfaces.add(new NetInterface(comp.name, comp.ip, comp.netMask));
+		}
+		return interfaces;
 	}
 }

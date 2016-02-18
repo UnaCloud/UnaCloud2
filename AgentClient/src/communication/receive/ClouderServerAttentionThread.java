@@ -1,4 +1,4 @@
-package communication;
+package communication.receive;
 
 import static com.losandes.utils.Constants.ERROR_MESSAGE;
 import static com.losandes.utils.Constants.MESSAGE_SEPARATOR_TOKEN;
@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import com.losandes.utils.ClientConstants;
 import com.losandes.utils.OperatingSystem;
 
 import tasks.ExecutorService;
@@ -15,7 +16,9 @@ import tasks.StartVirtualMachineTask;
 import tasks.StopVirtualMachineTask;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
-import virtualMachineManager.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineExecution;
+import communication.UnaCloudAbstractMessage;
+import communication.UnaCloudAbstractResponse;
 import communication.messages.AgentMessage;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.PhysicalMachineOperationMessage;
@@ -80,7 +83,7 @@ public class ClouderServerAttentionThread implements Runnable {
 		        default:
 	                oos.writeObject(new InvalidOperationResponse("Opeartion "+clouderServerRequest.getMainOp()+" is invalid as main operation."));
 	            break;
-	            }
+	        }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -116,7 +119,7 @@ public class ClouderServerAttentionThread implements Runnable {
             case AgentMessage.UPDATE_OPERATION:
             	ClouderClientAttention.close();
                 try {
-        			Runtime.getRuntime().exec(new String[]{"javaw","-jar","ClientUpdater.jar","6"});
+        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",ClientConstants.UPDATER_PROGRAM,"6"});
                 } catch (Exception e) {
                 }
                 new Thread(){
@@ -144,6 +147,7 @@ public class ClouderServerAttentionThread implements Runnable {
                 }.start();
                 return "successful";
             case AgentMessage.GET_VERSION:
+            	//TODO unuseful
                 return "1.30";
             case AgentMessage.CLEAR_CACHE:
                 return ImageCacheManager.clearCache();
@@ -155,7 +159,7 @@ public class ClouderServerAttentionThread implements Runnable {
      * physical machine
      *
      * @param clouderServerRequestSplitted Server request
-     * @param con Channel used to interact with UnaCloud server to recieve or
+     * @param con Channel used to interact with UnaCloud server to receive or
      * send additional data
      */
     private String attendPhysicalMachineOperation(UnaCloudAbstractMessage message) {
@@ -166,11 +170,6 @@ public class ClouderServerAttentionThread implements Runnable {
                 return "PM_RESTART" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().restart();
             case PhysicalMachineOperationMessage.PM_LOGOUT:
                 return "PM_LOGOUT" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().logOut();
-                //TODO do something
-            /*case PM_WRITE_FILE:
-                clouderClientOperationResult = "PM_WRITE_FILE";
-                FileTrasferAttender.attendFileOperation(message, con);
-                break;*/
             case PhysicalMachineOperationMessage.PM_TURN_ON:
                     PhysicalMachineTurnOnMessage turnOn=(PhysicalMachineTurnOnMessage)message;
                 for (String mac : turnOn.getMacs()) {
@@ -179,21 +178,7 @@ public class ClouderServerAttentionThread implements Runnable {
                     } catch (IOException ex) {
                     }
                 }
-                return "Successful operation";
-                //TODO do something
-            /*case PM_RETRIEVE_FOLDER:
-                clouderClientOperationResult = "MACHINE_RESTORE";
-                if (message.length > 2) {
-                    try {
-                        new UnicastSender().attendFileRetrieveRequest(message, communication);
-                    } catch (Exception e) {
-                        clouderClientOperationResult += ERROR_MESSAGE + " " + e.getMessage();
-                    }
-
-                } else {
-                    clouderClientOperationResult += ERROR_MESSAGE + "invalid number of parameters: " + message.length;
-                }
-                break;*/
+                return "Successful operation";          
             default:
                 return ERROR_MESSAGE + "The Clouder Server physical machine operation request is invalid: " + message.getSubOp();
         }

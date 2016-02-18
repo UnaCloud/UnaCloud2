@@ -1,4 +1,4 @@
-package virtualMachineConfiguration;
+package virtualMachineManager.configuration;
 
 import hypervisorManager.HypervisorOperationException;
 
@@ -31,7 +31,7 @@ public class Debian extends AbstractVirtualMachineConfigurator{
      */
     @Override
     public void configureIP() throws HypervisorOperationException {
-    	AddressUtility au = new AddressUtility(execution.getIp(),execution.getNetMask());
+    	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	File out=generateRandomFile();
     	try(PrintWriter pw = new LinuxPrintWriter(out)){
     		pw.println("auto lo");

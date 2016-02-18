@@ -1,8 +1,11 @@
 package hypervisorManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.losandes.utils.ClientConstants;
 import com.losandes.utils.VariableManager;
 
 /**
@@ -21,8 +24,8 @@ public class HypervisorFactory {
     private static Map<String,Hypervisor> map = new HashMap<>();
     
     public static void registerHypervisors(){
-    	String vmRun=VariableManager.local.getStringValue("VMRUN_PATH");
-    	String vBox=VariableManager.local.getStringValue("VBOX_PATH");
+    	String vmRun=VariableManager.local.getStringValue(ClientConstants.VMRUN_PATH);
+    	String vBox=VariableManager.local.getStringValue(ClientConstants.VBOX_PATH);
     	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
     	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
     	//TODO add support to vmWarePlayer
@@ -38,5 +41,15 @@ public class HypervisorFactory {
      */
     public static Hypervisor getHypervisor(final String hypervisorId){
     	return map.get(hypervisorId);
+    }
+    
+    /**
+     * Return the list 
+     * @return
+     */
+    public static List<String> getCurrentExecutions(){
+    	List<String >executions = new ArrayList<String>();
+    	for(Hypervisor hypervisor:map.values())executions.addAll(hypervisor.getCurrentExecutions());
+    	return executions;
     }
 }

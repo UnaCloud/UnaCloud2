@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
 import unacloud.share.entities.NetInterfaceEntity;
@@ -16,7 +18,6 @@ import unacloud.share.entities.VirtualMachineExecutionEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**

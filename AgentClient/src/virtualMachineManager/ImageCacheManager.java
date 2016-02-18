@@ -1,36 +1,36 @@
 package virtualMachineManager;
 
 import hypervisorManager.HypervisorFactory;
-import hypervisorManager.Image;
 import hypervisorManager.ImageCopy;
 import hypervisorManager.VirtualBox;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
+import tasks.DownloadImageVirtualMachineTask;
 import utils.SystemUtils;
-import Exceptions.VirtualMachineExecutionException;
+import virtualMachineManager.entities.Image;
+import virtualMachineManager.entities.VirtualMachineImageStatus;
 
+import com.losandes.utils.ClientConstants;
 import com.losandes.utils.Constants;
 import com.losandes.utils.RandomUtils;
 import com.losandes.utils.VariableManager;
 
+import exceptions.VirtualMachineExecutionException;
+
 public class ImageCacheManager {
 	
 	
-	static String machineRepository=VariableManager.local.getsetStringValue("VM_REPO_PATH","E:\\GRID\\");
+	static String machineRepository=VariableManager.local.getsetStringValue(ClientConstants.VM_REPO_PATH,"E:\\GRID\\");
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	
@@ -44,11 +44,12 @@ public class ImageCacheManager {
 		Image vmi=getImage(imageId);
 		ImageCopy source,dest;
 		synchronized (vmi){
-			System.out.println("Tiene "+vmi.getImageCopies().size()+" copias");
+			System.out.println("has "+vmi.getImageCopies().size()+" copies");
 			if(vmi.getImageCopies().isEmpty()){
 				ImageCopy copy=new ImageCopy();
 				try{
-					dowloadImageCopy(vmi,copy);
+					DownloadImageVirtualMachineTask.dowloadImageCopy(vmi,copy,machineRepository);
+					saveImages();
 				}catch(VirtualMachineExecutionException ex){
 					throw ex;
 				}catch(Exception ex){
@@ -105,71 +106,13 @@ public class ImageCacheManager {
 		vmiCopy.setStatus(VirtualMachineImageStatus.FREE);
 	}
 	
-	/**
-	 * Creates a new image copy
-	 * @param image base image
-	 * @param copy empty copy
-	 */
-	private static void dowloadImageCopy(Image image,ImageCopy copy)throws VirtualMachineExecutionException{
-		File root=new File(machineRepository+"\\"+image.getId()+"\\base");
-		cleanDir(root);
-		root.mkdirs();
-		final int puerto = VariableManager.global.getIntValue("DATA_SOCKET");
-		final String ip=VariableManager.global.getStringValue("CLOUDER_SERVER_IP");
-		System.out.println("Conectando a "+ip+":"+puerto);
-		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
-			System.out.println("Conexion exitosa");
-			System.out.println("Envio Operacion 1");
-			ds.write(1);
-			ds.flush();
-			System.out.println("Envio ID");
-			ds.writeLong(image.getId());
-			ds.flush();
-			try(ZipInputStream zis=new ZipInputStream(s.getInputStream())){
-				System.out.println("Zip abierto");
-				byte[] buffer=new byte[1024*100];
-				for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
-					if(entry.getName().equals("unacloudinfo")){
-						BufferedReader br=new BufferedReader(new InputStreamReader(zis));
-						image.setHypervisorId(br.readLine());
-						String mainFile=br.readLine();
-						if(mainFile==null){
-							throw new VirtualMachineExecutionException("Error: image mainFile is null");
-						}
-						copy.setMainFile(new File(root,mainFile));
-						image.setPassword(br.readLine());
-						image.setUsername(br.readLine());
-						copy.setStatus(VirtualMachineImageStatus.LOCK);
-						/*copy.setVirtualMachineName();*/br.readLine();
-						image.setConfiguratorClass(br.readLine());
-					}else{
-						try(FileOutputStream fos=new FileOutputStream(new File(root,entry.getName()))){
-							for(int n;(n=zis.read(buffer))!=-1;){
-								fos.write(buffer,0,n);
-							}						
-						}
-					}
-					zis.closeEntry();
-				}
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			copy.setImage(image);
-			image.getImageCopies().add(copy);
-			copy.init();
-			saveImages();
-		} catch (VirtualMachineExecutionException e1) {
-			throw e1;
-		}catch (Exception e) {
-			throw new VirtualMachineExecutionException("Error opening connection",e);
-		}
-	}
+	
 	
 	/**
 	 * Removes a directory from physical machine disk
 	 * @param f file or directory to be deleted
 	 */
-	private static void cleanDir(File f){
+	public static void cleanDir(File f){
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
 		f.delete();
 	}
@@ -230,4 +173,14 @@ public class ImageCacheManager {
 		}
 	}
 	
+	/**
+	 * Return the list
+	 * @return
+	 */
+	public static List<Long> getCurrentImages(){
+		loadImages();
+		List<Long> ids = new ArrayList<Long>();
+		ids.addAll(imageList.keySet());
+		return ids;
+	}
 }

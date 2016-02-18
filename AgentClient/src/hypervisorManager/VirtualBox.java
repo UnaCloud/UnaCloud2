@@ -225,4 +225,12 @@ public class VirtualBox extends Hypervisor {
 		takeVirtualMachineSnapshot(dest,"unacloudbase");
         unregisterVirtualMachine(dest);
 	}
+
+	@Override
+	public List<String> getCurrentExecutions() {
+		List<String> list = new ArrayList<String>();
+		String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
+		for(String vm: result)list.add(vm.split(" ")[0]);
+		return list;
+	}
 }

@@ -1,12 +1,14 @@
-package virtualMachineConfiguration;
+package virtualMachineManager.configuration;
 
-import Exceptions.VirtualMachineExecutionException;
+import reportManager.ServerMessageSender;
+
+import com.andes.enums.VirtualMachineExecutionStateEnum;
+
 import hypervisorManager.ImageCopy;
-import communication.ServerMessageSender;
 import communication.messages.vmo.VirtualMachineStartResponse;
-import unacloudEnums.VirtualMachineExecutionStateEnum;
-import virtualMachineManager.VirtualMachineExecution;
+import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.ImageCacheManager;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 public final class VirtualMachineConfigurer extends Thread{
 	/**
