@@ -1,7 +1,6 @@
 package reportManager;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,11 +28,17 @@ public class VirtualMachineStateViewer {
         for(int e=0;e<8&&!red;e++){
             if(!(red=pingVerification(vmIP)))try{Thread.sleep(30000);}catch(Exception ex){}
         }
-        if(red)ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.DEPLOYED,"Machine started");
-        else{
-            PersistentExecutionManager.removeExecution(virtualMachineCode,false);
-            ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.FAILED,"Network error, machine initial ping doesn't respond");
-        }
+        try {
+        	if(red)ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.DEPLOYED,"Machine started");
+            else{
+                PersistentExecutionManager.removeExecution(virtualMachineCode,false);
+                ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.FAILED,"Network error, machine initial ping doesn't respond");
+            }
+		} catch (Exception e) {
+			PersistentExecutionManager.removeExecution(virtualMachineCode,false);
+			e.printStackTrace();
+		}
+        
     }
 
 

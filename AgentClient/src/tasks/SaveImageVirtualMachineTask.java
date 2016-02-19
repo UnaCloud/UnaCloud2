@@ -12,8 +12,8 @@ import reportManager.ServerMessageSender;
 import com.andes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.ClientConstants;
 import com.losandes.utils.Constants;
-import com.losandes.utils.VariableManager;
 
+import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
@@ -42,8 +42,8 @@ public class SaveImageVirtualMachineTask implements Runnable{
 			System.out.println("Unregister execution: "+machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
 			//Send files
-			final int puerto = VariableManager.global.getIntValue(ClientConstants.FILE_SERVER_PORT);
-			final String ip=VariableManager.global.getStringValue(ClientConstants.FILE_SERVER_IP);
+			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.FILE_SERVER_PORT);
+			final String ip=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.FILE_SERVER_IP);
 			System.out.println("Connecting to "+ip+":"+puerto);
 			try(Socket s=new Socket(ip,puerto);OutputStream os=s.getOutputStream()){
 				DataOutputStream ds=new DataOutputStream(os);

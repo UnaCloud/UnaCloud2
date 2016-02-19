@@ -68,27 +68,32 @@ public class ImageCopy implements Serializable{
 	public synchronized void configureAndStart(VirtualMachineExecution machineExecution){
 		Hypervisor hypervisor=HypervisorFactory.getHypervisor(getImage().getHypervisorId());
 		try {
-			if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
-			Class<?> configuratorClass=Class.forName("virtualMachineConfiguration."+getImage().getConfiguratorClass());
-			Object configuratorObject=configuratorClass.getConstructor().newInstance();
-			if(configuratorObject instanceof AbstractVirtualMachineConfigurator){
-				AbstractVirtualMachineConfigurator configurator=(AbstractVirtualMachineConfigurator)configuratorObject;
-				//configurator.setHypervisor(hypervisor);
-				configurator.setExecution(machineExecution);
-				//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
-				hypervisor.registerVirtualMachine(this);
-    			hypervisor.restoreVirtualMachineSnapshot(this,"unacloudbase");
-        		hypervisor.configureVirtualMachineHardware(machineExecution.getCores(),machineExecution.getMemory(),this);
-    			hypervisor.startVirtualMachine(this);
-    			configurator.configureHostname();
-    			configurator.configureIP();
-    			System.out.println("image config "+new Date());
-    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());
-			}else ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+			try {
+				if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
+				Class<?> configuratorClass=Class.forName("virtualMachineConfiguration."+getImage().getConfiguratorClass());
+				Object configuratorObject=configuratorClass.getConstructor().newInstance();
+				if(configuratorObject instanceof AbstractVirtualMachineConfigurator){
+					AbstractVirtualMachineConfigurator configurator=(AbstractVirtualMachineConfigurator)configuratorObject;
+					//configurator.setHypervisor(hypervisor);
+					configurator.setExecution(machineExecution);
+					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
+					hypervisor.registerVirtualMachine(this);
+	    			hypervisor.restoreVirtualMachineSnapshot(this,"unacloudbase");
+	        		hypervisor.configureVirtualMachineHardware(machineExecution.getCores(),machineExecution.getMemory(),this);
+	    			hypervisor.startVirtualMachine(this);
+	    			configurator.configureHostname();
+	    			configurator.configureIP();
+	    			System.out.println("image config "+new Date());
+	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());
+				}else ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+			} catch (Exception e) {
+				e.printStackTrace(System.out);
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+			}
 		} catch (Exception e) {
-			e.printStackTrace(System.out);
-			ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+			e.printStackTrace();
 		}
+		
 	}
 	
 	/**

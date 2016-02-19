@@ -10,7 +10,6 @@ import reportManager.ServerMessageSender;
 
 import com.losandes.utils.ClientConstants;
 import com.losandes.utils.OperatingSystem;
-import com.losandes.utils.VariableManager;
 
 import hypervisorManager.HypervisorFactory;
 import virtualMachineManager.PersistentExecutionManager;
@@ -22,25 +21,25 @@ import communication.receive.ClouderClientAttention;
  */
 public class Main {
 	
-	final static int TEST = 8;
-	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
 
     /**
      * Responsible for sorting and starting the Clouder Client
-     * @param args[0] = {0 = TURN_OFF_DB, 1 = TURN_ON_DB , 2 = LOGIN_DB, 3 = LOGOUT_DB}
+     * @param 
      * @throws Exception 
      */
-    public static void main(String[] args){  
-    	
-    	
+    public static void main(String[] args){      	
     	
         int mainCase = 0;
         if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
-        if(mainCase==TEST){
-        	ServerMessageSender.reportPhyisicalMachine(null);
+        if(mainCase==ClientConstants.TEST){
+        	try {
+				ServerMessageSender.reportPhyisicalMachine(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         	System.exit(0);
         	return;
         }
@@ -54,7 +53,7 @@ public class Main {
         	}
     	}
     	//Validates data path
-    	String dataPath = VariableManager.local.getStringValue(ClientConstants.DATA_PATH);
+    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(ClientConstants.DATA_PATH);
     	if(dataPath==null||dataPath.isEmpty()){
     		System.out.println(ClientConstants.DATA_PATH+" in local file is empty");
     		System.exit(0);
@@ -62,7 +61,7 @@ public class Main {
     	//Start log 
     	try {
     		//Create agent log file
-        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.local.getStringValue(ClientConstants.DATA_PATH)+"logClient.txt",true),true){
+        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(ClientConstants.DATA_PATH)+"logClient.txt",true),true){
         		@Override
         		public void println(String x) {
         			super.println(new Date()+" "+x);
@@ -85,7 +84,12 @@ public class Main {
     	
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
-        ClouderClientAttention.getInstance().connect();
+        try {
+			ClouderClientAttention.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
     }
 }
 

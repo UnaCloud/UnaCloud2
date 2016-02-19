@@ -1,4 +1,5 @@
-package unacloud.share.utils;
+package com.losandes.utils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -130,5 +131,24 @@ public class ConfigurationReader {
 	 */
 	public void setIntegerVariable(String key, Integer variable){
 		values.put(key, variable+"");
+	}
+
+	/**
+	 * Returns a variable in case of exist, else save variable and return
+	 * @param vmRepoPath
+	 * @param string
+	 * @return
+	 * @throws IOException 
+	 */
+	public String getSetStringValue(String key, String value) {
+		if(values.get(key)==null){
+			values.put(key, value);
+			try {
+				saveConfiguration();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else value = values.get(key);
+		return value;
 	}
 }

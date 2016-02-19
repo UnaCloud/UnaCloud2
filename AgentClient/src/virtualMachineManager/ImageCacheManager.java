@@ -23,14 +23,14 @@ import virtualMachineManager.entities.VirtualMachineImageStatus;
 import com.losandes.utils.ClientConstants;
 import com.losandes.utils.Constants;
 import com.losandes.utils.RandomUtils;
-import com.losandes.utils.VariableManager;
 
+import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 
 public class ImageCacheManager {
 	
 	
-	static String machineRepository=VariableManager.local.getsetStringValue(ClientConstants.VM_REPO_PATH,"E:\\GRID\\");
+	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(ClientConstants.VM_REPO_PATH,"E:\\GRID\\");
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	

@@ -17,8 +17,8 @@ import virtualMachineManager.entities.VirtualMachineImageStatus;
 
 import com.losandes.utils.ClientConstants;
 import com.losandes.utils.Constants;
-import com.losandes.utils.VariableManager;
 
+import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 
 public class DownloadImageVirtualMachineTask {
@@ -27,13 +27,14 @@ public class DownloadImageVirtualMachineTask {
 	 * Creates a new image copy
 	 * @param image base image
 	 * @param copy empty copy
+	 * @throws Exception 
 	 */
-	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws VirtualMachineExecutionException{
+	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws Exception{
 		File root=new File(repository+"\\"+image.getId()+"\\base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
-		final int puerto = VariableManager.global.getIntValue(ClientConstants.FILE_SERVER_PORT);
-		final String ip=VariableManager.global.getStringValue(ClientConstants.FILE_SERVER_IP);
+		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.FILE_SERVER_PORT);
+		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.FILE_SERVER_IP);
 		System.out.println("Connecting to "+ip+":"+puerto);
 		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
 			System.out.println("Successful connection");

@@ -80,16 +80,16 @@ public class PersistentExecutionManager {
 		}
     }
 
+    /**
+     * Delete directory sent by params
+     * @param f
+     */
 	public static void cleanDir(File f){
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
 		f.delete();
 	}
     /**
      * Restarts the given virtual machine
-     * @param hypervisorName The hypervisor that must be used to stop this virtual machine
-     * @param vmPath The path of the virtual machine to be stoped
-     * @param hypervisorPath The path of the hypervisor exec that must be used to stop the machine
-     * @param id The id of the virtual machine execution to be removed     *
      * @return
      */
     public static UnaCloudAbstractResponse restartMachine(VirtualMachineRestartMessage restartMessage) {
@@ -97,7 +97,11 @@ public class PersistentExecutionManager {
         try {
         	execution.getImage().restartVirtualMachine();
         } catch (HypervisorOperationException ex) {
-            ServerMessageSender.reportVirtualMachineState(restartMessage.getVirtualMachineExecutionId(), VirtualMachineExecutionStateEnum.FAILED, ex.getMessage());
+            try {
+				ServerMessageSender.reportVirtualMachineState(restartMessage.getVirtualMachineExecutionId(), VirtualMachineExecutionStateEnum.FAILED, ex.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
         saveData();
         return null;
@@ -111,18 +115,22 @@ public class PersistentExecutionManager {
      */
     public static String startUpMachine(VirtualMachineExecution execution,boolean started){
     	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
-        try {
-            if(!started)execution.getImage().startVirtualMachine();
-            executionList.put(execution.getId(),execution);
-            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
-            ServerMessageSender.reportVirtualMachineState(execution.getId(),VirtualMachineExecutionStateEnum.DEPLOYING,"Starting virtual machine");
-            new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp());
-        } catch (HypervisorOperationException e) {
-        	e.printStackTrace();
-        	execution.getImage().stopAndUnregister();
-        	ServerMessageSender.reportVirtualMachineState(execution.getId(), VirtualMachineExecutionStateEnum.FAILED, e.getMessage());
-            return ERROR_MESSAGE + e.getMessage();
-        }
+    	try {
+	        try {
+	            if(!started)execution.getImage().startVirtualMachine();
+	            executionList.put(execution.getId(),execution);
+	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
+	            ServerMessageSender.reportVirtualMachineState(execution.getId(),VirtualMachineExecutionStateEnum.DEPLOYING,"Starting virtual machine");
+	            new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp());
+	        } catch (HypervisorOperationException e) {
+	        	e.printStackTrace();
+	        	execution.getImage().stopAndUnregister();
+	        	ServerMessageSender.reportVirtualMachineState(execution.getId(), VirtualMachineExecutionStateEnum.FAILED, e.getMessage());
+	            return ERROR_MESSAGE + e.getMessage();
+	        }
+        } catch (Exception e) {
+			e.printStackTrace();
+		}
         saveData();
         return "";
     }

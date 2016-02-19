@@ -6,8 +6,8 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import com.losandes.utils.ClientConstants;
-import com.losandes.utils.VariableManager;
 
+import domain.VariableManager;
 import tasks.ExecutorService;
 
 /**
@@ -30,15 +30,16 @@ public class ClouderClientAttention{
 	//-----------------------------------------------------------------
 
     private static ClouderClientAttention instance;
-    public synchronized static ClouderClientAttention getInstance() {
+    public synchronized static ClouderClientAttention getInstance() throws Exception {
             if(instance==null)instance=new ClouderClientAttention();
                 return instance;
         }
     /**
      * Responsible for obtaining data connection and listening to Clouder Server
+     * @throws Exception 
      */
-    private ClouderClientAttention() {
-        localPort = VariableManager.global.getIntValue(ClientConstants.CLIENT_PORT);
+    private ClouderClientAttention() throws Exception{
+        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CLIENT_PORT);
     }
 
     /**

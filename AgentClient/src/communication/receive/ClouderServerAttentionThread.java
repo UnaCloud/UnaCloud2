@@ -119,7 +119,7 @@ public class ClouderServerAttentionThread implements Runnable {
             case AgentMessage.UPDATE_OPERATION:
             	ClouderClientAttention.close();
                 try {
-        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",ClientConstants.UPDATER_PROGRAM,"6"});
+        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",ClientConstants.UPDATER_JAR,ClientConstants.DELAY+""});
                 } catch (Exception e) {
                 }
                 new Thread(){

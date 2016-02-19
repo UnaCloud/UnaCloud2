@@ -41,13 +41,16 @@ public final class VirtualMachineConfigurer extends Thread{
 	@Override
 	public void run() {
 		System.out.println("startVirtualMachine");
-		try{
-			ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
-			machineExecution.setImage(image);
-			image.configureAndStart(machineExecution);
-		}catch(VirtualMachineExecutionException ex){
-			ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
-		}
-		
+		try {
+			try{
+				ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
+				machineExecution.setImage(image);
+				image.configureAndStart(machineExecution);
+			}catch(VirtualMachineExecutionException ex){
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 }

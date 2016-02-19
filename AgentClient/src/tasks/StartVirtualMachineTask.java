@@ -33,7 +33,11 @@ public class StartVirtualMachineTask implements Runnable{
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartVirtualMachine");
 		}catch(VirtualMachineExecutionException ex){
-			ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
+			try {
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}

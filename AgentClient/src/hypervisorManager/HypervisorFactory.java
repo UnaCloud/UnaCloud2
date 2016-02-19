@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.losandes.utils.ClientConstants;
-import com.losandes.utils.VariableManager;
+
+import domain.VariableManager;
 
 /**
  * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.
@@ -24,8 +25,8 @@ public class HypervisorFactory {
     private static Map<String,Hypervisor> map = new HashMap<>();
     
     public static void registerHypervisors(){
-    	String vmRun=VariableManager.local.getStringValue(ClientConstants.VMRUN_PATH);
-    	String vBox=VariableManager.local.getStringValue(ClientConstants.VBOX_PATH);
+    	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(ClientConstants.VMRUN_PATH);
+    	String vBox=VariableManager.getInstance().getLocal().getStringVariable(ClientConstants.VBOX_PATH);
     	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
     	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
     	//TODO add support to vmWarePlayer
