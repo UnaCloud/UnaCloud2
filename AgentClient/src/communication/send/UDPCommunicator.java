@@ -37,10 +37,7 @@ public class UDPCommunicator {
 	public boolean pushInfoPM(UDPMessageEnum type, Object...params) throws Exception{
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CONTROL_SERVER_PORT_PM);
-		String msgParams=null;
-		for(int e=0,i=params.length;e<i;e+=2)msgParams+=params[e]+"="+params[e+1]+"-";
-		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, serverIP, serverPort, OperatingSystem.getHostname(), type);
-		return sender.sendMessage(message);		
+		return pushInfo(serverIP, serverPort, type, params);	
 	}
 	
 	/**
@@ -49,12 +46,27 @@ public class UDPCommunicator {
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean pushInfoVM(UDPMessageEnum type, Object...params) throws Exception{
+	public boolean pushInfoVM(UDPMessageEnum type, Object...params) throws Exception{		
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CONTROL_SERVER_PORT_VM);
-		String msgParams=null;
-		for(int e=0,i=params.length;e<i;e+=2)msgParams+=params[e]+"="+params[e+1]+"-";
-		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, serverIP, serverPort, OperatingSystem.getHostname(), type);
+		return pushInfo(serverIP, serverPort, type, params);
+	}
+	
+	/**
+	 * 
+	 * @param ip
+	 * @param port
+	 * @param type
+	 * @param params
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean pushInfo(String ip, int port,UDPMessageEnum type, Object...params)throws Exception{
+		String msgParams="{";
+		for(int e=0,i=params.length;e<i;e+=2)msgParams+=","+"\""+params[e]+"\":\""+params[e+1]+"\"";
+		msgParams.replaceFirst(",", "");
+		msgParams+="}";
+		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, ip, port, OperatingSystem.getHostname(), type);
 		return sender.sendMessage(message);		
 	}
 }

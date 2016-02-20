@@ -64,12 +64,18 @@ class VirtualMachineExecution {
 	 */
 	static belongsTo = [deployImage: DeployedImage]
 	
+	/**
+	 * Last report of virtual machine
+	 */
+	Date lastReport
+	
 	
 	static constraints = {
 		executionNode nullable: true
 		monitorSystem nullable: true
 		stopTime nullable: true 
 		startTime nullable:true
+		lastReport nullable:true
 	}
 	
 	//-----------------------------------------------------------------

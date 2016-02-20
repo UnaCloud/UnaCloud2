@@ -41,7 +41,7 @@ import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.ControlManager;
 import uniandes.communication.MessageSender;
-import uniandes.communication.ResponseProcessor;
+import uniandes.communication.processor.AbstractResponseProcessor;
 
 /**
  * Class to process each message from queue
@@ -92,7 +92,7 @@ public class QueueMessageProcessor implements QueueReader{
 			try {				
 				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);			
 				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
-					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(imageId), new ResponseProcessor() {			
+					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 							Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -139,7 +139,7 @@ public class QueueMessageProcessor implements QueueReader{
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
 								new StopAgentMessage():new UpdateAgentMessage();
 				threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), 
-						absMessage, new ResponseProcessor() {			
+						absMessage, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -188,7 +188,7 @@ public class QueueMessageProcessor implements QueueReader{
 						List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 						machines.add(execution.getNode());
 						threadPool.submit(new MessageSender(machines, 
-								vmsm, new ResponseProcessor() {			
+								vmsm, new AbstractResponseProcessor() {			
 							@Override
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 								Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -233,7 +233,7 @@ public class QueueMessageProcessor implements QueueReader{
 				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 				machines.add(execution.getNode());
 				threadPool.submit(new MessageSender(machines, 
-						vmsm, new ResponseProcessor() {			
+						vmsm, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -284,7 +284,7 @@ public class QueueMessageProcessor implements QueueReader{
 				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 				machines.add(execution.getNode());
 				threadPool.submit(new MessageSender(machines, 
-						vmsm, new ResponseProcessor() {			
+						vmsm, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -329,7 +329,7 @@ public class QueueMessageProcessor implements QueueReader{
 					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 					machines.add(execution.getNode());
 					threadPool.submit(new MessageSender(machines, 
-							vmsim, new ResponseProcessor() {			
+							vmsim, new AbstractResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 							Connection con2 = ControlManager.getInstance().getDBConnection();

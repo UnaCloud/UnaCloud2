@@ -23,7 +23,6 @@ public class ClientConstants {
 	public static final String FILE_SERVER_IP = "CLIENT_PORT";
 	public static final String FILE_SERVER_PORT = "FILE_PORT";
 	public static final String FILE_CLIENT_VERSION_PORT = "VERSION_PORT";
-	public static final String FILE_AGENT_DOWNLOAD_PORT = "AGENT_DOWNLOAD_PORT";
 	public static final String CLIENT_PORT = "CLIENT_PORT";	
 	
 	/** STATIC **/

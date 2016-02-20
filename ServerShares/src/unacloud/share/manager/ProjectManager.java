@@ -40,6 +40,7 @@ public abstract class ProjectManager {
 			loadVariables();
 			startQueueService();
 			startDatabaseService();
+			startCommunicationService();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

@@ -33,9 +33,10 @@ public class PhysicalMachineStateReporter extends Thread{
        while(true){
            try{
         	   List<Long> ids = PersistentExecutionManager.returnIdsExecutions();
-        	   String executions = null;
-        	   for(Long id:ids)executions+=":"+id;
-        	   if(executions!=null)executions.replaceFirst(":", "");
+        	   String executions = "[";
+        	   for(Long id:ids)executions+=","+id;
+        	   executions.replaceFirst(",", "");
+        	   executions = "]";
                ServerMessageSender.reportPhyisicalMachine(executions);
            }catch(Exception sce){
         	   sce.printStackTrace();

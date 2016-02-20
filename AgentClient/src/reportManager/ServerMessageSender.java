@@ -34,8 +34,7 @@ public class ServerMessageSender {
      * @throws Exception 
 	 */
 	public static void reportPhyisicalMachine(String executions) throws Exception{
-		if(executions!=null)UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName(),"executions",executions);
-		else UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName());
+		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName(),"executions",executions);
 	}
 	/**
 	 * 

@@ -9,6 +9,7 @@ import communication.UnaCloudAbstractMessage;
 import communication.UnaCloudAbstractResponse;
 import unacloud.share.entities.PhysicalMachineEntity;
 import uniandes.ControlManager;
+import uniandes.communication.processor.AbstractResponseProcessor;
 
 /**
  * Classes to send message to list of machines
@@ -19,10 +20,10 @@ public class MessageSender extends Thread{
 	
 	private List<PhysicalMachineEntity> machines;
 	private UnaCloudAbstractMessage message;
-	private ResponseProcessor processor;
+	private AbstractResponseProcessor processor;
 	
 	
-	public MessageSender(List<PhysicalMachineEntity> machines,UnaCloudAbstractMessage message, ResponseProcessor processor) {
+	public MessageSender(List<PhysicalMachineEntity> machines,UnaCloudAbstractMessage message, AbstractResponseProcessor processor) {
 		this.machines = machines;
 		this.message = message;
 		this.processor = processor;

@@ -1,6 +1,5 @@
 package uniandes;
 
-
 import unacloud.share.manager.ProjectManager;
 
 import com.losandes.utils.Constants;
@@ -9,6 +8,8 @@ import unacloud.share.db.DatabaseConnection;
 import unacloud.share.queue.QueueMessageReceiver;
 import unacloud.share.queue.QueueRabbitManager;
 import unacloud.share.utils.UnaCloudVariables;
+import uniandes.communication.PmMessageReceiver;
+import uniandes.communication.VmMessageReceiver;
 import uniandes.queue.QueueMessageProcessor;
 
 /**
@@ -81,7 +82,8 @@ public class ControlManager extends ProjectManager{
 
 	@Override
 	protected void startCommunicationService() throws Exception {
-		
+		new PmMessageReceiver(reader.getIntegerVariable(Constants.CMPORT)).start();
+		new VmMessageReceiver(reader.getIntegerVariable(Constants.CVMPORT)).start();
 	}	
 
 }

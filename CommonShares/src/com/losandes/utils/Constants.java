@@ -80,6 +80,8 @@ public class Constants {
 	public static final String DB_PORT = "DBPORT";
 	public static final String DB_NAME = "DBNAME";	
 	public static final String AGENT_PORT = "APORT";
+	public static final String CMPORT = "CMPORT";
+	public static final String CVMPORT = "CVMPORT";
 	public static final int AGENT_QUANTITY_MESSAGE = 5;
 	
 	public static final int REQUEST_IMAGE = 1;

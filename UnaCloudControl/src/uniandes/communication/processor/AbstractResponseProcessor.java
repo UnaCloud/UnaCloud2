@@ -1,4 +1,4 @@
-package uniandes.communication;
+package uniandes.communication.processor;
 
 import communication.UnaCloudAbstractResponse;
 
@@ -7,7 +7,7 @@ import communication.UnaCloudAbstractResponse;
  * @author Cesar
  *
  */
-public abstract class ResponseProcessor {
+public abstract class AbstractResponseProcessor {
 	
 	/**
 	 * Attends response

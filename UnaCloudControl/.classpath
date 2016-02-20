@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
 	<classpathentry kind="lib" path="/UnaCloudWeb/lib/servershares.jar"/>
 	<classpathentry kind="lib" path="/UnaCloudWeb/lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/java-json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
