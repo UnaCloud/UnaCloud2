@@ -33,18 +33,13 @@ public class FileManager extends ProjectManager{
 	}	
 
 	@Override
-	protected String getPortNameVariable() {		
-		return UnaCloudConstants.AGENT_PORT;
-	}
-
-	@Override
 	protected String getPropetiesFileName() {	
 		return "grails-app/conf/"+UnaCloudConstants.FILE_CONFIG;
 	}
 
 	@Override
 	protected String[] getVariableList() {
-		return new String[]{UnaCloudConstants.QUEUE_USER,UnaCloudConstants.QUEUE_PASS,UnaCloudConstants.QUEUE_IP,UnaCloudConstants.QUEUE_PORT,UnaCloudConstants.DB_NAME,
+		return new String[]{UnaCloudConstants.VERSION_MANAGER_PORT,UnaCloudConstants.FILE_SERVER_PORT,UnaCloudConstants.QUEUE_USER,UnaCloudConstants.QUEUE_PASS,UnaCloudConstants.QUEUE_IP,UnaCloudConstants.QUEUE_PORT,UnaCloudConstants.DB_NAME,
 				UnaCloudConstants.DB_PASS,UnaCloudConstants.DB_PORT,UnaCloudConstants.DB_IP,UnaCloudConstants.DB_USERNAME,UnaCloudConstants.AGENT_PORT};
 	}
 

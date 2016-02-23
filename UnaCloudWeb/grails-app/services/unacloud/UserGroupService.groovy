@@ -1,6 +1,6 @@
 package unacloud
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.utils.Hasher;
 import grails.transaction.Transactional
@@ -40,9 +40,9 @@ class UserGroupService {
 	 * @return admin default group
 	 */
 	def UserGroup getAdminGroup(){
-		UserGroup admins = UserGroup.findByName(Constants.ADMIN_GROUP);
+		UserGroup admins = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
 		if(!admins){
-			admins = new UserGroup (name:Constants.ADMIN_GROUP, visualName:Constants.ADMIN_GROUP);
+			admins = new UserGroup (name:UnaCloudConstants.ADMIN_GROUP, visualName:UnaCloudConstants.ADMIN_GROUP);
 			admins.users = []
 			admins.save();
 		}
@@ -56,9 +56,9 @@ class UserGroupService {
 	 * @return user default group
 	 */
 	def UserGroup getDefaultGroup(){
-		UserGroup usersGroup = UserGroup.findByName(Constants.USERS_GROUP);
+		UserGroup usersGroup = UserGroup.findByName(UnaCloudConstants.USERS_GROUP);
 		if(!usersGroup){
-			usersGroup = new UserGroup(name:Constants.USERS_GROUP, visualName:Constants.USERS_GROUP);
+			usersGroup = new UserGroup(name:UnaCloudConstants.USERS_GROUP, visualName:UnaCloudConstants.USERS_GROUP);
 			usersGroup.users = []
 			usersGroup.save();
 		}
@@ -80,7 +80,6 @@ class UserGroupService {
 	 * @return
 	 */
 	def boolean isAdmin(long userId){
-		println 'Entre'
 		User user = User.get(userId)
 		if(!user)return false
 		return isAdmin(user)

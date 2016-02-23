@@ -2,7 +2,7 @@ package unacloud
 
 import java.util.ArrayList;
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.DeploymentStateEnum;
@@ -76,7 +76,7 @@ class User {
 	 */
 	
 	def boolean isAdmin(){
-		UserGroup group = UserGroup.findByName(Constants.ADMIN_GROUP);
+		UserGroup group = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
 		if(group)return group.users.find{it.id == this.id}?true:false;
 		return false
 	}

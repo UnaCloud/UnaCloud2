@@ -16,11 +16,6 @@ import unacloud.share.utils.ConfigurationReader;
 public abstract class ProjectManager {
 
 	/**
-	 * Agent Communication port
-	 */
-	private int COM_PORT;	
-	
-	/**
 	 * Reads configuration from file
 	 */
 	protected ConfigurationReader reader;
@@ -53,7 +48,6 @@ public abstract class ProjectManager {
 	 */
 	private void loadVariables() throws Exception{
 		reader = new ConfigurationReader(getPropetiesFileName(), getVariableList());
-		COM_PORT = reader.getIntegerVariable(getPortNameVariable());
 	}
 	
 	/**
@@ -62,25 +56,12 @@ public abstract class ProjectManager {
 	 */
 	protected abstract String getPropetiesFileName();
 	
-	/**
-	 * Return the name of agent port variable to be load in configuration
-	 * @return
-	 */
-	protected abstract String getPortNameVariable();
 	
 	/**
 	 * Method to return list of variable to be load to configuration
 	 * @return
 	 */
 	protected abstract String[] getVariableList();
-	
-	/**
-	 * Return the agent port configured for communication
-	 * @return
-	 */
-	public int getPort(){
-		return COM_PORT;
-	}
 	
 	/**
 	 * Returns current database connection

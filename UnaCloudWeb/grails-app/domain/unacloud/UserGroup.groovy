@@ -1,6 +1,6 @@
 package unacloud
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.enums.UserRestrictionEnum;
 
@@ -40,7 +40,7 @@ class UserGroup {
 	 * @return
 	 */
 	def boolean isAdmin(){
-		return name.equals(Constants.ADMIN_GROUP)
+		return name.equals(UnaCloudConstants.ADMIN_GROUP)
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class UserGroup {
 	 * @return
 	 */
 	def boolean isDefault(){
-		return name.equals(Constants.USERS_GROUP)
+		return name.equals(UnaCloudConstants.USERS_GROUP)
 	}
 		
 	/**

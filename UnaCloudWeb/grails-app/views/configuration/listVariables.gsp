@@ -33,7 +33,7 @@
 	               					<label class="col-lg-3 col-sm-3 col-xs-12">${variable.name}</label>               				
 		               				<div class="col-lg-6 col-sm-6 col-xs-12">	
 			               				<div class="form-group">
-			                 		    <g:if test="${variable.isList()}">
+			                 		    <g:if test="${variable.isList}">
 			                 		    	<select name= "value" class="form-control var-${variable.id}" disabled>		                 		    	
 				                 		    	<option value="NoOne" >-- No one --</option>           		    	
 			                                <g:each in="${variable.values()}" var="val"> 

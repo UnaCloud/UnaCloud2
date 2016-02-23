@@ -1,6 +1,6 @@
 package unacloud
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.enums.ServerVariableTypeEnum;
 import unacloud.pmallocators.AllocatorEnum;
@@ -56,7 +56,7 @@ class ServerVariable {
 	 * @return
 	 */
 	def values(){
-		if(this.name.equals(UnaCloudVariables.VM_DEFAULT_ALLOCATOR))
+		if(this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))
 			return AllocatorEnum.getList()
 		else []
 	}

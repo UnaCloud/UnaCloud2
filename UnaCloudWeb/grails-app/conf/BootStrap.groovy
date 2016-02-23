@@ -50,7 +50,7 @@ class BootStrap {
 		}
 		if(User.count() ==0){
 			String randomString = userService.designAPIKey()
-			User user = new User(name:'UnaCloud',username:'admin',password:Hasher.hashSha256(prop.getProperty("admin")),description:'Administrator',apiKey: randomString, registerDate:new Date()).save()
+			User user = new User(name:'UnaCloud',username:'admin',password:Hasher.hashSha256(prop.getProperty(UnaCloudConstants.DEFAULT_USER_PASSWORD)),description:'Administrator',apiKey: randomString, registerDate:new Date()).save()
 			UserGroup admins  = userGroupService.getAdminGroup();
 			admins.users.add(user)
 			admins.save()
@@ -78,7 +78,7 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.QUEUE_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_USER),program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.QUEUE_PASS,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_PASS),program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.AGENT_VERSION,serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty(UnaCloudConstants.AGENT_VERSION),program:ServerVariableProgramEnum.WEB).save()
-			new ServerVariable(name:UnaCloudConstants.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.name(), isList: true,program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.getName(), isList: true,program:ServerVariableProgramEnum.WEB).save()
 
 			//Load variables for control
 			new ServerVariable(name:UnaCloudConstants.CONTROL_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_IP),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
