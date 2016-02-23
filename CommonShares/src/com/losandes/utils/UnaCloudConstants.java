@@ -51,7 +51,8 @@ public class UnaCloudConstants {
 	public static final String WEB_SERVER_URL = "WEB_SERVER_URL";
 	public static final String AGENT_VERSION = "AGENT_VERSION";
 	public static final String VM_DEFAULT_ALLOCATOR = "VM_DEFAULT_ALLOCATOR";
-	public static final String WEB_CONFIG = "config.properties";
+	public static final String DEFAULT_USER = "DEFAULT_USER";
+	public static final String WEB_CONFIG = "config.properties";	
 		
 	//Agent
 	public static final String VMRUN_PATH = "VMRUN_PATH";

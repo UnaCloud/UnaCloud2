@@ -73,17 +73,17 @@ class BootStrap {
 		if(ServerVariable.count() ==0){
 			//Load variables for web
 			new ServerVariable(name:UnaCloudConstants.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING, variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty(UnaCloudConstants.WEB_SERVER_URL),program:ServerVariableProgramEnum.WEB).save()
-			new ServerVariable(name:UnaCloudConstants.QUEUE_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_IP),program:ServerVariableProgramEnum.WEB).save()
-			new ServerVariable(name:UnaCloudConstants.QUEUE_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.QUEUE_PORT),program:ServerVariableProgramEnum.WEB).save()
-			new ServerVariable(name:UnaCloudConstants.QUEUE_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_USER),program:ServerVariableProgramEnum.WEB).save()
-			new ServerVariable(name:UnaCloudConstants.QUEUE_PASS,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_PASS),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_IP),program:ServerVariableProgramEnum.SERVER).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.QUEUE_PORT),program:ServerVariableProgramEnum.SERVER).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_USER),program:ServerVariableProgramEnum.SERVER).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_PASS,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_PASS),program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.AGENT_VERSION,serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty(UnaCloudConstants.AGENT_VERSION),program:ServerVariableProgramEnum.WEB).save()
 			new ServerVariable(name:UnaCloudConstants.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.name(), isList: true,program:ServerVariableProgramEnum.WEB).save()
 
 			//Load variables for control
 			new ServerVariable(name:UnaCloudConstants.CONTROL_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_IP),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
-			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_PM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
-			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_VM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_PM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_MANAGE_PM_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_VM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_MANAGE_VM_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.AGENT_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.AGENT_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
 			
 			//Load variables for File Manager		

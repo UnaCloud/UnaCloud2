@@ -1,3 +1,5 @@
+import com.losandes.utils.UnaCloudConstants;
+
 dataSource {
     pooled = true
 	// Other database parameters..
@@ -21,7 +23,7 @@ hibernate {
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
 Properties prop = new Properties();
-String propFileName = "config.properties";
+String propFileName = UnaCloudConstants.WEB_CONFIG;
 InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 prop.load(inputStream);
 // environment specific settings
@@ -31,7 +33,7 @@ environments {
 			//using properties file
 			username = prop.getProperty("dev.username");
 			password = prop.getProperty("dev.password");
-			dbCreate = prop.getProperty("dev.dbCreate");// one of 'create', 'create-drop', 'update', 'validate', ''
+			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
 			url = prop.getProperty("dev.url").replace('\\', '');
         }
     }
@@ -39,16 +41,16 @@ environments {
         dataSource {
 			username = prop.getProperty("test.username");
 			password = prop.getProperty("test.password");
-            dbCreate = prop.getProperty("test.dbCreate");
+            dbCreate = "create-drop"
             url = prop.getProperty("test.url").replace('\\', '');
         }
     }
     production {
         dataSource {
-			username = prop.getProperty("prod.username");
-			password = prop.getProperty("prod.password");
-            dbCreate = prop.getProperty("prod.dbCreate");
-            url = prop.getProperty("prod.url").replace('\\', '');
+			username = prop.getProperty(UnaCloudConstants.DB_USERNAME);
+			password = prop.getProperty(UnaCloudConstants.DB_PASS);
+            dbCreate = "update";
+            url = 'jdbc:mysql://'+prop.getProperty(UnaCloudConstants.DB_IP)+':'+prop.getProperty(UnaCloudConstants.DB_PORT)+'/'+prop.getProperty(UnaCloudConstants.DB_NAME)+'?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
             pooled = true
             properties {
                maxActive = -1
