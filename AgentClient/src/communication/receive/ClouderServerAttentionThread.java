@@ -8,8 +8,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.losandes.utils.ClientConstants;
 import com.losandes.utils.OperatingSystem;
+import com.losandes.utils.UnaCloudConstants;
 
 import tasks.ExecutorService;
 import tasks.StartVirtualMachineTask;
@@ -119,7 +119,7 @@ public class ClouderServerAttentionThread implements Runnable {
             case AgentMessage.UPDATE_OPERATION:
             	ClouderClientAttention.close();
                 try {
-        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",ClientConstants.UPDATER_JAR,ClientConstants.DELAY+""});
+        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",UnaCloudConstants.UPDATER_JAR,UnaCloudConstants.DELAY+""});
                 } catch (Exception e) {
                 }
                 new Thread(){

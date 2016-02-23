@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.enums.UserRestrictionEnum;
 import unacloud.share.enums.UserStateEnum;
@@ -57,7 +57,7 @@ public class UserManager {
 				repository = rs.getString(3);
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
-			user.setRepository(RepositoryManager.getRepositoryByName(repository==null?Constants.MAIN_REPOSITORY:repository,con));
+			user.setRepository(RepositoryManager.getRepositoryByName(repository==null?UnaCloudConstants.MAIN_REPOSITORY:repository,con));
 			
 			return user;
 		} catch (Exception e) {

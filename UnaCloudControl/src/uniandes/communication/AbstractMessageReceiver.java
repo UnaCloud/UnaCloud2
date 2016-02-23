@@ -4,8 +4,6 @@ import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.losandes.utils.Constants;
-
 import communication.UnaCloudDataSenderUDP;
 import communication.UnaCloudMessageUDP;
 
@@ -17,9 +15,10 @@ import communication.UnaCloudMessageUDP;
 public abstract class AbstractMessageReceiver extends Thread{
 	
     private UnaCloudDataSenderUDP receiver;
-    protected ExecutorService threadPool=Executors.newFixedThreadPool(Constants.AGENT_QUANTITY_MESSAGE);
+    protected ExecutorService threadPool;
 	
-	public AbstractMessageReceiver(int port) throws SocketException {
+	public AbstractMessageReceiver(int port, int threads) throws SocketException {
+		threadPool=Executors.newFixedThreadPool(threads);
 		receiver = new UnaCloudDataSenderUDP();
 		receiver.enableReceiver(port);
 	}

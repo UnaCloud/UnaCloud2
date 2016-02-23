@@ -20,9 +20,9 @@ import utils.SystemUtils;
 import virtualMachineManager.entities.Image;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
 
-import com.losandes.utils.ClientConstants;
 import com.losandes.utils.Constants;
 import com.losandes.utils.RandomUtils;
+import com.losandes.utils.UnaCloudConstants;
 
 import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
@@ -30,7 +30,7 @@ import exceptions.VirtualMachineExecutionException;
 public class ImageCacheManager {
 	
 	
-	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(ClientConstants.VM_REPO_PATH,"E:\\GRID\\");
+	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(UnaCloudConstants.VM_REPO_PATH,"E:\\GRID\\");
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	

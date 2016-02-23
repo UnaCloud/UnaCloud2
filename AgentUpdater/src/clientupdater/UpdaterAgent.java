@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.losandes.utils.ClientConstants;
 import com.losandes.utils.ConfigurationReader;
+import com.losandes.utils.UnaCloudConstants;
 
 /**
  * This class verifies version and updates all agent files.
@@ -25,12 +25,12 @@ import com.losandes.utils.ConfigurationReader;
  */
 public class UpdaterAgent {
 
-    final static File versions = new File(ClientConstants.VERSION_FILE);    
+    final static File versions = new File(UnaCloudConstants.VERSION_FILE);    
 
     static ConfigurationReader propReader;   
     
     public UpdaterAgent() throws IOException {
-    	propReader = new ConfigurationReader(ClientConstants.GLOBAL_FILE);
+    	propReader = new ConfigurationReader(UnaCloudConstants.GLOBAL_FILE);
 	}
 	
     /**
@@ -38,18 +38,19 @@ public class UpdaterAgent {
      * @throws Exception
      */
 	public void doUpdate() throws Exception{
-		final List<String> versionsFile = gerVersionFile();
-		final int port=propReader.getIntegerVariable(ClientConstants.FILE_CLIENT_VERSION_PORT);
-		final String ip=propReader.getStringVariable(ClientConstants.FILE_SERVER_IP);
+		final List<String> versionsFile = getVersionFile();
+		final int port=propReader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT);
+		final String ip=propReader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 
 		try(Socket s=new Socket(ip,port);DataOutputStream ds=new DataOutputStream(s.getOutputStream());DataInputStream is = new DataInputStream(s.getInputStream())){	
+			ds.writeInt(UnaCloudConstants.REQUEST_AGENT_VERSION);
 			String versionServer = is.readUTF(); 
 	    	System.out.println("Version is "+versionsFile.get(0)+" - server is "+versionServer);
 	    	if(!versionServer.equals(versionsFile.get(0))){
 	    		try {
 		    		for (int e = 1; e < versionsFile.size(); e++) {
 		                File c = new File(versionsFile.get(e));
-		    			if (c.exists()&&!c.getName().equals("vars")&&!c.getName().equals(ClientConstants.UPDATER_JAR)){
+		    			if (c.exists()&&!c.getName().equals(UnaCloudConstants.GLOBAL_FILE)&&!c.getName().equals(UnaCloudConstants.UPDATER_JAR)){
 		                	c.delete();
 		                }
 		            }
@@ -88,7 +89,7 @@ public class UpdaterAgent {
      * Returns the information contained on stored version file.
      * @return
      */
-    private ArrayList<String> gerVersionFile() {
+    private ArrayList<String> getVersionFile() {
         ArrayList<String> ret = new ArrayList<String>();
         try {
             BufferedReader ver = new BufferedReader(new FileReader(versions));

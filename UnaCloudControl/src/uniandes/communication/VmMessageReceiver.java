@@ -13,8 +13,8 @@ import communication.UnaCloudMessageUDP;
  */
 public class VmMessageReceiver extends AbstractMessageReceiver{
 
-	public VmMessageReceiver(int port) throws SocketException {
-		super(port);
+	public VmMessageReceiver(int port, int threads) throws SocketException {
+		super(port, threads);
 	}
 
 	@Override

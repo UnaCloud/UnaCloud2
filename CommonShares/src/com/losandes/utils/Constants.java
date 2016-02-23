@@ -8,11 +8,6 @@ import java.io.File;
  * Responsible for providing the UnaCloud Server constant values
  */
 public class Constants {
-	//UnaCloud Configuration
-	public static final String MAIN_REPOSITORY = "Main Repository";
-	public static final String TEMPLATE_PATH = "imageTemplates";
-	public static final String ADMIN_GROUP = "unacloudAdmins";
-	public static final String USERS_GROUP = "unacloudUsers";
 	
     //UnaCloud communication and operation constants
     public static final String OK_MESSAGE = "Ok: ";
@@ -67,24 +62,7 @@ public class Constants {
     
     //UnaCloud Client tools constants
     public static final String WOL_CMD = "WolCmd";
-    public static final String MULTICAST_GET_LOSED="MULTICAST_GET_LOSED";
+    public static final String MULTICAST_GET_LOSED="MULTICAST_GET_LOSED";    
     
-    //UnaCloudControl
-    public static final String QUEUE_USERNAME = "QUSERNAME";
-	public static final String QUEUE_PASS = "QPASS";
-	public static final String QUEUE_URL = "QURL";
-	public static final String QUEUE_PORT = "QPORT";	
-	public static final String DB_USERNAME = "DBUSERNAME";
-	public static final String DB_PASS = "DBPASS";
-	public static final String DB_URL = "DBURL";
-	public static final String DB_PORT = "DBPORT";
-	public static final String DB_NAME = "DBNAME";	
-	public static final String AGENT_PORT = "APORT";
-	public static final String CMPORT = "CMPORT";
-	public static final String CVMPORT = "CVMPORT";
-	public static final int AGENT_QUANTITY_MESSAGE = 5;
-	
-	public static final int REQUEST_IMAGE = 1;
-	public static final int SEND_IMAGE = 2;
 
 }//end of Constants

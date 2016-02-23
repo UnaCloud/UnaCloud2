@@ -1,6 +1,6 @@
 package unacloud
 
-import unacloud.enums.ServerVariableTypeEnum;
+import unacloud.share.enums.ServerVariableTypeEnum;
 
 class ConfigurationController {
 	

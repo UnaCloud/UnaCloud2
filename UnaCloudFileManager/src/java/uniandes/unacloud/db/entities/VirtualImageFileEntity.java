@@ -19,15 +19,17 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	private String mainFile;
 	private String name;
 	private UserEntity owner;
+	private String configurer;
 	
 	public VirtualImageFileEntity(Long id, 
-			VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name) {
+			VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
 		super(id, null, null, state, token);
 		this.repository = repository;
 		this.isPublic = isPublic;
 		this.fixDisk = disk;
 		this.mainFile = mainFile;
 		this.name = name;
+		this.configurer = configurer;
 	}
 
 	public String getName() {
@@ -76,5 +78,13 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	
 	public void setOwner(UserEntity owner) {
 		this.owner = owner;
+	}
+	
+	public String getConfigurer() {
+		return configurer;
+	}
+	
+	public void setConfigurer(String configurer) {
+		this.configurer = configurer;
 	}
 }

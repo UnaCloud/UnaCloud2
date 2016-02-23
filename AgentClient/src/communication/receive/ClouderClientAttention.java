@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import com.losandes.utils.ClientConstants;
+import com.losandes.utils.UnaCloudConstants;
 
 import domain.VariableManager;
 import tasks.ExecutorService;
@@ -39,7 +39,7 @@ public class ClouderClientAttention{
      * @throws Exception 
      */
     private ClouderClientAttention() throws Exception{
-        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CLIENT_PORT);
+        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT);
     }
 
     /**

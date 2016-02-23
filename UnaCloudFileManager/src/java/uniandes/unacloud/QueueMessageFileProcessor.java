@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
 
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.db.RepositoryManager;
@@ -68,22 +68,22 @@ public class QueueMessageFileProcessor implements QueueReader{
 			protected void processMessage(QueueMessage message) throws Exception{
 				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 				if(image!=null){
 					if(!image.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
-						File file = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName());
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
+						File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
 						boolean change = false;
 						if(!file.exists()){
 							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
 							for(File imagefile: folder.listFiles()){
-								File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+imagefile.getName());
+								File newFile = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+imagefile.getName());
 								FileUtils.copyFile(imagefile, newFile);
 							}
 							change = true;
 						}
 						//TODO if there is a previous image doesn't override and should send a notification
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, change, null, null, null),false,con);						
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, change, null, null, null,null),false,con);						
 					}else{
 						VirtualImageManager.setVirtualMachine(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.AVAILABLE, null),con);
 					}
@@ -108,12 +108,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
 				Long publicImageId = Long.parseLong(message.getMessageParts()[1]);
-				VirtualImageFileEntity publicImage = VirtualMachineImageManager.getVirtualImageWithFile(publicImageId, VirtualMachineImageEnum.AVAILABLE, false,con);
-				VirtualImageFileEntity privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true,con);
+				VirtualImageFileEntity publicImage = VirtualMachineImageManager.getVirtualImageWithFile(publicImageId, VirtualMachineImageEnum.AVAILABLE, false,false,con);
+				VirtualImageFileEntity privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true,false,con);
 				if(publicImage!=null&&privateImage!=null){
 					if(publicImage.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
-						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+publicImage.getName());
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
+						File folder = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+publicImage.getName());
 						if(folder.exists()){
 							List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);
 							String regex = "";
@@ -127,17 +127,17 @@ public class QueueMessageFileProcessor implements QueueReader{
 									mainFile = user.getRepository().getRoot()+privateImage.getName()+"_"+user.getUsername()+File.separator+newFile.getName();
 								}							
 							}
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null),false,con);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, null, mainFile, null,null),false,con);
 						}else{
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null),false,con);
-							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(publicImage.getId(), null, null, null, false, null, null, null,null),false,con);
+							VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null,null),false,con);
 						}
 					}else{
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null,null),false,con);
 					}
 				}else{
 					if(privateImage!=null){
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null),false,con);
+						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(privateImage.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null,null),false,con);
 					}
 				}
 				con.close();
@@ -159,7 +159,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 			protected void processMessage(QueueMessage message) throws Exception{
 				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 				if(image!=null){
 					try {
 						File file = new java.io.File(image.getMainFile());
@@ -169,12 +169,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 					}
 					try {
 						if(image.isPublic()){
-							RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
-							File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+							RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
+							File folder = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 							if(folder.exists())System.out.println("Delete file: "+folder.getAbsolutePath()+" "+folder.delete());	
 						}
 					} catch (Exception e) {
-						System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+						System.err.println("No delete public copy files "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 					}					
 					VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null),con);
 				}
@@ -211,12 +211,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 							}
 							try {
 								if(image.isPublic()){
-									RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
-									File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+									RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
+									File folder = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 									if(folder.exists())System.out.println("Delete folder: "+folder.getAbsolutePath()+" "+folder.delete());	
 								}
 							} catch (Exception e) {
-								System.err.println("No delete public copy files "+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+								System.err.println("No delete public copy files "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 							}					
 							VirtualImageManager.deleteVirtualMachineImage(new VirtualMachineImageEntity(image.getId(), null, null, VirtualMachineImageEnum.IN_QUEUE, null),con);
 						}
@@ -242,14 +242,14 @@ public class QueueMessageFileProcessor implements QueueReader{
 			protected void processMessage(QueueMessage message) throws Exception{
 				Connection con = FileManager.getInstance().getDBConnection();
 				Long imageId = Long.parseLong(message.getMessageParts()[0]);
-				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,con);
+				VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 				if(image!=null){
 					if(image.isPublic()){
-						RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY,con);
-						File folder = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
+						RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
+						File folder = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 						if(folder.exists())System.out.println("Delete folder: "+folder.getAbsolutePath()+" "+folder.delete());
 					}
-					VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, false, null, null, null),false,con);
+					VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, false, null, null, null,null),false,con);
 				}
 				con.close();
 			}			

@@ -21,7 +21,7 @@ import com.andes.enums.VirtualMachineExecutionStateEnum;
 import reportManager.ServerMessageSender;
 import reportManager.VirtualMachineStateViewer;
 import tasks.ExecutorService;
-import tasks.SaveImageVirtualMachineTask;
+import tasks.UploadImageVirtualMachineTask;
 import virtualMachineManager.entities.VirtualMachineExecution;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.InvalidOperationResponse;
@@ -225,7 +225,7 @@ public class PersistentExecutionManager {
     			System.out.println("Start copy service with token "+message.getTokenCom());
 				response.setMessage("Copying image");
 				response.setState(VirtualMachineState.COPYNG);
-				ExecutorService.executeBackgroundTask(new SaveImageVirtualMachineTask(execution,message.getTokenCom()));
+				ExecutorService.executeBackgroundTask(new UploadImageVirtualMachineTask(execution,message.getTokenCom()));
             }else{
 				response.setMessage("Failed: Execution doesn't exist");
 				response.setState(VirtualMachineState.FAILED);

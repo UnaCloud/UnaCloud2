@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.losandes.utils.Constants;
 import com.losandes.utils.Time;
 
 import communication.UnaCloudAbstractMessage;
@@ -50,7 +49,9 @@ import uniandes.communication.processor.AbstractResponseProcessor;
  */
 public class QueueMessageProcessor implements QueueReader{
 	
-	private ExecutorService threadPool=Executors.newFixedThreadPool(5);
+	private final int threads = 5;
+	
+	private ExecutorService threadPool=Executors.newFixedThreadPool(threads);
 
 	@Override
 	public void processMessage(QueueMessage message) {
@@ -91,8 +92,8 @@ public class QueueMessageProcessor implements QueueReader{
 			VirtualImageManager.setVirtualMachine(image, con);
 			try {				
 				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);			
-				for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
-					threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
+				for (int i = 0; i < machines.size(); i+=threads) {
+					threadPool.submit(new MessageSender(machines.subList(i, i+threads), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 							Connection con2 = ControlManager.getInstance().getDBConnection();
@@ -134,11 +135,11 @@ public class QueueMessageProcessor implements QueueReader{
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
 			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
-			for (int i = 0; i < machines.size(); i+=Constants.AGENT_QUANTITY_MESSAGE) {
+			for (int i = 0; i < machines.size(); i+=threads) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
 								new StopAgentMessage():new UpdateAgentMessage();
-				threadPool.submit(new MessageSender(machines.subList(i, i+Constants.AGENT_QUANTITY_MESSAGE), 
+				threadPool.submit(new MessageSender(machines.subList(i, i+threads), 
 						absMessage, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {

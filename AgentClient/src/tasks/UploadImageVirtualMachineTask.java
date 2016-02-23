@@ -10,8 +10,7 @@ import java.util.zip.ZipOutputStream;
 import reportManager.ServerMessageSender;
 
 import com.andes.enums.VirtualMachineExecutionStateEnum;
-import com.losandes.utils.ClientConstants;
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
@@ -19,12 +18,12 @@ import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
-public class SaveImageVirtualMachineTask implements Runnable{
+public class UploadImageVirtualMachineTask implements Runnable{
 
 	VirtualMachineExecution machineExecution;
 	String secureToken;
 	
-	public SaveImageVirtualMachineTask(VirtualMachineExecution machineExecution, String secureToken) {
+	public UploadImageVirtualMachineTask(VirtualMachineExecution machineExecution, String secureToken) {
 		this.machineExecution = machineExecution;
 		this.secureToken = secureToken;
 	}
@@ -42,13 +41,13 @@ public class SaveImageVirtualMachineTask implements Runnable{
 			System.out.println("Unregister execution: "+machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
 			//Send files
-			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.FILE_SERVER_PORT);
-			final String ip=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.FILE_SERVER_IP);
+			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
+			final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 			System.out.println("Connecting to "+ip+":"+puerto);
 			try(Socket s=new Socket(ip,puerto);OutputStream os=s.getOutputStream()){
 				DataOutputStream ds=new DataOutputStream(os);
 				System.out.println("Connection succesfull");
-				ds.write(Constants.SEND_IMAGE);
+				ds.writeInt(UnaCloudConstants.SEND_IMAGE);
 				ds.flush();
 				System.out.println("Token "+secureToken);
 				ds.writeUTF(secureToken);

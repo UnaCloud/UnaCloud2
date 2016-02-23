@@ -1,6 +1,7 @@
 package unacloud
 
-import unacloud.share.utils.UnaCloudVariables;
+import com.losandes.utils.UnaCloudConstants;
+
 import grails.transaction.Transactional
 
 @Transactional
@@ -11,7 +12,7 @@ class ServerVariableService {
 	 * @return
 	 */
     def getDefaultAllocator() {
-		return ServerVariable.findByName(UnaCloudVariables.VM_DEFAULT_ALLOCATOR)
+		return ServerVariable.findByName(UnaCloudConstants.VM_DEFAULT_ALLOCATOR)
     }
 	
 	/**
@@ -19,6 +20,6 @@ class ServerVariableService {
 	 * @return
 	 */
 	def getUrlFileManager(){
-		return ServerVariable.findByName(UnaCloudVariables.WEB_FILE_SERVER_URL).variable
+		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable
 	}
 }

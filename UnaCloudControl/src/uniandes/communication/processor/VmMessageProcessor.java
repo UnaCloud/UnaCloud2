@@ -3,7 +3,6 @@ package uniandes.communication.processor;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

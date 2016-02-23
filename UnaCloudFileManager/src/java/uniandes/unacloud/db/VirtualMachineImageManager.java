@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import unacloud.share.entities.RepositoryEntity;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
@@ -26,15 +25,18 @@ public class VirtualMachineImageManager {
 	 * @return
 	 */
 	//TODO improve query to repository, use hash map
-	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser,Connection con){
+	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser, boolean withConfigurer, Connection con){
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
+			String query = null;
+			if(withConfigurer) query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+", os.configurer FROM virtual_machine_image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
+			else query ="SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;";
+			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();
 			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7), withConfigurer?rs.getString(9):null);
 				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null,null));
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -56,7 +58,7 @@ public class VirtualMachineImageManager {
 			ResultSet rs = ps.executeQuery();	
 			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token,RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7));
+				image = new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(6)), token,RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7),null);
 				image.setOwner(new UserEntity(rs.getLong(8),null,null));
 			}			 
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -122,7 +124,7 @@ public class VirtualMachineImageManager {
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, userId);
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(2)), rs.getString(3), RepositoryManager.getRepository(rs.getLong(4),con), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8)));
+			while(rs.next())list.add(new VirtualImageFileEntity(rs.getLong(1), VirtualMachineImageEnum.getEnum(rs.getString(2)), rs.getString(3), RepositoryManager.getRepository(rs.getLong(4),con), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8),null));
 			try{rs.close();ps.close();}catch(Exception e){}
 			return list;
 		} catch (Exception e) {

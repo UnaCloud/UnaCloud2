@@ -14,9 +14,7 @@ import java.util.zip.ZipInputStream;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.entities.Image;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
-
-import com.losandes.utils.ClientConstants;
-import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
@@ -33,13 +31,13 @@ public class DownloadImageVirtualMachineTask {
 		File root=new File(repository+"\\"+image.getId()+"\\base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
-		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.FILE_SERVER_PORT);
-		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.FILE_SERVER_IP);
+		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
+		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 		System.out.println("Connecting to "+ip+":"+puerto);
 		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
 			System.out.println("Successful connection");
 			System.out.println("Operation type 1");
-			ds.write(Constants.REQUEST_IMAGE);
+			ds.write(UnaCloudConstants.REQUEST_IMAGE);
 			ds.flush();
 			System.out.println("send ID");
 			ds.writeLong(image.getId());

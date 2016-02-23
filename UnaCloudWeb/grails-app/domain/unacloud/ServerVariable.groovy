@@ -1,7 +1,10 @@
 package unacloud
 
-import unacloud.enums.ServerVariableTypeEnum;
+import com.losandes.utils.Constants;
+
+import unacloud.share.enums.ServerVariableTypeEnum;
 import unacloud.pmallocators.AllocatorEnum;
+import unacloud.share.enums.ServerVariableProgramEnum
 
 class ServerVariable {
 	
@@ -25,9 +28,20 @@ class ServerVariable {
 	ServerVariableTypeEnum serverVariableType
 	
 	/**
-	 * server side variable only
+	 * Program that used variable 
 	 */
-	boolean serverOnly
+	
+	ServerVariableProgramEnum program;
+	
+	/**
+	 * Return if a variable is a list separated by comma
+	 */
+	boolean isList = false
+	
+	/**
+	 * Used to manage which variables could be used for agent configuration
+	 */
+	boolean serverOnly = true
 	
     static constraints = {
     }
@@ -36,21 +50,13 @@ class ServerVariable {
 	// Properties
 	//-----------------------------------------------------------------
 	
-	/**
-	 * Return true if variable is chosen based in a list, false is not
-	 * @return true or false
-	 */
-	def isList(){
-		if(this.name in ['VM_DEFAULT_ALLOCATOR'])return true
-		return false
-	}
 	
 	/**
 	 * Return values in case variable  is chosen based in a list
 	 * @return
 	 */
 	def values(){
-		if(this.name.equals('VM_DEFAULT_ALLOCATOR'))
+		if(this.name.equals(UnaCloudVariables.VM_DEFAULT_ALLOCATOR))
 			return AllocatorEnum.getList()
 		else []
 	}

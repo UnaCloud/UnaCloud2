@@ -6,7 +6,9 @@ import java.util.zip.ZipEntry
 import java.nio.file.Files;
 import java.util.zip.ZipOutputStream
 
-import unacloud.share.utils.UnaCloudVariables;
+import com.losandes.utils.UnaCloudConstants;
+
+import unacloud.share.enums.ServerVariableProgramEnum;
 
 @Transactional
 class ConfigurationService {
@@ -30,7 +32,7 @@ class ConfigurationService {
 	 * @return
 	 */
 	def getAgentVersion(){
-		return ServerVariable.findByName(UnaCloudVariables.AGENT_VERSION).variable
+		return ServerVariable.findByName(UnaCloudConstants.AGENT_VERSION).variable
 	}
 	
 	/**
@@ -38,7 +40,7 @@ class ConfigurationService {
 	 * @return
 	 */
 	def setAgentVersion(){
-		ServerVariable agentVersion= ServerVariable.findByName(UnaCloudVariables.AGENT_VERSION)
+		ServerVariable agentVersion= ServerVariable.findByName(UnaCloudConstants.AGENT_VERSION)
 		int newVerNumber= ((agentVersion.getVariable()-"2.0.") as Integer)+1
 		String newVersion=  "2.0."+ newVerNumber
 		agentVersion.putAt("variable", newVersion)
@@ -49,22 +51,15 @@ class ConfigurationService {
 	 * @param outputStream file output stream for download
 	 * @param appDir directory where the zip will be stored
 	 */
-	 
+	//TODO use constants to manager strings
 	def copyUpdaterOnStream(OutputStream outputStream,File appDir){
 		ZipOutputStream zos=new ZipOutputStream(outputStream);
-		copyFile(zos,"ClientUpdater.jar",new File(appDir,"agentSources/ClientUpdater.jar"),true);
-		copyFile(zos,"ClientConfigurer.jar",new File(appDir,"agentSources/ClientConfigurer.jar"),true);
-		zos.putNextEntry(new ZipEntry("vars"));
+		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.UPDATER_JAR),true);
+		copyFile(zos,UnaCloudConstants.CONFIG_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.CONFIG_JAR),true);
+		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw=new PrintWriter(zos);
-		ServerVariable monitor = ServerVariable.findByName(UnaCloudVariables.MONITORING_ENABLE);
-		boolean monitoring = monitor.variable.equals("true")?true:false;
-		for(ServerVariable sv:ServerVariable.all)
-			if(!sv.isServerOnly()){
-				if(sv.name.startsWith("MONITOR")){
-					if(monitoring)
-						pw.println(sv.serverVariableType.type+"."+sv.name+"="+sv.variable);
-				}else pw.println(sv.serverVariableType.type+"."+sv.name+"="+sv.variable);
-			}
+		for(ServerVariable sv:ServerVariable.where{serverOnly == false}.findAll())
+			pw.println(sv.name+"="+sv.variable);
 		pw.flush();
 		zos.closeEntry();
 		zos.close();

@@ -1,7 +1,7 @@
 package communication.send;
 
-import com.losandes.utils.ClientConstants;
 import com.losandes.utils.OperatingSystem;
+import com.losandes.utils.UnaCloudConstants;
 
 import communication.UDPMessageEnum;
 import communication.UnaCloudDataSenderUDP;
@@ -35,8 +35,8 @@ public class UDPCommunicator {
 	 * @throws Exception 
 	 */
 	public boolean pushInfoPM(UDPMessageEnum type, Object...params) throws Exception{
-		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.CONTROL_SERVER_IP);
-		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CONTROL_SERVER_PORT_PM);
+		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
+		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
 		return pushInfo(serverIP, serverPort, type, params);	
 	}
 	
@@ -47,8 +47,8 @@ public class UDPCommunicator {
 	 * @throws Exception 
 	 */
 	public boolean pushInfoVM(UDPMessageEnum type, Object...params) throws Exception{		
-		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(ClientConstants.CONTROL_SERVER_IP);
-		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(ClientConstants.CONTROL_SERVER_PORT_VM);
+		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
+		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
 		return pushInfo(serverIP, serverPort, type, params);
 	}
 	

@@ -1,5 +1,6 @@
 
 import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
@@ -23,12 +24,12 @@ import unacloud.UserService
 import unacloud.enums.ExternalCloudTypeEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.enums.ServerVariableTypeEnum;
+import unacloud.share.enums.ServerVariableProgramEnum;
+import unacloud.share.enums.ServerVariableTypeEnum;
 import unacloud.init.DatabaseService
 import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
-import unacloud.share.utils.UnaCloudVariables;
 import unacloud.pmallocators.AllocatorEnum;
 
 class BootStrap {
@@ -38,7 +39,7 @@ class BootStrap {
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
-		String propFileName = "config.properties";
+		String propFileName = UnaCloudConstants.WEB_CONFIG;
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 		prop.load(inputStream);
 		if(HardwareProfile.count() ==0){
@@ -67,37 +68,30 @@ class BootStrap {
 		}
 
 		if(Repository.count()==0){
-			new Repository(name:Constants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty("REPOSITORY")).save();
+			new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty(UnaCloudConstants.MAIN_REPOSITORY)).save();
 		}
 		if(ServerVariable.count() ==0){
-			new ServerVariable(name:UnaCloudVariables.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING,variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty(UnaCloudVariables.WEB_SERVER_URL)).save()
+			//Load variables for web
+			new ServerVariable(name:UnaCloudConstants.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING, variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty(UnaCloudConstants.WEB_SERVER_URL),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_IP),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.QUEUE_PORT),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_USER),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.QUEUE_PASS,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_PASS),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.AGENT_VERSION,serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty(UnaCloudConstants.AGENT_VERSION),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.name(), isList: true,program:ServerVariableProgramEnum.WEB).save()
+
+			//Load variables for control
+			new ServerVariable(name:UnaCloudConstants.CONTROL_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_IP),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_PM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_VM_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.CONTROL_SERVER_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.AGENT_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.AGENT_PORT),program:ServerVariableProgramEnum.CONTROL,serverOnly:false).save()
 			
-			new ServerVariable(name:UnaCloudVariables.QUEUE_CONTROL_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.QUEUE_CONTROL_IP)).save()
-			new ServerVariable(name:UnaCloudVariables.QUEUE_CONTROL_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudVariables.QUEUE_CONTROL_PORT)).save()
-			new ServerVariable(name:UnaCloudVariables.QUEUE_CONTROL_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.QUEUE_CONTROL_USER)).save()
-			new ServerVariable(name:UnaCloudVariables.QUEUE_CONTROL_PASS,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.QUEUE_CONTROL_PASS)).save()
+			//Load variables for File Manager		
+			new ServerVariable(name:UnaCloudConstants.WEB_FILE_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.WEB_FILE_SERVER_URL),program:ServerVariableProgramEnum.FILE_MANAGER).save()	
+			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.FILE_SERVER_PORT),program:ServerVariableProgramEnum.FILE_MANAGER,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.FILE_SERVER_IP),program:ServerVariableProgramEnum.FILE_MANAGER,serverOnly:false).save()
+			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.VERSION_MANAGER_PORT),program:ServerVariableProgramEnum.FILE_MANAGER,serverOnly:false).save()
 			
-			new ServerVariable(name:UnaCloudVariables.CONTROL_SERVER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudVariables.CONTROL_SERVER_PORT)).save()
-			new ServerVariable(name:UnaCloudVariables.CONTROL_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.CONTROL_SERVER_IP)).save()
-			
-			new ServerVariable(name:UnaCloudVariables.WEB_FILE_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.WEB_FILE_SERVER_URL)).save()	
-			new ServerVariable(name:UnaCloudVariables.FILE_SERVER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudVariables.FILE_SERVER_PORT)).save()
-			new ServerVariable(name:UnaCloudVariables.FILE_SERVER_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.FILE_SERVER_IP)).save()
-			new ServerVariable(name:UnaCloudVariables.VERSION_MANAGER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudVariables.VERSION_MANAGER_PORT)).save()
-			
-			new ServerVariable(name:UnaCloudVariables.CLIENT_PORT,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudVariables.CLIENT_PORT)).save()
-			
-			new ServerVariable(name:UnaCloudVariables.AGENT_VERSION,serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty(UnaCloudVariables.AGENT_VERSION)).save()
-			new ServerVariable(name:UnaCloudVariables.VM_DEFAULT_ALLOCATOR,serverVariableType: ServerVariableTypeEnum.STRING,variable: AllocatorEnum.ROUND_ROBIN.name, serverOnly: true).save()
-			
-			//** Variable to configure monitoring **//
-			new ServerVariable(name:UnaCloudVariables.MONITORING_ENABLE,serverVariableType: ServerVariableTypeEnum.BOOLEAN,variable:prop.getProperty(UnaCloudVariables.MONITORING_ENABLE), serverOnly: true).save()
-//			new ServerVariable(name:'MONITORING_DATABASE_NAME',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_NAME")).save()
-//			new ServerVariable(name:'MONITORING_DATABASE_PASSWORD',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_PASSWORD")).save()
-//			new ServerVariable(name:'MONITORING_DATABASE_USER',serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty("MONITORING_DATABASE_USER")).save()
-//			new ServerVariable(name:'MONITORING_SERVER_IP',serverVariableType: ServerVariableTypeEnum.STRING,variable: prop.getProperty("MONITORING_SERVER_IP")).save()
-//			new ServerVariable(name:'MONITORING_SERVER_PORT',serverVariableType: ServerVariableTypeEnum.INT,variable: prop.getProperty("MONITORING_SERVER_PORT")).save()
-		
 		}			
 		if(Hypervisor.count() == 0){
 			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi').save()
@@ -105,11 +99,11 @@ class BootStrap {
 			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		}
 		
-		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_USER).variable,ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_PASS).variable,
-			ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_PORT).variable),UnaCloudVariables.QUEUE_CONTROL);		
+		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
+			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_CONTROL);		
 		QueueTaskerControl.setQueueConnection(queueControl)		
-		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_USER).variable,ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_PASS).variable,
-			ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudVariables.QUEUE_CONTROL_PORT).variable),UnaCloudVariables.QUEUE_FILE);		
+		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
+			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_FILE);		
 		QueueTaskerFile.setQueueConnection(queueFile)
 		
 		databaseService.initDatabase()
