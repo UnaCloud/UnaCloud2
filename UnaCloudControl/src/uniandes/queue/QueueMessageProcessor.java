@@ -173,7 +173,6 @@ public class QueueMessageProcessor implements QueueReader{
 			Connection con = ControlManager.getInstance().getDBConnection();
 			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
 			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
-			System.out.println(deploy);
 			if(deploy!=null){
 				for(DeployedImageEntity image :deploy.getImages()){
 					for(final VirtualMachineExecutionEntity execution : image.getExecutions()){
@@ -205,7 +204,7 @@ public class QueueMessageProcessor implements QueueReader{
 								Connection con2 = ControlManager.getInstance().getDBConnection();
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm, con2);
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"), con2);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"), con2);
 								try {con2.close();} catch (Exception e) {}
 							}
 						}));

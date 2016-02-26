@@ -31,7 +31,7 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 			jsonMessage = jsonMessage.getJSONObject("data");
 			if(message.getType().equals(UDPMessageEnum.STATE_PM)){
 				Connection con = ControlManager.getInstance().getDBConnection();
-				System.out.println("Report PM: "+message.getHost()+" - "+message.getMessage());
+				System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
 				//JSONObject executions = jsonMessage.getJSONObject("executions");
 				Long[] ids = new Long[0];
 				String executions = jsonMessage.getString("executions").replace("[", "").replace("]","").trim();
@@ -42,7 +42,7 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 						ids[i]=Long.parseLong(idsS[i]);
 					}
 				}
-				if(PhysicalMachineUpdater.updatePhysicalMachine(jsonMessage.getString("hostname"), jsonMessage.getString("hostuser"), con)){
+				if(PhysicalMachineUpdater.updatePhysicalMachine(jsonMessage.getString("hostname"), jsonMessage.getString("hostuser"), message.getIp(), con)){
 					List<Long> idsToStop = PhysicalMachineUpdater.updateVirtualMachinesExecutions(ids, jsonMessage.getString("hostname"), con);
 					if(idsToStop!=null&&idsToStop.size()>0){
 						//Send stop machines message because executions has been reported as finished or failed to user

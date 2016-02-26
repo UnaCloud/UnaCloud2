@@ -67,7 +67,6 @@ public class UDPCommunicator {
 		msgParams=msgParams.replaceFirst(",", "");
 		msgParams+="}";	
 		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, ip, port, OperatingSystem.getHostname(), type);
-		System.out.println("Message: "+message.getMessage());
 		return sender.sendMessage(message);		
 	}
 }

@@ -87,7 +87,7 @@ public class Main {
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
         try {
-			ClouderClientAttention.getInstance().connect();
+			ClouderClientAttention.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

@@ -33,6 +33,7 @@ public class MessageSender extends Thread{
 	public void run() {
 		for(PhysicalMachineEntity pm: machines){
 			try{
+				System.out.println("Sending message to "+pm.getIp()+":"+ControlManager.getInstance().getPort());
 				Socket s=new Socket(pm.getIp(),ControlManager.getInstance().getPort());
 				s.setSoTimeout(15000);
 				ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());

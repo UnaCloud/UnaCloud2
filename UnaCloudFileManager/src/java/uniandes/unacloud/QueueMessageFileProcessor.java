@@ -73,6 +73,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 					if(!image.isPublic()){
 						RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
 						File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
+						System.out.println("Change to public "+image.getMainFile());
 						boolean change = false;
 						if(!file.exists()){
 							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
@@ -101,6 +102,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 	 * Creates a private image copy from a public one
 	 * @param message
 	 */
+	//TODO: remove hypervisor validation because it is not necessary, use main file in public image
 	private void createPrivateImage(QueueMessage message){
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override

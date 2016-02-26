@@ -21,6 +21,7 @@ public class RepositoryManager {
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT re.id, re.name, re.capacity, re.path FROM repository re WHERE re.name = ?;");
 			ps.setString(1,name);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			RepositoryEntity repo = null;
 			if(rs.next())repo =  new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
@@ -41,6 +42,7 @@ public class RepositoryManager {
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT re.id, re.name, re.capacity, re.path FROM repository re WHERE re.id = ?;");
 			ps.setLong(1, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			RepositoryEntity repo = null;
 			if(rs.next())repo = new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));

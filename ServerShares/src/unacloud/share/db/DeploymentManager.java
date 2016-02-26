@@ -39,7 +39,8 @@ public class DeploymentManager {
 			PreparedStatement ps = con.prepareStatement("SELECT dp.id, dp.start_time, dp.stop_time, dp.status FROM deployment dp WHERE dp.status = ? and dp.id = ?;");
 			ps.setString(1, DeploymentStateEnum.ACTIVE.name());
 			ps.setLong(2, id);
-			ResultSet rs = ps.executeQuery();			
+			ResultSet rs = ps.executeQuery();	
+			System.out.println(ps.toString());
 			if(rs.next()){
 				deploy = new DeploymentEntity();
 				deploy.setId(rs.getLong(1));
@@ -55,6 +56,7 @@ public class DeploymentManager {
 				ps.setLong(1, id);
 				ps.setString(2, VirtualMachineExecutionStateEnum.QUEUED.name());
 				rs = ps.executeQuery();	
+				System.out.println(ps.toString());
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
 				while(rs.next()){
 					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
@@ -66,14 +68,16 @@ public class DeploymentManager {
 						executions.get(rs.getLong(9)).getExecutions().add(vme);						
 					}
 				}
-				for(DeployedImageEntity image:deploy.getImages()){
+				try{rs.close();ps.close();}catch(Exception e){}
+				deploy.setImages(new ArrayList<DeployedImageEntity>());
+				for(DeployedImageEntity image:executions.values()){
 					for(VirtualMachineExecutionEntity execution: image.getExecutions()){
 						execution.getInterfaces().addAll(getInterfaces(execution,con));
 					}
 				}
 				deploy.getImages().addAll(executions.values());				
 			}
-			try{rs.close();ps.close();}catch(Exception e){}
+			
 			return deploy;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,7 +111,8 @@ public class DeploymentManager {
 				if(state>0){ps.setString(state, execution.getState().name());id++;}
 				if(message>0){ps.setString(message, execution.getMessage());id++;}
 				ps.setLong(id, execution.getId());
-				System.out.println("Change "+ps.executeUpdate()+" lines");
+				System.out.println(ps.toString());
+				System.out.println("Change "+ps.executeUpdate()+" lines");				
 				try{ps.close();}catch(Exception e){}
 				return true;
 			}
@@ -127,6 +132,7 @@ public class DeploymentManager {
 			String query = "SELECT ni.id, ni.name, i.ip, ipl.mask FROM net_interface ni INNER JOIN ip i ON ni.ip_id = i.id INNER JOIN ippool ipl ON i.ip_pool_id = ipl.id WHERE ni.virtual_execution_id = ? ;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, execution.getId());
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next())list.add(new NetInterfaceEntity(rs.getLong(1), rs.getString(2), rs.getString(3), rs.getString(4)));
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -158,6 +164,7 @@ public class DeploymentManager {
 			for(Long idvme: ids){
 				ps.setLong(index++, idvme);
 			}
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			List<VirtualMachineExecutionEntity> executions = new ArrayList<VirtualMachineExecutionEntity>();
 			while(rs.next()){
@@ -194,6 +201,7 @@ public class DeploymentManager {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			VirtualMachineExecutionEntity execution = null;
 			if(rs.next()){

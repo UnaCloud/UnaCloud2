@@ -8,9 +8,9 @@ class UrlMappings {
 		"/login"(view:"/index")
 		"/user/login"(controller:'user',action:'login')
 		"/logout"(controller:'user',action:"logout")
-		"/error"(view:'/error')
-		"404"(view:'/error')
-		"500"(view:'/error')
+		"/error"(controller:'error',action:"error")
+		"404"(controller:'error',action:"fourhundred")
+		"500"(controller:'error',action:"fivehundred")
 		
 		/** services - user**/
 		"/user/profile/"(controller:'user',action:'profile')

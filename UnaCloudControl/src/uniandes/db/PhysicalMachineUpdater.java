@@ -15,13 +15,15 @@ public class PhysicalMachineUpdater {
 	 * Update a physical machine entity on database based in hostname
 	 * @param machine
 	 * @return
+	 * TODO: add validation of ip 
 	 */
-	public static boolean updatePhysicalMachine(String host, String hostUser, Connection con){
+	public static boolean updatePhysicalMachine(String host, String hostUser, String ip, Connection con){
 		try {
 			String query = "update physical_machine pm set pm.with_user= ?, pm.state = CASE WHEN pm.state = \'"+PhysicalMachineStateEnum.OFF.name()+"\' THEN  \'"+PhysicalMachineStateEnum.ON.name()+"\' ELSE pm.state END, pm.last_report = CURRENT_TIMESTAMP WHERE pm.name = ?"; 
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setBoolean(1, (hostUser!=null&&!hostUser.isEmpty()&&!(hostUser.replace(">","").replace(" ","")).equals("null")));
 			ps.setString(2, host);
+			System.out.println(ps.toString());
 			System.out.println("update "+host+" - "+ps.executeUpdate());
 			try{ps.close();}catch(Exception e){}
 			return true;
@@ -49,6 +51,7 @@ public class PhysicalMachineUpdater {
 			ps.setString(2, status.name());
 			ps.setLong(3, id);
 			ps.setString(4, host);
+			System.out.println(ps.toString());
 			System.out.println("Change "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 			return true;
@@ -80,6 +83,7 @@ public class PhysicalMachineUpdater {
 			for(Long idvme: ids){
 				ps.setLong(index++, idvme);
 			}
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())idsToStop.add(rs.getLong(1));
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -91,6 +95,7 @@ public class PhysicalMachineUpdater {
 				ps.setLong(index++, idvme);
 			}
 			ps.setString(index, host);
+			System.out.println(ps.toString());
 			System.out.println("Change "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 			return idsToStop;

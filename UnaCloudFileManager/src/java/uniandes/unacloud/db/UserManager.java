@@ -27,6 +27,7 @@ public class UserManager {
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT u.id, u.username, u.status FROM user u WHERE u.id = ?;");
 			ps.setLong(1, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			UserEntity user = null;
 			if(rs.next())user = new UserEntity(rs.getLong(1),rs.getString(2), UserStateEnum.getEnum(rs.getString(3)));
@@ -49,6 +50,7 @@ public class UserManager {
 			ps.setString(1, UserRestrictionEnum.REPOSITORY.name());
 			ps.setLong(2, id);
 			ps.setLong(3, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			String repository = null;
 			UserEntity user = null;
@@ -77,6 +79,7 @@ public class UserManager {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());
 			ps.setLong(2, user.getId());
+			System.out.println(ps.toString());
 			System.out.println("Delete User "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 		} catch (Exception e) {

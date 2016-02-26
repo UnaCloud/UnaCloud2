@@ -40,12 +40,13 @@ public class ClouderClientAttention{
      */
     private ClouderClientAttention() throws Exception{
         localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT);
+        connect();
     }
 
     /**
      * Responsible for connecting with Clouder Server and start a communication thread
      */
-    public final void connect() {
+    private final void connect() {
         try {
 			serverSocket = new ServerSocket(localPort);
 			System.out.println("Listening in "+localPort);

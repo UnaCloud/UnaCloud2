@@ -24,6 +24,7 @@ public class VirtualImageManager {
 			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			VirtualMachineImageEntity image = null;
 			if(rs.next())image = new VirtualMachineImageEntity(rs.getLong(1), rs.getString(2), rs.getString(3), state, rs.getString(4));
@@ -48,6 +49,7 @@ public class VirtualImageManager {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
+			System.out.println(ps.toString());
 			System.out.println("Change "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 			return true;
@@ -69,6 +71,7 @@ public class VirtualImageManager {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
+			System.out.println(ps.toString());
 			System.out.println("Delete "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 			return true;

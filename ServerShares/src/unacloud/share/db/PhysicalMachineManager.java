@@ -26,6 +26,7 @@ public class PhysicalMachineManager {
 			PreparedStatement ps = con.prepareStatement("SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? and pm.id = ?;");
 			ps.setString(1, machineState.name());
 			ps.setLong(2, id);
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			PhysicalMachineEntity machine = null;
 			if(rs.next())machine = new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3)));
@@ -57,6 +58,7 @@ public class PhysicalMachineManager {
 			for(Long idpm: idList){
 				ps.setLong(index++, idpm);
 			}
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -77,6 +79,7 @@ public class PhysicalMachineManager {
 			String query = "SELECT pm.id, i.ip, pm.state, pm.last_report FROM physical_machine pm INNER JOIN ip i ON pm.ip_id = i.id WHERE pm.state = ? ;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, machineState.name());
+			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			return list;
@@ -106,6 +109,7 @@ public class PhysicalMachineManager {
 				if(status>0){ps.setString(status, machine.getStatus().name());id++;};
 				if(report>0){ps.setDate(report, new java.sql.Date(machine.getLastReport().getTime()));id++;};
 				ps.setLong(id, machine.getId());
+				System.out.println(ps.toString());
 				System.out.println("Change "+ps.executeUpdate()+" lines");
 				try{ps.close();}catch(Exception e){}
 				return true;
