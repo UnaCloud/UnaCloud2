@@ -48,6 +48,7 @@ public class DatabaseConnection {
 		this.host = "jdbc:mysql://"+ip+":"+port+"/"+db+"?useUnicode=yes&characterEncoding=UTF-8";
 		this.username = username;
 		this.password = password;
+		System.out.println("Create connection to: "+this.host);
 		setConnection();
 	}
 		

@@ -27,6 +27,7 @@ import unacloud.share.db.DeploymentManager;
 import unacloud.share.db.PhysicalMachineManager;
 import unacloud.share.db.VirtualImageManager;
 import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.QueueMessageType;
 import unacloud.share.queue.QueueReader;
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
@@ -172,6 +173,7 @@ public class QueueMessageProcessor implements QueueReader{
 			Connection con = ControlManager.getInstance().getDBConnection();
 			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
 			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
+			System.out.println(deploy);
 			if(deploy!=null){
 				for(DeployedImageEntity image :deploy.getImages()){
 					for(final VirtualMachineExecutionEntity execution : image.getExecutions()){
@@ -214,6 +216,20 @@ public class QueueMessageProcessor implements QueueReader{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Method to be used by other classes to stop deployments without use queue
+	 * TODO: be careful user is not send in message
+	 * @param executionIds
+	 */
+	public void remoteStopDeploy(Long[] executionIds){
+		String[] parts = new String[executionIds.length];
+		for (int i = 0; i < executionIds.length; i++) {
+			parts[i]=executionIds[i]+"";
+		}		
+		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, "0", parts);
+		stopDeploy(message);
 	}
 	
 	/**
@@ -269,7 +285,7 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEQUED, con);
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEUED, con);
 			for(final VirtualMachineExecutionEntity execution : executions) {
 				VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
 				vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));

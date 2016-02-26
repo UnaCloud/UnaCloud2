@@ -6,6 +6,7 @@ import java.sql.Connection
 import org.apache.commons.io.FileUtils;
 
 import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.db.RepositoryManager;
 import unacloud.share.db.VirtualImageManager;
@@ -35,9 +36,9 @@ class FileService {
 			Connection con = FileManager.getInstance().getDBConnection();
 			def image = VirtualMachineImageManager.getVirtualImageWithFile(token,con)
 			if(image){				
-				RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY, con);
+				RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				if(image.isPublic()){
-					File file = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName());
+					File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
 					if (file.exists()){
 						image.setPublic(false)
 						copy = false;
@@ -51,7 +52,7 @@ class FileService {
 					file.mkdirs()
 					it.transferTo(file)
 					if(image.isPublic()){
-						File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+fileName);
+						File newFile = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+fileName);
 						FileUtils.copyFile(file, newFile);
 					}
 					if (fileName.matches(".*"+mainExtension)){
@@ -59,7 +60,8 @@ class FileService {
 					}
 					sizeImage += it.getSize()
 				}
-				VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null),false, con)
+				
+				VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con)
 	
 			}
 			con.close();
@@ -80,9 +82,9 @@ class FileService {
 			Connection con = FileManager.getInstance().getDBConnection();
 			def image = VirtualMachineImageManager.getVirtualImageWithFile(token, con)
 			if(image){
-				println image.getMainFile()
+				println 'Main file: '+image.getMainFile()
 				if(image.getMainFile()!=null)new java.io.File(image.getMainFile()).getParentFile().deleteDir()
-				RepositoryEntity main = RepositoryManager.getRepositoryByName(Constants.MAIN_REPOSITORY, con);
+				RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				def sizeImage = 0;
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con)
 				files.each {
@@ -91,7 +93,7 @@ class FileService {
 					file.mkdirs()
 					it.transferTo(file)
 					if(image.isPublic()){
-						File newFile = new File(main.getRoot()+Constants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+filename);
+						File newFile = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+filename);
 						FileUtils.copyFile(file, newFile);
 					}
 					if (filename.matches(".*"+mainExtension)){
@@ -99,7 +101,7 @@ class FileService {
 					}
 					sizeImage += it.getSize()
 				}
-				VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null),true, con)
+				println 'Update: '+VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),true, con)
 				
 			}
 			con.close();

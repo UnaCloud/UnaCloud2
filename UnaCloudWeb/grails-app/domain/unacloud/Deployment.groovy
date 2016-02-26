@@ -55,7 +55,7 @@ class Deployment {
 		for(image in images) {
 			for(VirtualMachineExecution vm in image.getActiveExecutions()){				
 				Date currentDate = new Date()
-				if(vm.status ==VirtualMachineExecutionStateEnum.QUEQUED){
+				if(vm.status ==VirtualMachineExecutionStateEnum.QUEUED){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')

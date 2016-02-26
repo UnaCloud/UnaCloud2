@@ -67,9 +67,6 @@ class BootStrap {
 			new OperatingSystem(name:'Scientific Linux',configurer:'ScientificLinux').save();
 		}
 
-		if(Repository.count()==0){
-			new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty(UnaCloudConstants.MAIN_REPOSITORY)).save();
-		}
 		if(ServerVariable.count() ==0){
 			//Load variables for web
 			new ServerVariable(name:UnaCloudConstants.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING, variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty(UnaCloudConstants.WEB_SERVER_URL),program:ServerVariableProgramEnum.WEB).save()
@@ -98,7 +95,10 @@ class BootStrap {
 			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		}
-		
+		if(Repository.count()==0){
+			Repository repo = new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty(UnaCloudConstants.MAIN_REPOSITORY))
+			repo.save(failOnError:true)
+		}
 		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_CONTROL);		
 		QueueTaskerControl.setQueueConnection(queueControl)		

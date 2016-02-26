@@ -18,7 +18,8 @@ import uniandes.queue.QueueMessageProcessor;
  */
 public class ControlManager extends ProjectManager{
 	
-	public static ControlManager control;
+	private static ControlManager control;
+	private QueueMessageProcessor processor;
 	
 	public ControlManager() {
 		super();
@@ -82,7 +83,8 @@ public class ControlManager extends ProjectManager{
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_CONTROL);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		queueReceiver.startReceiver(new QueueMessageProcessor());		
+		processor = new QueueMessageProcessor();
+		queueReceiver.startReceiver(processor);		
 	}
 	
 
@@ -92,5 +94,13 @@ public class ControlManager extends ProjectManager{
 		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT),5).start();
 		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT),3).start();
 	}	
+	
+	/**
+	 * Used to send message to agents without have to put message in queue
+	 * @param ids
+	 */
+	public void sendStopMessageExecutions(Long[] ids){
+		processor.remoteStopDeploy(ids);
+	}
 
 }

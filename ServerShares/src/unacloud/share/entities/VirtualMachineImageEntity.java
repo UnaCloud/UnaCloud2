@@ -65,4 +65,12 @@ public class VirtualMachineImageEntity {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	@Override
+	public String toString() {
+		return "VirtualMachineImageEntity [id=" + id + ", user=" + user
+				+ ", password=" + password + ", state=" + state + ", token="
+				+ token + "]";
+	}
+	
 }

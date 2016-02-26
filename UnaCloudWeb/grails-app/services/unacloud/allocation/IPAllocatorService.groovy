@@ -29,7 +29,7 @@ class IpAllocatorService {
 	def allocateIPAddresses(virtualExecutions){
 		
 		for(VirtualMachineExecution vme in virtualExecutions){
-			if(vme.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)){
+			if(vme.status.equals(VirtualMachineExecutionStateEnum.QUEUED)){
 				List <ExecutionIP> ips= vme.executionNode.laboratory.getAvailableIps()
 				for(ip in ips){
 					if(ip.state==IPEnum.AVAILABLE){
@@ -43,7 +43,7 @@ class IpAllocatorService {
 				}
 				if (vme.interfaces.size()==0){ 
 					for(VirtualMachineExecution vm in virtualExecutions){
-						if(vme.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)){
+						if(vme.status.equals(VirtualMachineExecutionStateEnum.QUEUED)){
 							for(NetInterface net in vme.interfaces){
 								net.ip.putAt('state',IPEnum.AVAILABLE)
 							}

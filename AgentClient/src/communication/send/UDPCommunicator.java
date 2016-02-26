@@ -64,9 +64,10 @@ public class UDPCommunicator {
 	private boolean pushInfo(String ip, int port,UDPMessageEnum type, Object...params)throws Exception{
 		String msgParams="{";
 		for(int e=0,i=params.length;e<i;e+=2)msgParams+=","+"\""+params[e]+"\":\""+params[e+1]+"\"";
-		msgParams.replaceFirst(",", "");
-		msgParams+="}";
+		msgParams=msgParams.replaceFirst(",", "");
+		msgParams+="}";	
 		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, ip, port, OperatingSystem.getHostname(), type);
+		System.out.println("Message: "+message.getMessage());
 		return sender.sendMessage(message);		
 	}
 }

@@ -74,13 +74,11 @@ public class UnaCloudMessageUDP implements Serializable{
 	}
 	
 	public byte[] generateByteMessage(){
-		return (type.name()+"_"+message).getBytes();
+		return ("{type:"+type.name()+",data:"+message+"}").getBytes();
 	}
 	
 	public void setMessageByBytes(byte[] bytes) throws UnsupportedEncodingException{
-		String[] mesg = new String(bytes, "UTF-8").split("_");
-		this.message = mesg[1];
-		this.type = UDPMessageEnum.getType(mesg[0]);
+		this.message = new String(bytes, "UTF-8");
 	}
 
 }

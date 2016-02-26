@@ -28,16 +28,18 @@ public class VirtualMachineImageManager {
 	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser, boolean withConfigurer, Connection con){
 		try {
 			String query = null;
-			if(withConfigurer) query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+", os.configurer FROM virtual_machine_image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
-			else query ="SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;";
+			if(withConfigurer) query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, os.configurer"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
+			else query ="SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name"+(withUser?",vm.owner_id":"")+" FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();
 			VirtualImageFileEntity image = null;
 			if(rs.next()){
-				image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(7), withConfigurer?rs.getString(9):null);
-				if(withUser)image.setOwner(new UserEntity(rs.getLong(8),null,null));
+				image = new VirtualImageFileEntity(rs.getLong(1), state, rs.getString(6), RepositoryManager.getRepository(rs.getLong(5),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(9), withConfigurer?rs.getString(10):null);
+				image.setName(rs.getString(7));
+				image.setName(rs.getString(8));
+				if(withUser)image.setOwner(new UserEntity(withConfigurer?rs.getLong(11):rs.getLong(10),null,null));
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
 			return image;
@@ -91,6 +93,7 @@ public class VirtualMachineImageManager {
 			if(image.getToken()!=null){query+=(isPublic>0||repository>0||mainFile>0||token>0?",":"")+" vm.token = ? ";token = status>0?status+1:mainFile>0?mainFile+1:repository>0?repository+1:isPublic+1;}
 			if(isPublic>0||repository>0||mainFile>0||status>0||token>0){
 				if(update)query+= ", vm.image_version = vm.image_version + 1 ";
+				if(image.getFixDisk()!=null&&image.getFixDisk()>0)query+=", vm.fixed_disk_size = "+image.getFixDisk()+" ";
 				query += "where vm.id = ? and vm.id > 0;";
 				System.out.println(query);
 				PreparedStatement ps = con.prepareStatement(query);

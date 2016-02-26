@@ -2,7 +2,7 @@ package unacloud.share.enums;
 import unacloud.share.utils.CalendarUtils;
 
 public enum VirtualMachineExecutionStateEnum {
-	QUEQUED("QUEQUED",CalendarUtils.MINUTE*2),
+	QUEUED("QUEUED",CalendarUtils.MINUTE*2),
 	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*30),
 	DEPLOYING("DEPLOYING",CalendarUtils.MINUTE*4),
 	DEPLOYED("DEPLOYED",0),
@@ -27,7 +27,7 @@ public enum VirtualMachineExecutionStateEnum {
 	}
 	
 	public static VirtualMachineExecutionStateEnum getEnum(String name){
-		if(QUEQUED.name.equals(name)||QUEQUED.name().equals(name))return QUEQUED;
+		if(QUEUED.name.equals(name)||QUEUED.name().equals(name))return QUEUED;
 		if(CONFIGURING.name.equals(name)||CONFIGURING.name().equals(name))return CONFIGURING;
 		if(DEPLOYING.name.equals(name)||DEPLOYING.name().equals(name))return DEPLOYING;
 		if(DEPLOYED.name.equals(name)||DEPLOYED.name().equals(name))return DEPLOYED;

@@ -21,8 +21,8 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	private UserEntity owner;
 	private String configurer;
 	
-	public VirtualImageFileEntity(Long id, 
-			VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
+	public VirtualImageFileEntity(Long id, VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
+		
 		super(id, null, null, state, token);
 		this.repository = repository;
 		this.isPublic = isPublic;
@@ -86,5 +86,13 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	
 	public void setConfigurer(String configurer) {
 		this.configurer = configurer;
+	}
+
+	@Override
+	public String toString() {
+		return "VirtualImageFileEntity [repository=" + repository
+				+ ", isPublic=" + isPublic + ", fixDisk=" + fixDisk
+				+ ", mainFile=" + mainFile + ", name=" + name + ", owner="
+				+ owner + ", configurer=" + configurer + ", " +getId()+"  - "+getState()+ "]";
 	}
 }

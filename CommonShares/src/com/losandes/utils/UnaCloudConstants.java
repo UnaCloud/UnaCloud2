@@ -8,7 +8,7 @@ package com.losandes.utils;
 public class UnaCloudConstants {	
 
 	//UnaCloud Configuration
-	public static final String MAIN_REPOSITORY = "MAIN REPOSITORY";
+	public static final String MAIN_REPOSITORY = "MAIN_REPOSITORY";
 	public static final String TEMPLATE_PATH = "imageTemplates";
 	public static final String ADMIN_GROUP = "unacloudAdmins";
 	public static final String USERS_GROUP = "unacloudUsers";
@@ -22,7 +22,7 @@ public class UnaCloudConstants {
 	public static final String QUEUE_FILE = "FILE_MANAGER";
 	public static final String DB_USERNAME = "DB_USERNAME";
 	public static final String DB_PASS = "DB_PASS";
-	public static final String DB_IP = "DB_URL";
+	public static final String DB_IP = "DB_IP";
 	public static final String DB_PORT = "DB_PORT";
 	public static final String DB_NAME = "DB_NAME";		
 	

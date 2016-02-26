@@ -39,18 +39,19 @@ class DatabaseService {
 		}catch(Exception e){print 'save_request_events is already created'}
 		try{
 			sql.execute ('DROP PROCEDURE IF EXISTS sp_check_pm')
-			sql.execute ('CREATE PROCEDURE sp_check_pm() BEGIN UPDATE physical_machine SET state = \'OFF\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND state = \'ON\'; END')
-			sql.execute ('CREATE EVENT if not exists update_pms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO EXECUTE sp_check_pm')
+			sql.execute ('CREATE PROCEDURE sp_check_pm() BEGIN UPDATE physical_machine SET state = \'OFF\' , with_user = false where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND state = \'ON\' AND id >0; END')
+			//sql.execute ('DROP EVENT update_pms');
+			sql.execute ('CREATE EVENT if not exists update_pms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_pm')
 		}catch(Exception e){println e.message}
 		try{
 			sql.execute ('DROP PROCEDURE IF EXISTS sp_check_vm')
-			sql.execute ('CREATE PROCEDURE sp_check_vm() BEGIN UPDATE virtual_machine_execution SET status = \'RECONNECTING\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND status = \'DEPLOYED\' AND id > 0;'+ 
-															'UPDATE virtual_machine_execution SET status = \'FAILED\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 10 MINUTE) AND status = \'RECONNECTING\'; END')
-			sql.execute ('CREATE EVENT if not exists update_vms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO EXECUTE sp_check_vm')
+			sql.execute ('CREATE PROCEDURE sp_check_vm() BEGIN UPDATE virtual_machine_execution SET status = \'RECONNECTING\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND status = \'DEPLOYED\' AND id > 0; '+ 
+															'UPDATE virtual_machine_execution SET status = \'FAILED\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 10 MINUTE) AND status = \'RECONNECTING\' AND id> 0; END')
+			//sql.execute ('DROP EVENT update_vms');
+			sql.execute ('CREATE EVENT if not exists update_vms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_vm')
 		}catch(Exception e){println e.message}
 			//sql.execute 'update physical_machine set state = \'OFF\', with_user=0;'	
-		sql.close();
-		
+		sql.close();		
 	}
 
 }

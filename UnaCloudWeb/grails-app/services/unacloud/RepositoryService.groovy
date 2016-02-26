@@ -1,6 +1,7 @@
 package unacloud
 
 import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 import grails.transaction.Transactional
 
@@ -28,7 +29,7 @@ class RepositoryService {
 	 * @return repository
 	 */
 	def Repository getMainRepository(){
-		return getRepositoryByName(Constants.MAIN_REPOSITORY)
+		return getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY)
 	}	
 	
 	/**

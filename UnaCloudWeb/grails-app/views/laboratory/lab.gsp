@@ -63,7 +63,7 @@
 				                                  <th>IP</th>
 				                                  <th>State</th>
 				                                  <th>Activity</th>
-				                                  <th>Monitoring</th>
+				                                  <!-- <th>Monitoring</th> -->
 				                                  <th>Actions</th>
 				                              </tr>
 				                          </thead>
@@ -90,9 +90,9 @@
 											   		</g:if>
 				                                  </td>
 				                                  <td class="column-center">	
-										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user"></i></g:if>  
+										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user" data-toggle="tooltip"></i></g:if>  
 										      	  </td>
-											      <td>
+											      <!-- <td>
 											        <g:if test="${machine.monitorSystem==null}">
 											   			<span class="label label-default">DISABLED</span>
 											   		</g:if>
@@ -102,7 +102,7 @@
 											   		<g:else>
 											   			<span class="label label-success">ON</span>
 											   		</g:else>
-											      </td>
+											      </td>-->
 				                                  <td class="column-center"> 
 					                               	  <div class="btn-group">
 						                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>

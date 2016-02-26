@@ -96,7 +96,7 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: start,stopTime:stop, interfaces:[])
+				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: start,stopTime:stop, interfaces:[])
 				executions.add(virtualExecution)
 			}
 			depImage.virtualMachines=executions
@@ -165,7 +165,7 @@ class DeploymentService {
 					
 		def executions = []
 		for(int j=0;j<request.instances;j++){
-			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEQUED,startTime: new Date(), stopTime:stop,interfaces:[])
+			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
 			executions.add(virtualExecution)
 		}
 		
@@ -209,16 +209,17 @@ class DeploymentService {
 	 * @return
 	 */
 	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions, User requester){
-		for(VirtualMachineExecution vm in executions){
+		List<VirtualMachineExecution> executionsToStop = new ArrayList<VirtualMachineExecution>()
+		for(VirtualMachineExecution vm : executions){
 			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
 				vm.finishExecution()
-				executions.remove(vm)
 			}else if(vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)){
 				vm.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_FINISH)				
+				executionsToStop.add(vm)
 			}
 		}
-		if(executions.size()>0){
-			QueueTaskerControl.stopExecutions(executions, requester)
+		if(executionsToStop.size()>0){
+			QueueTaskerControl.stopExecutions(executionsToStop, requester)
 		}
 	}
 	

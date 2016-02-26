@@ -43,15 +43,15 @@ public class Main {
         	System.exit(0);
         	return;
         }
-    	{
-    		//Validate if the user that is executing agent is system user
-    		String user=OperatingSystem.getWhoAmI();
-        	if(user!=null&&!user.toLowerCase().contains("system")){
-        		System.out.println("You can't execute the agent as "+user);
-        		System.exit(0);
-        		return;
-        	}
-    	}
+//    	{
+//    		//Validate if the user that is executing agent is system user
+//    		String user=OperatingSystem.getWhoAmI();
+//        	if(user!=null&&!user.toLowerCase().contains("system")){
+//        		System.out.println("You can't execute the agent as "+user);
+//        		System.exit(0);
+//        		return;
+//        	}
+//    	}
     	//Validates data path
     	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
     	if(dataPath==null||dataPath.isEmpty()){
@@ -59,29 +59,31 @@ public class Main {
     		System.exit(0);
     	}
     	//Start log 
-    	try {
-    		//Create agent log file
-        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
-        		@Override
-        		public void println(String x) {
-        			super.println(new Date()+" "+x);
-        		}
-        		@Override
-        		public void println(Object x) {
-        			super.println(new Date()+" "+x);
-        		}
-        	};
-			System.setOut(ps);
-			System.setErr(ps);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+//    	try {
+//    		//Create agent log file
+//        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
+//        		@Override
+//        		public void println(String x) {
+//        			super.println(new Date()+" "+x);
+//        		}
+//        		@Override
+//        		public void println(Object x) {
+//        			super.println(new Date()+" "+x);
+//        		}
+//        	};
+//			System.setOut(ps);
+//			System.setErr(ps);
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
     	//Init services
     	//register hypervisors
+    	System.out.println("Register hypervisors");
     	HypervisorFactory.registerHypervisors();
     	//load executions in files
+    	System.out.println("Load data");
         PersistentExecutionManager.refreshData();
-    	
+    	System.out.println("Start reporter");
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
         try {

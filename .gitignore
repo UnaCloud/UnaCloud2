@@ -6,3 +6,5 @@ UnaCloudWeb/grails-app/conf/config.properties
 UnaCloudControl/controlConfig.properties
 UnaCloudFileManager/target-eclipse/classes/fileConfig.properties
 UnaCloudFileManager/grails-app/conf/fileConfig.properties
+AgentClient/global.properties
+AgentClient/local.properties

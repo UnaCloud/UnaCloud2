@@ -1,6 +1,7 @@
 package unacloud
 
 import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
 
 class Repository {
 	
@@ -38,6 +39,6 @@ class Repository {
 	 */
 	
 	def boolean isDefault(){
-		return this == Repository.findByName(Constants.MAIN_REPOSITORY);		
+		return this == Repository.findByName(UnaCloudConstants.MAIN_REPOSITORY);		
 	}
 }

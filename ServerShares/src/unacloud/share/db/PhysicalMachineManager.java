@@ -28,7 +28,7 @@ public class PhysicalMachineManager {
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();	
 			PhysicalMachineEntity machine = null;
-			if(rs.next())machine = new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4)));
+			if(rs.next())machine = new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3)));
 			try{rs.close();ps.close();}catch(Exception e){}
 			return machine;
 		} catch (Exception e) {
@@ -58,7 +58,7 @@ public class PhysicalMachineManager {
 				ps.setLong(index++, idpm);
 			}
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			try{rs.close();ps.close();}catch(Exception e){}
 			return list;
 		} catch (Exception e) {
@@ -78,7 +78,7 @@ public class PhysicalMachineManager {
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, machineState.name());
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(3), PhysicalMachineStateEnum.getEnum(rs.getString(4))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();

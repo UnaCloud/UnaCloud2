@@ -36,7 +36,7 @@ public class Init {
 //				e.printStackTrace();
 //			}
 			ControlManager.getInstance();		
-			System.out.println("Start Control");
+			System.out.println("UnaCloud Control is running");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

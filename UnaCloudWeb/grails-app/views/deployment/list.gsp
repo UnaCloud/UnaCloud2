@@ -90,7 +90,7 @@
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEQUED)
+			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_FINISH)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
@@ -234,7 +234,7 @@
 				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 				                                  		    <tr>
 				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
 							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
 							                                   </g:if>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">

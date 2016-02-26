@@ -50,10 +50,10 @@ public class DeploymentManager {
 			try{rs.close();ps.close();}catch(Exception e){}
 			if(deploy!=null){
 				ps = con.prepareStatement("SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token"
-						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id INNER JOIN deployed_image dp ON dp.id = vme.deploy_image_id "
-						+ "INNER JOIN virtual_machine_image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.status = ?;");
+						+ " FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id INNER JOIN deployed_image dp ON dp.id = vme.deploy_image_id "
+						+ " INNER JOIN virtual_machine_image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.status = ?;");
 				ps.setLong(1, id);
-				ps.setString(2, VirtualMachineExecutionStateEnum.QUEQUED.name());
+				ps.setString(2, VirtualMachineExecutionStateEnum.QUEUED.name());
 				rs = ps.executeQuery();	
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
 				while(rs.next()){
@@ -165,7 +165,7 @@ public class DeploymentManager {
 				if(pm==null){
 					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
-					if(state.equals(VirtualMachineExecutionStateEnum.QUEQUED))				
+					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
 					VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
@@ -201,7 +201,7 @@ public class DeploymentManager {
 				if(pm==null){
 					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
-					if(state.equals(VirtualMachineExecutionStateEnum.QUEQUED))				
+					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
 					execution = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));

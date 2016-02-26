@@ -39,7 +39,7 @@ class VirtualMachineExecution {
 	Date stopTime
 	
 	/**
-	 * Actual node state (REQUESTED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
+	 * Actual node state (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
 	 */
 	VirtualMachineExecutionStateEnum status
 	
