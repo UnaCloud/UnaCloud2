@@ -21,10 +21,12 @@ public abstract class AbstractMessageReceiver extends Thread{
 		threadPool=Executors.newFixedThreadPool(threads);
 		receiver = new UnaCloudDataSenderUDP();
 		receiver.enableReceiver(port);
+		System.out.println("listening in "+port);
 	}
 	
 	@Override
 	public void run() {
+		
 		while(true){
 			try {
 				UnaCloudMessageUDP message = receiver.getMessage();

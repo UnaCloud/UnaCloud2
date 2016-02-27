@@ -12,7 +12,7 @@ import communication.UnaCloudMessageUDP;
  */
 public class PmMessageReceiver extends AbstractMessageReceiver{
 
-	public PmMessageReceiver(int port, int threads) throws SocketException {
+	public PmMessageReceiver(int port, int threads) throws SocketException {		
 		super(port,threads);
 	}
 

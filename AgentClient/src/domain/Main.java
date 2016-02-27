@@ -59,23 +59,23 @@ public class Main {
     		System.exit(0);
     	}
     	//Start log 
-//    	try {
-//    		//Create agent log file
-//        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
-//        		@Override
-//        		public void println(String x) {
-//        			super.println(new Date()+" "+x);
-//        		}
-//        		@Override
-//        		public void println(Object x) {
-//        			super.println(new Date()+" "+x);
-//        		}
-//        	};
-//			System.setOut(ps);
-//			System.setErr(ps);
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
+    	try {
+    		//Create agent log file
+        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
+        		@Override
+        		public void println(String x) {
+        			super.println(new Date()+" "+x);
+        		}
+        		@Override
+        		public void println(Object x) {
+        			super.println(new Date()+" "+x);
+        		}
+        	};
+			System.setOut(ps);
+			System.setErr(ps);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
     	//Init services
     	//register hypervisors
     	System.out.println("Register hypervisors");

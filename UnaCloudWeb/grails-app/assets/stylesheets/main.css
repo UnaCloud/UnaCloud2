@@ -2347,7 +2347,7 @@ Component: timeline
   }
 }
 .error-page > .headline {
-  float: left;
+  /**float: left;**/
   font-size: 100px;
   font-weight: 300;
 }
@@ -2358,7 +2358,7 @@ Component: timeline
   }
 }
 .error-page > .error-content {
-  margin-left: 190px;
+ /** margin-left: 190px;**/
   display: block;
 }
 @media screen and (max-width: 767px) {

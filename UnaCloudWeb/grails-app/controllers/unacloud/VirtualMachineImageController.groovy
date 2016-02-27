@@ -124,9 +124,8 @@ class VirtualMachineImageController {
 	def clearFromCache(){
 		VirtualMachineImage image = VirtualMachineImage.get(params.id);
 		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){	
-			if(image.owner.id==session.user.id){
-				virtualMachineImageService.clearCache(image);				
-				image.freeze()
+			if(image.owner.id==session.user.id){				
+				virtualMachineImageService.clearCache(image);
 				flash.message="Your request has been sent, image will be deleted from physical machines in a few time";
 				flash.type="info";
 			}

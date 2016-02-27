@@ -111,6 +111,7 @@ class VirtualMachineImageService {
 	 * @return
 	 */
 	def clearCache(VirtualMachineImage image){
+		image.freeze()
 		QueueTaskerControl.clearCache(image, image.owner);		
 	}
 	

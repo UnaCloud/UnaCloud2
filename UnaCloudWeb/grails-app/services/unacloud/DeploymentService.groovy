@@ -67,8 +67,6 @@ class DeploymentService {
 	
 	def synchronized deploy(Cluster cluster, User user, long time, ImageRequestOptions[] requests) throws Exception, AllocatorException{
 		
-		Date start = new Date()
-		Date stop = new Date(start.getTime()+time)
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
@@ -91,6 +89,8 @@ class DeploymentService {
 		Map<Long,PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
 		def images = []
+		Date start = new java.util.Date()
+		Date stop = new java.util.Date(start.getTime()+time)
 		requests.eachWithIndex(){ request,i->
 			
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
@@ -116,11 +116,11 @@ class DeploymentService {
 		}	
 		
 		Deployment dep = new Deployment(user:user,startTime: start, stopTime: stop,status: DeploymentStateEnum.ACTIVE, cluster:cluster)
-		dep.save(failOnError: true)		
+		dep.save(failOnError: true,flush:true)		
 				
 		for(DeployedImage image in images){
 			image.deployment = dep
-			image.save(failOnError: true)
+			image.save(failOnError: true,flush:true)
 			for(VirtualMachineExecution execution in image.virtualMachines){
 				execution.deployImage = image
 				execution.saveExecution()
@@ -181,7 +181,7 @@ class DeploymentService {
 			execution.saveExecution()
 		}
 		image.virtualMachines.addAll(executions)
-		image.save(failOnError:true)
+		image.save(failOnError:true,flush:true)
 		//if(!Environment.isDevelopmentMode()){
 			QueueTaskerControl.addInstancesToDeploy(executions,user)
 		//}
@@ -240,7 +240,7 @@ class DeploymentService {
 		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
 			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository,token:token)
-		image.save(failOnError:true)
+		image.save(failOnError:true,flush:true)
 		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
 		execution.putAt("message", 'Copy request to image '+image.id)
 		QueueTaskerControl.createCopyFromExecution(execution,image,user)

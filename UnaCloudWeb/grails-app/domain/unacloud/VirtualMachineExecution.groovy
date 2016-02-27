@@ -111,9 +111,9 @@ class VirtualMachineExecution {
 	 * @return
 	 */
 	def saveExecution(){		
-		this.save(failOnError:true)
+		this.save(failOnError:true,flush:true)
 		for(NetInterface netInterface in interfaces){
-			netInterface.save(failOnerror:true)
+			netInterface.save(failOnerror:true,flush:true)
 		}
 	}
 	
@@ -141,7 +141,7 @@ class VirtualMachineExecution {
 	 * @return
 	 */
 	def Date getLastStateTime(){
-		def requestExec = ExecutionRequest.where{execution==this}.find(sort:'requestTime', order: "desc")
+		def requestExec = ExecutionRequest.find("from ExecutionRequest as e where e.execution = ?",[this],[sort:'requestTime', order: "desc"])
 		return requestExec.requestTime
 	}
 	

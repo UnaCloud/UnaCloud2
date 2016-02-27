@@ -44,8 +44,8 @@ public class DeploymentManager {
 			if(rs.next()){
 				deploy = new DeploymentEntity();
 				deploy.setId(rs.getLong(1));
-				deploy.setStartTime(rs.getDate(2));
-				deploy.setStopTime(rs.getDate(3));
+				deploy.setStartTime(new java.util.Date(rs.getTimestamp(2).getTime()));
+				deploy.setStopTime(new java.util.Date(rs.getTimestamp(3).getTime()));
 				deploy.setState(DeploymentStateEnum.ACTIVE);
 			}
 			try{rs.close();ps.close();}catch(Exception e){}

@@ -22,10 +22,10 @@ public class DataServerSocket extends AbstractServerSocket{
 		DataInputStream ds = new DataInputStream(s.getInputStream());
 		int byteOp=ds.read();					
 		System.out.println("Request from: "+s+" - operation: "+byteOp);
-		if(byteOp==UnaCloudConstants.SEND_IMAGE){
+		if(byteOp==UnaCloudConstants.REQUEST_IMAGE){
 			System.out.println("Start service to send file");
 			return new FileTransferTask(s);
-		}else if(byteOp==UnaCloudConstants.REQUEST_IMAGE){
+		}else if(byteOp==UnaCloudConstants.SEND_IMAGE){
 			System.out.println("Start service to request file");
 			return new FileReceiverTask(s);
 		}

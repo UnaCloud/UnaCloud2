@@ -11,7 +11,7 @@ import virtualMachineManager.ImageCacheManager;
  * This class is an abstract class to be implemented by each hypervisor. It must be only instantiated by the hyperviso factory
  * @author Clouder
  */
-abstract class Hypervisor {
+public abstract class Hypervisor {
 
     /**
      * Path to this hypervisor executable

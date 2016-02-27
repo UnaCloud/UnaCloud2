@@ -25,7 +25,7 @@ import com.losandes.utils.Constants;
 public class FileTransferTask implements Runnable{
 	Socket s;	
 	public FileTransferTask(Socket s) {
-		System.out.println("Atending "+s.getRemoteSocketAddress());
+		System.out.println("Working "+s.getRemoteSocketAddress());
 		this.s = s;
 	}
 	@Override
@@ -33,7 +33,7 @@ public class FileTransferTask implements Runnable{
 		try(Socket ss=s;DataInputStream ds=new DataInputStream(s.getInputStream());OutputStream os=s.getOutputStream();Connection con = FileManager.getInstance().getDBConnection();){			
 			ZipOutputStream zos=new ZipOutputStream(os);
 			long imageId=ds.readLong();
-			System.out.println("\tAtendiendo "+imageId);
+			System.out.println("\tWorking "+imageId);
 			VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.AVAILABLE, false,true, con);
 			if(image!=null){
 				System.out.println(image+" - "+imageId+" - "+image.getState());
@@ -48,7 +48,7 @@ public class FileTransferTask implements Runnable{
 					}
 					zos.closeEntry();
 				}
-				System.out.println("Files sent");
+				System.out.println("Files sent "+image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
 				//TODO improve this to manage hypervisors
 				PrintWriter pw=new PrintWriter(zos);

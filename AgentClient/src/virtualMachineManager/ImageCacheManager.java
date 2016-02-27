@@ -1,7 +1,9 @@
 package virtualMachineManager;
 
+import hypervisorManager.Hypervisor;
 import hypervisorManager.HypervisorFactory;
 import hypervisorManager.ImageCopy;
+import hypervisorManager.VMwareWorkstation;
 import hypervisorManager.VirtualBox;
 
 import java.io.File;
@@ -125,14 +127,48 @@ public class ImageCacheManager {
 		System.out.println("clearCache");
 		loadImages();
 		imageList.clear();
-		try{
-			for(File f:new File(machineRepository).listFiles())cleanDir(f);
+		try{			
+			try {				
+				for(Image image: imageList.values())
+					if(image.getHypervisorId().equals(Constants.VM_WARE_WORKSTATION))
+						for(ImageCopy copy: image.getImageCopies())
+							((VMwareWorkstation)HypervisorFactory.getHypervisor(Constants.VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}		
 			((VirtualBox)HypervisorFactory.getHypervisor(Constants.VIRTUAL_BOX)).unregisterAllVms();
+			for(File f:new File(machineRepository).listFiles())cleanDir(f);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 		saveImages();
-		return "Successful";
+		return "Success";
+	}
+	
+	
+	/**
+	 * Remove a image from cache in repository
+	 * @return
+	 */
+	public static synchronized String clearImageFromCache(Long imageId){
+		System.out.println("clearCache for machine "+imageId);
+		loadImages();
+		Image vmi=imageList.get(imageId);		
+		if(vmi!=null){
+			try {
+				for(ImageCopy copy: vmi.getImageCopies()){
+					Hypervisor hypervisor=HypervisorFactory.getHypervisor(vmi.getHypervisorId());
+					hypervisor.unregisterVirtualMachine(copy);
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if(new File(machineRepository+"\\"+imageId).exists())
+				for(File root:new File(machineRepository+"\\"+imageId).listFiles())cleanDir(root);
+			imageList.remove(imageId);
+			saveImages();
+		}
+		return "Success";
 	}
 	
 	/**
@@ -164,6 +200,10 @@ public class ImageCacheManager {
 		}
 	}	
 
+	/**
+	 * Delete an image
+	 * @param imageId
+	 */
 	public static void deleteImage(Long imageId){
 		loadImages();
 		Image vmi=imageList.get(imageId);

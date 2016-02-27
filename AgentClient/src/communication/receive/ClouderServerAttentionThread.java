@@ -23,6 +23,8 @@ import communication.messages.AgentMessage;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.PhysicalMachineOperationMessage;
 import communication.messages.VirtualMachineOperationMessage;
+import communication.messages.ao.ClearImageFromCacheMessage;
+import communication.messages.ao.InformationResponse;
 import communication.messages.pmo.PhysicalMachineTurnOnMessage;
 import communication.messages.vmo.VirtualMachineAddTimeMessage;
 import communication.messages.vmo.VirtualMachineRestartMessage;
@@ -114,7 +116,7 @@ public class ClouderServerAttentionThread implements Runnable {
                 return new InvalidOperationResponse("Invalid virtual machine operation: "+message.getSubOp());
         }
     }
-    private String attendAgentOperation(UnaCloudAbstractMessage message) {
+    private UnaCloudAbstractResponse attendAgentOperation(UnaCloudAbstractMessage message) {
         switch (message.getSubOp()) {
             case AgentMessage.UPDATE_OPERATION:
             	ClouderClientAttention.close();
@@ -132,7 +134,7 @@ public class ClouderServerAttentionThread implements Runnable {
                 		System.exit(6);
                 	};
                 }.start();
-                return "successful";
+                return new InformationResponse("successful");
             case AgentMessage.STOP_CLIENT:
                 ClouderClientAttention.close();
                 new Thread(){
@@ -145,14 +147,17 @@ public class ClouderServerAttentionThread implements Runnable {
                 		System.exit(0);
                 	};
                 }.start();
-                return "successful";
+                return  new InformationResponse("successful");
             case AgentMessage.GET_VERSION:
             	//TODO unuseful
-                return "1.30";
+                return new InformationResponse("1.30");
             case AgentMessage.CLEAR_CACHE:
-                return ImageCacheManager.clearCache();
+                return new InformationResponse(ImageCacheManager.clearCache());
+                
+            case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
+                return new InformationResponse(ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId()));
         }
-        return "Invalid operation";
+        return  new InformationResponse("Invalid operation");
     }
     /**
      * Method responsible for attending requests for operations over the
@@ -162,14 +167,14 @@ public class ClouderServerAttentionThread implements Runnable {
      * @param con Channel used to interact with UnaCloud server to receive or
      * send additional data
      */
-    private String attendPhysicalMachineOperation(UnaCloudAbstractMessage message) {
+    private UnaCloudAbstractResponse attendPhysicalMachineOperation(UnaCloudAbstractMessage message) {
         switch (message.getSubOp()) {
             case PhysicalMachineOperationMessage.PM_TURN_OFF:
-                return "PM_TURN_OFF" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().turnOff();
+                return new InformationResponse("PM_TURN_OFF" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().turnOff());
             case PhysicalMachineOperationMessage.PM_RESTART:
-                return "PM_RESTART" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().restart();
+                return new InformationResponse("PM_RESTART" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().restart());
             case PhysicalMachineOperationMessage.PM_LOGOUT:
-                return "PM_LOGOUT" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().logOut();
+                return new InformationResponse("PM_LOGOUT" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().logOut());
             case PhysicalMachineOperationMessage.PM_TURN_ON:
                     PhysicalMachineTurnOnMessage turnOn=(PhysicalMachineTurnOnMessage)message;
                 for (String mac : turnOn.getMacs()) {
@@ -178,9 +183,9 @@ public class ClouderServerAttentionThread implements Runnable {
                     } catch (IOException ex) {
                     }
                 }
-                return "Successful operation";          
+                return new InformationResponse("successful");          
             default:
-                return ERROR_MESSAGE + "The Clouder Server physical machine operation request is invalid: " + message.getSubOp();
+                return new InformationResponse(ERROR_MESSAGE + "The Clouder Server physical machine operation request is invalid: " + message.getSubOp());
         }
     }
 }

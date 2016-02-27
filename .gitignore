@@ -8,3 +8,4 @@ UnaCloudFileManager/target-eclipse/classes/fileConfig.properties
 UnaCloudFileManager/grails-app/conf/fileConfig.properties
 AgentClient/global.properties
 AgentClient/local.properties
+UnaCloudControl/log_control.txt

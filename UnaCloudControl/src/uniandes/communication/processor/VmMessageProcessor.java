@@ -32,7 +32,6 @@ public class VmMessageProcessor extends AbstractReceiverProcessor{
 			jsonMessage = jsonMessage.getJSONObject("data");
 			if(message.getType().equals(UDPMessageEnum.STATE_VM)){
 				Connection con = ControlManager.getInstance().getDBConnection();
-				jsonMessage = new JSONObject(message.getMessage());
 				System.out.println(jsonMessage.toString());
 				//UDPMessageEnum.STATE_VM, "hostname",OperatingSystem.getHostname(),"executionId",virtualMachineCode,"state",state.toString(),"message",message
 				System.out.println("Report VM: "+message.getHost()+" - "+jsonMessage.get("hostname"));

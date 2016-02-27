@@ -119,6 +119,7 @@ class VirtualMachineImage {
 		for(cluster in clusteres){
 			cluster.putAt("state", ClusterEnum.FREEZE);
 		}
+		this.save(flush:true)
 	}
 	
 	/**
