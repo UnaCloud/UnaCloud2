@@ -229,8 +229,12 @@ public class VirtualBox extends Hypervisor {
 	@Override
 	public List<String> getCurrentExecutions() {
 		List<String> list = new ArrayList<String>();
-		String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
-		for(String vm: result)list.add(vm.split(" ")[0]);
+		try {
+			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
+			for(String vm: result)list.add(vm.split(" ")[0]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return list;
 	}
 }

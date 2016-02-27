@@ -137,12 +137,13 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Return time of last statefrom node
+ 	 * Return time of last state from node
 	 * @return
 	 */
 	def Date getLastStateTime(){
-		def requestExec = ExecutionRequest.find("from ExecutionRequest as e where e.execution = ?",[this],[sort:'requestTime', order: "desc"])
-		return requestExec.requestTime
+		def requestExec = ExecutionRequest.find("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[sort:'requestTime', order: "desc"])
+		if(requestExec)return requestExec.requestTime
+		else new Date();
 	}
 	
 	/**

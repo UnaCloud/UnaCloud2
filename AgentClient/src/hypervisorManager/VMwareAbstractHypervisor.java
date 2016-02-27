@@ -133,8 +133,12 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
 	@Override
 	public List<String> getCurrentExecutions() {
 		List<String> list = new ArrayList<String>();
-		String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(), "list").split("\n|\r");
-		for(String vm: result)if(!vm.startsWith("Total"))list.add(vm);
+		try {
+			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(), "list").split("\n|\r");
+			for(String vm: result)if(!vm.startsWith("Total"))list.add(vm);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 		return list;
 	}
 }

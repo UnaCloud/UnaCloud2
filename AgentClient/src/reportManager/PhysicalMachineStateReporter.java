@@ -35,7 +35,7 @@ public class PhysicalMachineStateReporter extends Thread{
         	   List<Long> ids = PersistentExecutionManager.returnIdsExecutions();
         	   String executions = "[";
         	   for(Long id:ids)executions+=","+id;
-        	   executions.replaceFirst(",", "");
+        	   executions = executions.replaceFirst(",", "");
         	   executions += "]";
                ServerMessageSender.reportPhyisicalMachine(executions);
            }catch(Exception sce){

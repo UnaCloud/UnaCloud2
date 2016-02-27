@@ -4,7 +4,7 @@ import unacloud.share.utils.CalendarUtils;
 public enum VirtualMachineExecutionStateEnum {
 	QUEUED("QUEUED",CalendarUtils.MINUTE*2),
 	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*30),
-	DEPLOYING("DEPLOYING",CalendarUtils.MINUTE*4),
+	DEPLOYING("DEPLOYING",CalendarUtils.MINUTE*8),
 	DEPLOYED("DEPLOYED",0),
 	FAILED("FAILED",0),
 	REQUEST_FINISH("TO FINISH",CalendarUtils.MINUTE*2),

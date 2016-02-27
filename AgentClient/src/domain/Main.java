@@ -16,7 +16,7 @@ import virtualMachineManager.PersistentExecutionManager;
 import communication.receive.ClouderClientAttention;
 
 /**
- * Responsible for starting the Clouder Client
+ * Responsible for starting the UnaCloud Client
  *
  */
 public class Main {

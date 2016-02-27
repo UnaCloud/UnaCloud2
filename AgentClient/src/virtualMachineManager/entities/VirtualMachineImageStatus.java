@@ -1,5 +1,5 @@
 package virtualMachineManager.entities;
 
 public enum VirtualMachineImageStatus {
-	LOCK,FREE
+	LOCK,FREE,STARTING
 }

@@ -23,6 +23,7 @@ import reportManager.VirtualMachineStateViewer;
 import tasks.ExecutorService;
 import tasks.UploadImageVirtualMachineTask;
 import virtualMachineManager.entities.VirtualMachineExecution;
+import virtualMachineManager.entities.VirtualMachineImageStatus;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.vmo.VirtualMachineAddTimeMessage;
@@ -121,7 +122,8 @@ public class PersistentExecutionManager {
 	            executionList.put(execution.getId(),execution);
 	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
 	            ServerMessageSender.reportVirtualMachineState(execution.getId(),VirtualMachineExecutionStateEnum.DEPLOYING,"Starting virtual machine");
-	            new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp());
+	            if(new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
+	            	execution.getImage().setStatus(VirtualMachineImageStatus.LOCK);
 	        } catch (HypervisorOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
@@ -130,6 +132,7 @@ public class PersistentExecutionManager {
 	        }
         } catch (Exception e) {
 			e.printStackTrace();
+			execution.getImage().setStatus(VirtualMachineImageStatus.FREE);
 		}
         saveData();
         return "";
@@ -169,14 +172,16 @@ public class PersistentExecutionManager {
 			List<VirtualMachineExecution> removeExecutions = new ArrayList<VirtualMachineExecution>();
 			List<String> hypervisorExecutions = HypervisorFactory.getCurrentExecutions();
 			for(VirtualMachineExecution execution: executionList.values()){
-				if(!ids.contains(execution.getImageId())){
-					removeExecutions.add(execution);
-				}else{
-					//Its necessary because vbox return hostname and vmware mainfile
-					if(!hypervisorExecutions.contains(execution.getHostname())
-							&&!hypervisorExecutions.contains(execution.getImage().getMainFile()))
+				if(execution.getImage().getStatus()!=VirtualMachineImageStatus.STARTING){
+					if(!ids.contains(execution.getImageId())){
 						removeExecutions.add(execution);
-				}				
+					}else{
+						//Its necessary because vbox return hostname and vmware mainfile
+						if(!hypervisorExecutions.contains(execution.getHostname())
+								&&!hypervisorExecutions.contains(execution.getImage().getMainFile()))
+							removeExecutions.add(execution);
+					}
+				}								
 			}
 			for(VirtualMachineExecution execution: removeExecutions)removeExecution(execution.getId(),false);
 		} catch (Exception e) {
@@ -186,6 +191,7 @@ public class PersistentExecutionManager {
     
     /**
      * Return a list of id executions that currently are running
+     * not return images in state STARTING (running-not running)
      * @return
      */
     public static List<Long> returnIdsExecutions(){
@@ -193,7 +199,7 @@ public class PersistentExecutionManager {
     	try {
     		refreshData();
         	List<Long> ids = new ArrayList<Long>();
-        	for(VirtualMachineExecution execution: executionList.values())ids.add(execution.getId());
+        	for(VirtualMachineExecution execution: executionList.values())if(execution.getImage().getStatus()!=VirtualMachineImageStatus.STARTING)ids.add(execution.getId());
         	return ids;
 		} catch (Exception e) {
 			e.printStackTrace();

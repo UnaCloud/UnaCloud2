@@ -30,26 +30,28 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 			message.setType(UDPMessageEnum.getType(jsonMessage.getString("type")));
 			jsonMessage = jsonMessage.getJSONObject("data");
 			if(message.getType().equals(UDPMessageEnum.STATE_PM)){
-				Connection con = ControlManager.getInstance().getDBConnection();
-				System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
-				//JSONObject executions = jsonMessage.getJSONObject("executions");
-				Long[] ids = new Long[0];
-				String executions = jsonMessage.getString("executions").replace("[", "").replace("]","").trim();
-				if(!executions.isEmpty()){
-					String[] idsS = executions.split(",");
-					ids = new Long[idsS.length];
-					for (int i = 0; i < ids.length; i++) {
-						ids[i]=Long.parseLong(idsS[i]);
+				try(Connection con = ControlManager.getInstance().getDBConnection();){
+					System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
+					//JSONObject executions = jsonMessage.getJSONObject("executions");
+					Long[] ids = new Long[0];
+					String executions = jsonMessage.getString("executions").replace("[", "").replace("]","").trim();
+					if(!executions.isEmpty()){
+						String[] idsS = executions.split(",");
+						ids = new Long[idsS.length];
+						for (int i = 0; i < ids.length; i++) {
+							ids[i]=Long.parseLong(idsS[i]);
+						}
 					}
+					if(PhysicalMachineUpdater.updatePhysicalMachine(jsonMessage.getString("hostname"), jsonMessage.getString("hostuser"), message.getIp(), con)){
+						List<Long> idsToStop = PhysicalMachineUpdater.updateVirtualMachinesExecutions(ids, jsonMessage.getString("hostname"), con);
+						if(idsToStop!=null&&idsToStop.size()>0){
+							//Send stop machines message because executions has been reported as finished or failed to user
+							ControlManager.getInstance().sendStopMessageExecutions((Long[]) idsToStop.toArray());
+						}
+					}			
+				}catch (Exception e) {
+					e.printStackTrace();
 				}
-				if(PhysicalMachineUpdater.updatePhysicalMachine(jsonMessage.getString("hostname"), jsonMessage.getString("hostuser"), message.getIp(), con)){
-					List<Long> idsToStop = PhysicalMachineUpdater.updateVirtualMachinesExecutions(ids, jsonMessage.getString("hostname"), con);
-					if(idsToStop!=null&&idsToStop.size()>0){
-						//Send stop machines message because executions has been reported as finished or failed to user
-						ControlManager.getInstance().sendStopMessageExecutions((Long[]) idsToStop.toArray());
-					}
-				}									
-				con.close();			
 			}
 		}
 		

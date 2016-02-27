@@ -70,6 +70,7 @@ public class ImageCopy implements Serializable{
 		try {
 			try {
 				if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
+				if(status!=VirtualMachineImageStatus.STARTING)status=VirtualMachineImageStatus.STARTING;
 				Class<?> configuratorClass=Class.forName("virtualMachineManager.configuration."+getImage().getConfiguratorClass());
 				Object configuratorObject=configuratorClass.getConstructor().newInstance();
 				if(configuratorObject instanceof AbstractVirtualMachineConfigurator){
@@ -84,11 +85,16 @@ public class ImageCopy implements Serializable{
 	    			configurator.configureHostname();
 	    			configurator.configureIP();
 	    			System.out.println("image config "+new Date());
-	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());
-				}else ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());	    	       
+				}else {
+					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+					status=VirtualMachineImageStatus.FREE;
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
 				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+				status=VirtualMachineImageStatus.FREE;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
