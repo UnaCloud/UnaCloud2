@@ -162,7 +162,7 @@ public class PersistentExecutionManager {
      * Loads and validates status of all executions saved in file
      *
      */
-    public synchronized static void refreshData(){
+    public static void refreshData(){
     	try {
 			List<Long>ids = ImageCacheManager.getCurrentImages();
 			loadData();
@@ -190,10 +190,15 @@ public class PersistentExecutionManager {
      */
     public static List<Long> returnIdsExecutions(){
     	if(executionList.values().size()==0)return new ArrayList<Long>();
-    	refreshData();
-    	List<Long> ids = new ArrayList<Long>();
-    	for(VirtualMachineExecution execution: executionList.values())ids.add(execution.getId());
-    	return ids;
+    	try {
+    		refreshData();
+        	List<Long> ids = new ArrayList<Long>();
+        	for(VirtualMachineExecution execution: executionList.values())ids.add(execution.getId());
+        	return ids;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<Long>();
+		}    	
     }
     
     /**

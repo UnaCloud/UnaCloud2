@@ -202,17 +202,14 @@ public class QueueMessageProcessor implements QueueReader{
 								vmsm, new AbstractResponseProcessor() {			
 							@Override
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-								System.out.println("Message sent  to "+id);
 								Connection con2 = ControlManager.getInstance().getDBConnection();
 								Date stopTime = new Date();
 								stopTime.setTime(stopTime.getTime()+execution.getTime());
-								System.out.println(stopTime+" "+execution.getTime());
 								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, VirtualMachineExecutionStateEnum.CONFIGURING, null, "Initializing"), con2);
 								try {con2.close();} catch (Exception e) {}
 							}
 							@Override
 							public void attendError(String message, Long id) {
-								System.out.println("Error sending "+message+" to "+id);
 								Connection con2 = ControlManager.getInstance().getDBConnection();
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm, con2);

@@ -3,6 +3,7 @@ package unacloud.share.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class PhysicalMachineManager {
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			PhysicalMachineEntity machine = null;
-			if(rs.next())machine = new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3)));
+			if(rs.next())machine = new PhysicalMachineEntity(rs.getLong(1), rs.getString(2),new java.util.Date(rs.getTimestamp(4).getTime()), PhysicalMachineStateEnum.getEnum(rs.getString(3)));
 			try{rs.close();ps.close();}catch(Exception e){}
 			return machine;
 		} catch (Exception e) {
@@ -60,7 +61,7 @@ public class PhysicalMachineManager {
 			}
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), new java.util.Date(rs.getTimestamp(4).getTime()), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			try{rs.close();ps.close();}catch(Exception e){}
 			return list;
 		} catch (Exception e) {
@@ -81,7 +82,7 @@ public class PhysicalMachineManager {
 			ps.setString(1, machineState.name());
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), rs.getDate(4), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
+			while(rs.next())list.add(new PhysicalMachineEntity(rs.getLong(1), rs.getString(2), new java.util.Date(rs.getTimestamp(4).getTime()), PhysicalMachineStateEnum.getEnum(rs.getString(3))));
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -107,7 +108,7 @@ public class PhysicalMachineManager {
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
 				if(status>0){ps.setString(status, machine.getStatus().name());id++;};
-				if(report>0){ps.setDate(report, new java.sql.Date(machine.getLastReport().getTime()));id++;};
+				if(report>0){ps.setTimestamp(report, new Timestamp(machine.getLastReport().getTime()));id++;};
 				ps.setLong(id, machine.getId());
 				System.out.println(ps.toString());
 				System.out.println("Change "+ps.executeUpdate()+" lines");

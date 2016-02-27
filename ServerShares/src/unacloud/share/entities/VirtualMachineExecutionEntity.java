@@ -126,8 +126,8 @@ public class VirtualMachineExecutionEntity {
 	 * @return
 	 */
 	public Long getTimeInHours(){
-		long millisTime=(stopTime.getTime()-startTime.getTime())/1000;
-		return (millisTime/60/60)+1;
+		long millisTime=(stopTime.getTime()-startTime.getTime());
+		return (millisTime/1000/60/60);
 	}
 	
 	/**

@@ -3,13 +3,13 @@ package unacloud.share.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
-
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
 import unacloud.share.entities.NetInterfaceEntity;
@@ -62,7 +62,7 @@ public class DeploymentManager {
 					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
 					if(pm==null)setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"),con);
 					else{
-						VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8),rs.getString(13));
+						VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3),new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8),rs.getString(13));
 						if(executions.get(rs.getLong(9))==null)
 							executions.put(rs.getLong(9), new DeployedImageEntity(new VirtualMachineImageEntity(rs.getLong(9), rs.getString(10), rs.getString(11), VirtualMachineImageEnum.getEnum(rs.getString(12)), rs.getString(14)),new ArrayList<VirtualMachineExecutionEntity>()));
 						executions.get(rs.getLong(9)).getExecutions().add(vme);						
@@ -106,8 +106,8 @@ public class DeploymentManager {
 				query += "where vme.id = ? and vme.id > 0;";
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
-				if(start>0){ps.setDate(start, new java.sql.Date(execution.getStartTime().getTime()));id++;};
-				if(stop>0){ps.setDate(stop, new java.sql.Date(execution.getStopTime().getTime()));id++;};
+				if(start>0){ps.setTimestamp(start, new Timestamp(execution.getStartTime().getTime()));id++;};
+				if(stop>0){ps.setTimestamp(stop,  new Timestamp(execution.getStopTime().getTime()));id++;};
 				if(state>0){ps.setString(state, execution.getState().name());id++;}
 				if(message>0){ps.setString(message, execution.getMessage());id++;}
 				ps.setLong(id, execution.getId());
@@ -175,7 +175,7 @@ public class DeploymentManager {
 					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
-					VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+					VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
 					executions.add(vme);		
 				}
 			}		
@@ -212,7 +212,7 @@ public class DeploymentManager {
 					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
-					execution = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), rs.getDate(4), rs.getDate(5), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+					execution = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
 				}
 			}	
 			try{rs.close();ps.close();}catch(Exception e){}
