@@ -43,15 +43,15 @@ public class Main {
         	System.exit(0);
         	return;
         }
-//    	{
-//    		//Validate if the user that is executing agent is system user
-//    		String user=OperatingSystem.getWhoAmI();
-//        	if(user!=null&&!user.toLowerCase().contains("system")){
-//        		System.out.println("You can't execute the agent as "+user);
-//        		System.exit(0);
-//        		return;
-//        	}
-//    	}
+    	{
+    		//Validate if the user that is executing agent is system user
+    		String user=OperatingSystem.getWhoAmI();
+        	if(user!=null&&!user.toLowerCase().contains("system")){
+        		System.out.println("You can't execute the agent as "+user);
+        		System.exit(0);
+        		return;
+        	}
+    	}
     	//Validates data path
     	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
     	if(dataPath==null||dataPath.isEmpty()){

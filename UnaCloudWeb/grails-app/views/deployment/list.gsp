@@ -91,7 +91,6 @@
 			                                  		    <tr>
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
-																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_FINISH)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
 						                                 	 <span class="label label-warning">${execution.status.name}</span>
@@ -234,10 +233,15 @@
 				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 				                                  		    <tr>
 				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}}">
 							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
 							                                   </g:if>
-							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
+															    ||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
+						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)
+																||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
 							                                  	 <span class="label label-primary">${execution.status.toString()}</span>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">

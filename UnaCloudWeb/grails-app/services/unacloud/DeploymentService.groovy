@@ -214,7 +214,7 @@ class DeploymentService {
 			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
 				vm.finishExecution()
 			}else if(vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)){
-				vm.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_FINISH)				
+				vm.putAt("status", VirtualMachineExecutionStateEnum.FINISHING)				
 				executionsToStop.add(vm)
 			}
 		}
@@ -231,11 +231,11 @@ class DeploymentService {
 	 * @return
 	 * @throws Exception
 	 */
-	//TODO add repository validation
+	//Validates capacity
 	def createCopy(VirtualMachineExecution execution, User user, String newName)throws Exception{
 		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
 		if(VirtualMachineImage.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
-		def repository = repositoryService.getMainRepository()
+		def repository = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(newName+new Date().getTime())
 		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,

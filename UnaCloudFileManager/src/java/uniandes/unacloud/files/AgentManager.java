@@ -19,7 +19,7 @@ import uniandes.unacloud.db.entities.ServerVariableEntity;
 public class AgentManager {
 
 	/**
-	 * Prepares the updater files and sends them in a zip.
+	 * Prepares the agent files and sends them in a zip.
 	 * @param outputStream file output stream for download
 	 * @param appDir directory where the zip will be stored
 	 * @throws IOException 

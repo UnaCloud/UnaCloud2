@@ -2,6 +2,7 @@ package unacloud
 
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.share.utils.CalendarUtils;
 
 class Deployment {
@@ -82,14 +83,16 @@ class Deployment {
 						vm.finishExecution()
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.RECONNECTING){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if(vm.lastReport&&(currentDate.getTime()-vm.lastReport.getTime()<CalendarUtils.MINUTE*4)){//if last message was before 4 minutes
+						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
+						vm.putAt("message",'Reconnecting on '+vm.getLastStateTime())
+					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
 						vm.putAt("message",'Connection lost')
-					}	
+					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_COPY){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
-						vm.putAt("message",'Copy image request failed')
+						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
 								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
@@ -98,31 +101,26 @@ class Deployment {
 								e.printStackTrace()
 							}							
 						}
+						vm.putAt("message",'Copy image request failed')
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.COPYING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
-						vm.putAt("message",'Copy image failed')
+						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
 								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
-								VirtualMachineImage.get(imageId).delete()
+								VirtualMachineImage.get(imageId).putAt("state", VirtualMachineImageEnum.UNAVAILABLE)
 							}catch(Exception e){
 								e.printStackTrace()
 							}							
 						}
+						vm.putAt("message",'Copy image failed')
 					}
 				}else if(vm.status ==VirtualMachineExecutionStateEnum.FINISHING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.finishExecution()
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_FINISH){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
-						vm.putAt("message",'Finish execution request failed')
-					}
-				}
-				else if(vm.status ==VirtualMachineExecutionStateEnum.FAILED){
+				}else if(vm.status ==VirtualMachineExecutionStateEnum.FAILED){
 					if(vm.stopTime!=null&&vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}

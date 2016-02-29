@@ -51,8 +51,7 @@ public class PhysicalMachineUpdater {
 			ps.setString(2, status.name());
 			ps.setLong(3, id);
 			ps.setString(4, host);
-			System.out.println(ps.toString());
-			System.out.println("Change "+ps.executeUpdate()+" lines");
+			System.out.println(ps.toString()+" changes "+ps.executeUpdate()+" lines ");
 			try{ps.close();}catch(Exception e){}
 			return true;
 		} catch (Exception e) {
@@ -77,7 +76,7 @@ public class PhysicalMachineUpdater {
 				builder.append("?,");
 			}
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+") AND (vm.status = \'"+VirtualMachineExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHED.name()+"\')";
+			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+") AND (vm.status = \'"+VirtualMachineExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHING.name()+"\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for(Long idvme: ids){
@@ -95,8 +94,7 @@ public class PhysicalMachineUpdater {
 				ps.setLong(index++, idvme);
 			}
 			ps.setString(index, host);
-			System.out.println(ps.toString());
-			System.out.println("Change "+ps.executeUpdate()+" lines");
+			System.out.println(ps.toString()+" changes "+ps.executeUpdate()+" lines ");
 			try{ps.close();}catch(Exception e){}
 			return idsToStop;
 		} catch (Exception e) {

@@ -6,13 +6,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import unacloud.share.db.DeploymentManager;
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.entities.HypervisorEntity;
+import unacloud.share.entities.VirtualMachineExecutionEntity;
+import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.FileManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
@@ -26,16 +30,18 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 public class FileReceiverTask implements Runnable{
 	Socket s;	
 	public FileReceiverTask(Socket s) {
-		System.out.println("Atending "+s.getRemoteSocketAddress());
+		System.out.println("Attending "+s.getRemoteSocketAddress());
 		this.s = s;
 	}
 	@Override
 	public void run() {
 		String mainFile=null;
 		String newMainFile = null;
+		String message;
 		try(Socket ss=s; DataInputStream is = new DataInputStream(s.getInputStream());Connection con = FileManager.getInstance().getDBConnection();) {
+			Long execution = is.readLong();
 			String token= is.readUTF();
-			System.out.println("\tRequest " + token);
+			System.out.println("\tRequest " +execution+" - "+ token);
 			VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
 			if (image!=null) {
@@ -96,15 +102,19 @@ public class FileReceiverTask implements Runnable{
 					System.out.println("reception finished: "+newMainFile);
 					try {
 						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, sizeImage, newMainFile, null, null), false, con);
+						message = "Image has been saved in server";
 						System.out.println("Status changed, process closed");
 					} catch (Exception e) {
 						e.printStackTrace();
+						 message = e.getMessage();
 					}
 					
 				} catch (Exception e) {		
 				    e.printStackTrace();
 				    VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null, null), false, con);
-				}				
+				    message = e.getMessage();
+				}	
+				DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution, 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, message), con);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

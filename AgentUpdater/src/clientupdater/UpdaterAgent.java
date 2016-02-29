@@ -57,6 +57,7 @@ public class UpdaterAgent {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+	    		ds.writeInt(UnaCloudConstants.GIVE_ME_FILES);
 	    		try(PrintWriter versionFile = new PrintWriter(new FileOutputStream(versions),false)){
 	    			versionFile.println(versionServer);	    			
 	    			try(ZipInputStream zis = new ZipInputStream(is);){
@@ -77,7 +78,7 @@ public class UpdaterAgent {
 				}
 	    	}	
 	    	else{
-	    		ds.writeUTF("Thanks");
+	    		ds.writeInt(0);
 	    	}
 			s.close();
 		}catch(Exception e){

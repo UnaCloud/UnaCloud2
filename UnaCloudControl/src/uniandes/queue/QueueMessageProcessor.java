@@ -251,8 +251,11 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 0; i < message.getMessageParts().length; i++) {
 				ids[i]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.DEPLOYED, con);
-			for(final VirtualMachineExecutionEntity execution: executions){
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,null, con);
+			for(final VirtualMachineExecutionEntity execution: executions)
+				if(execution.getState().equals(VirtualMachineExecutionStateEnum.FINISHED)
+						||execution.getState().equals(VirtualMachineExecutionStateEnum.FINISHING)
+							||execution.getState().equals(VirtualMachineExecutionStateEnum.FAILED)){
 				VirtualMachineStopMessage vmsm=new VirtualMachineStopMessage();
 				vmsm.setVirtualMachineExecutionId(execution.getId());
 				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
@@ -270,7 +273,7 @@ public class QueueMessageProcessor implements QueueReader{
 						Connection con2 = ControlManager.getInstance().getDBConnection();
 						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 						PhysicalMachineManager.setPhysicalMachine(pm, con2);
-						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Losing connection from server"), con2);
+						DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FINISHED, null, "Connection lost to agent, execution will be removed when it reconnects"), con2);
 						try {con2.close();} catch (Exception e) {}
 					}
 				}));
@@ -363,7 +366,7 @@ public class QueueMessageProcessor implements QueueReader{
 							}else{
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm, con2);
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, ((InvalidOperationResponse)response).getMessage()), con2);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
 								VirtualImageManager.deleteVirtualMachineImage(image, con2);
 							}
 							try {con2.close();} catch (Exception e) {}
@@ -373,7 +376,7 @@ public class QueueMessageProcessor implements QueueReader{
 							Connection con2 = ControlManager.getInstance().getDBConnection();
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm,con2);
-							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null, "Error copying image"), con2);
+							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
 							VirtualImageManager.deleteVirtualMachineImage(image, con2);
 							try {con2.close();} catch (Exception e) {}
 						}

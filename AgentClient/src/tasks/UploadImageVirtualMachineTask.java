@@ -46,8 +46,11 @@ public class UploadImageVirtualMachineTask implements Runnable{
 			System.out.println("Connecting to "+ip+":"+puerto);
 			try(Socket s=new Socket(ip,puerto);OutputStream os=s.getOutputStream()){
 				DataOutputStream ds=new DataOutputStream(os);
-				System.out.println("Connection succesfull");
+				System.out.println("Connection succesful");
 				ds.writeInt(UnaCloudConstants.SEND_IMAGE);
+				ds.flush();
+				System.out.println("Execution "+machineExecution.getId());
+				ds.writeLong(machineExecution.getId());
 				ds.flush();
 				System.out.println("Token "+secureToken);
 				ds.writeUTF(secureToken);

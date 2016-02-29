@@ -111,8 +111,7 @@ public class DeploymentManager {
 				if(state>0){ps.setString(state, execution.getState().name());id++;}
 				if(message>0){ps.setString(message, execution.getMessage());id++;}
 				ps.setLong(id, execution.getId());
-				System.out.println(ps.toString());
-				System.out.println("Change "+ps.executeUpdate()+" lines");				
+				System.out.println(ps.toString()+" change "+ps.executeUpdate()+" lines");				
 				try{ps.close();}catch(Exception e){}
 				return true;
 			}
@@ -146,7 +145,7 @@ public class DeploymentManager {
 	/**
 	 * Return a list of deployed virtual machine executions requested by parameter ids
 	 * @param ids
-	 * @param state
+	 * @param state in case of null value return all execution in array without filter
 	 * @return
 	 */
 	public static List<VirtualMachineExecutionEntity> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state, Connection con){
@@ -157,19 +156,22 @@ public class DeploymentManager {
 			}
 			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
 						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
-						+ "WHERE vme.status = ? AND vme.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
+						+ "WHERE vme.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+")"+(state!=null?" AND vme.status = ?;":";");
 			PreparedStatement ps = con.prepareStatement(query);
-			ps.setString(1, state.name());
-			int index = 2;
+		
+			int index = 1;
 			for(Long idvme: ids){
-				ps.setLong(index++, idvme);
+				ps.setLong(index, idvme);
+				index++;
 			}
+			if(state!=null)ps.setString(index, state.name());
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			List<VirtualMachineExecutionEntity> executions = new ArrayList<VirtualMachineExecutionEntity>();
 			while(rs.next()){
 				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON,con);
 				if(pm==null){
+					state = VirtualMachineExecutionStateEnum.getEnum(rs.getString(6));
 					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
 						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
 					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
