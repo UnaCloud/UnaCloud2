@@ -50,6 +50,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 		          String message = new String(body, "UTF-8");
 		          QueueMessage qmessage = new QueueMessage();
 		          qmessage.setMessage(message);
+		          try {Thread.sleep(1000);} catch (Exception e) {}
 		          reader.processMessage(qmessage);
 		        }
 		    };
