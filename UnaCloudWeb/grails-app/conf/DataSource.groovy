@@ -1,3 +1,5 @@
+import java.io.FileInputStream;
+
 import com.losandes.utils.UnaCloudConstants;
 
 dataSource {
@@ -22,27 +24,28 @@ hibernate {
     cache.use_query_cache = false
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
-Properties prop = new Properties();
-String propFileName = UnaCloudConstants.FILE_CONFIG;
-InputStream inputStream = getClass().getClassLoader().getResourceAsStream(System.getenv().get(UnaCloudConstants.PATH_CONFIG)+propFileName);
-prop.load(inputStream);
+	Properties prop = new Properties();
+	String propFileName = System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
+	println propFileName
+	FileInputStream inputStream = new FileInputStream(propFileName);
+	prop.load(inputStream);
 // environment specific settings
 environments {
     development {
         dataSource {
 			//using properties file
-			username = prop.getProperty("dev.username");
-			password = prop.getProperty("dev.password");
+			username = prop.getProperty("dev_username");
+			password = prop.getProperty("dev_password");
 			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
-			url = prop.getProperty("dev.url").replace('\\', '');
+			url = prop.getProperty("dev_url").replace('\\', '');
         }
     }
     test {
         dataSource {
-			username = prop.getProperty("test.username");
+			username = prop.getProperty("test_username");
 			password = prop.getProperty("test.password");
             dbCreate = "create-drop"
-            url = prop.getProperty("test.url").replace('\\', '');
+            url = prop.getProperty("test_url").replace('\\', '');
         }
     }
     production {

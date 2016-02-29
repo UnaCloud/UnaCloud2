@@ -1,4 +1,6 @@
 
+import java.io.FileInputStream;
+
 import com.losandes.utils.Constants;
 import com.losandes.utils.UnaCloudConstants;
 
@@ -39,8 +41,9 @@ class BootStrap {
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
-		String propFileName = UnaCloudConstants.FILE_CONFIG;
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(System.getenv().get(UnaCloudConstants.PATH_CONFIG)+propFileName);
+		String propFileName = System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
+		println propFileName
+		InputStream inputStream = new FileInputStream(propFileName);
 		prop.load(inputStream);
 		if(HardwareProfile.count() ==0){
 			new HardwareProfile(name:'small', cores:1, ram:1024).save()
@@ -93,7 +96,7 @@ class BootStrap {
 		if(Hypervisor.count() == 0){
 			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi').save()
 			new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
-			new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
+			//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		}
 		if(Repository.count()==0){
 			Repository repo = new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty(UnaCloudConstants.MAIN_REPOSITORY))
