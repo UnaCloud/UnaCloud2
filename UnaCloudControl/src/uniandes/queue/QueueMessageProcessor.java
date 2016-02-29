@@ -50,7 +50,7 @@ import uniandes.communication.processor.AbstractResponseProcessor;
  */
 public class QueueMessageProcessor implements QueueReader{
 	
-	private final int threads = 5;
+	private final int threads = 10;
 	
 	private ExecutorService threadPool=Executors.newFixedThreadPool(threads);
 
@@ -86,8 +86,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void clearCache(QueueMessage message){
-		try {		
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {		
 			final Long imageId =  Long.parseLong(message.getMessageParts()[0]);
 			VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.REMOVING_CACHE, null);
 			VirtualImageManager.setVirtualMachine(image, con);
@@ -124,7 +123,6 @@ public class QueueMessageProcessor implements QueueReader{
 				image.setState(VirtualMachineImageEnum.AVAILABLE);
 				VirtualImageManager.setVirtualMachine(image, con);
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -135,8 +133,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void sendTaskToAgents(QueueMessage message){
-		try {
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			TaskEnum task = TaskEnum.getEnum(message.getMessageParts()[0]);
 			Long[] ids = new Long[message.getMessageParts().length-1];
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
@@ -165,7 +162,6 @@ public class QueueMessageProcessor implements QueueReader{
 					}
 				}));
 			}	
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -176,11 +172,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void doDeploy(QueueMessage message){
-		try {
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
 			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
-			System.out.println("Deploy "+deploy);
+			System.out.println("Deploy "+deploy.getId());
 			if(deploy!=null){
 				for(DeployedImageEntity image :deploy.getImages()){
 					for(final VirtualMachineExecutionEntity execution : image.getExecutions()){
@@ -220,7 +215,6 @@ public class QueueMessageProcessor implements QueueReader{
 					}
 				}				
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -245,8 +239,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void stopDeploy(QueueMessage message){
-		try {
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long[] ids = new Long[message.getMessageParts().length];
 			for (int i = 0; i < message.getMessageParts().length; i++) {
 				ids[i]=Long.parseLong(message.getMessageParts()[i]);
@@ -278,7 +271,6 @@ public class QueueMessageProcessor implements QueueReader{
 					}
 				}));
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -289,8 +281,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void addInstances(QueueMessage message){
-		try {
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long deployedImageId = Long.parseLong(message.getMessageParts()[0]);
 			Long[] ids = new Long[message.getMessageParts().length-1];
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
@@ -331,7 +322,6 @@ public class QueueMessageProcessor implements QueueReader{
 					}
 				}));
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -342,8 +332,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void requestCopy(QueueMessage message){
-		try {
-			Connection con = ControlManager.getInstance().getDBConnection();
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long executionId = Long.parseLong(message.getMessageParts()[0]);
 			Long imageId = Long.parseLong(message.getMessageParts()[1]);
 			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, con);
@@ -383,7 +372,6 @@ public class QueueMessageProcessor implements QueueReader{
 					}));
 				}				
 			}
-			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

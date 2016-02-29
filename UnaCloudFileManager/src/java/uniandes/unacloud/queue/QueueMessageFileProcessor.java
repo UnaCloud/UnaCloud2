@@ -1,4 +1,4 @@
-package uniandes.unacloud;
+package uniandes.unacloud.queue;
 
 import java.io.File;
 import java.sql.Connection;
@@ -20,6 +20,8 @@ import unacloud.share.entities.RepositoryEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.UserStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.FileManager;
+import uniandes.unacloud.MessageProcessor;
 import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
 import uniandes.unacloud.db.entities.UserEntity;

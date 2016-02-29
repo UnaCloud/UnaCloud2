@@ -9,6 +9,7 @@ import unacloud.share.db.DatabaseConnection;
 import unacloud.share.manager.ProjectManager;
 import uniandes.unacloud.communication.AgentServerSocket;
 import uniandes.unacloud.communication.DataServerSocket;
+import uniandes.unacloud.queue.QueueMessageFileProcessor;
 
 /**
  * Initializes and control all services in project
