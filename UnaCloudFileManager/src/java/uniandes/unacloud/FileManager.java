@@ -35,7 +35,7 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {	
-		return "grails-app/conf/"+UnaCloudConstants.FILE_CONFIG;
+		return System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
 	}
 
 	@Override

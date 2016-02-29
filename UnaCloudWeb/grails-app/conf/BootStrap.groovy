@@ -39,8 +39,8 @@ class BootStrap {
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
-		String propFileName = UnaCloudConstants.WEB_CONFIG;
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+		String propFileName = UnaCloudConstants.FILE_CONFIG;
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(System.getenv().get(UnaCloudConstants.PATH_CONFIG)+propFileName);
 		prop.load(inputStream);
 		if(HardwareProfile.count() ==0){
 			new HardwareProfile(name:'small', cores:1, ram:1024).save()

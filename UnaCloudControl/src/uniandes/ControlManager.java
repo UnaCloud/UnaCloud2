@@ -46,7 +46,7 @@ public class ControlManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {
-		return UnaCloudConstants.CONTROL_CONFIG;
+		return System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
 	}
 
 	/**

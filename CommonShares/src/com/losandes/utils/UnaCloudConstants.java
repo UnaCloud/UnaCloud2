@@ -24,22 +24,22 @@ public class UnaCloudConstants {
 	public static final String DB_PASS = "DB_PASS";
 	public static final String DB_IP = "DB_IP";
 	public static final String DB_PORT = "DB_PORT";
-	public static final String DB_NAME = "DB_NAME";		
+	public static final String DB_NAME = "DB_NAME";	
+	public static final String FILE_CONFIG = "config.properties";
+	public static final String PATH_CONFIG = "PATH_CONFIG";
 	
 	//UnaCloudControl Variables
 	public static final String CONTROL_SERVER_IP = "CONTROL_SERVER_IP"; //Agent
 	public static final String CONTROL_MANAGE_PM_PORT = "CONTROL_MANAGE_PM_PORT"; //Agent
 	public static final String CONTROL_MANAGE_VM_PORT = "CONTROL_MANAGE_VM_PORT"; //Agent
 	public static final String AGENT_PORT = "AGENT_PORT"; //Agent
-	public static final String CONTROL_CONFIG = "controlConfig.properties";
 	
 	//UnaClousFileManager Variables
 	public static final String WEB_FILE_SERVER_URL = "WEB_FILE_SERVER_URL";
 	public static final String FILE_SERVER_PORT = "FILE_SERVER_PORT"; //Agent
 	public static final String FILE_SERVER_IP = "FILE_SERVER_IP"; //Agent
 	public static final String VERSION_MANAGER_PORT = "VERSION_MANAGER_PORT"; //Agent
-	public static final String FILE_CONFIG = "fileConfig.properties";
-	
+		
 	//Communication agents and File Manager
 	public static final int REQUEST_IMAGE = 1;
 	public static final int SEND_IMAGE = 2;
@@ -52,7 +52,6 @@ public class UnaCloudConstants {
 	public static final String AGENT_VERSION = "AGENT_VERSION";
 	public static final String VM_DEFAULT_ALLOCATOR = "VM_DEFAULT_ALLOCATOR";
 	public static final String DEFAULT_USER_PASSWORD = "DEFAULT_USER_PASSWORD";
-	public static final String WEB_CONFIG = "config.properties";	
 		
 	//Agent
 	public static final String VMRUN_PATH = "VMRUN_PATH";

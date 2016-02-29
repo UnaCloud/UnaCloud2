@@ -23,8 +23,8 @@ hibernate {
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
 Properties prop = new Properties();
-String propFileName = UnaCloudConstants.WEB_CONFIG;
-InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+String propFileName = UnaCloudConstants.FILE_CONFIG;
+InputStream inputStream = getClass().getClassLoader().getResourceAsStream(System.getenv().get(UnaCloudConstants.PATH_CONFIG)+propFileName);
 prop.load(inputStream);
 // environment specific settings
 environments {
