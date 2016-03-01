@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
 
 import unacloud.share.queue.QueueRabbitManager;
+import unacloud.share.utils.EnvironmentManager;
 import unacloud.ExternalCloudProvider;
 import unacloud.UserGroup
 import unacloud.UserGroupService
@@ -41,7 +42,7 @@ class BootStrap {
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
-		String propFileName = System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
+		String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
 		println propFileName
 		InputStream inputStream = new FileInputStream(propFileName);
 		prop.load(inputStream);

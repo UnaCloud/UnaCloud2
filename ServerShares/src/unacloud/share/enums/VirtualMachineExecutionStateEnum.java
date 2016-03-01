@@ -9,7 +9,7 @@ public enum VirtualMachineExecutionStateEnum {
 	FAILED("FAILED",0),
 	FINISHING("FINISHING",CalendarUtils.MINUTE*5),
 	FINISHED("FINISHED",0),
-	REQUEST_COPY("REQUEST COPY",CalendarUtils.MINUTE*2),
+	REQUEST_COPY("REQUEST COPY",CalendarUtils.MINUTE*4),
 	COPYING("COPYING",CalendarUtils.MINUTE*30),
 	RECONNECTING("RECONNECTING",CalendarUtils.MINUTE*15);//because time in validation (DEPLOYED status) is four, check control procedure
 	

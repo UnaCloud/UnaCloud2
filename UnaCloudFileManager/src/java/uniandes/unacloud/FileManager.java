@@ -2,6 +2,7 @@ package uniandes.unacloud;
 
 import unacloud.share.queue.QueueMessageReceiver;
 import unacloud.share.queue.QueueRabbitManager;
+import unacloud.share.utils.EnvironmentManager;
 
 import com.losandes.utils.UnaCloudConstants;
 
@@ -35,8 +36,8 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {	
-		System.out.println("Load file: "+System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG);
-		return System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
+		System.out.println("Load file: "+EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG);
+		return EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;	
 	}
 
 	@Override

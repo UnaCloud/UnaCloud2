@@ -26,7 +26,6 @@ public class UnaCloudConstants {
 	public static final String DB_PORT = "DB_PORT";
 	public static final String DB_NAME = "DB_NAME";	
 	public static final String FILE_CONFIG = "config.properties";
-	public static final String PATH_CONFIG = "PATH_CONFIG";
 	public static final String ROOT_PATH = "ROOT_PATH";
 	
 	//UnaCloudControl Variables

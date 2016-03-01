@@ -1,5 +1,7 @@
 import java.io.FileInputStream;
 
+import unacloud.share.utils.EnvironmentManager;
+
 import com.losandes.utils.UnaCloudConstants;
 
 dataSource {
@@ -25,7 +27,7 @@ hibernate {
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
 	Properties prop = new Properties();
-	String propFileName = System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
+	String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
 	println propFileName
 	FileInputStream inputStream = new FileInputStream(propFileName);
 	prop.load(inputStream);
