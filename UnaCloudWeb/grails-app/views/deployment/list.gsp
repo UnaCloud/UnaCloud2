@@ -235,7 +235,7 @@
 				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
-																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}}">
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
 							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
 							                                   </g:if>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
