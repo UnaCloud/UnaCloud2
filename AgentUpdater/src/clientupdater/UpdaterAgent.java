@@ -57,12 +57,14 @@ public class UpdaterAgent {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+	    		System.out.println("Requesting for agent client");
 	    		ds.writeInt(UnaCloudConstants.GIVE_ME_FILES);
 	    		try(PrintWriter versionFile = new PrintWriter(new FileOutputStream(versions),false)){
 	    			versionFile.println(versionServer);	    			
 	    			try(ZipInputStream zis = new ZipInputStream(is);){
 	    				byte[] buffer=new byte[100*1024];
 	    				for(ZipEntry ze;(ze=zis.getNextEntry())!=null;){
+	    					System.out.println(ze.getName());
 	    					versionFile.println(ze.getName());
 	    					File output=new File(ze.getName());
 	    					if(output.getParentFile()!=null)output.getParentFile().mkdirs();

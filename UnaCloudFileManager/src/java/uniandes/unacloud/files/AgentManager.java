@@ -26,9 +26,9 @@ public class AgentManager {
 	 * @throws SQLException 
 	 */
 	
-	public static void copyAgentOnStream(OutputStream outputStream,File appDir, Connection con) throws IOException, SQLException{
+	public static void copyAgentOnStream(OutputStream outputStream, Connection con) throws IOException, SQLException{
 		ZipOutputStream zos=new ZipOutputStream(outputStream);
-		copyFile(zos,UnaCloudConstants.AGENT_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.AGENT_JAR),true);
+		copyFile(zos,UnaCloudConstants.AGENT_JAR,new File(System.getProperty(UnaCloudConstants.ROOT_PATH)+"agentSources/"+UnaCloudConstants.AGENT_JAR),true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw=new PrintWriter(zos);
 		List<ServerVariableEntity> variables = ServerVariableManager.getAllVariablesForAgent( con);

@@ -46,6 +46,7 @@ public class ControlManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {
+		System.out.println("Load file: "+System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG);
 		return System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
 	}
 
@@ -69,6 +70,7 @@ public class ControlManager extends ProjectManager{
 		connection = new DatabaseConnection();
 		connection.connect(reader.getStringVariable(UnaCloudConstants.DB_NAME), reader.getIntegerVariable(UnaCloudConstants.DB_PORT),
 				reader.getStringVariable(UnaCloudConstants.DB_IP), reader.getStringVariable(UnaCloudConstants.DB_USERNAME), reader.getStringVariable(UnaCloudConstants.DB_PASS));
+		connection.getConnection().close();		
 	}
 
 	/**

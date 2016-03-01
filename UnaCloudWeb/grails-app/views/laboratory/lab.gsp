@@ -90,7 +90,8 @@
 											   		</g:if>
 				                                  </td>
 				                                  <td class="column-center">	
-										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user" data-toggle="tooltip"></i></g:if>  
+										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user" data-toggle="tooltip"></i></g:if> 
+										      		<g:if test="${machine.withExecution()}"><i class="fa fa-laptop text-green" title="With executions" data-toggle="tooltip"></i></g:if>   
 										      	  </td>
 											      <!-- <td>
 											        <g:if test="${machine.monitorSystem==null}">

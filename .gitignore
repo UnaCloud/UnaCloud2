@@ -4,10 +4,10 @@ UnaCloudWeb/target-eclipse/*
 UnaCloudWeb/target/stacktrace.log
 UnaCloudWeb/grails-app/conf/config.properties
 UnaCloudControl/controlConfig.properties
-UnaCloudFileManager/target-eclipse/classes/fileConfig.properties
-UnaCloudFileManager/grails-app/conf/fileConfig.properties
 AgentClient/global.properties
 AgentClient/local.properties
 UnaCloudControl/log_control.txt
 AgentClient/imageList
 AgentClient/executions.txt
+UnaCloudFileManager/target/*
+UnaCloudFileManager/target-eclipse/*

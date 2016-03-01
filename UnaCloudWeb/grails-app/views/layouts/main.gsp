@@ -196,7 +196,13 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">              
                 <g:layoutBody/>
+              	<footer class="footer">
+			      <div class="container">
+			        <p class="text-muted"><a href="http://www.uniandes.edu.co/" target="_blank" >Universidad de Los Andes</a> - <a href="https://sistemas.uniandes.edu.co/en/" target="_blank" >Systems and Computer Engineering Department</a> Reasearch Group COMIT - 2015 </p>
+			      </div>
+		    	</footer>
             </aside><!-- /.right-side -->
+            
         </div><!-- ./wrapper -->
 
 		<asset:javascript src="main.js"/>

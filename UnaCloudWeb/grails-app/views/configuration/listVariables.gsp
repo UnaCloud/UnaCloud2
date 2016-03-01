@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.ServerVariableTypeEnum"%>
+<%@page import="unacloud.share.enums.ServerVariableTypeEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>

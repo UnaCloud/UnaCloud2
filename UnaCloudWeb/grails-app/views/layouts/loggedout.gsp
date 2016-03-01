@@ -20,5 +20,10 @@
    </head>
    <body>
 	   <g:layoutBody/>
+	   <footer class="footer">
+	      <div class="container">
+	        <p class="text-muted"><a href="http://www.uniandes.edu.co/" target="_blank" >Universidad de Los Andes</a> - <a href="https://sistemas.uniandes.edu.co/en/" target="_blank" >Systems and Computer Engineering Department</a> Reasearch Group COMIT - 2015 </p>
+	      </div>
+	   	</footer>
    </body>
 </html>

@@ -2,7 +2,6 @@ package uniandes.unacloud.communication;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.net.Socket;
 import java.sql.Connection;
 
@@ -34,7 +33,7 @@ public class AgentProcessorTask implements Runnable{
 				out.writeUTF(variable.getValue());
 				int respond = is.readInt();
 				if(respond==UnaCloudConstants.GIVE_ME_FILES){
-					AgentManager.copyAgentOnStream(out, new File("/"), con);
+					AgentManager.copyAgentOnStream(out, con);
 				}				
 			}
 		}catch (Exception e) {

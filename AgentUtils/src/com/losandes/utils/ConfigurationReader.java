@@ -71,11 +71,13 @@ public class ConfigurationReader {
 	 */
 	public void saveConfiguration() throws IOException{
 		Properties prop = new Properties();
-		OutputStream out = new FileOutputStream(this.fileName);
+		OutputStream out = new FileOutputStream(new File(this.fileName));
 		for(String key: values.keySet()){
 			prop.setProperty(key, values.get(key));
 		}
 		prop.store(out, null);
+		out.close();
+		
 	}
 	/**
 	 * Return a variable requested by parameters as String, null: value is not in file

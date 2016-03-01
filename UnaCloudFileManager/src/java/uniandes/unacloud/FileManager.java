@@ -35,6 +35,7 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {	
+		System.out.println("Load file: "+System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG);
 		return System.getenv().get(UnaCloudConstants.PATH_CONFIG)+UnaCloudConstants.FILE_CONFIG;
 	}
 
@@ -46,13 +47,16 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected void startDatabaseService() throws Exception {
+		System.out.println("Start database service");
 		connection = new DatabaseConnection();
 		connection.connect(reader.getStringVariable(UnaCloudConstants.DB_NAME), reader.getIntegerVariable(UnaCloudConstants.DB_PORT),
 				reader.getStringVariable(UnaCloudConstants.DB_IP), reader.getStringVariable(UnaCloudConstants.DB_USERNAME), reader.getStringVariable(UnaCloudConstants.DB_PASS));
+		connection.getConnection().close();		
 	}
 
 	@Override
 	protected void startQueueService() throws Exception {
+		System.out.println("Start queue service");
 		QueueRabbitManager rabbitManager = new QueueRabbitManager(reader.getStringVariable(UnaCloudConstants.QUEUE_USER),
 				reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), reader.getStringVariable(UnaCloudConstants.QUEUE_IP), 
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_FILE);
@@ -63,6 +67,7 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected void startCommunicationService() throws Exception {
+		System.out.println("Start communication service");
 		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),3).start();
 		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 3).start();
 	}

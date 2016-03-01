@@ -325,5 +325,5 @@ function editImage(){
 
 function mask(){
 	$("[data-mask]").inputmask();
-	$("[data-mask-mac]").inputmask("[AA]:[AA]:[AA]:[AA]:[AA]:[AA]");
+	//$("[data-mask-mac]").inputmask("[AA]:[AA]:[AA]:[AA]:[AA]:[AA]");
 }

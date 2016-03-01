@@ -119,4 +119,12 @@ class PhysicalMachine {
 		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
 	}
 	
+	/**
+	 * Returns true in case there is at least one execution in machine, false in case not
+	 * @return
+	 */
+	def withExecution(){
+		return VirtualMachineExecution.where {executionNode==this&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll().size()>0
+	}
+	
 }

@@ -1,5 +1,7 @@
 package domain;
 
+import hypervisorManager.HypervisorFactory;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -7,12 +9,11 @@ import java.util.Date;
 
 import reportManager.PhysicalMachineStateReporter;
 import reportManager.ServerMessageSender;
+import virtualMachineManager.PersistentExecutionManager;
 
 import com.losandes.utils.OperatingSystem;
 import com.losandes.utils.UnaCloudConstants;
 
-import hypervisorManager.HypervisorFactory;
-import virtualMachineManager.PersistentExecutionManager;
 import communication.receive.ClouderClientAttention;
 
 /**
@@ -33,33 +34,7 @@ public class Main {
     public static void main(String[] args){      	
     	
         int mainCase = 0;
-        if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
-        if(mainCase==UnaCloudConstants.TEST){
-        	try {
-				ServerMessageSender.reportPhyisicalMachine(null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        	System.exit(0);
-        	return;
-        }
-    	{
-    		//Validate if the user that is executing agent is system user
-    		String user=OperatingSystem.getWhoAmI();
-        	if(user!=null&&!user.toLowerCase().contains("system")){
-        		System.out.println("You can't execute the agent as "+user);
-        		System.exit(0);
-        		return;
-        	}
-    	}
-    	//Validates data path
-    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
-    	if(dataPath==null||dataPath.isEmpty()){
-    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
-    		System.exit(0);
-    	}
-    	//Start log 
-    	try {
+        try {
     		//Create agent log file
         	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
         		@Override
@@ -76,6 +51,32 @@ public class Main {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+        if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
+        if(mainCase==UnaCloudConstants.TEST){
+        	try {
+				ServerMessageSender.reportPhyisicalMachine(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        	System.exit(0);
+        	return;
+        }
+      //Start log     	
+    	{
+    		//Validate if the user that is executing agent is system user
+    		String user=OperatingSystem.getWhoAmI();
+        	if(user!=null&&!user.toLowerCase().contains("system")){
+        		System.out.println("You can't execute the agent as "+user);
+        		System.exit(0);
+        		return;
+        	}
+    	}    	
+    	//Validates data path
+    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
+    	if(dataPath==null||dataPath.isEmpty()){
+    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
+    		System.exit(0);
+    	}
     	//Init services
     	//register hypervisors
     	System.out.println("Register hypervisors");
