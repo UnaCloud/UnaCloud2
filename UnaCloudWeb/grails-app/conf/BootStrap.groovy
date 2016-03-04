@@ -73,7 +73,7 @@ class BootStrap {
 
 		if(ServerVariable.count() ==0){
 			//Load variables for web
-			new ServerVariable(name:UnaCloudConstants.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING, variable: 'http://'+InetAddress.getLocalHost().getHostAddress()+'/'+prop.getProperty(UnaCloudConstants.WEB_SERVER_URL),program:ServerVariableProgramEnum.WEB).save()
+			new ServerVariable(name:UnaCloudConstants.WEB_SERVER_URL,serverVariableType: ServerVariableTypeEnum.STRING, variable: prop.getProperty(UnaCloudConstants.WEB_SERVER_URL),program:ServerVariableProgramEnum.WEB).save()
 			new ServerVariable(name:UnaCloudConstants.QUEUE_IP,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_IP),program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.QUEUE_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:prop.getProperty(UnaCloudConstants.QUEUE_PORT),program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.QUEUE_USER,serverVariableType: ServerVariableTypeEnum.STRING,variable:prop.getProperty(UnaCloudConstants.QUEUE_USER),program:ServerVariableProgramEnum.SERVER).save()
