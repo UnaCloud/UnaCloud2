@@ -63,15 +63,13 @@ public class UploadImageVirtualMachineTask implements Runnable{
 				
 				try {
 					for(java.io.File f:machineExecution.getImage().getMainFile().getParentFile().listFiles())if(f.isFile()){
-						if(f.getName().endsWith("vmx")||f.getName().endsWith("vbox")||f.getName().endsWith("vdi")){
-							System.out.println("\tSending: "+f.getName());
-							zos.putNextEntry(new ZipEntry(f.getName()));
-								
-							try(FileInputStream fis=new FileInputStream(f)){
-								for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
-							}
-							zos.closeEntry();
-						}					
+						System.out.println("\tSending: "+f.getName());
+						zos.putNextEntry(new ZipEntry(f.getName()));
+							
+						try(FileInputStream fis=new FileInputStream(f)){
+							for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+						}
+						zos.closeEntry();
 					}
 					System.out.println("Files sent");					
 					zos.flush();
