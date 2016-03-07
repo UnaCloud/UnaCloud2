@@ -102,18 +102,7 @@
                                 <li id="services-deployment-tree"><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Deployments</a></li>
                             </ul>
                         </li>
-                        <!--  <li id="external-tree" class="treeview">
-                            <a href="#">
-                                <i class="fa fa-cloud-upload"></i>
-                                <span>External Services</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i>My Accounts</a></li>
-                                <li><a href="pages/charts/flot.html"><i class="fa fa-angle-double-right"></i>My Deployments</a></li>
-                                <li><a href="pages/charts/inline.html"><i class="fa fa-angle-double-right"></i>My Storage</a></li>
-                            </ul>
-                        </li>-->
+                       
                         <g:if test="${session.user.isAdmin()}">
 	                        <li id="admin-tree" class="treeview">
 	                            <a href="#">
@@ -152,31 +141,19 @@
 	                                			Infrastructure
 	                                	</a>
 	                                </li>	      
-	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015 -->                    
+	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015                   
 	                                <li id="admin-lab-tree">
 	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
 	                                			Repositories
 	                                	</a>
 	                                </li>
-	                                
-	                                <!-- <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
-	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
-	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                
-	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>-->
+	                                                               
+	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	 
+	                            	 -->
 	                            </ul>
 	                        </li>
-	                       <!--  <li id="monitoring-tree" class="treeview">
-	                            <a href="#">
-	                                <i class="fa fa-bar-chart-o"></i> <span>Monitoring</span>
-	                                <i class="fa fa-angle-left pull-right"></i>
-	                            </a>
-	                            <ul class="treeview-menu">
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Physical Monitoring status</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Virtual Monitoring status **</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Sensors management</a></li>                          
-	                            </ul>
-	                        </li>-->
+	                     
 	                        <li id="config-tree" class="treeview">
 	                            <a href="#">
 	                                <i class="fa fa-cog"></i> <span>Configuration</span>

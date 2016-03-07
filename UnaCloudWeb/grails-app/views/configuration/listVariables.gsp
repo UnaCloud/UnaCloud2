@@ -20,7 +20,7 @@
             		<div id="label-message"></div>               		     
             		<div class="box box-primary">     	
             			<div class="box-header">
-            				<h5 class="box-title">Set the server variables</h5>             										    			
+            				<h5 class="box-title">Set server variables</h5>             										    			
             			</div>
             			<p class="help-block">To modify a variable in the list, click in "Edit" button, modify value and then click "submit".</p>	
 	            		<hr>	

@@ -3,7 +3,7 @@
       <meta name="layout" content="loggedout"/>
    </head>
    <body>   
-  	 <div>	
+  	 <div class="main">	
    		<div class="login">	    
 		    <i class="fa fa-cloud"></i>
 		    <h1 class="title">UnaCloud</h1>

@@ -50,7 +50,7 @@ class BootStrap {
 			new HardwareProfile(name:'small', cores:1, ram:1024).save()
 			new HardwareProfile(name:'medium', cores:2, ram:2048).save()
 			new HardwareProfile(name:'large', cores:4, ram:4096).save()
-			new HardwareProfile(name:'xlarge',cores:8, ram:8192).save()			
+			new HardwareProfile(name:'xlarge',cores:6, ram:8192).save()			
 		}
 		if(User.count() ==0){
 			String randomString = userService.designAPIKey()

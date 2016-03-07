@@ -14,7 +14,7 @@
     </section>    
     <section class="content">     
    		 <div class="row">    		
-             <div class="col-xs-6">   
+             <div class="col-md-6 col-sm-12">   
             		<g:render template="/share/message"/>
             		<div id="label-message"></div>               		     
             		<div class="box box-primary">     	
