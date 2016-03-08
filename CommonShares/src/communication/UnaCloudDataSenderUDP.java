@@ -44,7 +44,7 @@ public class UnaCloudDataSenderUDP {
 			DatagramPacket packg = new DatagramPacket(messageBytes, messageBytes.length, host, message.getPort());
 			socketUDP.send(packg);
 			socketUDP.close();
-			System.out.println("Send message to: "+message.getIp()+" - "+message.getType().name()+":"+message.getMessage());
+			System.out.println("Send message to: "+message.getIp()+":"+message.getPort()+" - "+message.getType().name()+":"+message.getMessage());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

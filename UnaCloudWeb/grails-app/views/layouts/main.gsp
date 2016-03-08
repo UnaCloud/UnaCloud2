@@ -141,14 +141,14 @@
 	                                			Infrastructure
 	                                	</a>
 	                                </li>	      
-	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015                   
+	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015   -->                
 	                                <li id="admin-lab-tree">
 	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
 	                                			Repositories
 	                                	</a>
 	                                </li>
-	                                                               
+	                                <!--                               
 	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	 
 	                            	 -->
 	                            </ul>

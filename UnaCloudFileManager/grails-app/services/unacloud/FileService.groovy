@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.Connection
 
 import org.apache.commons.io.FileUtils;
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 
 import com.losandes.utils.Constants;
 import com.losandes.utils.UnaCloudConstants;
@@ -21,7 +23,8 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 import grails.transaction.Transactional
 
 @Transactional
-class FileService {
+class FileService implements ApplicationContextAware { 
+     ApplicationContext applicationContext 
 
 	/**
 	 * Saves files in repository
@@ -108,5 +111,10 @@ class FileService {
 		}catch(Exception e){
 			e.printStackTrace()
 		}			
+	}
+	
+	
+	def updateProperty(){
+		System.setProperty(UnaCloudConstants.ROOT_PATH, applicationContext.getResource("/").getFile().getAbsolutePath())
 	}
 }

@@ -11,3 +11,5 @@ AgentClient/imageList
 AgentClient/executions.txt
 UnaCloudFileManager/target/*
 UnaCloudFileManager/target-eclipse/*
+*.class
+*.class
