@@ -6,6 +6,7 @@ import unacloud.share.enums.UserRestrictionEnum;
 /**
  * This Controller contains actions to manage User Group services: crud and deploy cluster.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
  * @author Cesar
  *
  */

@@ -3,6 +3,7 @@ package unacloud
 /**
  * This Controller contains actions to manage hypervisor services: deployment crud.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
  * @author Cesar
  *
  */

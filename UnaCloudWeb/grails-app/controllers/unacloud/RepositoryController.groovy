@@ -3,6 +3,7 @@ package unacloud
 /**
  * This Controller contains actions to manage repository services: crud for repositories.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
  * @author CesarF, Carlos
  *
  */
