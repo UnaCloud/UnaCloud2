@@ -1,5 +1,11 @@
 package unacloud
 
+/**
+ * This Controller contains actions to manage operating system services: crud for os's.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author CesarF
+ *
+ */
 class OperatingSystemController {
 	
 	//-----------------------------------------------------------------

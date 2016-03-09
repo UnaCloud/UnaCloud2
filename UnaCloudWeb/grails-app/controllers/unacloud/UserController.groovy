@@ -9,6 +9,12 @@ import unacloud.share.enums.UserStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.UserSession;
 
+/**
+ * This Controller contains actions to manage User services: crud for user, home, login and logout, profile, user restrictions and change password.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions except login, logout and index.
+ * @author CesarF
+ *
+ */
 class UserController {
 	
 	//-----------------------------------------------------------------

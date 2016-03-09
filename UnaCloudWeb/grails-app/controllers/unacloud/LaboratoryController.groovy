@@ -4,6 +4,12 @@ import unacloud.enums.NetworkQualityEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.share.enums.TaskEnum;
 
+/**
+ * This Controller contains actions to manage laboratory services: crud for laboratory, physical ip and physical machine.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author CesarF
+ *
+ */
 class LaboratoryController {
 	
 	//-----------------------------------------------------------------

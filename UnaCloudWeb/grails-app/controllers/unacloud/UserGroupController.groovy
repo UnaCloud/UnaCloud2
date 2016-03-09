@@ -3,6 +3,12 @@ package unacloud
 import unacloud.pmallocators.AllocatorEnum;
 import unacloud.share.enums.UserRestrictionEnum;
 
+/**
+ * This Controller contains actions to manage User Group services: crud and deploy cluster.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author Cesar
+ *
+ */
 class UserGroupController {
 
 	//-----------------------------------------------------------------
@@ -111,7 +117,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Edit group form action
+	 * Renders a group information to be modified by user
 	 * @return list of users and group selected for edition
 	 */
 	def edit(){
@@ -146,7 +152,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Render page to edit restrictions
+	 * Renders page to edit restrictions
 	 *
 	 */
 	def config(){
@@ -164,7 +170,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Set restrictions of group
+	 * Sets restrictions of a selected group
 	 * @return
 	 */
 	def setRestrictions(){
@@ -200,7 +206,7 @@ class UserGroupController {
 					userGroupService.setRestriction(group,UserRestrictionEnum.ALLOCATOR.toString(),allocator?allocator.getName():null)
 					modify = true
 				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.REPOSITORY){
-					//TODO implemented
+					//TODO implement
 				}
 			}
 			if(modify){

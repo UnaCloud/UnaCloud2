@@ -7,6 +7,12 @@ import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
+/**
+ * This Controller contains actions to manage deployment services: list, deploy and stop deployments, copy instances and add instances for deployments.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author CesarF
+ *
+ */
 class DeploymentController {
 	
 	//-----------------------------------------------------------------

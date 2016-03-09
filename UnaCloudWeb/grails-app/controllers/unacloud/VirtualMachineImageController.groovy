@@ -4,6 +4,12 @@ import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.task.queue.QueueTaskerControl;
 import grails.converters.JSON
 
+/**
+ * This Controller contains actions to manage virtual machine image services: crud, and services to send messages to agents to copy or deletes images.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author Cesar
+ *
+ */
 class VirtualMachineImageController {
 
     //-----------------------------------------------------------------
@@ -151,7 +157,7 @@ class VirtualMachineImageController {
 	}
 	
 	/**
-	 * Save image information changes. Redirect6s to index when finished
+	 * Saves image information changes. Redirects to index when finished
 	 */	
 	def saveEdit(){
 		def image = VirtualMachineImage.get(params.id)
@@ -185,7 +191,7 @@ class VirtualMachineImageController {
 	}
 		
 	/**
-	 * Change image files form action.
+	 * Render virtual image page, returns to list in case it does'nt exists
 	 * @return id of the image to be edited.
 	 */	
 	def update(){

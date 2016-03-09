@@ -2,6 +2,13 @@ package unacloud
 
 import unacloud.share.enums.ServerVariableTypeEnum;
 
+/**
+ * This Controller contains actions to manage configuration services: shows and updates server variables, download and update agent.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
+ * @author CesarF
+ *
+ */
 class ConfigurationController {
 	
 	//-----------------------------------------------------------------

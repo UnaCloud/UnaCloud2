@@ -5,6 +5,12 @@ import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import javassist.bytecode.stackmap.BasicBlock.Catch;
 
+/**
+ * This Controller contains actions to manage cluster services: crud and deploy cluster.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author CesarF
+ *
+ */
 class ClusterController {
 	
 	//-----------------------------------------------------------------
@@ -42,6 +48,7 @@ class ClusterController {
 		def user = User.get(session.user.id)
 		session.user.refresh(user)
 	}
+	
 	/**
 	 * Action by default
 	 *

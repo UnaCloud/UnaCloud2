@@ -28,7 +28,7 @@ public class Main {
 
     /**
      * Responsible for sorting and starting the Clouder Client
-     * @param 
+     * @param String array
      * @throws Exception 
      */
     public static void main(String[] args){      	
