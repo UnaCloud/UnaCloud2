@@ -10,6 +10,12 @@ import unacloud.share.enums.UserRestrictionEnum;
 import unacloud.share.enums.UserStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
+/**
+ * Entity to represent a User in system
+ * An User is a UnaCloud user which access to system, upload machines, and configure deployments
+ * @author CesarF
+ *
+ */
 class User {
 	
 	//-----------------------------------------------------------------
@@ -17,7 +23,7 @@ class User {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * User name and lastname
+	 * user Fullname 
 	 */
 	String name
 	
@@ -71,7 +77,7 @@ class User {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * 
+	 * Validates if user is administrator
 	 * @return true is user is admin, false is not
 	 */
 	
@@ -83,7 +89,7 @@ class User {
 	
 	/**
 	 * Return the list of images owned by user sorted by name
-	 * @return
+	 * @return list of sorted images
 	 */
 	def getOrderedImages(){
 		if(!this.images){
@@ -95,7 +101,7 @@ class User {
 	
 	/**
 	 * Return the list of clusters owned by user sorted by name
-	 * @return
+	 * @return list of sorted cluster
 	 */
 	def getOrderedClusters(){
 		if(!this.userClusters){
@@ -109,7 +115,7 @@ class User {
 	
 	/**
 	 * Return the list of images owned by user sorted by name and state AVAILABLE
-	 * @return
+	 * @return list of available images
 	 */
 	def getAvailableImages(){
 		if(!this.images){
@@ -121,7 +127,7 @@ class User {
 	
 	/**
 	 * Return the list of images owned by user sorted by name and state different to AVAILABLE
-	 * @return
+	 * @return list of not available images
 	 */
 	def getNotAvailableImages(){
 		if(!this.images){
@@ -132,21 +138,25 @@ class User {
 	}
 	
 	/**
-	 * Return a restriction of user, null if does not exist
+	 * Search and return a restriction in user restriction list
+	 * @param user restriction to be requested
+	 * @return a requested restriction of user, null if does not exist
 	 */
 	def getRestriction(UserRestrictionEnum restriction){
 		this.restrictions.find{it.name==restriction.toString()}
 	}
 	
 	/**
-	 * Return all groups where exists the restriction, null if does not exist
+	 * Search and return a restriction in user group list
+	 * @param user restriction to be requested
+	 * @return all groups where exists the restriction, null if does not exist
 	 */
 	def getGroupsWithRestriction(UserRestrictionEnum restriction){ 
 		return UserGroup.where {users{id==this.id} && restrictions{name==restriction.toString()}}.findAll()
 	}
 	
 	/**
-	 * return the active deployments belonging to the user
+	 * List active deployments which belong to user
 	 * @return active deployments related to user
 	 */
 	def getActiveDeployments(){
@@ -159,16 +169,15 @@ class User {
 	}
 	
 	/**
-	 * Method used to return databaseId
-	 * @return
+	 * Returns database id
+	 * @return Long id
 	 */
 	def Long getDatabaseId(){
 		return id;
 	}
 	
 	/**
-	 * Disable all components that user is owner
-	 * @return
+	 * Disables User and delete all components that user is owner
 	 */
 	def deprecate(){
 		this.putAt("status", UserStateEnum.DISABLE);
@@ -185,8 +194,8 @@ class User {
 	/**
 	 * Validates if currently user has an image with the same name.
 	 * This avoids to override files in same folder.
-	 * @param name
-	 * @return
+	 * @param name of image
+	 * @return true in case image exist in user false in case not
 	 */
 	def existImage(String name){
 		return images.find{it.name==name}!=null

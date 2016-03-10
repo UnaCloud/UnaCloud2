@@ -6,6 +6,12 @@ import unacloud.enums.ClusterEnum;
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
+/**
+ * Entity to represent a Virtual Machine Image
+ * A Virtual Machine Image is a configured file for hypervisor to be deployed in Physical Machines
+ * @author CesarF
+ *
+ */
 class VirtualMachineImage {
 	
 	//-----------------------------------------------------------------
@@ -92,8 +98,8 @@ class VirtualMachineImage {
 	//-----------------------------------------------------------------	
 	
 	/**
-	 * Return the size of image in GB, MB, KB
-	 * @return
+	 * Returns the size of image in GB, MB, KB
+	 * @return String size of machines: GB, MB, LB depends of files size
 	 */
 	def String getSize(){
 		DecimalFormat df = new DecimalFormat("#.00");
@@ -111,7 +117,8 @@ class VirtualMachineImage {
 	}
 	
 	/**
-	 * Change the state of image to IN_QUEUE and clusters where it is embedded
+	 * Changes the state of image to IN_QUEUE and clusters where it is embedded
+	 * this method is used to avoid that image in cluster could not be deployed 
 	 */
 	def freeze(){
 		this.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
@@ -124,7 +131,7 @@ class VirtualMachineImage {
 	
 	/**
 	 * Returns database id
-	 * @return
+	 * @return Long id
 	 */
 	def Long getDatabaseId(){
 		return id;

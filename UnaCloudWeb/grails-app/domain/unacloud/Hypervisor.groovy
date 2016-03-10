@@ -1,5 +1,11 @@
 package unacloud
 
+/**
+ * Entity to represent a Hypervisor.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
+ *
+ */
 class Hypervisor {
 	
 	//-----------------------------------------------------------------

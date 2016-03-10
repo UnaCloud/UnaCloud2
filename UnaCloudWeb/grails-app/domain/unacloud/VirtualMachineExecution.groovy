@@ -1,12 +1,19 @@
 package unacloud
 
 import java.util.concurrent.TimeUnit
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 import unacloud.enums.IPEnum;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
+/**
+ * Entity to represent a Virtual Machine Execution
+ * A Virtual Machine Execution is an execution in a 
+ * @author CesarF
+ *
+ */
 class VirtualMachineExecution {
 	
 	//-----------------------------------------------------------------
@@ -19,12 +26,12 @@ class VirtualMachineExecution {
     String name
 	
 	/**
-	 * Virtual machine number of processors
+	 * Virtual machine hardware profile assigned
 	 */
 	HardwareProfile hardwareProfile
 	
 	/**
-	 * Net interfaces
+	 * Configured Net interfaces 
 	 */
 	static hasMany = [interfaces:NetInterface]
 	
@@ -34,12 +41,12 @@ class VirtualMachineExecution {
 	Date startTime
 	
 	/**
-	 * Date when the node was stopped
+	 * Date when the node was or should be stopped
 	 */
 	Date stopTime
 	
 	/**
-	 * Actual node state (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
+	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
 	 */
 	VirtualMachineExecutionStateEnum status
 	
@@ -54,8 +61,8 @@ class VirtualMachineExecution {
 	PhysicalMachine executionNode
 	
 	/**
-	 * 
 	 * Monitoring system configure in virtual execution
+	 * unused
 	 */
 	MonitorSystem monitorSystem
 	
@@ -107,8 +114,7 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Save entity with netinterfaces
-	 * @return
+	 * Saves entity with netinterfaces
 	 */
 	def saveExecution(){		
 		this.save(failOnError:true,flush:true)
@@ -118,8 +124,7 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Set status to finished and breaks free IP from net interfaces.
-	 * @return
+	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
 	def finishExecution(){
 		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
@@ -129,7 +134,8 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Return main IP configured in Net interfaces
+	 * Returns main IP configured in Net interfaces
+	 * currently is number one
 	 * @return
 	 */
 	def mainIp(){
@@ -137,8 +143,8 @@ class VirtualMachineExecution {
 	}
 	
 	/**
- 	 * Return time of last state from node
-	 * @return
+ 	 * Returns time of last state from node
+	 * @return last date reported in state machine graph
 	 */
 	def Date getLastStateTime(){
 		def requestExec = ExecutionRequest.find("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[sort:'requestTime', order: "desc"])
@@ -148,15 +154,17 @@ class VirtualMachineExecution {
 	
 	/**
 	 * Returns database id
-	 * @return
+	 * @return Long id
 	 */
 	def Long getDatabaseId(){
 		return id;
 	}
 	
 	/**
-	 * Method used to validates if execution must show its details based in status
-	 * @return
+	 * Validates if execution must show its details based in status\
+	 * used in views
+	 * @return true in case execution has DEPLOYED, RECONNECTING or FAILED status
+	 * 
 	 */
 	def boolean showDetails(){
 		return status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)||status.equals(VirtualMachineExecutionStateEnum.FAILED)

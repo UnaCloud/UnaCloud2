@@ -1,9 +1,10 @@
 package unacloud
 
 /**
- * @author Cesar
+ * Entity to represent an IP which is assign to Physical Machine
+ * This entity extends from IP
+ * @author CesarF
  *
- * Representation of IP from a physical machine
  */
 class PhysicalIP extends IP{
 	

@@ -6,6 +6,12 @@ import unacloud.share.enums.ServerVariableTypeEnum;
 import unacloud.pmallocators.AllocatorEnum;
 import unacloud.share.enums.ServerVariableProgramEnum
 
+/**
+ * Entity to represent a Server Variable.
+ * A Server Variable is a variable that is used by server to connect with services talk to other applications and generate configuration files for agents
+ * @author CesarF
+ *
+ */
 class ServerVariable {
 	
 	//-----------------------------------------------------------------
@@ -52,8 +58,8 @@ class ServerVariable {
 	
 	
 	/**
-	 * Return values in case variable  is chosen based in a list
-	 * @return
+	 * Return values in variables which are list, currently only used for DEFAULT ALLOCATOR
+	 * @return list of values
 	 */
 	def values(){
 		if(this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))

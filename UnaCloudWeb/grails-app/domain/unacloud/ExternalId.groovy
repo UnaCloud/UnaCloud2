@@ -1,11 +1,10 @@
 package unacloud
 
-
 /**
- * 
- * @author Cesar
- * 
- * Representation of external id in provider
+ * Entity to represent an external id in cloud provider.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
+ *
  */
 class ExternalId {
 	

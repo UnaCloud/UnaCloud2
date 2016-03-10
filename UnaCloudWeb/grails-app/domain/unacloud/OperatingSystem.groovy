@@ -1,5 +1,11 @@
 package unacloud
 
+/**
+ * Entity to represent an Operating System that is supported by UnaCloud.
+ *  
+ * @author CesarF
+ *
+ */
 class OperatingSystem {
 	
 	//-----------------------------------------------------------------

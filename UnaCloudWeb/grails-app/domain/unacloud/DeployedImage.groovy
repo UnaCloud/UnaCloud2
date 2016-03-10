@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
+/**
+ * Entity to represent a image that has been deployed in infrastructure,
+ * this entity has a relationship with deployment and executions that has been requested to be executed..
+ * @author CesarF
+ *
+ */
 class DeployedImage {
 	
 	//-----------------------------------------------------------------
@@ -30,6 +36,9 @@ class DeployedImage {
 	 */
     static belongsTo = [deployment: Deployment]
 	
+	/**
+	 * When virtual machine image is deleted, deployment history don't be. Therefore we allow image as nullable.
+	 */
 	static constraints = {
 		image nullable:true
     }
@@ -39,24 +48,24 @@ class DeployedImage {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Return the list of executions with status FINISHED or FAILED
-	 * @return
+	 * Returns the list of executions with status not equal FINISHED
+	 * @return list of active executions
 	 */
 	def getActiveExecutions(){
 		return virtualMachines.findAll{it.status !=VirtualMachineExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**
-	 * Return the current hardware profile configured in executions
-	 * @return
+	 * Returns the current hardware profile configured in executions
+	 * @return hardware profile from first execution
 	 */
 	def getDeployedHarwdProfile(){
 		return virtualMachines.first().getHardwareProfile()
 	}
 	
 	/**
-	 * Return the current hardware profile configured in executions
-	 * @return
+	 * Returns the hostname base for all deployments
+	 * @return String with the host name
 	 */
 	def getDeployedHostname(){
 		def ip = virtualMachines.first().mainIp().ip.split('\\.')
@@ -64,8 +73,8 @@ class DeployedImage {
 	}
 	
 	/**
-	 * Returns database id
-	 * @return
+	 * Returns database id for this entity
+	 * @return Long id
 	 */
 	def Long getDatabaseId(){
 		return id;

@@ -4,11 +4,17 @@ import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import groovy.model.NestedValueModel;
 
+/**
+ * Entity to represent a group or pool of IP.
+ * @author CesarF
+ *
+ */
 class IPPool {
 	
 	//-----------------------------------------------------------------
 	// Properties
 	//-----------------------------------------------------------------
+	
 	/**
 	 * Indicates if the IPs in this IPPool are public or private
 	 */
@@ -30,7 +36,7 @@ class IPPool {
 	static hasMany = [ips: ExecutionIP]
 	
 	/**
-	 * Laboratory which owns ippool
+	 * Laboratory which owns this ip pool
 	 */
 	
 	static belongsTo = [laboratory: Laboratory]
@@ -53,34 +59,34 @@ class IPPool {
 	
 	
 	/**
-	 * Method to return the ips segment quantity
+	 * Returns the quantity of available IP in pool
 	 */
 	def int getAvailableIpsQuantity(){
 		return ips.findAll{it.state == IPEnum.AVAILABLE}.size()
 	}
 	
 	/**
-	 * Method to return the ips segment quantity
+	 * Returns the quantity of used IP in pool
 	 */
 	def int getUsedIpsQuantity(){
 		return ips.findAll{it.state == IPEnum.USED || it.state == IPEnum.RESERVED}.size()
 	}
 	
 	/**
-	 * Method to return the ips segment quantity
+	 * Returns the quantity of non DISABLE IP in pool
 	 */
 	def int getIpsQuantity(){
 		return ips.findAll{it.state != IPEnum.DISABLED}.size()
 	}
 	
 	/**
-	 * Return the init range IP
+	 * Return the first of IP in range
 	 */
 	def ExecutionIP first(){
 		return ips.sort{it.ip}.getAt(0)
 	}
 	/**
-	 * Return the end range IP
+	 * Return the last IP in range
 	 */
 	def ExecutionIP last(){
 		return ips.sort{it.ip}.getAt(ips.size()-1)

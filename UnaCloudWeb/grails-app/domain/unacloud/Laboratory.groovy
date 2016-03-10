@@ -6,6 +6,12 @@ import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 
+/**
+ * Entity to represent a Laboratory.
+ * A Laboratory is a group of host or machines located in the same place, exactly how works university computer rooms.
+ * @author CesarF
+ *
+ */
 class Laboratory {
 	
 	//-----------------------------------------------------------------
@@ -33,10 +39,15 @@ class Laboratory {
 	boolean enable = true;
 	
 	/**
-	 * list of physical machines belonging to this laboratory
+	 * list of physical machines belong to this laboratory
+	 * list of IP pools belong to this laboratory
 	 */
 	static hasMany = [physicalMachines: PhysicalMachine, ipPools: IPPool]
 	
+	
+	/**
+	 * The name of laboratory must be unique
+	 */
 	static constraints = {
 		name unique: true
 	}
@@ -54,8 +65,8 @@ class Laboratory {
 	}
 
 	/**
-	 * Gets the number of ips availables
-	 * @return
+	 * Gets the number of available IP's 
+	 * @return quantity of IP's
 	 */
 	def long numberOfIps(){
 		long number = 0;
@@ -64,8 +75,8 @@ class Laboratory {
 		return number
 	}
 	/**
-	 * Return the quantity of machines that are not disabled
-	 * @return
+	 * Returns the quantity of machines that are not disabled
+	 * @return Long quantity of machines that are not DISABLED
 	 */
 	def long numberOfMachines(){
 		return physicalMachines.findAll{it.state!=PhysicalMachineStateEnum.DISABLED}.size()
@@ -73,25 +84,24 @@ class Laboratory {
 	
 	/**
 	 * Returns cluster images sorted
-	 * @return sorted images
+	 * @return list of sorted images by id
 	 */
 	def List <PhysicalMachine> getOrderedMachines(){
 		return physicalMachines.sort()
 	}
 	
 	/**
-	 * Return the list of available physical machines
-	 * @param isHigh
-	 * @return
+	 * Returns the list of available physical machines (state ON)
+	 * @param isHigh, query by high availability or not 
+	 * @return list of Physical Machines
 	 */
 	def List <PhysicalMachine> getAvailableMachines(isHigh){
 		return physicalMachines.findAll{it.state==PhysicalMachineStateEnum.ON && it.highAvailability==isHigh}.sort()
 	}
 	
 	/**
-	 * Retrun the list of available ips in lab
-	 * @param isHigh
-	 * @return
+	 * Returns the list of available execution IP in laboratory to be assigned
+	 * @return list of Execution IP
 	 */
 	def List <ExecutionIP> getAvailableIps(){
 		List <ExecutionIP> ips = new ArrayList<>()

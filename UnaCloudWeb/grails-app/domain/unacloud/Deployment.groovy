@@ -5,6 +5,12 @@ import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.share.utils.CalendarUtils;
 
+/**
+ * Entity to represent a Deployment.
+ * Deployment has a cluster, a list of image in cluster, a time range and a status
+ * @author CesarF
+ *
+ */
 class Deployment {
 	//-----------------------------------------------------------------
 	// Properties
@@ -40,6 +46,10 @@ class Deployment {
 	 */
 	static belongsTo = [user: User]
 	
+	/**
+	 * Stop time is not defined possibly
+	 * cluster could be deleted but deployment history don't
+	 */
 	static constraints = {	
 		stopTime nullable:true 
 		cluster nullable:true
@@ -131,7 +141,7 @@ class Deployment {
 	
 	/**
 	 * Verifies and refresh the deployment status
-	 * @return if the deployment is active or not after refreshing
+	 * @return After refreshing update process return true if the deployment is active or false in case of not.
 	 */
 	def isActive(){
 		if (status==DeploymentStateEnum.ACTIVE){
@@ -145,8 +155,8 @@ class Deployment {
 	}
 	
 	/**
-	 * Returns database id
-	 * @return
+	 * Returns database id for entity
+	 * @return Long id
 	 */
 	def Long getDatabaseId(){
 		return id;
@@ -155,7 +165,6 @@ class Deployment {
 	/**
 	 * Delete all history for deployment and images.
 	 * It is necessary this method due to belong property among classes
-	 * @return
 	 */
 	def deleteDeploy(){
 		for(DeployedImage image: images){

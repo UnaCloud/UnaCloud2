@@ -4,6 +4,12 @@ import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.enums.UserRestrictionEnum;
 
+/**
+ * Entity to represent a User Group
+ * An User Group is used to create restrictions for a segment of users
+ * @author CesarF
+ *
+ */
 class UserGroup {
 	
 	//-----------------------------------------------------------------
@@ -37,7 +43,7 @@ class UserGroup {
 	
 	/**
 	 * Validate if group is admin group
-	 * @return
+	 * @return true if group is for administrators, false in case not
 	 */
 	def boolean isAdmin(){
 		return name.equals(UnaCloudConstants.ADMIN_GROUP)
@@ -45,14 +51,16 @@ class UserGroup {
 	
 	/**
 	 * Validate if group is user default group
-	 * @return
+	 * @return true if group is default group, false in case not
 	 */
 	def boolean isDefault(){
 		return name.equals(UnaCloudConstants.USERS_GROUP)
 	}
 		
 	/**
-	 * Return a restriction of user, null if does not exist
+	 * Searches and returns a restriction that is requested
+	 * @param restriction to be search in group restriction list
+	 * @return a restriction of user, null if does not exist
 	 */
 	def getRestriction(UserRestrictionEnum restriction){
 		this.restrictions.find{it.name==restriction.toString()}

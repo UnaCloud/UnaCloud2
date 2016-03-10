@@ -1,11 +1,10 @@
 package unacloud
 
 /**
- * @author Cesar
+ * Entity to represent a Hardware Profile base in external cloud providers.
+ * @author CesarF
  *
- * Representation of HardwareProfile based in external cloud models
  */
-
 class HardwareProfile {
 	
 	//-----------------------------------------------------------------

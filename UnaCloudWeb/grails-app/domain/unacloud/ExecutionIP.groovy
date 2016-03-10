@@ -4,9 +4,10 @@ import unacloud.IP;
 import unacloud.enums.IPEnum;
 
 /**
- * @author Cesar
- *
- * Representation of IP to use in virtual machines
+ * Entity to represent an ExecutionIP.
+ * An Execution IP is a kind of IP that is used for a Virtual Machine
+ * 
+ * @author CesarF
  */
 class ExecutionIP extends IP{
 	
@@ -16,6 +17,7 @@ class ExecutionIP extends IP{
 	
 	/**
 	 * State of IP
+	 * USED,RESERVED,DISABLED,AVAILABLE
 	 */
 	IPEnum state = IPEnum.AVAILABLE
 	

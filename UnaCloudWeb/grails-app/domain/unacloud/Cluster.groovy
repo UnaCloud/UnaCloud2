@@ -6,6 +6,11 @@ import unacloud.enums.ClusterEnum;
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
+/**
+ * Entity to represent a Cluster as a group of virtual machine image which have to be deployed together.
+ * @author CesarF
+ *
+ */
 class Cluster {
 	
 	//-----------------------------------------------------------------
@@ -29,6 +34,7 @@ class Cluster {
 	
 	/**
 	 * State of cluster
+	 * it could be UNAVAILABLE, DISABLE, AVAILABLE, FREEZE
 	 */
 	ClusterEnum state = ClusterEnum.AVAILABLE;
 	
@@ -56,8 +62,8 @@ class Cluster {
 	}
 	
 	/**
-	 * Validates if cluster is FREEZE. If all images are available changes status to AVAILABLE
-	 * @return
+	 * Validates if cluster is FREEZE. 
+	 * If all images are available changes status to AVAILABLE
 	 */
 	def update(){
 		if(state.equals(ClusterEnum.FREEZE)
