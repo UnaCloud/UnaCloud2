@@ -8,8 +8,10 @@ import grails.transaction.Transactional
 // Creada por Carlos E. Gomez - diciembre 11 de 2015
 /**
  * 
+ * This service contains all methods to manage Repository: Repository crud methods.
+ * This class connects with database using hibernate
  * @author Carlos
- * Refactor by Cesar Forero 
+ * @author Refactor by CesarF
  *
  */
 @Transactional

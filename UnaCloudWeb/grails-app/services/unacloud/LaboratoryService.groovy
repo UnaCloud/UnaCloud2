@@ -12,6 +12,12 @@ import com.losandes.utils.Ip4Validator
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Laboratory: return a list of hardware profiles and query by name filter.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class LaboratoryService {
 
@@ -76,14 +82,14 @@ class LaboratoryService {
 	
 	/**
 	 * Set values in a host machine
-	 * @param ip
-	 * @param name
-	 * @param cores
-	 * @param pCores
-	 * @param ram
-	 * @param osId
-	 * @param mac
-	 * @param host
+	 * @param ip new ip for host
+	 * @param name new name
+	 * @param cores new logical cores quantity
+	 * @param pCores new physical cores quantity
+	 * @param ram new memory in host
+	 * @param osId new operating system id
+	 * @param mac new MAC address
+	 * @param host new name in network
 	 * @return
 	 */
 	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host){
@@ -100,9 +106,8 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Change the status of a laboratory
+	 * Changes the status of a laboratory
 	 * @param lab laboratory to be edited
-	 * @return
 	 */
 	def setStatus(Laboratory lab){
 		if(lab.enable)lab.putAt("enable", false)
@@ -118,12 +123,11 @@ class LaboratoryService {
 		lab.delete()
 	}
 	/**
-	 * Modified basic characteristics in lab
+	 * Modifies basic characteristics in lab
 	 * @param lab Laboratory to be modified
 	 * @param name new name of laboratory
 	 * @param netConfig Network configuration
 	 * @param highAvailability if lab is high availability
-	 * @return
 	 */
 	def setValues(Laboratory lab, String name, NetworkQualityEnum netConfig, highAvailability){
 		lab.putAt("name", name)
@@ -136,10 +140,9 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Remove a valid IP in a lab
+	 * Removes a valid IP in a lab
 	 * @param lab laboratory to be modified
 	 * @param ip to be removed
-	 * @return
 	 */
 	def deleteIP(Laboratory lab, ip){
 		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
@@ -149,10 +152,9 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Change the state of a IP from AVAILABLE to DISABLE and vis
+	 * Changes the state of a IP from AVAILABLE to DISABLE and vis
 	 * @param lab laboratory allows IP
 	 * @param ip IP to be modified
-	 * @return
 	 */
 	def setStatusIP(Laboratory lab, ip){
 		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
@@ -165,9 +167,8 @@ class LaboratoryService {
 	/**
 	 * Deletes a IP Pool from a lab
 	 * Validates if IP Pool have ips Unavailable
-	 * @param lab
-	 * @param pool
-	 * @return
+	 * @param lab where is assigned ips
+	 * @param pool of ip to be deleted 
 	 */
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
@@ -178,13 +179,12 @@ class LaboratoryService {
 	
 	/**
 	 * Create a new Pool in a lab, validates if range is valid
-	 * @param lab
-	 * @param privateNet
-	 * @param netGateway
-	 * @param netMask
-	 * @param ipInit
-	 * @param ipEnd
-	 * @return
+	 * @param lab where will be assign ip's
+	 * @param privateNet if network is private or public
+	 * @param netGateway gateway
+	 * @param netMask mask for network
+	 * @param ipInit first ip 
+	 * @param ipEnd last ip
 	 */
 	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd){
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
@@ -199,7 +199,6 @@ class LaboratoryService {
 	 * Validates if there are not deployments in host
 	 * @param lab laboratory where is located the host
 	 * @param host to be deleted
-	 * @return
 	 */
 	def deleteHost(Laboratory lab, host){
 		PhysicalMachine hostMachine = PhysicalMachine.where{id==host&&laboratory==lab}.find()
@@ -215,9 +214,9 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Create a task to stop, update agent or clear cache in a list of host machines
+	 * Creates a task to stop, update agent or clear cache in a list of host machines
+	 * Sends task for queue if it is valid
 	 * @param machines
-	 * @return
 	 */
 	def createRequestTasktoMachines(machines, task, user){
 		if(task==null||machines.size()==0)throw new Exception("Invalid values");
@@ -230,11 +229,10 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Calculate the quantity of available deployments by hardware profiles
-	 * @param lab
-	 * @param hwProfiles
-	 * @param highAvailability
-	 * @return
+	 * Calculates the quantity of available deployments by hardware profiles
+	 * @param lab where will be calculated the available resources
+	 * @param hwProfiles profiles to calculate available deployments
+	 * @param highAvailability if high availability resources should be calculated
 	 */
 	def calculateDeploys(Laboratory lab, def hwProfiles, highAvailability){
 		TreeMap<String, Integer> results = new TreeMap<String,Integer>();	
@@ -265,9 +263,9 @@ class LaboratoryService {
 	
 	/**
 	 * Method used to create a valid IP Range
-	 * @param ipInit
-	 * @param ipEnd
-	 * @return
+	 * @param ipInit first ip
+	 * @param ipEnd last ip
+	 * @return list of valid ip in range
 	 */
 	private ArrayList<String> createRange(ipInit,ipEnd){
 		Ip4Validator validator = new Ip4Validator();

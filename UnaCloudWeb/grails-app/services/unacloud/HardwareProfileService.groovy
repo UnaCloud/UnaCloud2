@@ -2,6 +2,12 @@ package unacloud
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Hardware profiles: return a list of hardware profiles and query by name filter.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class HardwareProfileService {
 

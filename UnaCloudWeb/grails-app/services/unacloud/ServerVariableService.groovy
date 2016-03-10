@@ -4,6 +4,12 @@ import com.losandes.utils.UnaCloudConstants;
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Server Variable: return default allocator and file manager url
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class ServerVariableService {
 

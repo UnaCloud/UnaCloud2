@@ -5,6 +5,12 @@ import unacloud.share.enums.UserRestrictionEnum;
 import unacloud.pmallocators.AllocatorEnum;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage User restriction: these methods returns values like allocator, repository and labas defined to be used for user.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class UserRestrictionService {
 	
@@ -41,9 +47,9 @@ class UserRestrictionService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Return the list of valid Hardware Profiles that can be used by user
-	 * @param user
-	 * @return
+	 * Returns the list of valid Hardware Profiles that can be used by user
+	 * @param user to request hardware profiles
+	 * @return list of available hardware profile  for user
 	 */
     def getAvoidHwdProfiles(User user) {
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES)
@@ -58,9 +64,9 @@ class UserRestrictionService {
     }
 	
 	/**
-	 * Return the list of valid Laboratories to deploy virtual executions
-	 * @param user
-	 * @return
+	 * Returns the list of valid Laboratories to deploy virtual executions
+	 * @param user to request available labs
+	 * @return list of available labs for user
 	 */
 	def getAvoidLabs(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.ALLOWED_LABS)
@@ -75,10 +81,10 @@ class UserRestrictionService {
 	}
 	
 	/**
-	 * Return the configured allocator in restrictions for user, in case there is not configured an
+	 * Returns the configured allocator in restrictions for user, in case there is not configured an
 	 * allocator restriction for user it takes default allocator in server variable
-	 * @param user
-	 * @return
+	 * @param user to request allocator
+	 * @return defined allocator in user, default allocator in case user doesn't have allocator defined
 	 */
 	def getAllocator(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.ALLOCATOR)
@@ -93,8 +99,8 @@ class UserRestrictionService {
 	
 	/**
 	 * Return the configured repository in restrictions for user, in case 
-	 * @param user
-	 * @return
+	 * @param user to request repository
+	 * @return repository for user, returns default in case user doesn't have repository defined
 	 */
 	def getRepository(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.REPOSITORY)

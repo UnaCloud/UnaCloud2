@@ -8,6 +8,12 @@ import unacloud.task.queue.QueueTaskerControl;
 import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
 
+/**
+ * This service contains all methods to manage User: User crud methods, change password, validate login, and changes api key.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 class UserService {
 	
 	//-----------------------------------------------------------------
@@ -25,6 +31,12 @@ class UserService {
 	// Methods
 	//-----------------------------------------------------------------
 	
+	/**
+	 * Returns a user searched by password and username
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	def User getUser(String username, String password){
 		return User.findWhere(username:username,password:Hasher.hashSha256(password));
 	}
@@ -150,7 +162,6 @@ class UserService {
 	 * @param user to be modified
 	 * @param password current Password
 	 * @param newPassword new Password
-	 * @return
 	 */
 	def changePassword(User user, String password, String newPassword){
 		if(!user.password.equals(Hasher.hashSha256(password)))throw new Exception('Current Password is invalid')
@@ -161,7 +172,7 @@ class UserService {
 	/**
 	 * Returns a requested user based in userId
 	 * @param userId
-	 * @return
+	 * @return user requested by id
 	 */
 	def User getUser(long userId){
 		return User.get(userId)

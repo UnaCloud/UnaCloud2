@@ -10,6 +10,12 @@ import com.losandes.utils.UnaCloudConstants;
 
 import unacloud.share.enums.ServerVariableProgramEnum;
 
+/**
+ * This service contains all methods to manage configuration: update server variables, manager agent version and download agent files.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class ConfigurationService {
 	
@@ -51,7 +57,6 @@ class ConfigurationService {
 	 * @param outputStream file output stream for download
 	 * @param appDir directory where the zip will be stored
 	 */
-	//TODO use constants to manager strings
 	def copyUpdaterOnStream(OutputStream outputStream,File appDir){
 		ZipOutputStream zos=new ZipOutputStream(outputStream);
 		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.UPDATER_JAR),true);

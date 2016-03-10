@@ -15,6 +15,12 @@ import webutils.ImageRequestOptions;
 import grails.transaction.Transactional
 import grails.util.Environment;
 
+/**
+ * This service contains all methods to manage deployment: create and delete cluster.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class DeploymentService {	
 	
@@ -136,11 +142,10 @@ class DeploymentService {
 	
 	/**
 	 * Add new instances in ImageRequestOptions array to a DeployedImage
-	 * @param image
-	 * @param user
-	 * @param time
-	 * @param requests
-	 * @return
+	 * @param image to adding instances
+	 * @param user who request add instances
+	 * @param time for execution
+	 * @param requests group of deployment properties for executions
 	 */
 	def synchronized addInstances(DeployedImage image, User user, long time, ImageRequestOptions request){
 		
@@ -182,9 +187,9 @@ class DeploymentService {
 		}
 		image.virtualMachines.addAll(executions)
 		image.save(failOnError:true,flush:true)
-		//if(!Environment.isDevelopmentMode()){
+		if(!Environment.isDevelopmentMode()){
 			QueueTaskerControl.addInstancesToDeploy(executions,user)
-		//}
+		}
 		
 	}
 	
@@ -204,9 +209,9 @@ class DeploymentService {
 	}
 	/**
 	 * Create a task to stop virtual machines executions in list
-	 * If state is FAILED changes to FINISHED else to REQUEST_FINISH
+	 * If state is FAILED changes to FINISHED else to FINISHING
 	 * @param executions
-	 * @return
+	 * @param user that request stop executions
 	 */
 	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions, User requester){
 		List<VirtualMachineExecution> executionsToStop = new ArrayList<VirtualMachineExecution>()
@@ -228,7 +233,6 @@ class DeploymentService {
 	 * @param execution to create a copy from its image
 	 * @param user user owner
 	 * @param newName name for image copy
-	 * @return
 	 * @throws Exception
 	 */
 	//Validates capacity

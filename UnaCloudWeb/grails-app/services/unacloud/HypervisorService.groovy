@@ -2,6 +2,12 @@ package unacloud
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Hypervisor: crud hypervisor
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class HypervisorService {
 

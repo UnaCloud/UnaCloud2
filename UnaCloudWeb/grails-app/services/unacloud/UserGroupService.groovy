@@ -5,6 +5,12 @@ import com.losandes.utils.UnaCloudConstants;
 import unacloud.utils.Hasher;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage User group and users in groups: UserGroup crud methods, and methods to add and remove user from groups.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class UserGroupService {
 
@@ -26,7 +32,6 @@ class UserGroupService {
 	 * Add a user to a group
 	 * @param group to add user
 	 * @param user 
-	 * @return
 	 */
 	def addToGroup(UserGroup group, User user){
 		if(!group.users)group.users =[]
@@ -67,7 +72,7 @@ class UserGroupService {
 	
 	/**
 	 * Method to valid if a user is part of administrators group
-	 * @param user: to be valid
+	 * @param user: to be validate
 	 * @return true is admin, false is not
 	 */
 	def boolean isAdmin(User user){
@@ -77,7 +82,7 @@ class UserGroupService {
 	/**
 	 * Method to valid if a userId belongs to a user that is part of administrators group
 	 * @param userId
-	 * @return
+	 * @return true if user id is from a admin user, false in case not
 	 */
 	def boolean isAdmin(long userId){
 		User user = User.get(userId)
@@ -87,7 +92,7 @@ class UserGroupService {
 	
 	/**
 	 * Saves a new group with the given users
-	 * @param g new empty group
+	 * @param name new name group
 	 * @param users list of users that will belong to the group
 	 */
 	def addGroup(name, users){
@@ -140,18 +145,14 @@ class UserGroupService {
 	 * @param value restriction value
 	 */	
 	def setRestriction(UserGroup group, String name, String value){
-		print value
 		UserRestriction old = group.restrictions.find{it.name==name}
-		println "alloc found: "+old
 		if(!old&&value){
 			def newRestriction= new UserRestriction(name: name, value: value)
 			newRestriction.save(failOnError: true)
-			println "alloc created: "+newRestriction
 			group.restrictions.add(newRestriction)
 			group.save(failOnError: true)
 		}
 		else{
-			println "setting value on old: "+old
 			if(!value||value.equals("")){
 				group.restrictions.remove(old)
 				old.delete()
@@ -166,7 +167,6 @@ class UserGroupService {
 	/**
 	 * Remove user from all groups where it is added
 	 * @param user to be removed
-	 * @return
 	 */
 	def removeUser(User user){
 		def groups = UserGroup.where{users{id == user.id}}.findAll()

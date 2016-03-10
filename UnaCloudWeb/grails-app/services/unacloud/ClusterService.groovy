@@ -3,6 +3,12 @@ package unacloud
 import unacloud.enums.ClusterEnum;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage cluster: create and delete cluster.
+ * This class connects with database using hibernate 
+ * @author CesarF
+ *
+ */
 @Transactional
 class ClusterService {
 

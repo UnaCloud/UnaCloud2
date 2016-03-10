@@ -11,6 +11,12 @@ import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage User Virtual Machine Image: Crud methods, some methods send tasks in queue
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class VirtualMachineImageService {
 
@@ -46,6 +52,7 @@ class VirtualMachineImageService {
 	 * @param username image access user
 	 * @param password image access password
 	 * @param user owner user
+	 * @return token to validate image 
 	 */
 	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, username, password,User user) {
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
@@ -63,6 +70,7 @@ class VirtualMachineImageService {
 	 * @param name image name
 	 * @param publicImage public image used as template
 	 * @param user owner user
+	 * @return true in case task has been send, false in case not
 	 */
 	def newPublic(name, imageId, User user){
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
@@ -80,8 +88,8 @@ class VirtualMachineImageService {
 	}
 	
 	/**
-	 * Return all available public images
-	 * @return
+	 * Returns all available public images
+	 * @return list of available public images
 	 */
 	def getAvailablePublicImages(){
 		return VirtualMachineImage.where{isPublic==true&&state==VirtualMachineImageEnum.AVAILABLE}.findAll()
@@ -92,6 +100,7 @@ class VirtualMachineImageService {
 	 * @param user owner user
 	 * @param repository image repository
 	 * @param image image to be removed
+	 * @return true in case image has been deleted, false in case not
 	 */
 	
 	def deleteImage(User user,VirtualMachineImage image){		
@@ -106,9 +115,8 @@ class VirtualMachineImageService {
 	}
 	
 	/**
-	 * Send a task to remove image from cache in all physical machines
+	 * Sends a task to remove image from cache in all physical machines
 	 * @param image
-	 * @return
 	 */
 	def clearCache(VirtualMachineImage image){
 		image.freeze()
@@ -131,7 +139,7 @@ class VirtualMachineImageService {
 	}
 	
 	/**
-	 * Alter image privacy from public to private (delete public file in imageTemplates folder)
+	 * Alters image privacy from public to private (delete public file in imageTemplates folder)
 	 * or private to public (create public file in imageTemplates folder).
 	 * @param toPublic
 	 * @param image
@@ -151,6 +159,7 @@ class VirtualMachineImageService {
 	 * @param i image to be edited
 	 * @param files new set of files
 	 * @param user owner user
+	 * @return token to validates image
 	 */	
 	def updateFiles(VirtualMachineImage image){		
 		String token = Hasher.hashSha256(image.getName()+new Date().getTime())
