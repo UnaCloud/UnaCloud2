@@ -13,6 +13,12 @@ import uniandes.unacloud.db.entities.UserEntity;
 import unacloud.share.db.HypervisorManager;
 import grails.converters.JSON
 
+/**
+ * This Controller contains actions to manage upload file process
+ * This class process request to upload new images in UnaCloud or update files
+ * @author CesarF
+ *
+ */
 class FileController {
 	
 	//-----------------------------------------------------------------
@@ -20,7 +26,7 @@ class FileController {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Representation of image services
+	 * Representation of file services
 	 */
 	
 	FileService fileService
@@ -93,7 +99,7 @@ class FileController {
 	
 	
 	/**
-	 * Validates file parameters are correct and save new files for the image.
+	 * Validates file parameters are correct and save new files for image.
 	 * Redirects to index when finished or renders an error message if uploaded
 	 * files are not valid.
 	 */

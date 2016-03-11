@@ -4,6 +4,11 @@ import grails.util.Environment;
 import unacloud.FileService
 import uniandes.unacloud.FileManager;
 
+/**
+ * Initial point in app
+ * @author Cesar
+ *
+ */
 class BootStrap {
 
 	FileService fileService
@@ -16,7 +21,7 @@ class BootStrap {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		fileService.updateProperty()
+		fileService.updateProperty();
 		
 		println 'Path: '+System.getProperty(UnaCloudConstants.ROOT_PATH)
     }

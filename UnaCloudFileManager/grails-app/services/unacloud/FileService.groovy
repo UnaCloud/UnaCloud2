@@ -22,6 +22,12 @@ import uniandes.unacloud.db.entities.UserEntity
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage files: saves files for a new image or update files for a current image.
+ * This class not use hibernate connection to database is using UnaCloud pool database connection library
+ * @author CesarF
+ *
+ */
 @Transactional
 class FileService implements ApplicationContextAware { 
      ApplicationContext applicationContext 
@@ -31,7 +37,7 @@ class FileService implements ApplicationContextAware {
 	 * All files must be valid (extension file)
 	 * @param files
 	 * @param token
-	 * @return
+	 * @return boolean, true if image was copy to file repository or not.
 	 */
     def upload(files, String token, String mainExtension){
 		def copy = null;
@@ -75,7 +81,7 @@ class FileService implements ApplicationContextAware {
 	}
 	
 	/**
-	 * Changes image files in repository
+	 * Update image files in repository
 	 * @param files list of files
 	 * @param token to query image
 	 */
@@ -113,7 +119,10 @@ class FileService implements ApplicationContextAware {
 		}			
 	}
 	
-	
+	/**
+	 * This method is used to set system property with the current path for project.
+	 * The purpose of this method is to set variable base in groovy environment to be used in java classes	
+	 */
 	def updateProperty(){
 		System.setProperty(UnaCloudConstants.ROOT_PATH, applicationContext.getResource("/").getFile().getAbsolutePath())
 	}
