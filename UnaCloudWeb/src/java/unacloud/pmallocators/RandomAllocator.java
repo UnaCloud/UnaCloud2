@@ -8,8 +8,17 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute Random allocator algorithms
+ * Assigns a virtual machine execution to a physical machine based in random number.
+ * @author Clouder
+ *
+ */
 public class RandomAllocator extends VirtualMachineAllocator {
 
+	/**
+	 * Assigns a virtual machine execution to a physical machine based in random number.
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException{

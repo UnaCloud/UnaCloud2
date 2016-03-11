@@ -1,5 +1,10 @@
 package unacloud.pmallocators;
 
+/**
+ * Exception to manage errors in Allocator algorithms
+ * @author Clouder
+ *
+ */
 public class AllocatorException extends Exception {
 
 	/**

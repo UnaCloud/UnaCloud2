@@ -8,8 +8,20 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute Sorting allocator algorithm
+ * Extends BEST FIT algorithm adding user as a variable in sort process
+ * @author Clouder
+ *
+ */
 public class SortingAllocator extends VirtualMachineAllocator {
 	
+	/**
+	 * Class which implements Comparator
+	 * Compare physical machines base in cores and user on machine
+	 * @author Clouder
+	 *
+	 */
 	public class PhysicalMachineComparator implements Comparator<PhysicalMachine>{
 		Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions;
 		
@@ -33,6 +45,9 @@ public class SortingAllocator extends VirtualMachineAllocator {
 		}
 	}
 	
+	/**
+	 * Extends BEST FIT algorithm adding user as a variable in sort process
+	 */
 	@Override
 	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new PhysicalMachineComparator(physicalMachineDescriptions));

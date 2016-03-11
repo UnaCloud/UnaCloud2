@@ -8,15 +8,33 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute Best Fit allocator algorithms
+ * It sorts physical machines based in available resources, assigns an execution in first machine in list and sorts again.
+ * @author Clouder
+ *
+ */
 public class FirstFitDecreasingAllocator extends VirtualMachineAllocator {
 	
+	/**
+	 * Class which implements Comparator
+	 * Compare physical machines base in cores
+	 * @author Clouder
+	 *
+	 */
 	public class PhysicalMachineComparator implements Comparator<PhysicalMachine>{
+		/**
+		 * Physical machines information
+		 */
 		Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions;
 		
 		public PhysicalMachineComparator(Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions) {
 			this.physicalMachineDescriptions=physicalMachineDescriptions;
 		}
 		
+		/**
+		 * Compares physical machines, return cores available.
+		 */
 		public int compare(PhysicalMachine p1, PhysicalMachine p2) {
 			PhysicalMachineAllocationDescription pmad1=physicalMachineDescriptions.get(p1.getDatabaseId());
 			PhysicalMachineAllocationDescription pmad2=physicalMachineDescriptions.get(p2.getDatabaseId());
@@ -25,7 +43,9 @@ public class FirstFitDecreasingAllocator extends VirtualMachineAllocator {
 			return cores;
 		}
 	}
-	
+	/**
+	 * It sorts physical machines based in available resources, assigns an execution in first machine in list and sorts again.
+	 */
 	@Override
 	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new PhysicalMachineComparator(physicalMachineDescriptions));

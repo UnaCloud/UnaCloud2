@@ -8,8 +8,17 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute Round Robin allocator algorithms
+ * Assigns a virtual machine for each physical machine order by physical machine id
+ * @author Clouder
+ *
+ */
 public class RoundRobinAllocator extends VirtualMachineAllocator {
 
+	/**
+	 * Assigns a virtual machine for each physical machine order by physical machine id
+	 */
 	@Override
 	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {
