@@ -4,7 +4,7 @@ import unacloud.share.enums.ServerVariableTypeEnum;
 
 /**
  * This class represents a Server Variable entity saved in database
- * @author Cesar
+ * @author CesarF
  *
  */
 public class ServerVariableEntity {

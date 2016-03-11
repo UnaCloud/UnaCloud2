@@ -12,15 +12,16 @@ import uniandes.unacloud.db.entities.UserEntity;
 import unacloud.share.db.RepositoryManager;
 
 /**
- * Generic class used to query and update User entity in database
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for User Entity. 
+ * @author CesarF
  *
  */
 public class UserManager {
 	
 	/**
-	 * Returns an User entity request by param id
+	 * Returns an User entity request by parameter id
 	 * @param id from user
+	 * @param con Database Connection
 	 * @return User
 	 */
 	public static UserEntity getUser(Long id,Connection con){
@@ -40,9 +41,11 @@ public class UserManager {
 	}
 	
 	/**
-	 * Returns an user entity with allow repository
-	 * @param id
-	 * @return
+	 * Returns an user entity with assigned repository
+	 * @param id to search user
+	 * @param con Database Connection
+	 * @return User Entity
+	 * 
 	 */
 	public static UserEntity getUserWithRepository(Long id,Connection con){
 		try {
@@ -70,7 +73,8 @@ public class UserManager {
 	
 	/**
 	 * Deletes a user and all clusters, images, external accounts, user restrictions where he is owner
-	 * @param user
+	 * @param user to be deleted
+	 * @param con Database Connection
 	 */
 	public static void deleteUser(UserEntity user,Connection con){
 		if(user.getId()==null||user.getId()<1)return;
@@ -79,8 +83,7 @@ public class UserManager {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());
 			ps.setLong(2, user.getId());
-			System.out.println(ps.toString());
-			System.out.println("Delete User "+ps.executeUpdate()+" lines");
+			System.out.println("Delete User "+ps.toString()+" - "+ps.executeUpdate()+" lines");
 			try{ps.close();}catch(Exception e){}
 		} catch (Exception e) {
 			e.printStackTrace();

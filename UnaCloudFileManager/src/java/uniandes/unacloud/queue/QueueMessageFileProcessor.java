@@ -28,8 +28,8 @@ import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 
 /**
- * Class to process messages sent to manage files
- * @author Cesar
+ * Class to process messages sent to manage files from web application
+ * @author CesarF
  *
  */
 public class QueueMessageFileProcessor implements QueueReader{

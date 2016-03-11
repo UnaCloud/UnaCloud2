@@ -14,7 +14,8 @@ import uniandes.unacloud.files.AgentManager;
 
 /**
  * Class used to process task to update agent
- * @author Cesar
+ * receives message from agent validate if agent request agent files and call manager to copy files in socket stream
+ * @author CesarF
  *
  */
 public class AgentProcessorTask implements Runnable{

@@ -9,12 +9,14 @@ import java.util.concurrent.Executors;
 
 /**
  * Abstract class to be implemented in processes to receive messages from agents in ports.
- * @author Cesar
+ * @author CesarF
  *
  */
 public abstract class AbstractServerSocket extends Thread{
+	
 	private ExecutorService threadPool;
 	private int listenPort;
+	
 	public AbstractServerSocket(int listenPort, int threads) {
 		this.listenPort = listenPort;
 		threadPool=Executors.newFixedThreadPool(3);
@@ -38,8 +40,8 @@ public abstract class AbstractServerSocket extends Thread{
 	}
 	/**
 	 * Return the runnable where socket is processed
-	 * @param s
-	 * @return
+	 * @param socket
+	 * @return runnable process to be added to thread pool
 	 */
-	protected abstract Runnable processSocket(Socket s) throws Exception;
+	protected abstract Runnable processSocket(Socket socket) throws Exception;
 }

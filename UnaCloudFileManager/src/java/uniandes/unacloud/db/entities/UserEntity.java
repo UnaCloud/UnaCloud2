@@ -5,8 +5,8 @@ import unacloud.share.enums.UserStateEnum;
 
 
 /**
- * Class to represent an User from database.
- * @author Cesar
+ * Class to represent an User entity from database.
+ * @author CesarF
  *
  */
 public class UserEntity {

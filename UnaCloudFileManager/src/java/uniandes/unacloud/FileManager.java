@@ -14,8 +14,9 @@ import uniandes.unacloud.queue.QueueMessageFileProcessor;
 
 /**
  * Initializes and control all services in project
- * @author Cesar
- *
+ * extends from Project Manager class and works as a Singleton class.
+ * 
+ * @author CesarF
  */
 public class FileManager extends ProjectManager{
 	
@@ -25,6 +26,10 @@ public class FileManager extends ProjectManager{
 		super();
 	}
 	
+	/**
+	 * Returns file manager instance
+	 * @return instance
+	 */
 	public static FileManager getInstance(){
 		try {
 			if(fileManager==null)fileManager = new FileManager();

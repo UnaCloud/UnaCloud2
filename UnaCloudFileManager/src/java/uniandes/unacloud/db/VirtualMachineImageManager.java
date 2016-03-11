@@ -12,17 +12,21 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 import unacloud.share.db.RepositoryManager;
 
 /**
- * Generic class used to create queries and updates for VirtualMachineImage entity
- * Added repository queries
- * Added Hypervisor queries
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for VirtualMachine entity. 
+ * added some queries for Repository and Hypervisor entities
+ * @author CesarF
  *
  */
 public class VirtualMachineImageManager {
 	
 	/**
-	 * Method used to return a virtual machine image entity with information about file and repository
-	 * @return
+	 * Returns a virtual machine image entity with information about file and repository
+	 * @param id
+	 * @param state
+	 * @param withUser
+	 * @param withConfigurer
+	 * @param con Database Connection
+	 * @return virtual machine image
 	 */
 	//TODO improve query to repository, use hash map
 	public static VirtualImageFileEntity getVirtualImageWithFile(Long id, VirtualMachineImageEnum state, boolean withUser, boolean withConfigurer, Connection con){
@@ -51,8 +55,10 @@ public class VirtualMachineImageManager {
 	}	
 	
 	/**
-	 * Method used to return a virtual machine image entity based in a token 
-	 * @return
+	 * Returns a virtual machine image entity based in token 
+	 * @param token
+	 * @param con Database connection
+	 * @return Virtual machine image, could be null
 	 */
 	public static VirtualImageFileEntity getVirtualImageWithFile(String token,Connection con){
 		try {
@@ -73,11 +79,12 @@ public class VirtualMachineImageManager {
 		}
 	}	
 	
-	
 	/**
 	 * Updates a virtual machine image entity on database.
-	 * @param machine
-	 * @return
+	 * @param image to be updates
+	 * @param update if version should be updated
+	 * @param con Database connection
+	 * @return true in case image was update, false in case not
 	 */
 	public static boolean setVirtualMachineFile(VirtualImageFileEntity image, boolean update,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
@@ -117,8 +124,9 @@ public class VirtualMachineImageManager {
 	}
 	
 	/**
-	 * Return a list of virtual machines owned by user
+	 * Returns a list of virtual machines belonged by user
 	 * @param userId
+	 * @param con Database connection
 	 * @return
 	 */
 	//TODO improve query to repository, use hash map

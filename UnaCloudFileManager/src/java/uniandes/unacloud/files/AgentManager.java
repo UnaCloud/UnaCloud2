@@ -16,6 +16,11 @@ import com.losandes.utils.UnaCloudConstants;
 import uniandes.unacloud.db.ServerVariableManager;
 import uniandes.unacloud.db.entities.ServerVariableEntity;
 
+/**
+ * Class used to copy files in stream to send files to agent
+ * @author CesarF
+ *
+ */
 public class AgentManager {
 
 	/**

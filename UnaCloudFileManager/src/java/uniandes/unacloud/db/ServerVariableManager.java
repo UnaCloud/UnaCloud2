@@ -9,12 +9,17 @@ import java.util.List;
 import unacloud.share.enums.ServerVariableTypeEnum;
 import uniandes.unacloud.db.entities.ServerVariableEntity;
 
+/**
+ * Class used to execute query, update and delete processes in database for Server Variable Entity. 
+ * @author CesarF
+ *
+ */
 public class ServerVariableManager {
 
 	/**
-	 * Return a list of virtual machines owned by user
-	 * @param userId
-	 * @return
+	 * Return all server variables used in server
+	 * @param con Database Connection
+	 * @return list of server variable
 	 */
 	//TODO improve query to repository, use hash map
 	public static List<ServerVariableEntity> getAllVariablesForAgent(Connection con){
@@ -35,9 +40,9 @@ public class ServerVariableManager {
 	
 	/**
 	 * Returns a unique variable request by name
-	 * @param con
-	 * @param name
-	 * @return
+	 * @param con database connection
+	 * @param name of variable
+	 * @return Server variable
 	 */
 	public static ServerVariableEntity getVariable(Connection con, String name){
 	

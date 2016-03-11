@@ -8,7 +8,7 @@ import unacloud.share.enums.VirtualMachineImageEnum;
  * Class to represent a Virtual Image in database.
  * This class manages additional information about file repository
  * Used to manage file 
- * @author Cesar
+ * @author CesarF
  *
  */
 public class VirtualImageFileEntity extends VirtualMachineImageEntity{

@@ -7,8 +7,9 @@ import com.losandes.utils.UnaCloudConstants;
 
 /**
  * Class used to receive messages to manage image files.
- * Send and receive messages to/from agents
- * @author Cesar
+ * Sends and receives messages from agents, 
+ * The kind of messages are to send image files or to request image file from agent.
+ * @author CesarF
  *
  */
 public class DataServerSocket extends AbstractServerSocket{	

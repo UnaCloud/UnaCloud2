@@ -4,7 +4,8 @@ import unacloud.share.queue.QueueMessage;
 
 /**
  * Abstract class used to process a Message from queue
- * @author Cesar
+ * Extends from thread to process message asynchronous 
+ * @author CesarF
  *
  */
 public abstract class MessageProcessor extends Thread{	
