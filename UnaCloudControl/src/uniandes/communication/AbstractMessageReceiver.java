@@ -9,7 +9,7 @@ import communication.UnaCloudMessageUDP;
 
 /**
  * Class used to receive UDP messages and put the in threads to be executed
- * @author Cesar
+ * @author CesarF
  *
  */
 public abstract class AbstractMessageReceiver extends Thread{

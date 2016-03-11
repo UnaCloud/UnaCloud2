@@ -14,7 +14,7 @@ import communication.UnaCloudMessageUDP;
 
 /**
  * Process message from physical machines with reports about virtual machines
- * @author Cesar
+ * @author CesarF
  *
  */
 public class VmMessageProcessor extends AbstractReceiverProcessor{

@@ -8,7 +8,7 @@ import communication.UnaCloudMessageUDP;
 
 /**
  * Class to process UDP messages sent by agents
- * @author Cesar
+ * @author CesarF
  *
  */
 public abstract class AbstractReceiverProcessor extends Thread{

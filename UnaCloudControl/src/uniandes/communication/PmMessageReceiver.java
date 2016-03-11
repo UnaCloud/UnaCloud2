@@ -6,8 +6,8 @@ import uniandes.communication.processor.PmMessageProcessor;
 import communication.UnaCloudMessageUDP;
 
 /**
- * Receive message as reports about physical machines states
- * @author Cesar
+ * Receives message as reports about physical machines states and put it in message processor to be executed in thread pool
+ * @author CesarF
  *
  */
 public class PmMessageReceiver extends AbstractMessageReceiver{

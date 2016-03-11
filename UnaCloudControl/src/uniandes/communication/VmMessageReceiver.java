@@ -7,8 +7,8 @@ import communication.UnaCloudMessageUDP;
 
 
 /**
- * Receive message as reports about virtual machines states
- * @author Cesar
+ * Receive message as reports about virtual machines states and put it in message processor to be executed in thread pool
+ * @author CesarF
  *
  */
 public class VmMessageReceiver extends AbstractMessageReceiver{

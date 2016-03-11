@@ -3,8 +3,8 @@ package uniandes.communication.processor;
 import communication.UnaCloudAbstractResponse;
 
 /**
- * Abstract class to be used that process responses from agents
- * @author Cesar
+ * Abstract class that process responses from agents
+ * @author CesarF
  *
  */
 public abstract class AbstractResponseProcessor {

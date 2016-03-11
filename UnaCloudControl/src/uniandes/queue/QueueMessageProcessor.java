@@ -45,7 +45,7 @@ import uniandes.communication.processor.AbstractResponseProcessor;
 
 /**
  * Class to process each message from queue
- * @author Cesar
+ * @author CesarF
  *
  */
 public class QueueMessageProcessor implements QueueReader{
@@ -129,7 +129,7 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Method to send stop, update o clear cache message to specific list of physical machines
+	 * Sends stop, update o clear cache message to specific list of physical machines
 	 * @param message
 	 */
 	private void sendTaskToAgents(QueueMessage message){
@@ -168,7 +168,7 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Method to send message to agents to start deploy in physical machines
+	 * Sends message to agents to start deploy in physical machines
 	 * @param message
 	 */
 	private void doDeploy(QueueMessage message){
@@ -235,7 +235,7 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Method to send a message to agents to stop a virtual machine execution
+	 * Sends a message to agents to stop a virtual machine execution
 	 * @param message
 	 */
 	private void stopDeploy(QueueMessage message){
@@ -277,7 +277,7 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Method to send message to agents to add physical machines 
+	 * Sends message to agents to add physical machines 
 	 * @param message
 	 */
 	private void addInstances(QueueMessage message){
@@ -328,7 +328,7 @@ public class QueueMessageProcessor implements QueueReader{
 	}
 	
 	/**
-	 * Method to send a message to one agent to request send a current virtual execution to server
+	 * Sends a message to one agent to request send a current virtual execution to server
 	 * @param message
 	 */
 	private void requestCopy(QueueMessage message){

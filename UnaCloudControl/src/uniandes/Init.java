@@ -6,8 +6,8 @@ import java.io.PrintStream;
 import java.util.Date;
 
 /**
- * Start class to initialize all services from UnaCloud Control
- * @author Cesar
+ * Initial point to start all services from UnaCloud Control
+ * @author CesarF
  *
  */
 public class Init {
@@ -41,7 +41,6 @@ public class Init {
 			e.printStackTrace();
 			System.exit(0);
 		}		
-		//TODO Task to control report agents
 	}
 
 }

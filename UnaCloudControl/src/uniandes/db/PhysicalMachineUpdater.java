@@ -9,12 +9,21 @@ import java.util.List;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
+/**
+ * Class used to execute query, update and delete processes in database for Physical Machine Entity. 
+ * Although this class execute query in virtualmachine execution entities
+ * @author CesarF
+ *
+ */
 public class PhysicalMachineUpdater {
 
 	/**
-	 * Update a physical machine entity on database based in hostname
-	 * @param machine
-	 * @return
+	 * Updates a physical machine entity on database based in hostname
+	 * @param host name in network for physical machine
+	 * @param hostUser user in physical machine
+	 * @param ip where message is coming
+	 * @param con Database Connection
+	 * @return true in case physical machines could be updated, false in case not
 	 * TODO: add validation of ip 
 	 */
 	public static boolean updatePhysicalMachine(String host, String hostUser, String ip, Connection con){
@@ -35,13 +44,13 @@ public class PhysicalMachineUpdater {
 	
 
 	/**
-	 * Update status from of virtual Machine
+	 * Updates status from of virtual Machine
 	 * @param id virtual machine 
 	 * @param host unique in net	
 	 * @param message description
 	 * @param status in agent
 	 * @param con connection to database
-	 * @return
+	 * @return true in case virtual execution could be updated, false in case not
 	 */
 	public static boolean updateVirtualExecution(Long id, String host, String message, VirtualMachineExecutionStateEnum status, Connection con){
 		try {
@@ -62,11 +71,11 @@ public class PhysicalMachineUpdater {
 	
 	
 	/**
-	 * Update all virtual executions with id in array and host by name
-	 * @param ids
-	 * @param host
-	 * @param con
-	 * @return
+	 * Updates all virtual executions with id in array and host by name
+	 * @param ids virtual machine execution 
+	 * @param host which reports
+	 * @param con Database connection
+	 * @return list of virtual machines execution which should be stopped in agents
 	 */
 	public static List<Long> updateVirtualMachinesExecutions(Long[]ids,String host, Connection con){
 		if(ids==null||ids.length==0)return null;

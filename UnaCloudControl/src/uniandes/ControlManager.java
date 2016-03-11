@@ -13,12 +13,16 @@ import uniandes.communication.VmMessageReceiver;
 import uniandes.queue.QueueMessageProcessor;
 
 /**
- * Class used to start and manage services in Control project
- * @author Cesar
+ *  Initializes and control all services in project
+ * extends from Project Manager class and works as a Singleton class.
+ * @author CesarF
  *
  */
 public class ControlManager extends ProjectManager{
 	
+	/**
+	 * instance of control manager
+	 */
 	private static ControlManager control;
 	private QueueMessageProcessor processor;
 	
@@ -26,6 +30,10 @@ public class ControlManager extends ProjectManager{
 		super();
 	}
 	
+	/**
+	 * Returns control  manager instance
+	 * @return instance
+	 */
 	public static ControlManager getInstance(){
 		try {
 			if(control==null)control = new ControlManager();
@@ -36,8 +44,8 @@ public class ControlManager extends ProjectManager{
 	}	
 	
 	/**
-	 * Return the agent port configured for communication
-	 * @return
+	 * Returns the agent port configured for communication
+	 * @return agent port
 	 * @throws Exception 
 	 */
 	public int getPort() throws Exception{
@@ -52,8 +60,8 @@ public class ControlManager extends ProjectManager{
 	}
 
 	/**
-	 * Return the list of variables required by services
-	 * @return
+	 * Returns the list of variables required by services
+	 * @return string array
 	 */
 	@Override
 	protected String[] getVariableList() {
@@ -75,7 +83,7 @@ public class ControlManager extends ProjectManager{
 	}
 
 	/**
-	 * Start the queue connection service to receive messages
+	 * Starts the queue connection service to receive messages
 	 * @throws Exception
 	 */
 	@Override
@@ -91,6 +99,9 @@ public class ControlManager extends ProjectManager{
 	}
 	
 
+	/**
+	 * Starts the communication socket readers 
+	 */
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
@@ -99,7 +110,7 @@ public class ControlManager extends ProjectManager{
 	}	
 	
 	/**
-	 * Used to send message to agents without have to put message in queue
+	 * Sends message to agents not have to put message in queue
 	 * @param ids
 	 */
 	public void sendStopMessageExecutions(Long[] ids){
