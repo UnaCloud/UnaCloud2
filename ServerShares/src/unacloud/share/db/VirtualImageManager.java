@@ -8,16 +8,18 @@ import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Generic class used to process queries and updates on VirtualMachineImage entity 
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for VirtualMachineImage Entity. 
+ * @author CesarF
  *
  */
 public class VirtualImageManager {
 	
 	/**
-	 * Returns a VirtualMachineImage entity requested by id
-	 * @param id physical machine id
-	 * @return physical machine entity
+	 * Returns a VirtualMachineImage entity requested by id and state
+	 * @param id physical machine 
+	 * @param state of physical machine
+	 * @param con Database Connection
+	 * @return Virtual Machine Image, could return null
 	 */
 	public static VirtualMachineImageEntity getVirtualMachine(Long id, VirtualMachineImageEnum state,Connection con){
 		try {
@@ -39,8 +41,9 @@ public class VirtualImageManager {
 
 	/**
 	 * Updates a virtual machine image entity on database.
-	 * @param machine
-	 * @return
+	 * @param image to be modified
+	 * @param con Database Connection
+	 * @return true if image was updated, false in case not
 	 */
 	public static boolean setVirtualMachine(VirtualMachineImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
@@ -61,8 +64,9 @@ public class VirtualImageManager {
 	
 	/**
 	 * Deletes a virtual machine image based in state and id
-	 * @param image
-	 * @return
+	 * @param image to be deleted
+	 * @param con Database Connection
+	 * @return true in case entity was deleted, false in case not
 	 */
 	public static boolean deleteVirtualMachineImage(VirtualMachineImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;

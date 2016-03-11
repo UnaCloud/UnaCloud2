@@ -9,15 +9,15 @@ import java.util.List;
 import unacloud.share.entities.HypervisorEntity;
 
 /**
- * Generic class used to query and update User entity in database
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for Hypervisor Entity. 
+ * @author CesarF
  *
  */
 public class HypervisorManager {
 
 	/**
 	 * Returns the list all of hypervisors in database
-	 * @return
+	 * @return all hypervisors
 	 */
 	public static List<HypervisorEntity> getAllHypervisors(Connection con){
 		try {

@@ -7,8 +7,8 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 /**
  * Class used to create connection with a database. Uses Apache DBCP to use pool connection
- * This class can be used to connect with mysql databases
- * @author Cesar
+ * This class can be used only to connect with mysql databases
+ * @author CesarF
  *
  */
 public class DatabaseConnection {

@@ -22,7 +22,7 @@ import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
  * Class used to process queries and updates on Deployment entities
- * @author Cesar
+ * @author CesarF
  *
  */
 
@@ -31,7 +31,8 @@ public class DeploymentManager {
 	/**
 	 * Queries and returns a Deployment request by id in parameters
 	 * @param id Deployment Database ID
-	 * @return
+	 * @param con Database Connection
+	 * @return Deployment entity, could be null
 	 */
 	public static DeploymentEntity getDeployment(Long id, Connection con){
 		try {
@@ -86,9 +87,10 @@ public class DeploymentManager {
 	}
 	
 	/**
-	 * Update a virtual machine execution entity on database.
-	 * @param machine
-	 * @return
+	 * Updates a virtual machine execution entity on database.
+	 * @param execution to be modified
+	 * @param con Database connection
+	 * @return true in case execution was updated, false in case not
 	 */
 	public static boolean setVirtualMachineExecution(VirtualMachineExecutionEntity execution,Connection con){
 		if(execution.getId()==null||execution.getId()<1)return false;
@@ -120,10 +122,12 @@ public class DeploymentManager {
 		}		
 		return false;
 	}
+	
 	/**
-	 * Return a list of configured interfaces for a VirtualMachineExecution
-	 * @param execution
-	 * @return
+	 * Returns a list of configured interfaces for a VirtualMachineExecution
+	 * @param execution to find net interfaces
+	 * @param con Database connection
+	 * @return list of net interfaces configured for image
 	 */
 	public static List<NetInterfaceEntity> getInterfaces(VirtualMachineExecutionEntity execution, Connection con){
 		try {
@@ -142,11 +146,13 @@ public class DeploymentManager {
 		}
 	}
 	
+	
 	/**
-	 * Return a list of deployed virtual machine executions requested by parameter ids
-	 * @param ids
+	 * Returns a list of deployed virtual machine executions requested by parameter ids
+	 * @param ids list of ids to be requested
 	 * @param state in case of null value return all execution in array without filter
-	 * @return
+	 * @param con Database connection
+	 * @return list of virtual machine execution
 	 */
 	public static List<VirtualMachineExecutionEntity> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state, Connection con){
 		try {			
@@ -190,10 +196,11 @@ public class DeploymentManager {
 	}
 	
 	/**
-	 * Return a virtual machine executions based in id and state sent by params
-	 * @param id
-	 * @param state
-	 * @return
+	 * Returns a virtual machine executions requested by id and state
+	 * @param id for virtual machine execution
+	 * @param state of virtual machine execution
+	 * @param con Database Connection
+	 * @return Virtualmachine execution object, could be null
 	 */
 	public static VirtualMachineExecutionEntity getExecution(Long id, VirtualMachineExecutionStateEnum state, Connection con){
 		try {			

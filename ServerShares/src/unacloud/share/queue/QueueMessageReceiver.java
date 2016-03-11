@@ -1,10 +1,8 @@
 package unacloud.share.queue;
 
-
-
 /**
  * Class to create connection with queue and start receiving messages
- * @author Cesar
+ * @author CesarF
  *
  */
 public class QueueMessageReceiver {

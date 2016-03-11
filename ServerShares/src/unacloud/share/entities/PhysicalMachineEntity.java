@@ -4,10 +4,10 @@ import java.util.Date;
 
 import unacloud.share.enums.PhysicalMachineStateEnum;
 
+
 /**
- * Class to represent an entity from database
- * Represents PhysicalMachine
- * @author Cesar
+ * Class to represent a Physical Machine entity 
+ * @author CesarF
  *
  */
 public class PhysicalMachineEntity {

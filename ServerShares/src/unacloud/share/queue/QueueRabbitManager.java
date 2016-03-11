@@ -10,8 +10,16 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.AMQP.BasicProperties;
 
+/**
+ * Extends from Queue Tasker connection, manage connection to RabbitMQ service
+ * @author CesarF
+ *
+ */
 public class QueueRabbitManager extends QueueTaskerConnection{
 	
+	/**
+	 * Factory of connection to rabbit
+	 */
 	ConnectionFactory factory ;
 
 	public QueueRabbitManager(String username, String password, String ip,

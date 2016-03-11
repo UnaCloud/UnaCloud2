@@ -1,7 +1,19 @@
 package unacloud.share.enums;
 
+/**
+ * represents states of deployment
+ * @author CesarF
+ *
+ */
 public enum DeploymentStateEnum {
-	ACTIVE("ACTIVE"),FINISHED("FINISHED");
+	/**
+	 * In case deployment has at least one execution in an state not finished
+	 */
+	ACTIVE("ACTIVE"),
+	/**
+	 * All execution in deployment has finished state
+	 */
+	FINISHED("FINISHED");
 	
 	private String name;
 	
@@ -9,6 +21,10 @@ public enum DeploymentStateEnum {
 		this.name = name;
 	}
 	
+	/**
+	 * Return name of state
+	 * @return
+	 */
 	public String getName(){
 		return name;
 	}

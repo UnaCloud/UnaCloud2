@@ -1,32 +1,63 @@
-package unacloud.share.queue;
+package unacloud.share.enums;
 
 /**
  * Enum to represents type of message that could be sent by the queue
- * @author Cesar
+ * @author CesarF
  *
  */
 public enum QueueMessageType {
 
-	//Types for Agent control
 	/**
 	 * Remove an image from all physical machines
 	 */
 	CLEAR_CACHE,
-	
+	/**
+	 * Delete an user an all images belonged
+	 */
 	DELETE_USER,
+	/**
+	 * Send task to agent
+	 */
 	SEND_TASK,
+	/**
+	 * Deploy executions in physical machines
+	 */
 	DEPLOY_CLUSTER,
+	/**
+	 * Stop deployments
+	 */
 	STOP_DEPLOYS,
+	/**
+	 * Add instances to deployment
+	 */
 	ADD_INSTANCES,
+	/**
+	 * Create a copy from a current execution deployed
+	 */
 	CREATE_COPY,
 	/**
-	 * Types for File Manager control
+	 * Create a public image from private one
 	 */
 	CREATE_PUBLIC_IMAGE,
+	/**
+	 * create a private image from public one
+	 */
 	CREATE_COPY_FROM_PUBLIC,
+	/**
+	 * Delete image in repositories
+	 */
 	DELETE_IMAGE,
+	
+	/**
+	 * Delete a public image in repositories
+	 */
 	DELETE_PUBLIC_IMAGE;
 	
+	/**
+	 * Returns a type of message searched by name
+	 * @param name of type
+	 * @return type of message
+	 */
 	public static QueueMessageType getType(String name){
 		if(name.equals(CLEAR_CACHE.name()))return CLEAR_CACHE;
 		if(name.equals(DELETE_USER.name()))return DELETE_USER;

@@ -1,8 +1,8 @@
 package unacloud.share.entities;
 
 /**
- * Class to represent Netinterface entity from domain
- * @author Cesar
+ * Class to represent a NetInterface entity 
+ * @author CesarF
  *
  */
 public class NetInterfaceEntity {

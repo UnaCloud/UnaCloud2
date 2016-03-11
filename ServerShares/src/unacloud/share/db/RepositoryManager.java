@@ -7,14 +7,17 @@ import java.sql.ResultSet;
 import unacloud.share.entities.RepositoryEntity;
 
 /**
- * Generic class used to process queries and updates on Repository entity 
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for Repository Entity. 
+ * @author CesarF
  *
  */
 public class RepositoryManager {
 
+	
 	/**
-	 * Return the main repository in system
+	 * Returns a repository searched by name
+	 * @param name of repository
+	 * @param con Database Connection
 	 * @return
 	 */
 	public static RepositoryEntity getRepositoryByName(String name,Connection con){
@@ -34,9 +37,10 @@ public class RepositoryManager {
 	}
 	
 	/**
-	 * Return a repository entity from database
-	 * @param id
-	 * @return
+	 * Returns a repository entity from database
+	 * @param id from repository
+	 * @param con Database Connection
+	 * @return repository entity
 	 */
 	public static RepositoryEntity getRepository(Long id,Connection con){
 		try {

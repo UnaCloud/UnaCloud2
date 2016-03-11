@@ -1,8 +1,10 @@
 package unacloud.share.queue;
 
+import unacloud.share.enums.QueueMessageType;
+
 /**
  * Class to represents message to be sent in queue
- * @author Cesar
+ * @author CesarF
  *
  */
 public class QueueMessage {
@@ -34,7 +36,7 @@ public class QueueMessage {
 	}
 	
 	/**
-	 * Return the message in one String delimited by special character
+	 * Returns the message in one String delimited by special character
 	 * @return
 	 */
 	public String getMessage(){
@@ -62,7 +64,7 @@ public class QueueMessage {
 	
 	/**
 	 * 
-	 * @return
+	 * @return type of message
 	 */
 	public QueueMessageType getType() {
 		return type;
@@ -70,7 +72,7 @@ public class QueueMessage {
 	
 	/**
 	 * 
-	 * @return
+	 * @return parts of message
 	 */
 	public String[] getMessageParts() {
 		return messageParts;
@@ -78,7 +80,7 @@ public class QueueMessage {
 	
 	/**
 	 * 
-	 * @return
+	 * @return requester
 	 */
 	public String getRequester() {
 		return requester;

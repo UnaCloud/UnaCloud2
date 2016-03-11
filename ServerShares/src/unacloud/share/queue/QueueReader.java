@@ -2,7 +2,7 @@ package unacloud.share.queue;
 
 /**
  * Interface to implements processes to manage message from queue
- * @author Cesar
+ * @author CesarF
  *
  */
 public interface QueueReader {

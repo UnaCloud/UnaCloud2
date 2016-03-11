@@ -11,16 +11,19 @@ import unacloud.share.entities.PhysicalMachineEntity;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
- * Generic class used to process queries and updates on PhysicalMachine entity 
- * @author Cesar
+ * Class used to execute query, update and delete processes in database for Physical machine Entity. 
+ * @author CesarF
  *
  */
 public class PhysicalMachineManager {
 	
+	
 	/**
-	 * Return a PhysicalMachine entity requested by id
-	 * @param id physical machine id
-	 * @return physical machine entity
+	 * Returns a PhysicalMachine entity requested by id and state
+	 * @param id physical machine entity
+	 * @param machineState physical machine state
+	 * @param con Database Connection
+	 * @return Physical Machine entity, could be null
 	 */
 	public static PhysicalMachineEntity getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState,Connection con){
 		try {
@@ -40,9 +43,11 @@ public class PhysicalMachineManager {
 	}
 	
 	/**
-	 * Return a list of all ON physical machines requested by parameters
-	 * @param idList
-	 * @return
+	 * Return a list of all physical machines requested in id list and state
+	 * @param idList list of ids from physical machines
+	 * @param machineState state of machine
+	 * @param con Database Connection
+	 * @return List of Physical Machines entities
 	 */
 	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState,Connection con){
 		if(idList.length==0)return null;
@@ -69,10 +74,12 @@ public class PhysicalMachineManager {
 			return null;
 		}
 	}
+	
 	/**
-	 * Return a list of all ON physical machines
-	 * @param idList
-	 * @return
+	 * Returns a list of all physical machines by state
+	 * @param machineState state to filter machines
+	 * @param con Database Connection
+	 * @return list of physical machines entities
 	 */
 	public static List<PhysicalMachineEntity> getAllPhysicalMachine(PhysicalMachineStateEnum machineState,Connection con){		
 		try {
@@ -92,8 +99,9 @@ public class PhysicalMachineManager {
 	
 	/**
 	 * Update a physical machine entity on database.
-	 * @param machine
-	 * @return
+	 * @param machine to be modified
+	 * @param con Database connection
+	 * @return true if entity was updated, false in case not
 	 */
 	public static boolean setPhysicalMachine(PhysicalMachineEntity machine, Connection con){
 		if(machine.getId()==null||machine.getId()<1)return false;

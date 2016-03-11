@@ -1,9 +1,9 @@
 package unacloud.share.entities;
 
+
 /**
- * Class to represent an entity from database
- * Represents PhysicalMachine
- * @author Cesar
+ * Class to represent a Physical Machine entity 
+ * @author CesarF
  *
  */
 public class HypervisorEntity {

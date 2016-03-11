@@ -1,16 +1,37 @@
 package unacloud.share.enums;
 
 /**
- * 
- * @author Cesar
- * 
- * Class to represent the states of a VirtualMachineImage
+ * Represents states of a VirtualMachineImage
+ * @author CesarF
  *
  */
 
 public enum VirtualMachineImageEnum {
 
-	UNAVAILABLE("UNAVAILABLE"),DISABLE("DISABLE"),AVAILABLE("AVAILABLE"),REMOVING_CACHE("REMOVING FROM CACHE"),COPYING("COPYING TO SERVER"),IN_QUEUE("QUEUED");
+	/**
+	 * Image is no unavailable because doesn't have files
+	 */
+	UNAVAILABLE("UNAVAILABLE"),
+	/**
+	 * Image was disable by admin
+	 */
+	DISABLE("DISABLE"),
+	/**
+	 * Image is ready to be deployed
+	 */
+	AVAILABLE("AVAILABLE"),
+	/**
+	 * Image is being removing from machines cache folder
+	 */
+	REMOVING_CACHE("REMOVING FROM CACHE"),
+	/**
+	 * Image is being copying from some physical machine
+	 */
+	COPYING("COPYING TO SERVER"),
+	/**
+	 * Image  has a task in queue
+	 */
+	IN_QUEUE("QUEUED");
 	
 	String name;
 	
@@ -18,6 +39,11 @@ public enum VirtualMachineImageEnum {
 		this.name = name;
 	}	
 	
+	/**
+	 * Returns a Virtual Machine Image state searched by name
+	 * @param name of state
+	 * @return Virtual Machine image state
+	 */
 	public static VirtualMachineImageEnum getEnum(String name){
 		if(UNAVAILABLE.name().equals(name))return UNAVAILABLE;
 		if(DISABLE.name().equals(name))return DISABLE;

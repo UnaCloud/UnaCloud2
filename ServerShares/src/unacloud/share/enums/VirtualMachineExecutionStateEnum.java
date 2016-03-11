@@ -1,16 +1,51 @@
 package unacloud.share.enums;
 import unacloud.share.utils.CalendarUtils;
 
+/**
+ * Represents state of virtual machine executions
+ * @author CesarF
+ *
+ */
 public enum VirtualMachineExecutionStateEnum {
+	/**
+	 * Execution has a task in queue, can't exceed 2 minutes
+	 */
 	QUEUED("QUEUED",CalendarUtils.MINUTE*2),
+	/**
+	 * Execution is in configuring process, can't exceed 30 minutes
+	 */
 	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*30),
+	/**
+	 * Execution is in deploying process, can't exceed 8 minutes
+	 */
 	DEPLOYING("DEPLOYING",CalendarUtils.MINUTE*8),
+	/**
+	 * Execution is in deployed state, running up to stop time
+	 */
 	DEPLOYED("DEPLOYED",0),
+	/**
+	 * Execution is in failed state, should be terminate by user or by stop time
+	 */
 	FAILED("FAILED",0),
+	/**
+	 * Execution has been requesting to be finished, can't exceed 5 minutes
+	 */
 	FINISHING("FINISHING",CalendarUtils.MINUTE*5),
+	/**
+	 * Execution is finished
+	 */
 	FINISHED("FINISHED",0),
+	/**
+	 * Execution has been requesting to be save in server, can't exceed 4 minutes
+	 */
 	REQUEST_COPY("REQUEST COPY",CalendarUtils.MINUTE*4),
+	/**
+	 * Execution is in copying process, can't exceed 30 minutes
+	 */
 	COPYING("COPYING",CalendarUtils.MINUTE*30),
+	/**
+	 * Execution has not been reported for some minutes, process wait for 15 minutes to back to deployed state or move to failed
+	 */
 	RECONNECTING("RECONNECTING",CalendarUtils.MINUTE*15);//because time in validation (DEPLOYED status) is four, check control procedure
 	
 	private long time;
@@ -21,10 +56,19 @@ public enum VirtualMachineExecutionStateEnum {
 		this.time = time;
 	}
 	
+	/**
+	 * Limit time for state
+	 * @return limit time
+	 */
 	public long getTime(){
 		return time;
 	}
 	
+	/**
+	 * Returns a virtual machine execution state searched by name
+	 * @param name of virtual machine execution
+	 * @return Virtual Machine execution state
+	 */
 	public static VirtualMachineExecutionStateEnum getEnum(String name){
 		if(QUEUED.name.equals(name)||QUEUED.name().equals(name))return QUEUED;
 		if(CONFIGURING.name.equals(name)||CONFIGURING.name().equals(name))return CONFIGURING;

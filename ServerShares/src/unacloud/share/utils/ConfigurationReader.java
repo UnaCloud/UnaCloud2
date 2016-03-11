@@ -11,7 +11,7 @@ import java.util.TreeMap;
 /**
  * Utility Class used to load variables from a properties file.
  * Typically used to load configuration values
- * @author Cesar
+ * @author CesarF
  *
  */
 public class ConfigurationReader {
@@ -77,29 +77,29 @@ public class ConfigurationReader {
 		prop.store(out, null);
 	}
 	/**
-	 * Return a variable requested by parameters as String, null: value is not in file
+	 * Returns a variable requested by parameters as String, null: value is not in file
 	 * @param nameVariable
-	 * @return
+	 * @return variable as String value
 	 */
 	public String getStringVariable(String nameVariable){
 		return values.get(nameVariable);
 	}
 	
 	/**
-	 * Return a variable requested by parameters as Integer, null: values is not in file
+	 * Returns a variable requested by parameters as Integer, null: values is not in file
 	 * @param nameVariable
-	 * @return
-	 * @throws Exception
+	 * @return variable as Integer value
+	 * @throws Exception in case variable is not int
 	 */
 	public Integer getIntegerVariable(String nameVariable) throws Exception{
 		return Integer.parseInt(values.get(nameVariable));
 	}
 	
 	/**
-	 * Return a variable requested by parameters as Long, null: values is not in file
+	 * Returns a variable requested by parameters as Long, null: values is not in file
 	 * @param nameVariable
-	 * @return
-	 * @throws Exception
+	 * @return variable as Long value
+	 * @throws Exception in case variable is not long
 	 */
 	public Long getLongVariable(String nameVariable) throws Exception{
 		return Long.parseLong(values.get(nameVariable));

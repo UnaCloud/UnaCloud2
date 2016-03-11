@@ -3,9 +3,8 @@ package unacloud.share.entities;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Class to represent an entity from domain of project 
- * Represents VirtualMachineImage
- * @author Cesar
+ * Class to represent a Virtual Machine Image entity 
+ * @author CesarF
  *
  */
 public class VirtualMachineImageEntity {

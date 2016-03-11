@@ -3,9 +3,8 @@ package unacloud.share.entities;
 import java.util.List;
 
 /**
- * Class to represent an entity from domain 
- * Represents Deployment
- * @author Cesar
+ * Class to represent a Deployed image entity 
+ * @author CesarF
  *
  */
 public class DeployedImageEntity {

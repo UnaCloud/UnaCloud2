@@ -29,7 +29,7 @@ class ServerVariable {
 	String variable
 	
 	/**
-	 * type of variable (String, Integer)
+	 * type of variable (String, Integer, Boolean)
 	 */
 	ServerVariableTypeEnum serverVariableType
 	
@@ -58,7 +58,7 @@ class ServerVariable {
 	
 	
 	/**
-	 * Return values in variables which are list, currently only used for DEFAULT ALLOCATOR
+	 * Returns values in variables which are list, currently only used for DEFAULT ALLOCATOR
 	 * @return list of values
 	 */
 	def values(){

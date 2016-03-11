@@ -6,7 +6,7 @@ import java.net.Socket;
 
 /**
  * Class used to control Serversocket communication
- * @author Cesar
+ * @author CesarF
  *
  */
 public abstract class DataServerSocket extends Thread{

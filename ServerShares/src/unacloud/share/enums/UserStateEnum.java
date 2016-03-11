@@ -1,8 +1,24 @@
 package unacloud.share.enums;
 
+/**
+ * Represents states of User Entity
+ * @author CesarF
+ *
+ */
 public enum UserStateEnum {
 	
-	AVAILABLE("AVAILABLE"), DISABLE("DISABLE"), BLOCKED("BLOCKED");
+	/**
+	 * User is available
+	 */
+	AVAILABLE("AVAILABLE"), 
+	/**
+	 * User is disabled while is deleting
+	 */
+	DISABLE("DISABLE"), 
+	/**
+	 * User is blocked by admin
+	 */
+	BLOCKED("BLOCKED");
 	
 	private String name;
 	
@@ -14,6 +30,11 @@ public enum UserStateEnum {
 		return name;
 	}
 	
+	/**
+	 * Returns user state searched by name
+	 * @param name of user state
+	 * @return User state enum
+	 */
 	public static UserStateEnum getEnum(String name){
 		if(name.equals(AVAILABLE.name)||name.equals(AVAILABLE.name()))return AVAILABLE;
 		if(name.equals(DISABLE.name)||name.equals(DISABLE.name()))return DISABLE;

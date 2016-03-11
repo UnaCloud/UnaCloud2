@@ -5,10 +5,10 @@ import java.util.List;
 
 import unacloud.share.enums.DeploymentStateEnum;
 
+
 /**
- * Class to represent an entity from domain 
- * Represents Deployment
- * @author Cesar
+ * Class to represent a Deployment entity 
+ * @author CesarF
  *
  */
 public class DeploymentEntity {

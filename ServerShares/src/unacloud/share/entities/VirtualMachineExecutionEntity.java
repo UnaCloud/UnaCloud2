@@ -7,9 +7,8 @@ import java.util.List;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 /**
- * Class to represent an entity from domain 
- * Represents Deployment
- * @author Cesar
+ * Class to represent a Virtual Machine Execution entity 
+ * @author CesarF
  *
  */
 public class VirtualMachineExecutionEntity {
@@ -122,7 +121,7 @@ public class VirtualMachineExecutionEntity {
 	}
 	
 	/**
-	 * Return time execution in hours
+	 * Returns time execution in hours
 	 * @return
 	 */
 	public Long getTimeInHours(){
@@ -131,7 +130,7 @@ public class VirtualMachineExecutionEntity {
 	}
 	
 	/**
-	 * Return time execution in milliseconds
+	 * Returns time execution in milliseconds
 	 * @return
 	 */
 	public Long getTime(){

@@ -1,8 +1,8 @@
 package unacloud.share.entities;
 
 /**
- * Class to represent Repository entity in database
- * @author Cesar
+ * Class to represent a Repository entity 
+ * @author CesarF
  *
  */
 public class RepositoryEntity {

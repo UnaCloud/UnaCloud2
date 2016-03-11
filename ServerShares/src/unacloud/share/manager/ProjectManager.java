@@ -10,7 +10,7 @@ import unacloud.share.utils.ConfigurationReader;
 
 /**
  * Abstract class to be extended by services control classes 
- * @author Cesar
+ * @author CesarF
  *
  */
 public abstract class ProjectManager {
@@ -51,7 +51,7 @@ public abstract class ProjectManager {
 	}
 	
 	/**
-	 * Return the name of properties file to load configuration
+	 * Returns the name of properties file to load configuration
 	 * @return String 
 	 */
 	protected abstract String getPropetiesFileName();
