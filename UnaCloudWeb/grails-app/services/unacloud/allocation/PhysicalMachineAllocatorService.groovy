@@ -11,6 +11,13 @@ import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorEnum
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 
+/**
+ * This service is only for process.
+ * Service used to determinate Physical Machine allocation for virtual executions.
+ * This class should be a service to use hibernate connection.
+ * @author CesarF
+ *
+ */
 @Transactional
 class PhysicalMachineAllocatorService {
 	
@@ -19,11 +26,10 @@ class PhysicalMachineAllocatorService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Representation of Hardware profiles services
+	 * Representation of User restriction services
 	 */
 	
-	UserRestrictionService userRestrictionService
-	
+	UserRestrictionService userRestrictionService	
 
 	/**
 	 * Representation of datasource in order to make queries
@@ -39,23 +45,20 @@ class PhysicalMachineAllocatorService {
 	 * Allocates the virtual machines' list in the given physical machines' list
 	 * @param vms list of virtual machines
 	 * @param pms list of physical machines
-	 * @param addInstancesDeployment indicates if the deployment is new or
-	 * add instance type
+	 * @param pmdDescriptions map with descriptions of executions to be deployed
 	 */
 	
 	def allocatePhysicalMachines(User user, List<VirtualMachineExecution> vms,List<PhysicalMachine> pms, Map<Long,PhysicalMachineAllocationDescription> pmDescriptions){
-				
 		AllocatorEnum allocator = userRestrictionService.getAllocator(user)	
 		allocator.getAllocator().startAllocation(vms,pms,pmDescriptions);
 	}
 	
 	/**
-	 * Calculates the usage of the infrastructure
+	 * Calculates the usage of the infrastructure and return a list of available resources
 	 * @param physical machine list
 	 * @return pmDescriptions map with information of every physical machine
 	 * remaining capacity
-	 */
-	
+	 */	
 	def getPhysicalMachineUsage(List<PhysicalMachine> pms){
 		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions=new TreeMap<>();
 		

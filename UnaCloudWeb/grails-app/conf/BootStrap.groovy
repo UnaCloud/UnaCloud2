@@ -1,6 +1,7 @@
 
 import java.io.FileInputStream;
 
+
 import com.losandes.utils.Constants;
 import com.losandes.utils.UnaCloudConstants;
 
@@ -35,6 +36,10 @@ import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
 import unacloud.pmallocators.AllocatorEnum;
 
+/**
+ * Start APP
+ * @author CesarF
+ */
 class BootStrap {
 	UserService userService 
 	UserGroupService userGroupService
@@ -52,6 +57,7 @@ class BootStrap {
 			new HardwareProfile(name:'large', cores:4, ram:4096).save()
 			new HardwareProfile(name:'xlarge',cores:6, ram:8192).save()			
 		}
+		//Create default user in case user list is empty
 		if(User.count() ==0){
 			String randomString = userService.designAPIKey()
 			User user = new User(name:'UnaCloud',username:'admin',password:Hasher.hashSha256(prop.getProperty(UnaCloudConstants.DEFAULT_USER_PASSWORD)),description:'Administrator',apiKey: randomString, registerDate:new Date()).save()
@@ -59,6 +65,7 @@ class BootStrap {
 			admins.users.add(user)
 			admins.save()
 		}
+		//Create operating system in case operating list is empty
 		if(OperatingSystem.count() == 0){
 			new OperatingSystem(name:'Windows 7',configurer:'Windows').save();
 			new OperatingSystem(name:'Windows 8',configurer:'Windows').save()

@@ -6,8 +6,11 @@ import grails.transaction.Transactional
 import groovy.sql.Sql
 
 /**
- * This class is responsible for all 
- * @author Cesar
+ * This service is only for process.
+ * Service used to create triggers, store procedures and events in database
+ * This class should be a service to use hibernate connection.
+ * 
+ * @author CesarF
  *
  */
 @Transactional
@@ -19,9 +22,7 @@ class DatabaseService {
 	
 	/**
 	 * Datasource representation
-	 * @return
-	 */
-	
+	 */	
 	def dataSource
 	
 	//-----------------------------------------------------------------

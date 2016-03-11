@@ -9,6 +9,13 @@ import unacloud.enums.IPEnum;
 import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorException
 
+/**
+ * This service is only for process.
+ * Service used to determinate IP allocation for virtual executions.
+ * This class should be a service to use hibernate connection.
+ * @author CesarF
+ *
+ */
 @Transactional
 class IpAllocatorService {
 
@@ -17,17 +24,11 @@ class IpAllocatorService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Allocates IP addresses to all virtual machines in a deployed image  
-	 * @param image Deployed image which virtual machines will be allocated with an 
-	 * IP 
-	 * @param addInstancesDeployment indicates if the deployment is new or added 
-	 * instances type
-	 * @return 
-	 */	
-	//TODO manage net interfaces configuration
-	
-	def allocateIPAddresses(virtualExecutions){
-		
+	 * Allocates IP addresses to all virtual machines in parameters
+	 * @param list of virtual machines executions
+	**/
+	//TODO manage net interfaces configuration	
+	def allocateIPAddresses(virtualExecutions){		
 		for(VirtualMachineExecution vme in virtualExecutions){
 			if(vme.status.equals(VirtualMachineExecutionStateEnum.QUEUED)){
 				List <ExecutionIP> ips= vme.executionNode.laboratory.getAvailableIps()
