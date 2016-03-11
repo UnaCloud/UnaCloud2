@@ -7,8 +7,8 @@ import unacloud.User;
 import unacloud.VirtualMachineImage;
 
 /**
- * Class to manage task to queue
- * @author Cesar
+ * Class used to put task in queue messaging service that will be read by File Manager project 
+ * @author CesarF
  *
  */
 public class QueueTaskerFile {
@@ -19,7 +19,7 @@ public class QueueTaskerFile {
 	private static QueueTaskerConnection fileQueue;
 	
 	/**
-	 * Set the queue manager used to send task. This method should only be called one time.
+	 * Sets the queue manager used to send task. This method should only be called one time.
 	 * @param newQueue
 	 */
 	public static void setQueueConnection(QueueTaskerConnection newQueue){
@@ -27,7 +27,7 @@ public class QueueTaskerFile {
 	}
 	
 	/**
-	 * Create a task to copy an image from a private folder to public one.
+	 * Creates a task to copy an image from a private folder to public one.
 	 * @param image to copy
 	 * @param user image owner
 	 */
@@ -36,7 +36,7 @@ public class QueueTaskerFile {
 		fileQueue.sendMessage(message);
 	}
 	/**
-	 * Create a task to copy a public image to a private one.
+	 * Creates a task to copy a public image to a private one.
 	 * @param publicImage
 	 * @param image
 	 * @param user
@@ -46,7 +46,7 @@ public class QueueTaskerFile {
 		fileQueue.sendMessage(message);
 	}
 	/**
-	 * Create a task to delete image from repositories
+	 * Creates a task to delete image from repositories
 	 * @param image
 	 * @param user
 	 */
@@ -56,7 +56,7 @@ public class QueueTaskerFile {
 	}
 	
 	/**
-	 * Create a task to delete public image from repositories
+	 * Creates a task to delete public image from repositories
 	 * @param image
 	 * @param user
 	 */
@@ -66,7 +66,7 @@ public class QueueTaskerFile {
 	}
 	
 	/**
-	 * Put a task to remove an user, its machines, clusters and deployments
+	 * Puts a task to remove an user, its machines, clusters and deployments
 	 * @param user User that will be removed
 	 */
 	public static void deleteUser(User user, User admin){

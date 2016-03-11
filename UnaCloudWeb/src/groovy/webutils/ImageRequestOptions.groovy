@@ -5,7 +5,7 @@ import unacloud.VirtualMachineImage
 
 /**
  * Class to save temporary values to configure deploy
- * @author Cesar
+ * @author CesarF
  *
  */
 class ImageRequestOptions {

@@ -15,7 +15,7 @@ import unacloud.share.enums.TaskEnum;
 
 /**
  * Class used to put task in queue messaging service that will be read by Control project
- * @author Cesar
+ * @author CesarF
  *
  */
 public class QueueTaskerControl {
@@ -26,7 +26,7 @@ public class QueueTaskerControl {
 	private static QueueTaskerConnection controlQueue;
 	
 	/**
-	 * Set the queue manager used to send task. This method should only be called one time.
+	 * Sets the queue manager used to send task. This method should only be called one time.
 	 * @param newQueue
 	 */
 	public static void setQueueConnection(QueueTaskerConnection newQueue){
@@ -34,7 +34,7 @@ public class QueueTaskerControl {
 	}
 
 	/**
-	 * Put a task to Remove an image from all connected machines 
+	 * Puts a task to Remove an image from all connected machines 
 	 * @param image that will be removed from cache
 	 * @param user who asks the task
 	 */
@@ -44,7 +44,7 @@ public class QueueTaskerControl {
 	}	
 	
 	/**
-	 * Put a task to machines to stop, update agent or remove its cache
+	 * Puts a task to machines to stop, update agent or remove its cache
 	 * @param machines
 	 * @param task
 	 * @param user
@@ -61,7 +61,7 @@ public class QueueTaskerControl {
 	}
 	
 	/**
-	 * Put a task to deploy a cluster
+	 * Puts a task to deploy a cluster
 	 * @param deployment
 	 * @param user
 	 */
@@ -71,7 +71,7 @@ public class QueueTaskerControl {
 	}
 	
 	/**
-	 * Put a task to stop deployments in array
+	 * Puts a task to stop deployments in array
 	 * @param deployments
 	 */
 	public static void stopExecutions(VirtualMachineExecution[] executions, User user){
@@ -84,7 +84,7 @@ public class QueueTaskerControl {
 	}
 	
 	/**
-	 * Put a task to add instances to a selected deployed image
+	 * Puts a task to add instances to a selected deployed image
 	 * @param image
 	 * @param user
 	 */
@@ -99,7 +99,7 @@ public class QueueTaskerControl {
 	}
 	
 	/**
-	 * Put a task to create a copy from a current execution deployed
+	 * Puts a task to create a copy from a current execution deployed
 	 * @param execution
 	 * @param image
 	 * @param user

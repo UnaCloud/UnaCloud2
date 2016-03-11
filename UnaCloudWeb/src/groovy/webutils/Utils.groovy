@@ -1,5 +1,10 @@
 package webutils
 
+/**
+ * Class to manager all utilities methods for web project in groovy
+ * @author CesarF
+ *
+ */
 class Utils {
 	/**
 	 * Method to validate if an string is not null and it is not empty

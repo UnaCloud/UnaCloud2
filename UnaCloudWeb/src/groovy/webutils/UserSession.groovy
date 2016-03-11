@@ -7,7 +7,7 @@ import unacloud.UserService
 /**
  * Class that represent a user instance to be saved in session.
  * This class has the purpose to avoid duplicated instance and exception
- * @author Cesar
+ * @author CesarF
  *
  */
 class UserSession {
