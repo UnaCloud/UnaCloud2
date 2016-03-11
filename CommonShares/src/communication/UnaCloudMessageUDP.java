@@ -5,14 +5,11 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Used as standard for send message in UDP Protocol
- * @author Cesar
+ * @author CesarF
  *
  */
 public class UnaCloudMessageUDP implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8785226165731609571L;
 	private String message;
 	private String host;
@@ -20,8 +17,7 @@ public class UnaCloudMessageUDP implements Serializable{
 	private int port;
 	private UDPMessageEnum type;
 	
-	public UnaCloudMessageUDP(){
-		
+	public UnaCloudMessageUDP(){		
 	}
 	
 	public UnaCloudMessageUDP(String message, String ip, int port, String host, UDPMessageEnum type) {
@@ -73,10 +69,19 @@ public class UnaCloudMessageUDP implements Serializable{
 		this.type = type;
 	}
 	
+	/**
+	 * generates a byte array to send message based in components in message
+	 * @return byte array
+	 */
 	public byte[] generateByteMessage(){
 		return ("{type:"+type.name()+",data:"+message+"}").getBytes();
 	}
 	
+	/**
+	 * Transform a byte array in parts of message (string array)
+	 * @param bytes
+	 * @throws UnsupportedEncodingException
+	 */
 	public void setMessageByBytes(byte[] bytes) throws UnsupportedEncodingException{
 		this.message = new String(bytes, "UTF-8");
 	}

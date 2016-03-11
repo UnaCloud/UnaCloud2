@@ -6,6 +6,11 @@ import com.losandes.utils.Time;
 
 import communication.messages.VirtualMachineOperationMessage;
 
+/**
+ * Represents message to start a virtual machine execution
+ * @author CesarF
+ *
+ */
 public class VirtualMachineStartMessage extends VirtualMachineOperationMessage implements Comparable<VirtualMachineStartMessage>{
 	private static final long serialVersionUID = -5116988985857543662L;
 	

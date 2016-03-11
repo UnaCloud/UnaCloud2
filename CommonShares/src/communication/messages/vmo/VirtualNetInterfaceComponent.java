@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Component in virtual interface start message
  * Specifies net interface in a virtual machine
- * @author Cesar
+ * @author CesarF
  *
  */
 public class VirtualNetInterfaceComponent implements Serializable{

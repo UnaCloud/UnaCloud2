@@ -2,6 +2,11 @@ package communication.messages;
 
 import communication.UnaCloudAbstractMessage;
 
+/**
+ * Represents task message for agent
+ * @author Clouder
+ *
+ */
 public abstract class AgentMessage extends UnaCloudAbstractMessage{
 	private static final long serialVersionUID = 2295996510707565731L;
 	public static final int UPDATE_OPERATION = 4;

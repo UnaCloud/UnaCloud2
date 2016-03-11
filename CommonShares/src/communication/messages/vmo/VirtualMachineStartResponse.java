@@ -2,6 +2,11 @@ package communication.messages.vmo;
 
 import communication.UnaCloudAbstractResponse;
 
+/**
+ * Represents response from agent to start a virtual machine execution
+ * @author CesarF
+ *
+ */
 public class VirtualMachineStartResponse extends UnaCloudAbstractResponse{
 	private static final long serialVersionUID = -9042455333449782507L;
 	private VirtualMachineState state;

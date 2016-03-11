@@ -2,6 +2,11 @@ package communication.messages.vmo;
 
 import communication.messages.VirtualMachineOperationMessage;
 
+/**
+ * Represents message to send current execution to server
+ * @author CesarF
+ *
+ */
 public class VirtualMachineSaveImageMessage extends VirtualMachineOperationMessage{
 
 	private long imageId;

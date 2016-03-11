@@ -3,6 +3,11 @@ package com.losandes.utils;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Transform time based in milliseconds set in constructor
+ * @author Clouder
+ *
+ */
 public class Time implements Serializable{
 	private static final long serialVersionUID = 4915716311965511894L;
 	private long amount;

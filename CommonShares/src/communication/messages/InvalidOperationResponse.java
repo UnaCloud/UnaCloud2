@@ -2,6 +2,11 @@ package communication.messages;
 
 import communication.UnaCloudAbstractResponse;
 
+/**
+ * Represents invalid response from agent 
+ * @author CesarF
+ *
+ */
 public class InvalidOperationResponse extends UnaCloudAbstractResponse{
 	private static final long serialVersionUID = -4408716514292114861L;
 	String message;

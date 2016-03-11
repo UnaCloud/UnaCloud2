@@ -4,7 +4,7 @@ import communication.UnaCloudAbstractResponse;
 
 /**
  * Class used to respond with information to server after one operation
- * @author Cesar
+ * @author CesarF
  *
  */
 public class InformationResponse extends UnaCloudAbstractResponse{

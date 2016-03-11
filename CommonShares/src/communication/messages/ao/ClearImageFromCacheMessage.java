@@ -2,6 +2,11 @@ package communication.messages.ao;
 
 import communication.messages.AgentMessage;
 
+/**
+ * Represents message to clear image from folder cache in agents
+ * @author Clouder
+ *
+ */
 public class ClearImageFromCacheMessage extends AgentMessage{
 
 	private static final long serialVersionUID = 524061116935661249L;

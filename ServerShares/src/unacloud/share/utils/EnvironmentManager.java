@@ -2,8 +2,8 @@ package unacloud.share.utils;
 
 
 /**
- * Class used to manage variables in environment to autoconfigure server projects
- * @author Cesar
+ * Class used to manage variables in environment to auto-configure server projects
+ * @author CesarF
  *
  */
 public class EnvironmentManager {
@@ -11,7 +11,7 @@ public class EnvironmentManager {
 	public static final String PATH_CONFIG = "PATH_CONFIG";
 	
 	/**
-	 * Return the path where is located config file for project. In case variable is not define 
+	 * Return the path where is located configuration file for project. In case variable is not define 
 	 * use root path (/)
 	 * @return
 	 */

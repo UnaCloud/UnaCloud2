@@ -4,6 +4,12 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+
+/**
+ * table host
+ * @author Clouder
+ *
+ */
 public class HostTable implements Serializable{
 	private static final long serialVersionUID = 2549432609629692430L;
 	private List<String[]> hosts=new LinkedList<>();

@@ -7,7 +7,7 @@ import java.net.SocketException;
 
 /**
  * Class used to send and receive message using UDP protocol
- * @author Cesar
+ * @author CesarF
  *
  */
 public class UnaCloudDataSenderUDP {
@@ -34,7 +34,7 @@ public class UnaCloudDataSenderUDP {
 	 * @param message
 	 * @param ip
 	 * @param port
-	 * @return
+	 * @return true in case send message was successful, false in case not
 	 */
 	public boolean sendMessage(UnaCloudMessageUDP message){
 		try {
@@ -54,7 +54,7 @@ public class UnaCloudDataSenderUDP {
 	
 	/**
 	 * Receives a message by UDP port
-	 * @return
+	 * @return udp message
 	 */
 	public UnaCloudMessageUDP getMessage(){
 		if(!receiver)return null;

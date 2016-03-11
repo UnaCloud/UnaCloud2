@@ -3,6 +3,11 @@ package com.losandes.utils;
 import java.math.BigInteger;
 import java.util.Random;
 
+/**
+ * Used to create random string 
+ * @author CesarF
+ *
+ */
 public class RandomUtils {
 	
 	private static Random r=new Random();
