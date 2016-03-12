@@ -60,7 +60,7 @@ class RepositoryController {
 	}
 	
 	/**
-	 * render form to create a new repository
+	 * renders form to create a new repository
 	 */
 	def create() {
 	}

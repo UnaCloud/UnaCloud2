@@ -42,7 +42,7 @@ class UserGroup {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Validate if group is admin group
+	 * Validates if group is admin group
 	 * @return true if group is for administrators, false in case not
 	 */
 	def boolean isAdmin(){
@@ -50,7 +50,7 @@ class UserGroup {
 	}
 	
 	/**
-	 * Validate if group is user default group
+	 * Validates if group is user default group
 	 * @return true if group is default group, false in case not
 	 */
 	def boolean isDefault(){

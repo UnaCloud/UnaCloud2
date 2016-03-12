@@ -1,9 +1,8 @@
 package virtualMachineManager.configuration;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import reportManager.ServerMessageSender;
-
-import com.andes.enums.VirtualMachineExecutionStateEnum;
-
 import hypervisorManager.ImageCopy;
 import communication.messages.vmo.VirtualMachineStartResponse;
 import exceptions.VirtualMachineExecutionException;

@@ -12,11 +12,11 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.db.DeploymentManager;
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.entities.HypervisorEntity;
 import unacloud.share.entities.VirtualMachineExecutionEntity;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.FileManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;

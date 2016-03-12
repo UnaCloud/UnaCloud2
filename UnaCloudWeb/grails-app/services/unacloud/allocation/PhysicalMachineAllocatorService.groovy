@@ -1,5 +1,7 @@
 package unacloud.allocation
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import grails.transaction.Transactional
 import groovy.sql.Sql
 import unacloud.HardwareProfileService;
@@ -7,7 +9,6 @@ import unacloud.PhysicalMachine
 import unacloud.User
 import unacloud.UserRestrictionService
 import unacloud.VirtualMachineExecution
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorEnum
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
 

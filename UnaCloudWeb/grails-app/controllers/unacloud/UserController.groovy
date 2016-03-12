@@ -178,7 +178,7 @@ class UserController {
 		
 	}	
 	/**
-	 * render create view
+	 * renders create view
 	 * @return
 	 */
 	def create(){
@@ -186,7 +186,7 @@ class UserController {
 	}
 
 	/**
-	 * Create a new user
+	 * Creates a new user
 	 */
 	def save(){
 		if(params.name&&params.username&&params.passwd&&params.description){	
@@ -258,7 +258,7 @@ class UserController {
 	}
 	
 	/**
-	 * Render page to edit restrictions
+	 * Renders page to edit restrictions
 	 * 
 	 */
 	def config(){
@@ -277,8 +277,7 @@ class UserController {
 	}
 	
 	/**
-	 * Set restrictions of user
-	 * @return
+	 * Sets restrictions of user
 	 */
 	def setRestrictions(){
 		def user = User.get(params.id)
@@ -323,8 +322,7 @@ class UserController {
 	}
 	
 	/**
-	 * Render page with current user session attributes
-	 * @return
+	 * Renders page with current user session attributes
 	 */
 	def profile(){
 		def user = User.get(session.user.id)
@@ -332,8 +330,7 @@ class UserController {
 	}
 	
 	/**
-	 * Set changed values in profile
-	 * @return
+	 * Sets changed values in profile
 	 */
 	def changeProfile(){
 		if(params.name&&params.description){			
@@ -352,15 +349,13 @@ class UserController {
 	}
 	
 	/**
-	 * Render page to change password
-	 * @return
+	 * Renders page to change password
 	 */
 	def changePassword(){		
 	}
 	
 	/**
 	 * Validates and saves new password
-	 * @return
 	 */
 	def savePassword(){
 		if(params.passwd&&params.newPasswd&&params.confirmPasswd){

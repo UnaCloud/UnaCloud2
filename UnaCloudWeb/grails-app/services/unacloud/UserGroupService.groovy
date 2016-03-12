@@ -29,7 +29,7 @@ class UserGroupService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Add a user to a group
+	 * Adds a user to a group
 	 * @param group to add user
 	 * @param user 
 	 */
@@ -120,7 +120,7 @@ class UserGroupService {
 	}
 	
 	/**
-	 * Edit the given group with new values
+	 * Edits the given group with new values
 	 * @param group group to be edited
 	 * @param users new list of users
 	 * @param name new name
@@ -165,7 +165,7 @@ class UserGroupService {
 	}
 	
 	/**
-	 * Remove user from all groups where it is added
+	 * Removes user from all groups where it is added
 	 * @param user to be removed
 	 */
 	def removeUser(User user){

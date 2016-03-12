@@ -7,7 +7,7 @@ import unacloud.share.enums.UserRestrictionEnum;
  * This Controller contains actions to manage User Group services: crud and deploy cluster.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
  * only administrator users can call this actions.
- * @author Cesar
+ * @author CesarF
  *
  */
 class UserGroupController {
@@ -75,7 +75,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Create group form action
+	 * Creates group form action
 	 * @return list with all user for group creation
 	 */
 	def create(){
@@ -83,7 +83,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Save group action. Redirects to group list when finished.
+	 * Saves group action. Redirects to group list when finished.
 	 */
 	def save(){
 		if(params.name){
@@ -130,7 +130,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * edit values action. Receives new group information and sends it to service 
+	 * edits values action. Receives new group information and sends it to service 
 	 * Redirects to group list when finished
 	 */
 	def saveEdit(){

@@ -6,7 +6,7 @@ import unacloud.pmallocators.AllocatorEnum;
 import grails.transaction.Transactional
 
 /**
- * This service contains all methods to manage User restriction: these methods returns values like allocator, repository and labas defined to be used for user.
+ * This service contains all methods to manage User restriction: these methods returns values like allocator, repository and labs defined to be used for user.
  * This class connects with database using hibernate
  * @author CesarF
  *
@@ -98,7 +98,7 @@ class UserRestrictionService {
 	}
 	
 	/**
-	 * Return the configured repository in restrictions for user, in case 
+	 * Returns the configured repository in restrictions for user, in case 
 	 * @param user to request repository
 	 * @return repository for user, returns default in case user doesn't have repository defined
 	 */

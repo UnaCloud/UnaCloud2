@@ -81,7 +81,7 @@ class FileService implements ApplicationContextAware {
 	}
 	
 	/**
-	 * Update image files in repository
+	 * Updates image files in repository
 	 * @param files list of files
 	 * @param token to query image
 	 */

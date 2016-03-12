@@ -1,12 +1,13 @@
 package unacloud.allocation
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import grails.transaction.Transactional
 import unacloud.DeployedImage
 import unacloud.ExecutionIP
 import unacloud.NetInterface
 import unacloud.VirtualMachineExecution
 import unacloud.enums.IPEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.pmallocators.AllocatorException
 
 /**

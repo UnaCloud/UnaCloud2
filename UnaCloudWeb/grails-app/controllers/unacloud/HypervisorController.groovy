@@ -4,7 +4,7 @@ package unacloud
  * This Controller contains actions to manage hypervisor services: deployment crud.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
  * only administrator users can call this actions.
- * @author Cesar
+ * @author CesarF
  *
  */
 class HypervisorController {
@@ -59,13 +59,13 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Create hypervisor form action
+	 * Creates hypervisor form action
 	 */
 	def create(){
 	}
 	
 	/**
-	 * Save a new hypervisor based in parameters
+	 * Saves a new hypervisor based in parameters
 	 * redirects to hypervisor list 
 	 * @return
 	 */
@@ -85,7 +85,7 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Edit hypervisor form action.
+	 * Edits hypervisor form action.
 	 * @return hypervisor selected by user
 	 */
 	def edit(){
@@ -97,7 +97,7 @@ class HypervisorController {
 	}
 	
 	/**
-	 * edit values action. Receives new hypervisor information and sends it to service
+	 * edits values action. Receives new hypervisor information and sends it to service
 	 * Redirects to hypervisor list when finished
 	 */
 	def saveEdit(){
@@ -120,7 +120,7 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Delete hypervisor action. Redirects to index when finished
+	 * Deletes hypervisor action. Redirects to index when finished
 	 */	
 	def delete(){
 		def hypervisor = Hypervisor.get(params.id)

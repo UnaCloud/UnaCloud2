@@ -1,11 +1,11 @@
 package unacloud
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.RandomUtils;
 
 import unacloud.allocation.IpAllocatorService
 import unacloud.allocation.PhysicalMachineAllocatorService
 import unacloud.share.enums.DeploymentStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import unacloud.pmallocators.AllocatorException
 import unacloud.pmallocators.PhysicalMachineAllocationDescription
@@ -133,9 +133,9 @@ class DeploymentService {
 			}
 		}
 		
-		//if(!Environment.isDevelopmentMode()){				
+		if(!Environment.isDevelopmentMode()){				
 			QueueTaskerControl.deployCluster(dep,user)
-		//}		
+		}		
 		
 		return dep
 	}

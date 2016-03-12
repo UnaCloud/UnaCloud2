@@ -6,7 +6,8 @@ import java.sql.SQLException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import uniandes.ControlManager;
 import uniandes.db.PhysicalMachineUpdater;
 import communication.UDPMessageEnum;

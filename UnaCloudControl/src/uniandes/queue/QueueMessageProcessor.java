@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.Time;
 
 import communication.UnaCloudAbstractMessage;
@@ -27,7 +28,6 @@ import unacloud.share.db.DeploymentManager;
 import unacloud.share.db.PhysicalMachineManager;
 import unacloud.share.db.VirtualImageManager;
 import unacloud.share.queue.QueueMessage;
-import unacloud.share.queue.QueueMessageType;
 import unacloud.share.queue.QueueReader;
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
@@ -36,8 +36,8 @@ import unacloud.share.entities.PhysicalMachineEntity;
 import unacloud.share.entities.VirtualMachineExecutionEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.PhysicalMachineStateEnum;
+import unacloud.share.enums.QueueMessageType;
 import unacloud.share.enums.TaskEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.ControlManager;
 import uniandes.communication.MessageSender;

@@ -3,9 +3,10 @@ package unacloud.share.manager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.losandes.utils.ConfigurationReader;
+
 import unacloud.share.db.DatabaseConnection;
 import unacloud.share.queue.QueueMessageReceiver;
-import unacloud.share.utils.ConfigurationReader;
 
 
 /**

@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 /**
  * Class used to execute query, update and delete processes in database for Physical Machine Entity. 

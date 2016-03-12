@@ -84,7 +84,7 @@ class UserService {
 	}
 	
 	/**
-	 * Put the task to delete user, deployments, images, clusters
+	 * Puts the task to delete user, deployments, images, clusters
 	 * @param user user to be removed
 	 */	
 	def deleteUser(User user, User admin) throws Exception{

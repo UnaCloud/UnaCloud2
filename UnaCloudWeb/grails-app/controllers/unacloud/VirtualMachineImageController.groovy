@@ -7,7 +7,7 @@ import grails.converters.JSON
 /**
  * This Controller contains actions to manage virtual machine image services: crud, and services to send messages to agents to copy or deletes images.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
- * @author Cesar
+ * @author CesarF
  *
  */
 class VirtualMachineImageController {
@@ -141,7 +141,6 @@ class VirtualMachineImageController {
 	
 	/**
 	 * Validates if image can be edited by user and render view
-	 * @return
 	 */
 	def edit(){
 		VirtualMachineImage image = VirtualMachineImage.get(params.id);
@@ -202,7 +201,6 @@ class VirtualMachineImageController {
 	
 	/**
 	 * This action renders view to change the externalId reference in external cloud provider
-	 * @return
 	 */
 	def external(){
 		//TODO to be implemented

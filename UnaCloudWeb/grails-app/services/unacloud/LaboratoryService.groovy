@@ -5,9 +5,9 @@ import org.springframework.aop.ThrowsAdvice;
 import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.Ip4Validator
 
 import grails.transaction.Transactional
@@ -26,7 +26,7 @@ class LaboratoryService {
 	//-----------------------------------------------------------------
 	
     /**
-	 * Return the lab name list
+	 * Returns the lab name list
 	 * @return lab name list
 	 */
 	def getLabsNames(){
@@ -34,7 +34,7 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Return all labs searched by names array
+	 * Returns all labs searched by names array
 	 * @param names list of lab names
 	 * @return list of Hardware Profiles
 	 */
@@ -81,7 +81,7 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Set values in a host machine
+	 * Sets values in a host machine
 	 * @param ip new ip for host
 	 * @param name new name
 	 * @param cores new logical cores quantity
@@ -178,7 +178,7 @@ class LaboratoryService {
 	}
 	
 	/**
-	 * Create a new Pool in a lab, validates if range is valid
+	 * Creates a new Pool in a lab, validates if range is valid
 	 * @param lab where will be assign ip's
 	 * @param privateNet if network is private or public
 	 * @param netGateway gateway

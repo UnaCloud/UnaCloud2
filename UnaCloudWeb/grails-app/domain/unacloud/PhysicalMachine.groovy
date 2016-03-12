@@ -1,8 +1,7 @@
 package unacloud
 
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.enums.MonitoringStatus
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import unacloud.enums.MonitoringStatus;
 
 /**
  * Entity to represent a Physical Machine.

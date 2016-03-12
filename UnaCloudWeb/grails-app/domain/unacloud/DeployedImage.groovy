@@ -2,7 +2,8 @@ package unacloud
 
 import java.util.ArrayList;
 
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 
 /**
  * Entity to represent a image that has been deployed in infrastructure,

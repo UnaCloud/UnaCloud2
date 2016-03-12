@@ -1,12 +1,12 @@
 package unacloud
 
 import java.util.concurrent.TimeUnit
-
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.enums.IPEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 
 /**
  * Entity to represent a Virtual Machine Execution

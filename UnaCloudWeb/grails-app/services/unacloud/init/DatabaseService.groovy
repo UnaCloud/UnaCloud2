@@ -1,7 +1,9 @@
 package unacloud.init
 
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import grails.transaction.Transactional
 import groovy.sql.Sql
 

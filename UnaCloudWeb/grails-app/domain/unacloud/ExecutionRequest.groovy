@@ -2,7 +2,8 @@ package unacloud
 
 import java.util.Date;
 
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 
 /**
  * Entity to represent the state of execution in an specified time.

@@ -52,16 +52,14 @@ class ConfigurationController {
 	}
 	
 	/**
-	 * Render page to list and edit variables
-	 * @return
+	 * Renders page to list and edit variables
 	 */
     def listVariables() { 
 		[variables:ServerVariable.all]
 	}
 	
 	/**
-	 * Set value in a server variable
-	 * @return
+	 * Sets value in a server variable
 	 */
 	def setVariable(){
 		def variable = ServerVariable.get(params.id)
@@ -75,8 +73,7 @@ class ConfigurationController {
 	}
 	
 	/**
-	 * Render page to manage agent configuration
-	 * @return
+	 * Renders page to manage agent configuration
 	 */
 	def agentConfig(){
 		[agent:configurationService.getAgentVersion()]
@@ -84,7 +81,6 @@ class ConfigurationController {
 	
 	/**
 	 * Increases agent version
-	 * @return
 	 */
 	def setAgentVersion(){
 		configurationService.setAgentVersion();
@@ -93,6 +89,9 @@ class ConfigurationController {
 		redirect(uri:"/config/agent", absolute:true)
 	}
 	
+	/**
+	 * call service to load files in stream
+	 */
 	def downloadAgent(){
 		response.setContentType("application/zip")
 		response.setHeader("Content-disposition", "filename=agent.zip")

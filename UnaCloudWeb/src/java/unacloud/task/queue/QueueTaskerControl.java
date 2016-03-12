@@ -3,7 +3,6 @@ package unacloud.task.queue;
 import java.util.List;
 
 import unacloud.share.queue.QueueMessage;
-import unacloud.share.queue.QueueMessageType;
 import unacloud.share.queue.QueueTaskerConnection;
 import unacloud.DeployedImage;
 import unacloud.Deployment;
@@ -11,6 +10,7 @@ import unacloud.PhysicalMachine;
 import unacloud.User;
 import unacloud.VirtualMachineExecution;
 import unacloud.VirtualMachineImage;
+import unacloud.share.enums.QueueMessageType;
 import unacloud.share.enums.TaskEnum;
 
 /**

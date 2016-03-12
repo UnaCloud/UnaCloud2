@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TreeMap;
 
-import com.andes.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 import reportManager.ServerMessageSender;
 import reportManager.VirtualMachineStateViewer;

@@ -1,9 +1,10 @@
 package unacloud
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.enums.ClusterEnum;
 import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.UserStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
@@ -189,8 +190,7 @@ class DeploymentController {
 	}
 	
 	/**
-	 * Add new instances to a selected deployed image
-	 * @return
+	 * Adds new instances to a selected deployed image
 	 */
 	def saveInstances(){
 		DeployedImage image = DeployedImage.get(params.id);
@@ -225,7 +225,6 @@ class DeploymentController {
 	
 	/**
 	 * Validates if user has permissions and call to deploymentService to create a new task to create a copy
-	 * @return
 	 */
 	def createCopy(){
 		VirtualMachineExecution execution = VirtualMachineExecution.get(params.id)

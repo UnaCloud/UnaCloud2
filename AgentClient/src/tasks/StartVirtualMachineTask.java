@@ -1,9 +1,8 @@
 package tasks;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import reportManager.ServerMessageSender;
-
-import com.andes.enums.VirtualMachineExecutionStateEnum;
-
 import exceptions.VirtualMachineExecutionException;
 import hypervisorManager.ImageCopy;
 import virtualMachineManager.ImageCacheManager;

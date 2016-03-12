@@ -88,7 +88,7 @@ class User {
 	}
 	
 	/**
-	 * Return the list of images owned by user sorted by name
+	 * Returns the list of images owned by user sorted by name
 	 * @return list of sorted images
 	 */
 	def getOrderedImages(){
@@ -100,7 +100,7 @@ class User {
 	}
 	
 	/**
-	 * Return the list of clusters owned by user sorted by name
+	 * Returns the list of clusters owned by user sorted by name
 	 * @return list of sorted cluster
 	 */
 	def getOrderedClusters(){
@@ -114,7 +114,7 @@ class User {
 	}
 	
 	/**
-	 * Return the list of images owned by user sorted by name and state AVAILABLE
+	 * Returns the list of images owned by user sorted by name and state AVAILABLE
 	 * @return list of available images
 	 */
 	def getAvailableImages(){
@@ -126,7 +126,7 @@ class User {
 	}
 	
 	/**
-	 * Return the list of images owned by user sorted by name and state different to AVAILABLE
+	 * Returns the list of images owned by user sorted by name and state different to AVAILABLE
 	 * @return list of not available images
 	 */
 	def getNotAvailableImages(){
@@ -138,7 +138,7 @@ class User {
 	}
 	
 	/**
-	 * Search and return a restriction in user restriction list
+	 * Searches and return a restriction in user restriction list
 	 * @param user restriction to be requested
 	 * @return a requested restriction of user, null if does not exist
 	 */
@@ -147,7 +147,7 @@ class User {
 	}
 	
 	/**
-	 * Search and return a restriction in user group list
+	 * Searches and return a restriction in user group list
 	 * @param user restriction to be requested
 	 * @return all groups where exists the restriction, null if does not exist
 	 */

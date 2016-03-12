@@ -14,16 +14,16 @@ import grails.transaction.Transactional
 class ServerVariableService {
 
 	/**
-	 * Return the default allocator configured in database
-	 * @return
+	 * Returns the default allocator configured in database
+	 * @return default allocator
 	 */
     def getDefaultAllocator() {
 		return ServerVariable.findByName(UnaCloudConstants.VM_DEFAULT_ALLOCATOR)
     }
 	
 	/**
-	 * Return the current web server file url
-	 * @return
+	 * Returns the current web server file url
+	 * @return file manager url
 	 */
 	def getUrlFileManager(){
 		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable

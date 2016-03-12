@@ -1,9 +1,10 @@
 package unacloud
 
+import com.losandes.enums.CalendarUtils;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.enums.DeploymentStateEnum;
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
-import unacloud.share.utils.CalendarUtils;
 
 /**
  * Entity to represent a Deployment.
@@ -163,7 +164,7 @@ class Deployment {
 	}
 	
 	/**
-	 * Delete all history for deployment and images.
+	 * Deletes all history for deployment and images.
 	 * It is necessary this method due to belong property among classes
 	 */
 	def deleteDeploy(){

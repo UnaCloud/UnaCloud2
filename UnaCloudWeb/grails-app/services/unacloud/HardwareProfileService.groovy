@@ -12,14 +12,14 @@ import grails.transaction.Transactional
 class HardwareProfileService {
 
 	/**
-	 * Return the lab name list
+	 * Returns the lab name list
 	 */
     def getProfilesNames() {
 		return HardwareProfile.executeQuery("select name from HardwareProfile")
     }
 	
 	/**
-	 * Return all Hardware Profiles searched by names array
+	 * Returns all Hardware Profiles searched by names array
 	 * @param names list of names 
 	 * @return list of Hardware Profiles
 	 */

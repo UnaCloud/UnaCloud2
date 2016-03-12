@@ -59,7 +59,7 @@ class OperatingSystemController {
 	}
 	
 	/**
-	 * render form to create a new OS
+	 * renders form to create a new OS
 	 */
 	def create() {
 	}
@@ -101,7 +101,7 @@ class OperatingSystemController {
 	}
 	
 	/**
-	 * Edit OS form action
+	 * Edits OS form action
 	 * @return OS selected by user
 	 */
 	

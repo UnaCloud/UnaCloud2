@@ -26,7 +26,7 @@ class HypervisorService {
     }
 	
 	/**
-	 * Edit hypervisor's values
+	 * Edits hypervisor's values
 	 * @param hypervisor hypervisor to be edited
 	 * @param name hypervisor's new name
 	 */

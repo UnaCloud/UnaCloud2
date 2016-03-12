@@ -1,6 +1,6 @@
 package reportManager;
 
-import com.andes.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.OperatingSystem;
 
 import communication.UDPMessageEnum;

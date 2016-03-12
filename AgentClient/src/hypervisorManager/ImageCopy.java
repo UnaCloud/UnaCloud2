@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import reportManager.ServerMessageSender;
 
-import com.andes.enums.VirtualMachineExecutionStateEnum;
 
 import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.PersistentExecutionManager;

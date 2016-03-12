@@ -9,7 +9,7 @@ import java.util.zip.ZipOutputStream;
 
 import reportManager.ServerMessageSender;
 
-import com.andes.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.UnaCloudConstants;
 
 import domain.VariableManager;
