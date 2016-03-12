@@ -1,8 +1,7 @@
 /**
- * In this package are located classes to cofigure local file properties for agent.
- */
-/**
+ * In this package are located classes to configure local file properties for agent.
  * @author CesarF
+ * @author Clouder
  *
  */
 package clientconfigurer;

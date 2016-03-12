@@ -1,8 +1,7 @@
 /**
- * In this package are located all classes to execute tasks requested by server
- */
-/**
+ *  In this package are located all classes which represents request sent from server to process task in agent 
  * @author CesarF
+ * @author Clouder
  *
  */
 package communication.messages.ao;
