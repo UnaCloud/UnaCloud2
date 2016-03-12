@@ -9,6 +9,11 @@ import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
+/**
+ * Responsible to configure virtual machine
+ * @author clouder
+ *
+ */
 public final class VirtualMachineConfigurer extends Thread{
 	/**
 	 * VM to be configured

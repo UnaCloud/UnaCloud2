@@ -36,7 +36,7 @@ import communication.messages.vmo.VirtualMachineStopMessage;
 
 
 /**
- * Responsible for attending or discarding a Clouder
+ * Responsible for attending or discarding a
  * Server operation request in a thread
  */
 public class ClouderServerAttentionThread implements Runnable {
@@ -65,7 +65,7 @@ public class ClouderServerAttentionThread implements Runnable {
     }
 
     /**
-     * Responsible for attending or discarding the Clouder Server operation
+     * Responsible for attending or discarding the Server operation
      * request
      */
     public void run() {
@@ -116,6 +116,11 @@ public class ClouderServerAttentionThread implements Runnable {
                 return new InvalidOperationResponse("Invalid virtual machine operation: "+message.getSubOp());
         }
     }
+    /**
+     * Responsible to process agent message
+     * @param message
+     * @return information response
+     */
     private UnaCloudAbstractResponse attendAgentOperation(UnaCloudAbstractMessage message) {
         switch (message.getSubOp()) {
             case AgentMessage.UPDATE_OPERATION:

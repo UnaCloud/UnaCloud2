@@ -18,6 +18,12 @@ import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
+
+/**
+ * Task to send a virtual machine execution to server
+ * @author CesarF
+ *
+ */
 public class UploadImageVirtualMachineTask implements Runnable{
 
 	VirtualMachineExecution machineExecution;

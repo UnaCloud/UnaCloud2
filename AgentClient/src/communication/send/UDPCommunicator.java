@@ -10,7 +10,7 @@ import domain.VariableManager;
 
 /**
  * Singleton class to send message to server 
- * @author Cesar
+ * @author CesarF
  *
  */
 public class UDPCommunicator {
@@ -53,12 +53,12 @@ public class UDPCommunicator {
 	}
 	
 	/**
-	 * 
+	 * Sends message to server
 	 * @param ip
 	 * @param port
 	 * @param type
 	 * @param params
-	 * @return
+	 * @return true in case message was sent, false in case not
 	 * @throws Exception
 	 */
 	private boolean pushInfo(String ip, int port,UDPMessageEnum type, Object...params)throws Exception{

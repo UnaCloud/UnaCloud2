@@ -13,6 +13,8 @@ import domain.VariableManager;
 
 /**
  * Responsible for listening to the Clouder Server
+ * @author CesarF
+ * @author Clouder
  */
 public class ClouderClientAttention{
     
@@ -36,7 +38,7 @@ public class ClouderClientAttention{
                 return instance;
         }
     /**
-     * Responsible for obtaining data connection and listening to Clouder Server
+     * Responsible for obtaining data connection and listening to Server
      * @throws Exception 
      */
     private ClouderClientAttention() throws Exception{
@@ -45,7 +47,7 @@ public class ClouderClientAttention{
     }
 
     /**
-     * Responsible for connecting with Clouder Server and start a communication thread
+     * Responsible for connecting with Server and start a communication thread
      */
     private final void connect() {
         try {

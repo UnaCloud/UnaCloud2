@@ -16,6 +16,11 @@ import virtualMachineManager.entities.Image;
 import virtualMachineManager.entities.VirtualMachineExecution;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
 
+/**
+ * Represents a copy from an image that is copied in files
+ * @author CesarF
+ *
+ */
 public class ImageCopy implements Serializable{
 	
 	private static final long serialVersionUID = 8911955514393569155L;

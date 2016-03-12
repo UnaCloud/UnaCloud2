@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.PrintWriter;
 
 /**
+ * Class responsible to implement methods to configure Ubuntu virtual machines
  * @author Clouder
  */
 public class Ubuntu extends AbstractVirtualMachineConfigurator{

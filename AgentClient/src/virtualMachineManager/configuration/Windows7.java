@@ -4,7 +4,7 @@ import hypervisorManager.HypervisorOperationException;
 import utils.AddressUtility;
 
 /**
- *
+ * Responsible to configure Windows 7 machine
  * @author Clouder
  */
 public class Windows7 extends AbstractVirtualMachineConfigurator{
@@ -21,12 +21,12 @@ public class Windows7 extends AbstractVirtualMachineConfigurator{
     }
 	@Override
 	public void configureHostname() throws HypervisorOperationException {
-		// TODO Auto-generated method stub
+		// TODO to be implemented
 		
 	}
 	@Override
 	public void configureHostTable() throws HypervisorOperationException {
-		// TODO Auto-generated method stub
+		// TODO to be implemented
 		
 	}
 	@Override

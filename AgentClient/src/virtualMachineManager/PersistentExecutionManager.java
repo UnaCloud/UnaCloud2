@@ -112,7 +112,7 @@ public class PersistentExecutionManager {
      * Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
      * @param turnOnMessage
      * @param started Parameter that tell if the VM is already on and should not be started again. 
-     * @return
+     * @return response message 
      */
     public static String startUpMachine(VirtualMachineExecution execution,boolean started){
     	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
@@ -192,7 +192,7 @@ public class PersistentExecutionManager {
     /**
      * Return a list of id executions that currently are running
      * not return images in state STARTING (running-not running)
-     * @return
+     * @return list of execution ids
      */
     public static List<Long> returnIdsExecutions(){
     	if(executionList.values().size()==0)return new ArrayList<Long>();
@@ -224,9 +224,9 @@ public class PersistentExecutionManager {
         } catch (Exception ex){}
     }
     /**
-     * TODO: documentation
+     * Sends an image copied to server
      * @param message
-     * @return
+     * @return unacloud response
      */
     public static UnaCloudAbstractResponse sendImageCopy(VirtualMachineSaveImageMessage message){
     	try {

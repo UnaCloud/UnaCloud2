@@ -3,6 +3,11 @@ package tasks;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * To manage thread pools to execute tasks
+ * @author CesarF
+ *
+ */
 public class ExecutorService {
 	public static int REQUEST_POOL_THREAD_SIZE = 2;
 	public static int BACKGROUND_POOL_THREAD_SIZE = 2;

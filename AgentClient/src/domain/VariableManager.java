@@ -7,7 +7,7 @@ import com.losandes.utils.UnaCloudConstants;
 
 /**
  * Singleton class to control properties file
- * @author Cesar
+ * @author CesarF
  *
  */
 public class VariableManager {
@@ -32,10 +32,18 @@ public class VariableManager {
 		propGlobal = new ConfigurationReader(UnaCloudConstants.GLOBAL_FILE);
 	}
 	
+	/**
+	 * Returns local configuration reader
+	 * @return configuration reader
+	 */
 	public ConfigurationReader getLocal(){
 		return propLocal;
 	}
 	
+	/**
+	 * Returns global configuration reader
+	 * @return configuration reader
+	 */
 	public ConfigurationReader getGlobal(){
 		return propGlobal;
 	}

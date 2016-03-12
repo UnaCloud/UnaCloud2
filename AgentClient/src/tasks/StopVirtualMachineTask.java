@@ -4,6 +4,11 @@ import communication.messages.vmo.VirtualMachineStopMessage;
 
 import virtualMachineManager.PersistentExecutionManager;
 
+/**
+ * Task to stop a virtual machine execution
+ * @author CesarF
+ *
+ */
 public class StopVirtualMachineTask implements Runnable{
 	
 	VirtualMachineStopMessage stopMessage;

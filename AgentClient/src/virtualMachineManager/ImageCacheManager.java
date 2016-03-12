@@ -29,6 +29,11 @@ import com.losandes.utils.UnaCloudConstants;
 import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 
+/**
+ * Responsible to manage cache for images
+ * @author Clouder
+ *
+ */
 public class ImageCacheManager {
 	
 	
@@ -148,7 +153,7 @@ public class ImageCacheManager {
 	
 	/**
 	 * Remove a image from cache in repository
-	 * @return
+	 * @return response
 	 */
 	public static synchronized String clearImageFromCache(Long imageId){
 		System.out.println("clearCache for machine "+imageId);
@@ -214,8 +219,8 @@ public class ImageCacheManager {
 	}
 	
 	/**
-	 * Return the list
-	 * @return
+	 * Return the list of current images 
+	 * @return list of images
 	 */
 	public static List<Long> getCurrentImages(){
 		loadImages();

@@ -19,10 +19,15 @@ import com.losandes.utils.UnaCloudConstants;
 import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 
+/**
+ * Class to download files from server
+ * @author CesarF
+ *
+ */
 public class DownloadImageVirtualMachineTask {
 	
 	/**
-	 * Creates a new image copy
+	 * Creates a new image copy requesting images from server
 	 * @param image base image
 	 * @param copy empty copy
 	 * @throws Exception 

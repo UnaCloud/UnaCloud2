@@ -2,7 +2,7 @@ package virtualMachineManager.entities;
 
 /**
  * Class to represent a net interface in virtual machine
- * @author Cesar
+ * @author CesarF
  *
  */
 public class NetInterface {

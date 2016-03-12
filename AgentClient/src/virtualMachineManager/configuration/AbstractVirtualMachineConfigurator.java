@@ -6,7 +6,11 @@ import java.io.File;
 import java.util.Random;
 
 import virtualMachineManager.entities.VirtualMachineExecution;
-
+/**
+ * Abstract configurator for physical machines
+ * @author Clouder
+ *
+ */
 public abstract class AbstractVirtualMachineConfigurator{
 	
 	private static Random r=new Random();

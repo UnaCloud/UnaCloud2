@@ -11,6 +11,11 @@ import com.losandes.utils.Time;
 import communication.messages.vmo.VirtualMachineStartMessage;
 import communication.messages.vmo.VirtualNetInterfaceComponent;
 
+/**
+ * Represents a virtual machine execution entity
+ * @author Clouder
+ *
+ */
 public class VirtualMachineExecution implements Serializable{
 	
 	

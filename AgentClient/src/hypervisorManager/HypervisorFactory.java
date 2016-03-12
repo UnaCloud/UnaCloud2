@@ -12,6 +12,7 @@ import domain.VariableManager;
 /**
  * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.
  * @author Clouder
+ * @author CesarF
  */
 public class HypervisorFactory {
     /**
@@ -45,8 +46,8 @@ public class HypervisorFactory {
     }
     
     /**
-     * Return the list of currents executions in each hypervisors
-     * @return
+     * Returns the list of currents executions in each hypervisors
+     * @return list of current executions in hypervisors
      */
     public static List<String> getCurrentExecutions(){
     	List<String >executions = new ArrayList<String>();

@@ -27,7 +27,7 @@ public class Main {
 	//-----------------------------------------------------------------
 
     /**
-     * Responsible for sorting and starting the Clouder Client
+     * Responsible for sorting and starting the Client
      * @param String array
      * @throws Exception 
      */

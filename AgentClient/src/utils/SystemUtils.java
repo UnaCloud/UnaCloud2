@@ -1,5 +1,10 @@
 package utils;
 
+/**
+ * Utility class to manage sleep process
+ * @author Clouder
+ *
+ */
 public class SystemUtils {
 	/**
 	 * sleeps agent tread

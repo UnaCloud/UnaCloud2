@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents image entity
+ * @author clouder
+ *
+ */
 public class Image implements Serializable{
 	
 	private static final long serialVersionUID = -2386734224180305694L;

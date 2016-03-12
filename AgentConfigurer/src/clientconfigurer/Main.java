@@ -9,11 +9,17 @@ import com.losandes.utils.UnaCloudConstants;
 
 /**
  * Class used to create a local properties file
- * @author Cesar
+ * @author Clouder
+ * @author CesarF
  *
  */
 public class Main {
 	
+	/**
+	 * Configures all variables in local file
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String... args) throws IOException{
 		ConfigurationReader propLocal = new ConfigurationReader(UnaCloudConstants.LOCAL_FILE);
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

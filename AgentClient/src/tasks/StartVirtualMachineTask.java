@@ -8,6 +8,11 @@ import hypervisorManager.ImageCopy;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
+/**
+ * Task to start a virtual machine execution
+ * @author CesarF
+ *
+ */
 public class StartVirtualMachineTask implements Runnable{
 	VirtualMachineExecution machineExecution;
 	/**

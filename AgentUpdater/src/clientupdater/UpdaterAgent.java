@@ -20,7 +20,8 @@ import com.losandes.utils.UnaCloudConstants;
 
 /**
  * This class verifies version and updates all agent files.
- * @author Cesar
+ * @author CesarF
+ * @author Clouder
  *
  */
 public class UpdaterAgent {
@@ -90,7 +91,7 @@ public class UpdaterAgent {
 
 	 /**
      * Returns the information contained on stored version file.
-     * @return
+     * @return list or files names
      */
     private ArrayList<String> getVersionFile() {
         ArrayList<String> ret = new ArrayList<String>();
