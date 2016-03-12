@@ -1,5 +1,4 @@
-package unacloud.share.enums;
-import unacloud.share.utils.CalendarUtils;
+package com.losandes.enums;
 
 /**
  * Represents state of virtual machine executions

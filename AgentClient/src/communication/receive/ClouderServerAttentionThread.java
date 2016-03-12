@@ -185,7 +185,7 @@ public class ClouderServerAttentionThread implements Runnable {
                 }
                 return new InformationResponse("successful");          
             default:
-                return new InformationResponse(ERROR_MESSAGE + "The Clouder Server physical machine operation request is invalid: " + message.getSubOp());
+                return new InformationResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getSubOp());
         }
     }
 }

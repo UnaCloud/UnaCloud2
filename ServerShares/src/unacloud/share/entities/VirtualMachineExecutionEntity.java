@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 /**
  * Class to represent a Virtual Machine Execution entity 

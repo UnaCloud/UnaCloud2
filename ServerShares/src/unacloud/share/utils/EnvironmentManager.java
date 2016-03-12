@@ -13,7 +13,7 @@ public class EnvironmentManager {
 	/**
 	 * Return the path where is located configuration file for project. In case variable is not define 
 	 * use root path (/)
-	 * @return
+	 * @return path where is located configuration file
 	 */
 	public static String getConfigPath(){
 		String path = System.getenv().get(PATH_CONFIG);

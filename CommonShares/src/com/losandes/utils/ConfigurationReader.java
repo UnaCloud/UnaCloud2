@@ -12,7 +12,7 @@ import java.util.TreeMap;
 /**
  * Utility Class used to load variables from a properties file.
  * Typically used to load configuration values
- * @author Cesar
+ * @author CesarF
  *
  */
 public class ConfigurationReader {
@@ -71,38 +71,36 @@ public class ConfigurationReader {
 	 */
 	public void saveConfiguration() throws IOException{
 		Properties prop = new Properties();
-		OutputStream out = new FileOutputStream(new File(this.fileName));
+		OutputStream out = new FileOutputStream(this.fileName);
 		for(String key: values.keySet()){
 			prop.setProperty(key, values.get(key));
 		}
 		prop.store(out, null);
-		out.close();
-		
 	}
 	/**
-	 * Return a variable requested by parameters as String, null: value is not in file
+	 * Returns a variable requested by parameters as String, null: value is not in file
 	 * @param nameVariable
-	 * @return
+	 * @return variable as String value
 	 */
 	public String getStringVariable(String nameVariable){
 		return values.get(nameVariable);
 	}
 	
 	/**
-	 * Return a variable requested by parameters as Integer, null: values is not in file
+	 * Returns a variable requested by parameters as Integer, null: values is not in file
 	 * @param nameVariable
-	 * @return
-	 * @throws Exception
+	 * @return variable as Integer value
+	 * @throws Exception in case variable is not int
 	 */
 	public Integer getIntegerVariable(String nameVariable) throws Exception{
 		return Integer.parseInt(values.get(nameVariable));
 	}
 	
 	/**
-	 * Return a variable requested by parameters as Long, null: values is not in file
+	 * Returns a variable requested by parameters as Long, null: values is not in file
 	 * @param nameVariable
-	 * @return
-	 * @throws Exception
+	 * @return variable as Long value
+	 * @throws Exception in case variable is not long
 	 */
 	public Long getLongVariable(String nameVariable) throws Exception{
 		return Long.parseLong(values.get(nameVariable));
@@ -134,23 +132,16 @@ public class ConfigurationReader {
 	public void setIntegerVariable(String key, Integer variable){
 		values.put(key, variable+"");
 	}
-
+	
 	/**
-	 * Returns a variable in case of exist, else save variable and return
-	 * @param vmRepoPath
-	 * @param string
-	 * @return
-	 * @throws IOException 
+	 * Gets a variable from tree if variable doesn't exist set by other variable
+	 * @param nameVariable search variable
+	 * @param variableToSet variable to be save 
+	 * @return variable in tree
 	 */
-	public String getSetStringValue(String key, String value) {
-		if(values.get(key)==null){
-			values.put(key, value);
-			try {
-				saveConfiguration();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}else value = values.get(key);
-		return value;
+	public String getSetStringValue(String nameVariable, String variableToSet){
+		String val = values.get(nameVariable);
+		if(val==null)values.put(nameVariable, variableToSet);
+		return variableToSet;
 	}
 }

@@ -9,7 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
-import unacloud.share.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
 import unacloud.share.entities.NetInterfaceEntity;

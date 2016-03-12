@@ -10,7 +10,6 @@ import communication.messages.VirtualMachineOperationMessage;
  * @author Clouder
  *
  */
-@Deprecated
 public class VirtualMachineAddTimeMessage extends VirtualMachineOperationMessage{
 	private static final long serialVersionUID = 7525891768407688888L;
 	Time executionTime;

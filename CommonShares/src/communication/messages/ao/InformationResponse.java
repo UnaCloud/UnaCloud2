@@ -3,7 +3,7 @@ package communication.messages.ao;
 import communication.UnaCloudAbstractResponse;
 
 /**
- * Class used to respond with information to server after one operation
+ * Class used to respond with information from server after one operation
  * @author CesarF
  *
  */

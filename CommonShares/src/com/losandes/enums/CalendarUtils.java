@@ -1,4 +1,4 @@
-package unacloud.share.utils;
+package com.losandes.enums;
 
 /**
  * Utility class to manage time in milliseconds
