@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.losandes.utils.UnaCloudConstants;
+import utils.VariableManager;
 
-import domain.VariableManager;
+import com.losandes.utils.UnaCloudConstants;
 
 /**
  * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.

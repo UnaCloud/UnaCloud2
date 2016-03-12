@@ -1,4 +1,4 @@
-package domain;
+package init;
 
 import hypervisorManager.HypervisorFactory;
 
@@ -7,14 +7,15 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 
-import reportManager.PhysicalMachineStateReporter;
-import reportManager.ServerMessageSender;
+import utils.VariableManager;
 import virtualMachineManager.PersistentExecutionManager;
 
 import com.losandes.utils.OperatingSystem;
 import com.losandes.utils.UnaCloudConstants;
 
 import communication.receive.ClouderClientAttention;
+import communication.send.report.PhysicalMachineStateReporter;
+import communication.send.report.ServerMessageSender;
 
 /**
  * Responsible for starting the UnaCloud Client

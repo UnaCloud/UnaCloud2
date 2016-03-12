@@ -1,4 +1,4 @@
-package reportManager;
+package communication.send.report;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

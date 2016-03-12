@@ -1,4 +1,4 @@
-package tasks;
+package virtualMachineManager.task;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

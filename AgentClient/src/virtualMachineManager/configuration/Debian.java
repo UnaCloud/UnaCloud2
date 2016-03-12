@@ -25,8 +25,6 @@ public class Debian extends AbstractVirtualMachineConfigurator{
 	}
     /**
      * Configures the IP address of the Debian managed virtual machine
-     * @param netmask
-     * @param ip
      * @throws HypervisorOperationException 
      */
     @Override

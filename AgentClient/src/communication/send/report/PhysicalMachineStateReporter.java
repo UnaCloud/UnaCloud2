@@ -1,4 +1,4 @@
-package reportManager;
+package communication.send.report;
 
 import java.util.List;
 

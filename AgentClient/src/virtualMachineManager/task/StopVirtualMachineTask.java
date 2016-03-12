@@ -1,4 +1,4 @@
-package tasks;
+package virtualMachineManager.task;
 
 import communication.messages.vmo.VirtualMachineStopMessage;
 

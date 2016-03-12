@@ -31,7 +31,7 @@ public enum ServerVariableProgramEnum {
 	/**
 	 * Returns a server variable base in type
 	 * @param type
-	 * @return
+	 * @return server variable program
 	 */
 	public static ServerVariableProgramEnum getEnum(String type){
 		if(type.equals(AGENT.name()))return AGENT;

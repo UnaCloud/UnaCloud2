@@ -1,8 +1,8 @@
 package com.losandes.utils;
 
 /**
- * unique class where is located all variables used among four programs
- * @author Cesar
+ * unique class where is located all variables used among projects
+ * @author CesarF
  *
  */
 public class UnaCloudConstants {	

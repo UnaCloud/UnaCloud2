@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * @author Edgar Eduardo Rosales Rosero
  * @author CesarF
- * Responsible for providing the UnaCloud Server constant values
+ * Responsible for providing the UnaCloud constant values
  */
 public class Constants {
 	

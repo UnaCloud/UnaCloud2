@@ -12,6 +12,7 @@ import com.losandes.utils.Constants;
 import com.losandes.utils.LocalProcessExecutor;
 
 import utils.AddressUtility;
+import virtualMachineManager.entities.ImageCopy;
 
 /**
  * Implementation of hypervisor abstract class to give support for VMwarePlayer

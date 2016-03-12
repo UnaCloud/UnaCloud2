@@ -54,7 +54,7 @@ public class DatabaseConnection {
 		
 	/**
 	 * Return connection to pool
-	 * @return
+	 * @return database connection
 	 * @throws SQLException in case connection 
 	 */
 	public Connection getConnection() throws SQLException{

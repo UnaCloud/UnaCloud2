@@ -1,12 +1,13 @@
 package communication.send;
 
+import utils.VariableManager;
+
 import com.losandes.utils.OperatingSystem;
 import com.losandes.utils.UnaCloudConstants;
 
 import communication.UDPMessageEnum;
 import communication.UnaCloudDataSenderUDP;
 import communication.UnaCloudMessageUDP;
-import domain.VariableManager;
 
 /**
  * Singleton class to send message to server 
@@ -31,7 +32,7 @@ public class UDPCommunicator {
 	/**
 	 * Push info by UDP protocol to server port for physical machine reports
 	 * @param params
-	 * @return
+	 * @return true if message was sent, false in case not
 	 * @throws Exception 
 	 */
 	public boolean pushInfoPM(UDPMessageEnum type, Object...params) throws Exception{
@@ -43,7 +44,7 @@ public class UDPCommunicator {
 	/**
 	 * Push info by UDP protocol to server port for virtual machines reports
 	 * @param params
-	 * @return
+	 * @return Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
 	 * @throws Exception 
 	 */
 	public boolean pushInfoVM(UDPMessageEnum type, Object...params) throws Exception{		

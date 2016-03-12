@@ -2,11 +2,11 @@ package virtualMachineManager.configuration;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
-import reportManager.ServerMessageSender;
-import hypervisorManager.ImageCopy;
 import communication.messages.vmo.VirtualMachineStartResponse;
+import communication.send.report.ServerMessageSender;
 import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.ImageCacheManager;
+import virtualMachineManager.entities.ImageCopy;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
 /**

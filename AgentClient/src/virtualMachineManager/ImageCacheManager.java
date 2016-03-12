@@ -2,7 +2,6 @@ package virtualMachineManager;
 
 import hypervisorManager.Hypervisor;
 import hypervisorManager.HypervisorFactory;
-import hypervisorManager.ImageCopy;
 import hypervisorManager.VMwareWorkstation;
 import hypervisorManager.VirtualBox;
 
@@ -17,16 +16,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import tasks.DownloadImageVirtualMachineTask;
 import utils.SystemUtils;
+import utils.VariableManager;
 import virtualMachineManager.entities.Image;
+import virtualMachineManager.entities.ImageCopy;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
 
 import com.losandes.utils.Constants;
 import com.losandes.utils.RandomUtils;
 import com.losandes.utils.UnaCloudConstants;
 
-import domain.VariableManager;
+import communication.send.tasks.DownloadImageVirtualMachineTask;
 import exceptions.VirtualMachineExecutionException;
 
 /**

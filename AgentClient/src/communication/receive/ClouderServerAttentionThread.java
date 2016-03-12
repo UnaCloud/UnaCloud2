@@ -11,12 +11,12 @@ import java.net.Socket;
 import com.losandes.utils.OperatingSystem;
 import com.losandes.utils.UnaCloudConstants;
 
-import tasks.ExecutorService;
-import tasks.StartVirtualMachineTask;
-import tasks.StopVirtualMachineTask;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.entities.VirtualMachineExecution;
+import virtualMachineManager.task.ExecutorService;
+import virtualMachineManager.task.StartVirtualMachineTask;
+import virtualMachineManager.task.StopVirtualMachineTask;
 import communication.UnaCloudAbstractMessage;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.AgentMessage;

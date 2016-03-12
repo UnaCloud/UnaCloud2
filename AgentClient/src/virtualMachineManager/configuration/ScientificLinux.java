@@ -14,8 +14,6 @@ public class ScientificLinux extends AbstractVirtualMachineConfigurator{
 
     /**
      * Configures the ip address of the Scientific Linux managed virtual machine
-     * @param netmask
-     * @param ip
      */
     public void configureIP() throws HypervisorOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());

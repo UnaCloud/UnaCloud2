@@ -1,4 +1,8 @@
-package hypervisorManager;
+package virtualMachineManager.entities;
+
+import hypervisorManager.Hypervisor;
+import hypervisorManager.HypervisorFactory;
+import hypervisorManager.HypervisorOperationException;
 
 import java.io.File;
 import java.io.Serializable;
@@ -6,15 +10,13 @@ import java.util.Date;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
-import reportManager.ServerMessageSender;
+import communication.send.report.ServerMessageSender;
+
 
 
 import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.configuration.AbstractVirtualMachineConfigurator;
-import virtualMachineManager.entities.Image;
-import virtualMachineManager.entities.VirtualMachineExecution;
-import virtualMachineManager.entities.VirtualMachineImageStatus;
 
 /**
  * Represents a copy from an image that is copied in files

@@ -18,7 +18,7 @@ public class RepositoryManager {
 	 * Returns a repository searched by name
 	 * @param name of repository
 	 * @param con Database Connection
-	 * @return
+	 * @return repository entity
 	 */
 	public static RepositoryEntity getRepositoryByName(String name,Connection con){
 		try {

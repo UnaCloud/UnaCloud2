@@ -1,4 +1,4 @@
-package tasks;
+package communication.send.tasks;
 
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
@@ -7,13 +7,12 @@ import java.net.Socket;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import reportManager.ServerMessageSender;
-
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.UnaCloudConstants;
 
-import domain.VariableManager;
+import communication.send.report.ServerMessageSender;
 import exceptions.VirtualMachineExecutionException;
+import utils.VariableManager;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.entities.VirtualMachineExecution;

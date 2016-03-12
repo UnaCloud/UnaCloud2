@@ -1,4 +1,4 @@
-package reportManager;
+package communication.send.report;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.OperatingSystem;
@@ -36,10 +36,12 @@ public class ServerMessageSender {
 	public static void reportPhyisicalMachine(String executions) throws Exception{
 		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName(),"executions",executions);
 	}
+	
 	/**
-	 * 
-	 * @param error
-	 * @throws Exception 
+	 * reports event for log database
+	 * @param component where event happened
+	 * @param message describes error
+	 * @throws Exception
 	 */
 	public static void reportMachineLogEvent(String component, String message) throws Exception{
 		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.LOG_PM, "hostname",OperatingSystem.getHostname(),"component",component, "message",message);

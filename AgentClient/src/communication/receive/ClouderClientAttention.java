@@ -5,11 +5,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import tasks.ExecutorService;
+import utils.VariableManager;
+import virtualMachineManager.task.ExecutorService;
 
 import com.losandes.utils.UnaCloudConstants;
-
-import domain.VariableManager;
 
 /**
  * Responsible for listening to the Clouder Server

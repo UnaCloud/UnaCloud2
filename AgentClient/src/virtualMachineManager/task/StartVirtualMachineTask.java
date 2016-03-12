@@ -1,11 +1,11 @@
-package tasks;
+package virtualMachineManager.task;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
-import reportManager.ServerMessageSender;
+import communication.send.report.ServerMessageSender;
 import exceptions.VirtualMachineExecutionException;
-import hypervisorManager.ImageCopy;
 import virtualMachineManager.ImageCacheManager;
+import virtualMachineManager.entities.ImageCopy;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
 /**

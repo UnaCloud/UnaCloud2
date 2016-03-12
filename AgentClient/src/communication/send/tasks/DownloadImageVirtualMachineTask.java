@@ -1,6 +1,4 @@
-package tasks;
-
-import hypervisorManager.ImageCopy;
+package communication.send.tasks;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,12 +9,14 @@ import java.net.Socket;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import utils.VariableManager;
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.entities.Image;
+import virtualMachineManager.entities.ImageCopy;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
+
 import com.losandes.utils.UnaCloudConstants;
 
-import domain.VariableManager;
 import exceptions.VirtualMachineExecutionException;
 
 /**

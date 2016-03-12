@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import virtualMachineManager.ImageCacheManager;
+import virtualMachineManager.entities.ImageCopy;
 
 /**
  * This class is an abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
@@ -41,11 +42,12 @@ public abstract class Hypervisor {
      */
     public abstract void stopVirtualMachine(ImageCopy image);
 
+    
     /**
-     *  Restarts the managed virtual machine
-     * @param image, virtual machine will be restarted
-     * @throws HypervisorOperationException  If there is an error restating the virtual machine
-     */
+     * Restarts the managed virtual machine
+     * @param image  virtual machine will be restarted
+     * @throws HypervisorOperationException If there is an error restating the virtual machine
+     */ 
     public abstract void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException;
 
    

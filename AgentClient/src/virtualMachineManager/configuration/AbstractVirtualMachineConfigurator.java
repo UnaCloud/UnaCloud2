@@ -54,8 +54,8 @@ public abstract class AbstractVirtualMachineConfigurator{
 	 */
 	public abstract void configureHostTable() throws HypervisorOperationException;
     /**
-     * Returns true if the VM should be started again 
-     * @return
+     * validates if a VM should be started again
+     * @return true if the VM should be started again, false in case not
      */
     public abstract boolean doPostConfigure();
    

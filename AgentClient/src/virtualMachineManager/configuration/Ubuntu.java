@@ -13,8 +13,6 @@ import java.io.PrintWriter;
 public class Ubuntu extends AbstractVirtualMachineConfigurator{
     /**
      * Configures the ip address of a Ubuntu managed virtual machine
-     * @param netmask
-     * @param ip
      */
     @Override
     public void configureIP() throws HypervisorOperationException {

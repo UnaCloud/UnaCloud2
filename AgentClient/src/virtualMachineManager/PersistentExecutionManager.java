@@ -18,12 +18,9 @@ import java.util.TreeMap;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
-import reportManager.ServerMessageSender;
-import reportManager.VirtualMachineStateViewer;
-import tasks.ExecutorService;
-import tasks.UploadImageVirtualMachineTask;
 import virtualMachineManager.entities.VirtualMachineExecution;
 import virtualMachineManager.entities.VirtualMachineImageStatus;
+import virtualMachineManager.task.ExecutorService;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.InvalidOperationResponse;
 import communication.messages.vmo.VirtualMachineAddTimeMessage;
@@ -31,6 +28,9 @@ import communication.messages.vmo.VirtualMachineRestartMessage;
 import communication.messages.vmo.VirtualMachineSaveImageMessage;
 import communication.messages.vmo.VirtualMachineSaveImageResponse;
 import communication.messages.vmo.VirtualMachineStartResponse.VirtualMachineState;
+import communication.send.report.ServerMessageSender;
+import communication.send.report.VirtualMachineStateViewer;
+import communication.send.tasks.UploadImageVirtualMachineTask;
 
 /**
  * Responsible for managing virtual machine executions. This class is responsible to schedule virtual machine startups and
@@ -119,9 +119,9 @@ public class PersistentExecutionManager {
 
     /**
      * Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
-     * @param turnOnMessage
-     * @param started Parameter that tell if the VM is already on and should not be started again. 
-     * @return response message 
+     * @param execution to be configured
+     * @param started if execution should be started
+     * @return result message
      */
     public static String startUpMachine(VirtualMachineExecution execution,boolean started){
     	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
@@ -148,10 +148,10 @@ public class PersistentExecutionManager {
     }
    
 
-	/**
+    /**
      * Extends the time that the virtual machine must be up
-     * @param id The execution id to find the corresponding virtual machine
-     * @param executionTime The additional time that must be added to the virtual machine execution
+     * @param timeMessage message with execution id and time to be modified
+     * @return unacloud response
      */
     public static UnaCloudAbstractResponse extendsVMTime(VirtualMachineAddTimeMessage timeMessage) {
     	VirtualMachineExecution execution=executionList.get(timeMessage.getVirtualMachineExecutionId());

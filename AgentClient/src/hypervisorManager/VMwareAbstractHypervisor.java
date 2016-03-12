@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import virtualMachineManager.entities.ImageCopy;
+
 import com.losandes.utils.LocalProcessExecutor;
 
 /**

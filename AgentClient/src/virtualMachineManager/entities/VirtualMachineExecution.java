@@ -1,7 +1,5 @@
 package virtualMachineManager.entities;
 
-import hypervisorManager.ImageCopy;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
