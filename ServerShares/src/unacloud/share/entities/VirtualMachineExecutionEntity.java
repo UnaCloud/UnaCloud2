@@ -122,7 +122,7 @@ public class VirtualMachineExecutionEntity {
 	
 	/**
 	 * Returns time execution in hours
-	 * @return
+	 * @return execution time in hours
 	 */
 	public Long getTimeInHours(){
 		long millisTime=(stopTime.getTime()-startTime.getTime());
@@ -131,7 +131,7 @@ public class VirtualMachineExecutionEntity {
 	
 	/**
 	 * Returns time execution in milliseconds
-	 * @return
+	 * @return execution time in millis
 	 */
 	public Long getTime(){
 		return stopTime.getTime()-startTime.getTime();

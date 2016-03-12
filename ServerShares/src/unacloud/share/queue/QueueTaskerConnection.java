@@ -32,7 +32,7 @@ public abstract class QueueTaskerConnection {
 	
 	/**
 	 * Abstract method to be implemented by other classes to receive message
-	 * @param object which implements QueueReader to process messages
+	 * @param reader object which implements QueueReader to process messages
 	 */
 	public abstract void getMessage(QueueReader reader);
 	

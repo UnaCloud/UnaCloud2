@@ -117,7 +117,7 @@ public class VirtualMachineExecution implements Serializable{
 	
 	/**
 	 * Temporal 
-	 * @return
+	 * @return first interface configured
 	 */
 	public NetInterface getMainInterface(){
 		return interfaces.get(0);
@@ -144,7 +144,7 @@ public class VirtualMachineExecution implements Serializable{
 	/**
 	 * Transform  a list of interfaces from message to execution
 	 * @param mInterfaces
-	 * @return
+	 * @return list of net interfacs
 	 */
 	private static List<NetInterface> getInterfacesFromMessage( List<VirtualNetInterfaceComponent> mInterfaces){
 		List<NetInterface> interfaces = new ArrayList<NetInterface>();

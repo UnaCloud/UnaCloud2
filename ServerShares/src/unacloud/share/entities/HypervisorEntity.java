@@ -75,7 +75,7 @@ public class HypervisorEntity {
 	/**
 	 * Validates if a extension matches with extension list from hypervisor
 	 * @param extension
-	 * @return
+	 * @return true if extension is valid, false in case not
 	 */
 	public boolean validatesExtension(String extension){
 		try {

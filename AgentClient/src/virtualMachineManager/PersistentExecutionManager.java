@@ -54,11 +54,11 @@ public class PersistentExecutionManager {
      * Timer used to schedule shutdown events
      */
     private static Timer timer = new Timer();
-    
-        /**
+   
+    /**
      * Stops a virtual machine and removes it representing execution object
-     * @param turnOffMEssage
-     * @return
+     * @param virtualMachineExecutionId
+     * @param checkTime 
      */
     public static void removeExecution(long virtualMachineExecutionId,boolean checkTime) {
     	VirtualMachineExecution execution=executionList.remove(virtualMachineExecutionId);
@@ -68,12 +68,21 @@ public class PersistentExecutionManager {
 		saveData();
     }
     
+    /**
+     * Stops execution
+     * @param virtualMachineExecutionId
+     */
     public static void stopExecution(long virtualMachineExecutionId) {
     	VirtualMachineExecution execution=executionList.get(virtualMachineExecutionId);
 		if(execution!=null){
 			execution.getImage().stop();
 		}
     }
+    
+    /**
+     * Unregister execution from hypervisors
+     * @param virtualMachineExecutionId
+     */
     public static void unregisterExecution(long virtualMachineExecutionId) {
     	VirtualMachineExecution execution=executionList.get(virtualMachineExecutionId);
 		if(execution!=null){
@@ -83,7 +92,7 @@ public class PersistentExecutionManager {
 
     /**
      * Delete directory sent by params
-     * @param f
+     * @param f directory or file
      */
 	public static void cleanDir(File f){
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
@@ -91,7 +100,7 @@ public class PersistentExecutionManager {
 	}
     /**
      * Restarts the given virtual machine
-     * @return
+     * @return response to server
      */
     public static UnaCloudAbstractResponse restartMachine(VirtualMachineRestartMessage restartMessage) {
     	VirtualMachineExecution execution=executionList.get(restartMessage.getVirtualMachineExecutionId());

@@ -102,7 +102,7 @@ public class VirtualBox extends Hypervisor {
     /**
      * Changes VM configuration
      * @param cores new number of cores for the VM
-     * @param RAM new RAM value for the VM
+     * @param ram new RAM value for the VM
      * @param image Copy to be modified
      */
     @Override

@@ -14,7 +14,7 @@ public class LocalProcessExecutor {
 
     /**
      * Responsible for executing local commands without output
-     * @param inCommand Command to execute
+     * @param command Command to execute
      * @return If the command was successfully execute or nor
      */
     public static boolean executeCommand(String command){
@@ -52,7 +52,7 @@ public class LocalProcessExecutor {
     
     /**
      * Responsible for executing local commands with outputs
-     * @param inCommand Command to execute
+     * @param command Command to execute
      * @return The output of the command execution
      */
     public static String executeCommandOutput(String...command){
@@ -96,6 +96,11 @@ public class LocalProcessExecutor {
 		}
     	return pr.getInputStream().toString();
     }
+    /**
+     * Validates if process is running
+     * @param process
+     * @return true if is running, false in case not
+     */
     public static boolean processIsRunning(String process) {
 		String line;
 		Process p;
@@ -116,6 +121,10 @@ public class LocalProcessExecutor {
 		}
 		return false;
 	}
+    /**
+     * Execute command kill process, only valid in windows systems.
+     * @param process
+     */
     public static void killProcess(String process){
     	executeCommand("taskkill /f /im " + process);    	
     }

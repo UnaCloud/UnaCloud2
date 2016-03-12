@@ -60,13 +60,13 @@ public abstract class ProjectManager {
 	
 	/**
 	 * Method to return list of variable to be load to configuration
-	 * @return
+	 * @return variable list
 	 */
 	protected abstract String[] getVariableList();
 	
 	/**
 	 * Returns current database connection
-	 * @return
+	 * @return database connection
 	 */
 	public Connection getDBConnection(){
 		try {

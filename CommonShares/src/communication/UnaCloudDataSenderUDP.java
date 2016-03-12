@@ -31,9 +31,7 @@ public class UnaCloudDataSenderUDP {
 	
 	/**
 	 * Sends an object as message using UDP protocol
-	 * @param message
-	 * @param ip
-	 * @param port
+	 * @param message to send
 	 * @return true in case send message was successful, false in case not
 	 */
 	public boolean sendMessage(UnaCloudMessageUDP message){

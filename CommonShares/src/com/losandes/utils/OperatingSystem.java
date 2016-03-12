@@ -27,7 +27,7 @@ public class OperatingSystem {
     }
     /**
      * Responsible for obtaining the operating system name
-     * @return
+     * @return os name
      */
     public String getOperatingSystemName() {
         return System.getProperty("os.name").toLowerCase();
@@ -35,7 +35,7 @@ public class OperatingSystem {
 
     /**
      * Responsible for obtaining the operating system version
-     * @return
+     * @return oos version
      */
     public String getOperatingSystemVersion() {
         return System.getProperty("os.version");
@@ -43,7 +43,7 @@ public class OperatingSystem {
 
     /**
      * Responsible for obtaining the operating system architect
-     * @return
+     * @return os architecture
      */
     public String getOperatingSystemArchitect() {
         return System.getProperty("os.arch").toLowerCase();
@@ -51,7 +51,7 @@ public class OperatingSystem {
 
     /**
      * Responsible for turning off the local operating system
-     * @return
+     * @return result for process
      */
     public String turnOff() {
         String result = "";
@@ -70,7 +70,7 @@ public class OperatingSystem {
 
     /**
      * Responsible for restarting the local operating system
-     * @return
+     * @return result for restart process
      */
     public String restart() {
         String result = "";
@@ -89,7 +89,7 @@ public class OperatingSystem {
 
     /**
      * Responsible for logout the local operating system
-     * @return
+     * @return result for log out process
      */
     public String logOut() {
         String result = "";
@@ -103,6 +103,10 @@ public class OperatingSystem {
         }
         return result;
     }
+    /**
+     * Returns user username currently logged in machine
+     * @return username
+     */
     public static String getUserName() {
         String userName = null;
         try {
@@ -124,6 +128,11 @@ public class OperatingSystem {
         }
         return userName;
     }
+    
+    /**
+     * Returns current user in system
+     * @return String current user name
+     */
     public static String getWhoAmI() {
         String userName = null;
         try {
@@ -140,7 +149,7 @@ public class OperatingSystem {
     
     /**
      * Responsible for obtaining the hostname
-     * @return
+     * @return return hostname of machine
      */
     public static String getHostname() {
     	if(hostname!=null)return hostname;

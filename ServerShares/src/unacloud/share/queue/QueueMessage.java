@@ -37,7 +37,7 @@ public class QueueMessage {
 	
 	/**
 	 * Returns the message in one String delimited by special character
-	 * @return
+	 * @return message in messageParts
 	 */
 	public String getMessage(){
 		StringBuilder message = new StringBuilder();

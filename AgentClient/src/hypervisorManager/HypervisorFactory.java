@@ -36,9 +36,7 @@ public class HypervisorFactory {
 
     /**
      * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dinamically using java´s reflection API. If there is an associated object, then a new instance is returned by using the method getInstance from Hypervisor abstract class.
-     * @param hypervisorName The hypervisor name to be instantiated
-     * @param executablePath The executable route that represents the given hypervisor.
-     * @param virtualMachinePath The virtual machine path to be associated with the hypervisor.
+     * @param hypervisorId The hypervisor id to be instantiated
      * @return A managed hypervisor for the given name
      */
     public static Hypervisor getHypervisor(final String hypervisorId){

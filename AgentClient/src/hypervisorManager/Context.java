@@ -35,7 +35,7 @@ public class Context {
      * Responsible for sorting the .vmx file context process
      * @param vmCores
      * @param vmMemory
-     * @return
+     * @return string with content of parameters
      */
     public String changeVMXFileContext(int vmCores, int vmMemory) {
         String[][] vmxParameters = {/*{VMW_VMX_HW, VMW_VMX_HW_VER},*/ {VMW_VMX_CPU, ""+vmCores}, {VMW_VMX_MEMORY, ""+vmMemory},{"snapshot.action","keep"},{"priority.ungrabbed","idle"}};
@@ -45,7 +45,7 @@ public class Context {
     /**
      * Responsible for converting a .vmx file to a String
      * @param vmxPath
-     * @return
+     * @return list of context in file
      */
     private static List<String> convertVMXToString(String vmxPath) {
     	System.out.println("convertVMXToString "+vmxPath);

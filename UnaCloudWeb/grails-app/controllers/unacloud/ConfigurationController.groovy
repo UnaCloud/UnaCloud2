@@ -1,4 +1,4 @@
-package unacloud
+package unacloud;
 
 import unacloud.share.enums.ServerVariableTypeEnum;
 

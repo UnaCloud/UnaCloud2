@@ -58,7 +58,6 @@ public class ClouderServerAttentionThread implements Runnable {
      * Constructs an attention thread for a given communicator channel. Receives an owner object for stop requests
      *
      * @param clientSocket
-     * @param cca The owner of this object
      */
     public ClouderServerAttentionThread(Socket clientSocket) {
         communication = clientSocket;

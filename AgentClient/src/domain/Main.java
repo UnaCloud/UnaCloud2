@@ -28,7 +28,7 @@ public class Main {
 
     /**
      * Responsible for sorting and starting the Client
-     * @param String array
+     * @param args String array
      * @throws Exception 
      */
     public static void main(String[] args){      	
