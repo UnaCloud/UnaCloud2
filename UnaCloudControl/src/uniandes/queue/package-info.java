@@ -1,6 +1,5 @@
-/**
- * In this package are located all classes required to offer agent communication services in project.
-
+/** 
+ * In this package are located all classes required to offer queue service.
  * @author CesarF
  *
  */
