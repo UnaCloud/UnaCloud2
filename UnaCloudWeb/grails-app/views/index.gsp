@@ -18,8 +18,7 @@
 			    <g:submitButton class="btn btn-default full-width" name="login" value="Sign in"/>
 		    </div>
 		    </form>	    
-	    </div>
-	    
+	    </div>	    
 	 </div>
    </body>
 </html>
