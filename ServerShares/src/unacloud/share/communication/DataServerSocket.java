@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Class used to control Serversocket communication
+ * Class used to manage Serversocket communication, it class its design to be implemented by others to receive messages by a port
  * @author CesarF
  *
  */
