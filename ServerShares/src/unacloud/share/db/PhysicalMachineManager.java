@@ -62,7 +62,8 @@ public class PhysicalMachineManager {
 			ps.setString(1, machineState.name());
 			int index = 2;
 			for(Long idpm: idList){
-				ps.setLong(index++, idpm);
+				ps.setLong(index, idpm);
+				index++;
 			}
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		

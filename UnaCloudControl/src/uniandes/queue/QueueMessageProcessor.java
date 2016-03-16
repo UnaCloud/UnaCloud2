@@ -229,6 +229,7 @@ public class QueueMessageProcessor implements QueueReader{
 		String[] parts = new String[executionIds.length];
 		for (int i = 0; i < executionIds.length; i++) {
 			parts[i]=executionIds[i]+"";
+			System.out.println("\t Stop: "+parts[i]);
 		}		
 		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, "0", parts);
 		stopDeploy(message);

@@ -1,11 +1,13 @@
 package hypervisorManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import utils.VariableManager;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 import com.losandes.utils.UnaCloudConstants;
 
@@ -44,12 +46,13 @@ public class HypervisorFactory {
     }
     
     /**
-     * Returns the list of currents executions in each hypervisors
-     * @return list of current executions in hypervisors
+     * Validates the list of executions in each hypervisor, returns the list of executions that are not running in any hypervisor
+     * @return list of executions that are not running
      */
-    public static List<String> getCurrentExecutions(){
-    	List<String >executions = new ArrayList<String>();
-    	for(Hypervisor hypervisor:map.values())executions.addAll(hypervisor.getCurrentExecutions());
-    	return executions;
+    public static List<VirtualMachineExecution> validateExecutions(Collection<VirtualMachineExecution> executions){
+    	List<VirtualMachineExecution> notRunningExecutions = new ArrayList<VirtualMachineExecution>();
+    	notRunningExecutions.addAll(executions);
+    	for(Hypervisor hypervisor:map.values())notRunningExecutions=hypervisor.checkExecutions(notRunningExecutions);
+    	return notRunningExecutions;
     }
 }

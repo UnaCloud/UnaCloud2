@@ -1,12 +1,14 @@
 package hypervisorManager;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import virtualMachineManager.ImageCacheManager;
 import virtualMachineManager.entities.ImageCopy;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 /**
  * This class is an abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
@@ -97,6 +99,10 @@ public abstract class Hypervisor {
             Logger.getLogger(VirtualBox.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-	public abstract List<String> getCurrentExecutions();
+    /**
+     * Used to validate if a list of execution are running in hypervisor.
+     * @param executions
+     * @return List of execution that are not running in hypervisor
+     */
+	public abstract List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions);
 }

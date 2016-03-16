@@ -33,8 +33,7 @@ public class PhysicalMachineUpdater {
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setBoolean(1, (hostUser!=null&&!hostUser.isEmpty()&&!(hostUser.replace(">","").replace(" ","")).equals("null")));
 			ps.setString(2, host);
-			System.out.println(ps.toString());
-			System.out.println("update "+host+" - "+ps.executeUpdate());
+			ps.executeUpdate();
 			try{ps.close();}catch(Exception e){}
 			return true;
 		} catch (Exception e) {
@@ -85,27 +84,30 @@ public class PhysicalMachineUpdater {
 			for(@SuppressWarnings("unused") Long pm: ids){
 				builder.append("?,");
 			}
+			builder = builder.deleteCharAt( builder.length() -1 );
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+") AND (vm.status = \'"+VirtualMachineExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHING.name()+"\')";
+			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.toString()+") AND (vm.status = \'"+VirtualMachineExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHING.name()+"\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for(Long idvme: ids){
-				ps.setLong(index++, idvme);
+				ps.setLong(index, idvme);
+				index++;
 			}
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while(rs.next())idsToStop.add(rs.getLong(1));
 			try{rs.close();ps.close();}catch(Exception e){}
 			
-			String update = "update virtual_machine_execution vm set vm.last_report = CURRENT_TIMESTAMP where vm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+") and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
-			ps = con.prepareStatement(update);
+			String update = "update virtual_machine_execution vm set vm.last_report = CURRENT_TIMESTAMP where vm.id in ("+builder.toString()+") and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
+			PreparedStatement ps2 = con.prepareStatement(update);
 			index = 1;
 			for(Long idvme: ids){
-				ps.setLong(index++, idvme);
+				ps2.setLong(index, idvme);
+				index++;
 			}
-			ps.setString(index, host);
-			System.out.println(ps.toString()+" changes "+ps.executeUpdate()+" lines ");
-			try{ps.close();}catch(Exception e){}
+			ps2.setString(index, host);
+			System.out.println(ps2.toString()+" changes "+ps2.executeUpdate()+" lines ");
+			try{ps2.close();}catch(Exception e){}
 			return idsToStop;
 		} catch (Exception e) {
 			e.printStackTrace();			

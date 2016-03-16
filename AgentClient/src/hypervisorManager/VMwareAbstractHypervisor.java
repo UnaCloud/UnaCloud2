@@ -6,16 +6,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import virtualMachineManager.entities.ImageCopy;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 import com.losandes.utils.LocalProcessExecutor;
 
 /**
  * Implementation of hypervisor abstract class to give support for
- * VMwareWorkstation hypervisor.
+ * VMware hypervisor.
  */
 
 public abstract class VMwareAbstractHypervisor extends Hypervisor{
@@ -130,17 +132,31 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
 			e.printStackTrace();
 		}
         unregisterVirtualMachine(dest);
-	}
+	}	
 	
 	@Override
-	public List<String> getCurrentExecutions() {
+	public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
+		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
 		List<String> list = new ArrayList<String>();
 		try {
 			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(), "list").split("\n|\r");
-			for(String vm: result)if(!vm.startsWith("Total"))list.add(vm);
+			for(String vm: result)if(!vm.startsWith("Total running VMs")){
+				String deploy = vm.split(" ")[1];
+				list.add(deploy.substring(deploy.indexOf("/"), deploy.lastIndexOf(".")));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
-		return list;
+		}	
+		for (VirtualMachineExecution execution: executions) {
+			boolean isRunning = false;
+			for(String exeInHypervisor: list){
+				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){
+					isRunning = true;
+					break;
+				}
+			}	
+			if(!isRunning)executionsToDelete.add(execution);	
+		}
+		return executionsToDelete;
 	}
 }

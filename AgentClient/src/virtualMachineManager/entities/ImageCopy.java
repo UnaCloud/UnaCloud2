@@ -12,8 +12,6 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 import communication.send.report.ServerMessageSender;
 
-
-
 import exceptions.VirtualMachineExecutionException;
 import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.configuration.AbstractVirtualMachineConfigurator;

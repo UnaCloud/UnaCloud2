@@ -93,22 +93,22 @@
 			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
-						                                 	 <span class="label label-warning">${execution.status.name}</span>
+						                                 	 <span class="label label-warning">${execution.status.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:if>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
 															    ||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
 						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)
 																||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
-						                                  	 <span class="label label-primary">${execution.status.name}</span>
+						                                  	 <span class="label label-primary">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
-						                                  	 <span class="label label-success">${execution.status.name}</span>
+						                                  	 <span class="label label-success">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
-						                                  	 <span class="label label-danger">${execution.status.name}</span>
+						                                  	 <span class="label label-danger">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
-						                                  	 <span class="label label-default">${execution.status.name}</span>
+						                                  	 <span class="label label-default">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 														   </td>
 				                                  		</tr>
@@ -236,22 +236,22 @@
 				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
 																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
-							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+							                                 	 <span class="label label-warning">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:if>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
 															    ||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
 						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)
 																||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
-							                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+							                                  	 <span class="label label-primary">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
-							                                  	 <span class="label label-success">${execution.status.toString()}</span>
+							                                  	 <span class="label label-success">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
-							                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+							                                  	 <span class="label label-danger">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
-							                                  	 <span class="label label-default">${execution.status.toString()}</span>
+							                                  	 <span class="label label-default">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 															   </td>
 					                                  		</tr>

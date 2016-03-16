@@ -54,16 +54,19 @@ public class DownloadImageVirtualMachineTask {
 					if(entry.getName().equals("unacloudinfo")){
 						BufferedReader br=new BufferedReader(new InputStreamReader(zis));
 						image.setHypervisorId(br.readLine());
+						System.out.println("Hypervisor: "+image.getHypervisorId());
 						String mainFile=br.readLine();
 						if(mainFile==null){
 							throw new VirtualMachineExecutionException("Error: image mainFile is null");
 						}
 						copy.setMainFile(new File(root,mainFile));
+						System.out.println("Main: "+mainFile);
 						image.setPassword(br.readLine());
 						image.setUsername(br.readLine());
 						copy.setStatus(VirtualMachineImageStatus.LOCK);
 						/*copy.setVirtualMachineName();*/br.readLine();
 						image.setConfiguratorClass(br.readLine());
+						System.out.println("config: "+image.getConfiguratorClass());
 					}else{
 						try(FileOutputStream fos=new FileOutputStream(new File(root,entry.getName()))){
 							for(int n;(n=zis.read(buffer))!=-1;){

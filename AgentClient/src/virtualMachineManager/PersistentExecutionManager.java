@@ -177,30 +177,22 @@ public class PersistentExecutionManager {
     public static void refreshData(){
     	try {
 			List<Long>ids = ImageCacheManager.getCurrentImages();
+			System.out.println("There are images "+ids.size());
 			loadData();
-			List<VirtualMachineExecution> removeExecutions = new ArrayList<VirtualMachineExecution>();
-			List<String> hypervisorExecutions = HypervisorFactory.getCurrentExecutions();
-			for(VirtualMachineExecution execution: executionList.values()){
+			List<VirtualMachineExecution> removeExecutions = HypervisorFactory.validateExecutions(executionList.values());
+			for(VirtualMachineExecution execution: removeExecutions){		
 				if(execution.getImage().getStatus()!=VirtualMachineImageStatus.STARTING){
-					if(!ids.contains(execution.getImageId())){
-						removeExecutions.add(execution);
-					}else{
-						//Its necessary because vbox return hostname and vmware mainfile
-						if(!hypervisorExecutions.contains(execution.getHostname())
-								&&!hypervisorExecutions.contains(execution.getImage().getMainFile()))
-							removeExecutions.add(execution);
-					}
+					removeExecution(execution.getId(),false);
 				}								
 			}
-			for(VirtualMachineExecution execution: removeExecutions)removeExecution(execution.getId(),false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
     
     /**
-     * Return a list of id executions that currently are running
-     * not return images in state STARTING (running-not running)
+     * Return a list of id executions that currently are running,
+     * not return images in state STARTING (testing running)
      * @return list of execution ids
      */
     public static List<Long> returnIdsExecutions(){

@@ -46,7 +46,11 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 						List<Long> idsToStop = PhysicalMachineUpdater.updateVirtualMachinesExecutions(ids, jsonMessage.getString("hostname"), con);
 						if(idsToStop!=null&&idsToStop.size()>0){
 							//Send stop machines message because executions has been reported as finished or failed to user
-							ControlManager.getInstance().sendStopMessageExecutions((Long[]) idsToStop.toArray());
+							Long[] idsLong = new Long[idsToStop.size()];
+							for (int i = 0; i < idsLong.length; i++) {
+								idsLong[i]=idsToStop.get(i);
+							}
+							ControlManager.getInstance().sendStopMessageExecutions(idsLong);
 						}
 					}			
 				}catch (Exception e) {
