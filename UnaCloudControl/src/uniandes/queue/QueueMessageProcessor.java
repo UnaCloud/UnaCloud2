@@ -35,6 +35,7 @@ import unacloud.share.entities.NetInterfaceEntity;
 import unacloud.share.entities.PhysicalMachineEntity;
 import unacloud.share.entities.VirtualMachineExecutionEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.share.enums.QueueMessageType;
 import unacloud.share.enums.TaskEnum;
@@ -68,7 +69,7 @@ public class QueueMessageProcessor implements QueueReader{
 			doDeploy(message);
 			break;
 		case STOP_DEPLOYS:	
-			stopDeploy(message);
+			stopDeploy(message, "Finished by request");
 			break;
 		case ADD_INSTANCES:		
 			addInstances(message);
@@ -232,14 +233,15 @@ public class QueueMessageProcessor implements QueueReader{
 			System.out.println("\t Stop: "+parts[i]);
 		}		
 		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, "0", parts);
-		stopDeploy(message);
+		stopDeploy(message,"Execution is not running in server");
 	}
 	
 	/**
 	 * Sends a message to agents to stop a virtual machine execution
 	 * @param message
+	 * @param text to be saved in database in case of success
 	 */
-	private void stopDeploy(QueueMessage message){
+	private void stopDeploy(QueueMessage message, final String text){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long[] ids = new Long[message.getMessageParts().length];
 			for (int i = 0; i < message.getMessageParts().length; i++) {
@@ -259,7 +261,8 @@ public class QueueMessageProcessor implements QueueReader{
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, "Finished by request"), con2);
+							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, text), con2);
+							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
 						}catch (Exception e) {e.printStackTrace();}
 					}
 					@Override
@@ -268,6 +271,7 @@ public class QueueMessageProcessor implements QueueReader{
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm, con2);
 							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FINISHED, null, "Connection lost to agent, execution will be removed when it reconnects"), con2);
+							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
 						}catch (Exception e) {e.printStackTrace();}
 					}
 				}));

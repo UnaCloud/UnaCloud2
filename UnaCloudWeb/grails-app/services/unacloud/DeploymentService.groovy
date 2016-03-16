@@ -141,7 +141,7 @@ class DeploymentService {
 	}
 	
 	/**
-	 * Add new instances in ImageRequestOptions array to a DeployedImage
+	 * Adds new instances in ImageRequestOptions array to a DeployedImage
 	 * @param image to adding instances
 	 * @param user who request add instances
 	 * @param time for execution
@@ -174,10 +174,10 @@ class DeploymentService {
 			executions.add(virtualExecution)
 		}
 		
-		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
-		for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
-			println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
-		}
+//		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
+//		for (Map.Entry<Long,PhysicalMachineAllocationDescription> entry : pmDescriptions.entrySet()) {
+//			println("Key: " + entry.getKey() + ". Value: " + entry.getValue());
+//		}
 		
 		physicalMachineAllocatorService.allocatePhysicalMachines(user,executions.sort(),pms,pmDescriptions)
 		ipAllocatorService.allocateIPAddresses(executions.sort())	
@@ -194,7 +194,7 @@ class DeploymentService {
 	}
 	
 	/**
-	 * Return the list of active deployments that owner is different from parameter user
+	 * Returns the list of active deployments that owner is different from parameter user
 	 * @param user owner to filter list
 	 * @return list of deployments
 	 */
@@ -208,7 +208,7 @@ class DeploymentService {
 		return deployments
 	}
 	/**
-	 * Create a task to stop virtual machines executions in list
+	 * Creates a task to stop virtual machines executions in list
 	 * If state is FAILED changes to FINISHED else to FINISHING
 	 * @param executions
 	 * @param user that request stop executions
@@ -229,7 +229,7 @@ class DeploymentService {
 	}
 	
 	/**
-	 * Create a task to make a copy from a current execution
+	 * Creates a task to make a copy from a current execution
 	 * @param execution to create a copy from its image
 	 * @param user user owner
 	 * @param newName name for image copy

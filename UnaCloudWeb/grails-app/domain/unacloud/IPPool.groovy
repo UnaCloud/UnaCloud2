@@ -1,7 +1,7 @@
 package unacloud
 
-import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
+import unacloud.share.enums.IPEnum;
 import groovy.model.NestedValueModel;
 
 /**

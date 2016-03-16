@@ -8,7 +8,7 @@ import grails.transaction.Transactional
 import groovy.sql.Sql
 
 /**
- * This service is only for init process.
+ * This service is only for initial process.
  * Service creates triggers, store procedures and events in database
  * This class must be a groovy service due to it uses hibernate connection.
  * 

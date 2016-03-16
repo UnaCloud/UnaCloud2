@@ -1,7 +1,7 @@
 package unacloud
 
 import unacloud.IP;
-import unacloud.enums.IPEnum;
+import unacloud.share.enums.IPEnum;
 
 /**
  * Entity to represent an ExecutionIP.

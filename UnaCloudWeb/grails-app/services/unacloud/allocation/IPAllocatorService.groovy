@@ -7,8 +7,8 @@ import unacloud.DeployedImage
 import unacloud.ExecutionIP
 import unacloud.NetInterface
 import unacloud.VirtualMachineExecution
-import unacloud.enums.IPEnum;
 import unacloud.pmallocators.AllocatorException
+import unacloud.share.enums.IPEnum;
 
 /**
  * This service is only for process.

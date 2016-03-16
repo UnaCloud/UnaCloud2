@@ -2,8 +2,8 @@ package unacloud
 
 import java.util.List;
 
-import unacloud.enums.IPEnum;
 import unacloud.enums.NetworkQualityEnum;
+import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**

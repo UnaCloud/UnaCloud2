@@ -18,6 +18,7 @@ import unacloud.share.entities.PhysicalMachineEntity;
 import unacloud.share.entities.VirtualMachineExecutionEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
@@ -231,6 +232,28 @@ public class DeploymentManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Updates states for IP in database
+	 * @param executionId execution to modify IP
+	 * @param con database connection
+	 * @param ipstate State of IP
+	 * @return true in case update was success, false in case not
+	 */
+	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate){
+		try {
+			String update = "UPDATE ip set state = ? WHERE id in (SELECT ip_id from net_interface WHERE virtual_execution_id = ?) and id > 0"; 
+			PreparedStatement ps = con.prepareStatement(update);
+			ps.setString(1, ipstate.name());
+			ps.setLong(2, executionId);
+			System.out.println("Update: "+ps.executeUpdate());
+			try{ps.close();}catch(Exception e){}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
 	}
 
 }

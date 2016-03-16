@@ -1,4 +1,4 @@
-package unacloud.enums;
+package unacloud.share.enums;
 
 /**
  * Represents IP states

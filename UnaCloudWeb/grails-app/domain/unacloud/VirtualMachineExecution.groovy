@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
-import unacloud.enums.IPEnum;
+import unacloud.share.enums.IPEnum;
 
 /**
  * Entity to represent a Virtual Machine Execution
@@ -114,11 +114,12 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Saves entity with netinterfaces
+	 * Saves entity with net interfaces
 	 */
 	def saveExecution(){		
 		this.save(failOnError:true,flush:true)
 		for(NetInterface netInterface in interfaces){
+			netInterface.ip.putAt('state',IPEnum.USED)
 			netInterface.save(failOnerror:true,flush:true)
 		}
 	}
