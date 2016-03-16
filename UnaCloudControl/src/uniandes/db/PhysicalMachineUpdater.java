@@ -12,7 +12,7 @@ import unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
  * Class used to execute query, update and delete processes in database for Physical Machine Entity. 
- * Although this class execute query in virtualmachine execution entities
+ * Although this class execute query in virtual machine execution entities
  * @author CesarF
  *
  */

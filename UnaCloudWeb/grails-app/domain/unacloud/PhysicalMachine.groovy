@@ -1,5 +1,7 @@
 package unacloud
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.enums.MonitoringStatus;
 
