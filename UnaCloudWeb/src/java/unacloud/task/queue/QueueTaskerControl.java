@@ -104,8 +104,8 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",image.getDatabaseId()+""});
+	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage newImage, VirtualMachineImage pastImage, User user){
+		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",newImage.getDatabaseId()+"",pastImage.getDatabaseId()+""});
 		controlQueue.sendMessage(message);
 	}
 }

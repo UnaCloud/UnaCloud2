@@ -339,14 +339,15 @@ public class QueueMessageProcessor implements QueueReader{
 	private void requestCopy(QueueMessage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			Long executionId = Long.parseLong(message.getMessageParts()[0]);
-			Long imageId = Long.parseLong(message.getMessageParts()[1]);
+			Long newImageId = Long.parseLong(message.getMessageParts()[1]);
+			Long oldImageId = Long.parseLong(message.getMessageParts()[2]);
 			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, con);
 			if(execution!=null){
-				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(imageId, VirtualMachineImageEnum.COPYING, con);
+				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(newImageId, VirtualMachineImageEnum.COPYING, con);
 				if(image!=null){
 					VirtualMachineSaveImageMessage vmsim = new VirtualMachineSaveImageMessage();
 					vmsim.setTokenCom(image.getToken());
-					vmsim.setImageId(imageId);
+					vmsim.setImageId(oldImageId);
 					vmsim.setVirtualMachineExecutionId(execution.getId());
 					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
 					machines.add(execution.getNode());
@@ -355,12 +356,15 @@ public class QueueMessageProcessor implements QueueReader{
 						@Override
 						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-								if(response instanceof VirtualMachineSaveImageResponse && ((VirtualMachineSaveImageResponse)response).getState().equals(VirtualMachineState.COPYNG)){
-									DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"), con2);
+								if(response instanceof VirtualMachineSaveImageResponse){
+									if(((VirtualMachineSaveImageResponse)response).getState().equals(VirtualMachineState.COPYNG)){
+										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"), con2);
+									}else{
+										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((VirtualMachineSaveImageResponse)response).getMessage()), con2);
+									}
 								}else{
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									//FIXED: error when arrive message
 									DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
 									VirtualImageManager.deleteVirtualMachineImage(image, con2);
 								}

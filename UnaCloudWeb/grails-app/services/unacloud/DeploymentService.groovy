@@ -247,6 +247,6 @@ class DeploymentService {
 		image.save(failOnError:true,flush:true)
 		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
 		execution.putAt("message", 'Copy request to image '+image.id)
-		QueueTaskerControl.createCopyFromExecution(execution,image,user)
+		QueueTaskerControl.createCopyFromExecution(execution,image,execution.deployImage.image,user)
 	}
 }
