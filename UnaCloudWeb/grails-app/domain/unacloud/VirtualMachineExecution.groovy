@@ -148,8 +148,10 @@ class VirtualMachineExecution {
 	 * @return last date reported in state machine graph
 	 */
 	def Date getLastStateTime(){
-		def requestExec = ExecutionRequest.find("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[sort:'requestTime', order: "desc"])
-		if(requestExec)return requestExec.requestTime
+		def exe = this
+		//def requestExec = ExecutionRequest.findAll("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[max:1, sort:'requestTime', order: "asc"])
+		def requestExec = ExecutionRequest.list(fetch: [execution: exe,status:exe.status],max:1, sort:'requestTime', order: "desc")		
+		if(requestExec&&requestExec.size()>0)return requestExec.get(0).requestTime
 		else new Date();
 	}
 	
@@ -162,8 +164,7 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Validates if execution must show its details based in status\
-	 * used in views
+	 * Validates if execution must show its details based in status used in views
 	 * @return true in case execution has DEPLOYED, RECONNECTING or FAILED status
 	 * 
 	 */

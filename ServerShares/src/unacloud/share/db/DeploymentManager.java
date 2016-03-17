@@ -208,7 +208,7 @@ public class DeploymentManager {
 		try {			
 			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
 						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
-						+ "WHERE vme.status = ? AND vme.id =?);";
+						+ "WHERE vme.status = ? AND vme.id =?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);

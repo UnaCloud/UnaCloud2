@@ -13,7 +13,7 @@ import communication.UDPMessageEnum;
 import communication.UnaCloudMessageUDP;
 
 /**
- * Process message from physical machines with reports about physical machines
+ * Processes message from physical machines with reports about physical machines
  * @author CesarF
  *
  */

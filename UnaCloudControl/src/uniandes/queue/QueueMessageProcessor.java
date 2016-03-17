@@ -360,6 +360,7 @@ public class QueueMessageProcessor implements QueueReader{
 								}else{
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
+									//FIXED: error when arrive message
 									DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
 									VirtualImageManager.deleteVirtualMachineImage(image, con2);
 								}
