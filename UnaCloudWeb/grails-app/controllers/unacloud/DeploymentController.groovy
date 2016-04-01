@@ -126,7 +126,7 @@ class DeploymentController {
 	
 	
 	/**
-	 * Stop execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
+	 * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
 	 * stopped. Redirects to index when the operation is finished.
 	 */
 	
@@ -153,7 +153,7 @@ class DeploymentController {
 	}
 	
 	/**
-	 * Render form to add instances to a current deployed image
+	 * Renders form to add instances to a current deployed image
 	 * @param deployed image
 	 * @return render form
 	 */
@@ -181,7 +181,7 @@ class DeploymentController {
 				}
 				[quantities:quantities,image:image]
 			}else{
-				flash.message='You do not have privileges to edit this deployed image'
+				flash.message='You don\'t have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
 		}else{
@@ -215,7 +215,7 @@ class DeploymentController {
 				}
 				
 			}else{
-				flash.message='You do not have privileges to edit this deployed image'
+				flash.message='You do not have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
 		}else{

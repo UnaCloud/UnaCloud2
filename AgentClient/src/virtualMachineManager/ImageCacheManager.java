@@ -138,10 +138,10 @@ public class ImageCacheManager {
 					if(image.getHypervisorId().equals(Constants.VM_WARE_WORKSTATION))
 						for(ImageCopy copy: image.getImageCopies())
 							((VMwareWorkstation)HypervisorFactory.getHypervisor(Constants.VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
+				((VirtualBox)HypervisorFactory.getHypervisor(Constants.VIRTUAL_BOX)).unregisterAllVms();
 			} catch (Exception e) {
 				// TODO: handle exception
-			}		
-			((VirtualBox)HypervisorFactory.getHypervisor(Constants.VIRTUAL_BOX)).unregisterAllVms();
+			}					
 			for(File f:new File(machineRepository).listFiles())cleanDir(f);
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -152,7 +152,7 @@ public class ImageCacheManager {
 	
 	
 	/**
-	 * Remove a image from cache in repository
+	 * Removes an image from cache in repository
 	 * @return response
 	 */
 	public static synchronized String clearImageFromCache(Long imageId){

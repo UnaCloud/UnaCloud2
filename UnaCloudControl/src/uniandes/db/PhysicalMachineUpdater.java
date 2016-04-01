@@ -29,10 +29,11 @@ public class PhysicalMachineUpdater {
 	 */
 	public static boolean updatePhysicalMachine(String host, String hostUser, String ip, Connection con){
 		try {
-			String query = "update physical_machine pm set pm.with_user= ?, pm.state = CASE WHEN pm.state = \'"+PhysicalMachineStateEnum.OFF.name()+"\' THEN  \'"+PhysicalMachineStateEnum.ON.name()+"\' ELSE pm.state END, pm.last_report = CURRENT_TIMESTAMP WHERE pm.name = ?"; 
+			String query = "update physical_machine pm set pm.with_user= ?, pm.state = CASE WHEN pm.state = \'"+PhysicalMachineStateEnum.OFF.name()+"\' THEN  \'"+PhysicalMachineStateEnum.ON.name()+"\' ELSE pm.state END, pm.last_report = CURRENT_TIMESTAMP WHERE pm.name = ? AND pm.ip_id = (SELECT id FROM ip as i WHERE i.ip = ?)"; 
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setBoolean(1, (hostUser!=null&&!hostUser.isEmpty()&&!(hostUser.replace(">","").replace(" ","")).equals("null")));
 			ps.setString(2, host);
+			ps.setString(3, ip);
 			ps.executeUpdate();
 			try{ps.close();}catch(Exception e){}
 			return true;

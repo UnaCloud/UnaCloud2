@@ -42,7 +42,7 @@ public class DownloadImageVirtualMachineTask {
 		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
 			System.out.println("Successful connection");
 			System.out.println("Operation type 1");
-			ds.write(UnaCloudConstants.REQUEST_IMAGE);
+			ds.writeInt(UnaCloudConstants.REQUEST_IMAGE);
 			ds.flush();
 			System.out.println("send ID");
 			ds.writeLong(image.getId());

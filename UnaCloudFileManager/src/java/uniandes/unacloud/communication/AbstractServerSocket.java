@@ -39,7 +39,7 @@ public abstract class AbstractServerSocket extends Thread{
 		}
 	}
 	/**
-	 * Return the runnable where socket is processed
+	 * Returns the runnable where socket is processed
 	 * @param socket
 	 * @return runnable process to be added to thread pool
 	 */

@@ -51,18 +51,26 @@ import uniandes.communication.processor.AbstractResponseProcessor;
  */
 public class QueueMessageProcessor implements QueueReader{
 	
-	private final int threads = 10;
+	private int threads;
 	
-	private ExecutorService threadPool=Executors.newFixedThreadPool(threads);
+	/**
+	 * Pool of threads to attend messages
+	 */
+	private ExecutorService threadPool;
+	
+	public QueueMessageProcessor(int threads) {
+		threadPool=Executors.newFixedThreadPool(threads);
+		this.threads=threads;
+	}
 
 	@Override
 	public void processMessage(QueueMessage message) {
 		System.out.println("Receive message "+message.getType());
 		switch (message.getType()) {
-		case CLEAR_CACHE:	
+		case CLEAR_CACHE:
 			clearCache(message);
 			break;
-		case SEND_TASK:			
+		case SEND_TASK:	
 			sendTaskToAgents(message);
 			break;
 		case DEPLOY_CLUSTER:
@@ -71,10 +79,10 @@ public class QueueMessageProcessor implements QueueReader{
 		case STOP_DEPLOYS:	
 			stopDeploy(message, "Finished by request");
 			break;
-		case ADD_INSTANCES:		
+		case ADD_INSTANCES:	
 			addInstances(message);
 			break;
-		case CREATE_COPY:	
+		case CREATE_COPY:
 			requestCopy(message);
 			break;
 		default:
@@ -247,7 +255,7 @@ public class QueueMessageProcessor implements QueueReader{
 			for (int i = 0; i < message.getMessageParts().length; i++) {
 				ids[i]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,null, con);
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,null,false, con);
 			for(final VirtualMachineExecutionEntity execution: executions)
 				if(execution.getState().equals(VirtualMachineExecutionStateEnum.FINISHED)
 						||execution.getState().equals(VirtualMachineExecutionStateEnum.FINISHING)
@@ -287,12 +295,12 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void addInstances(QueueMessage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			Long deployedImageId = Long.parseLong(message.getMessageParts()[0]);
+			Long imageId = Long.parseLong(message.getMessageParts()[0]);
 			Long[] ids = new Long[message.getMessageParts().length-1];
 			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
 				ids[j]=Long.parseLong(message.getMessageParts()[i]);
 			}
-			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEUED, con);
+			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEUED,true, con);
 			for(final VirtualMachineExecutionEntity execution : executions) {
 				VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
 				vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
@@ -300,7 +308,7 @@ public class QueueMessageProcessor implements QueueReader{
 				vmsm.setVmCores(execution.getCores());
 				vmsm.setVmMemory(execution.getRam());
 				vmsm.setVirtualMachineExecutionId(execution.getId());
-				vmsm.setVirtualMachineImageId(deployedImageId);
+				vmsm.setVirtualMachineImageId(imageId);
 				List<VirtualNetInterfaceComponent> interfaces = new ArrayList<VirtualNetInterfaceComponent>();
 				for(NetInterfaceEntity interf: execution.getInterfaces())
 					interfaces.add(new VirtualNetInterfaceComponent(interf.getIp(), interf.getNetMask(),interf.getName()));
@@ -322,7 +330,7 @@ public class QueueMessageProcessor implements QueueReader{
 						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"), con2);
+							DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"), con2);
 						}catch (Exception e) {e.printStackTrace();}
 					}
 				}));
@@ -358,14 +366,13 @@ public class QueueMessageProcessor implements QueueReader{
 							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 								if(response instanceof VirtualMachineSaveImageResponse){
 									if(((VirtualMachineSaveImageResponse)response).getState().equals(VirtualMachineState.COPYNG)){
-										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, "Copying to server"), con2);
+										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.COPYING, null, null), con2);
 									}else{
-										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((VirtualMachineSaveImageResponse)response).getMessage()), con2);
+										DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((VirtualMachineSaveImageResponse)response).getMessage()), con2);
+										VirtualImageManager.deleteVirtualMachineImage(image, con2);
 									}
 								}else{
-									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
+									DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
 									VirtualImageManager.deleteVirtualMachineImage(image, con2);
 								}
 							}catch (Exception e) {e.printStackTrace();}
@@ -375,7 +382,7 @@ public class QueueMessageProcessor implements QueueReader{
 							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm,con2);
-								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
+								DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution.getId(), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
 								VirtualImageManager.deleteVirtualMachineImage(image, con2);
 							}catch (Exception e) {e.printStackTrace();}
 						}

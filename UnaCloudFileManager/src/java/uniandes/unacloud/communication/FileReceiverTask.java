@@ -13,13 +13,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.share.db.DeploymentManager;
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.entities.HypervisorEntity;
 import unacloud.share.entities.VirtualMachineExecutionEntity;
+import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.FileManager;
+import uniandes.unacloud.db.UserManager;
 import uniandes.unacloud.db.VirtualMachineImageManager;
+import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 
 /**
@@ -45,13 +49,15 @@ public class FileReceiverTask implements Runnable{
 			VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
 			if (image!=null) {
-				mainFile=image.getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
+				UserEntity user = UserManager.getUser(image.getOwner().getId(), con);
+				mainFile=image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator;//getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
 				System.out.println("save in path: "+mainFile);
+				TreeMap<File, String>filesTemp = new TreeMap<File, String>();
 				try(ZipInputStream zis = new ZipInputStream(is)) {
 					System.out.println("\tZip open");
 					final byte[] buffer = new byte[1024 * 100];
 					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
-					TreeMap<File, String>filesTemp = new TreeMap<File, String>();
+					
 					List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);				
 					
 					for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
@@ -83,11 +89,14 @@ public class FileReceiverTask implements Runnable{
 					Long sizeImage= 0l;
 					if(filesTemp.size()>0){						
 						File dir = new File(mainFile);
-						System.out.println(dir);
+						System.out.println(dir+" "+dir.exists());
+						System.out.println("Creates: "+dir.mkdirs());
 						for(java.io.File f:dir.listFiles())if(f.isFile())f.delete();
+						
 						System.out.println("Save new files");
 						for(File temp:filesTemp.descendingKeySet()){
 							File newFile = new File(mainFile, filesTemp.get(temp));
+							//newFile.createNewFile();
 							System.out.println("save: "+newFile);
 							try (FileInputStream streamTemp = new FileInputStream(temp);FileOutputStream ouFile = new FileOutputStream(newFile)) {
 								for (int n; (n = streamTemp.read(buffer)) != -1;) {
@@ -113,8 +122,12 @@ public class FileReceiverTask implements Runnable{
 				    e.printStackTrace();
 				    VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null, null), false, con);
 				    message = e.getMessage();
+				    for (File tmpFile : filesTemp.keySet()) {
+						tmpFile.delete();
+					}
 				}	
 				DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution, 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, message), con);
+				DeploymentManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

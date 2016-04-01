@@ -77,7 +77,7 @@ class DeploymentService {
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
 		requests.eachWithIndex(){ request,i->	
-			if(hwdProfilesAvoided.find{it.id==request.hp}!=null) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
+			if(hwdProfilesAvoided.find{it.id==request.hp.id}==null) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
 		}
 				
 		def labsAvoided = userRestrictionService.getAvoidLabs(user)
@@ -147,14 +147,14 @@ class DeploymentService {
 	 * @param time for execution
 	 * @param requests group of deployment properties for executions
 	 */
-	def synchronized addInstances(DeployedImage image, User user, long time, ImageRequestOptions request){
+	def synchronized addInstances(DeployedImage image, User user, long time, ImageRequestOptions requestOptions){
 		
 		Date start = new Date()
 		Date stop = new Date(start.getTime()+time)
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
-		if(!(request.hp in hwdProfilesAvoided)) throw new Exception('You don\'t have permissions to use selected deployed image')		
+		if(hwdProfilesAvoided.find{it.id==requestOptions.hp.id}==null)throw new Exception('You don\'t have permissions to use same hardware profile in deployment')		
 				
 		def labsAvoided = userRestrictionService.getAvoidLabs(user)
 		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
@@ -169,8 +169,8 @@ class DeploymentService {
 		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)	
 					
 		def executions = []
-		for(int j=0;j<request.instances;j++){
-			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: request.hostname,message: "Adding Instance",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
+		for(int j=0;j<requestOptions.instances;j++){
+			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
 			executions.add(virtualExecution)
 		}
 		
@@ -188,7 +188,7 @@ class DeploymentService {
 		image.virtualMachines.addAll(executions)
 		image.save(failOnError:true,flush:true)
 		if(!Environment.isDevelopmentMode()){
-			QueueTaskerControl.addInstancesToDeploy(executions,user)
+			QueueTaskerControl.addInstancesToDeploy(executions.sort(),user,image)
 		}
 		
 	}

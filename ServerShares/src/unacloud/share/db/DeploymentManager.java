@@ -156,7 +156,7 @@ public class DeploymentManager {
 	 * @param con Database connection
 	 * @return list of virtual machine execution
 	 */
-	public static List<VirtualMachineExecutionEntity> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state, Connection con){
+	public static List<VirtualMachineExecutionEntity> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state, boolean withInterfaces, Connection con){
 		try {			
 			StringBuilder builder = new StringBuilder();
 			for(@SuppressWarnings("unused") Long id: ids){
@@ -189,6 +189,9 @@ public class DeploymentManager {
 					executions.add(vme);		
 				}
 			}		
+			if(withInterfaces)for(VirtualMachineExecutionEntity execution:executions){
+				execution.getInterfaces().addAll(getInterfaces(execution,con));
+			}
 			try{rs.close();ps.close();}catch(Exception e){}
 			return executions;
 		} catch (Exception e) {

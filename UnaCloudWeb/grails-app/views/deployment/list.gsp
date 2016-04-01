@@ -120,12 +120,10 @@
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
-			                                  		    <g:if test="${execution.showDetails()}">
+			                                  		    <tr>			                                  		    
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-					                                  			<small>${execution.remainingTime()}</small>
-															</td>
-														</g:if>
+					                                  			<g:if test="${execution.showDetails()}"><small>${execution.remainingTime()}</small></g:if>
+															</td>														
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
@@ -148,12 +146,10 @@
 		                                  		<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
-			                                  		    <g:if test="${execution.status==VirtualMachineExecutionStateEnum.DEPLOYED}">
+			                                  		    <tr>			                                  		    
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-					                                  		<a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>
-		                									</td>
-		                								</g:if>	
+					                                  		<g:if test="${execution.status==VirtualMachineExecutionStateEnum.DEPLOYED}"><a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a></g:if>	
+		                									</td>		                								
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>

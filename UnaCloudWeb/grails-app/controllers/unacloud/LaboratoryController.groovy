@@ -277,7 +277,8 @@ class LaboratoryController {
 			if(params.netGateway&&params.netMask&&params.ipInit&&params.ipEnd){
 				try{
 					laboratoryService.createPool(lab,(params.isPrivate!=null),params.netGateway, params.netMask,params.ipInit,params.ipEnd);
-					flash.message="Yor new IP Pool has been added to lab"
+					flash.type="success"
+					flash.message="Your new IP Pool has been added to lab"
 					redirect(uri:"/admin/lab/"+lab.id, absolute:true)
 				}catch(Exception e){
 					flash.message="Error: "+e.message

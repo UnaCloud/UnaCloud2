@@ -68,14 +68,14 @@ public class FileManager extends ProjectManager{
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_FILE);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		queueReceiver.startReceiver(new QueueMessageFileProcessor());	
+		queueReceiver.startReceiver(new QueueMessageFileProcessor(50));	
 	}
 
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
-		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),3).start();
-		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 3).start();
+		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),30).start();
+		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 30).start();
 	}
 
 }

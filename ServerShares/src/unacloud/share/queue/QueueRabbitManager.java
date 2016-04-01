@@ -1,6 +1,7 @@
 package unacloud.share.queue;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -21,19 +22,18 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	 * Factory of connection to rabbit
 	 */
 	ConnectionFactory factory ;
+	Connection connection;
 
 	public QueueRabbitManager(String username, String password, String ip,
-			int port, String queueName) {
+			int port, String queueName) throws IOException, TimeoutException {
 		super(username, password, ip, port, queueName);
 		createFactory();
 	}
 
 	@Override
 	public void sendMessage(QueueMessage message) {
-		Connection connection = null;
 		Channel channel = null;
 		try {
-			connection = factory.newConnection();
 			channel = connection.createChannel();
 			channel.queueDeclare(queueName, false, false, false, null);
 			channel.basicPublish("", queueName, null, message.getMessage().getBytes());
@@ -45,10 +45,8 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 
 	@Override
 	public void getMessage(final QueueReader reader) {
-		Connection connection = null;
 		Channel channel = null;
-		try {
-			connection = factory.newConnection();
+		try {			
 		    channel = connection.createChannel();
 		    channel.queueDeclare(queueName, false, false, false, null);
 		    Consumer consumer = new DefaultConsumer(channel) {
@@ -71,13 +69,16 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	
 	/**
 	 * Creates a new factory to generate connections to queue
+	 * @throws TimeoutException 
+	 * @throws IOException 
 	 */
-	private void createFactory(){
+	private void createFactory() throws IOException, TimeoutException{
 		factory = new ConnectionFactory();
 		factory.setHost(ip);
 		factory.setPort(port);
 		factory.setUsername(username);
 		factory.setPassword(password);
+		connection = factory.newConnection();
 	}
 
 }

@@ -34,22 +34,26 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
  */
 public class QueueMessageFileProcessor implements QueueReader{
 		
-	private ExecutorService threadPool=Executors.newFixedThreadPool(5);
+	private ExecutorService threadPool;
 
+	public QueueMessageFileProcessor(int threads) {
+		threadPool=Executors.newFixedThreadPool(threads);
+	}
+	
 	@Override
 	public void processMessage(QueueMessage message) {
 		System.out.println("Receive message "+message.getType());
 		switch (message.getType()) {
-		case CREATE_PUBLIC_IMAGE:	
+		case CREATE_PUBLIC_IMAGE:
 			createPublicImage(message);
 			break;
-		case CREATE_COPY_FROM_PUBLIC:			
+		case CREATE_COPY_FROM_PUBLIC:		
 			createPrivateImage(message);
 			break;
-		case DELETE_IMAGE:
+		case DELETE_IMAGE: 
 			deleteImage(message);
 			break;
-		case DELETE_PUBLIC_IMAGE:	
+		case DELETE_PUBLIC_IMAGE:
 			deletePublicImage(message);
 			break;
 		case DELETE_USER:		
@@ -168,7 +172,12 @@ public class QueueMessageFileProcessor implements QueueReader{
 					if(image!=null){
 						try {
 							File file = new java.io.File(image.getMainFile());
-							if(file!=null)System.out.println("Delete file: "+file.getParentFile().getAbsolutePath()+" "+file.getParentFile().delete());
+							if(file!=null){
+								File dir = file.getParentFile();
+								for(File f: dir.listFiles())
+									System.out.println("Delete file: "+f.getAbsolutePath()+" "+f.delete());
+								System.out.println("Delete file: "+dir.getAbsolutePath()+" "+dir.delete());
+							}
 						} catch (Exception e) {
 							System.err.println("No delete original image files "+image.getMainFile());
 						}
@@ -203,8 +212,8 @@ public class QueueMessageFileProcessor implements QueueReader{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
 					Long userId = Long.parseLong(message.getMessageParts()[0]);
 					UserEntity user = UserManager.getUser(userId,con);
-					System.out.println("update");
 					if(user!=null&&user.getState().equals(UserStateEnum.DISABLE)){
+						System.out.println("Delete user: "+user.getId());
 						List<VirtualImageFileEntity> images = VirtualMachineImageManager.getAllVirtualMachinesByUser(user.getId(),con);
 						for(VirtualImageFileEntity image: images){
 							if(image!=null){

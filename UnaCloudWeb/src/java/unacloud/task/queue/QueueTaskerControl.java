@@ -74,10 +74,10 @@ public class QueueTaskerControl {
 	 * Puts a task to stop deployments in array
 	 * @param deployments
 	 */
-	public static void stopExecutions(VirtualMachineExecution[] executions, User user){
-		String[] parts = new String[executions.length];
-		for (int i = 0; i < executions.length; i++) {
-			parts[i]=executions[i].getDatabaseId()+"";
+	public static void stopExecutions(List<VirtualMachineExecution> executions, User user){
+		String[] parts = new String[executions.size()];
+		for (int i = 0; i < executions.size(); i++) {
+			parts[i]=executions.get(i).getDatabaseId()+"";
 		}		
 		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);
@@ -88,11 +88,11 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void addInstancesToDeploy(VirtualMachineExecution[] executions, User user, DeployedImage image){
-		String[] parts = new String[executions.length+1];
-		parts[0]=image.getDatabaseId()+"";
-		for (int i = 0, j = 1; i < executions.length; i++, j++) {
-			parts[j]=executions[i].getDatabaseId()+"";
+	public static void addInstancesToDeploy(List<VirtualMachineExecution> executions, User user, DeployedImage image){
+		String[] parts = new String[executions.size()+1];
+		parts[0]=image.getImage().getDatabaseId()+"";
+		for (int i = 0, j = 1; i < executions.size(); i++, j++) {
+			parts[j]=executions.get(i).getDatabaseId()+"";
 		}	
 		QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", parts);
 		controlQueue.sendMessage(message);

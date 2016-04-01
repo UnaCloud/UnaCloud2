@@ -49,7 +49,7 @@
 				                              <tr class="info">
 												  	<td colspan="12">
 													  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
-													  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
+													  	<div id="btn-group-agent" class="btn-group pull-right ">
 					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
 					                                   	 	<a title="Clean host cache" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-eraser" ></i></a>
 					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-level-up"></i></a>

@@ -91,10 +91,10 @@ public class UploadImageVirtualMachineTask implements Runnable{
 				throw new VirtualMachineExecutionException("Error opening connection",e);
 			}
 			
-			System.out.println("Delete Image");
+			System.out.println("Delete Image "+machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
 			PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-			if(machineExecution.getImage().getMainFile().getParentFile().equals("base")){
-				ImageCacheManager.deleteImage(machineExecution.getId());
+			if(machineExecution.getImage().getMainFile().getParentFile().getName().equals("base")){
+				ImageCacheManager.deleteImage(machineExecution.getImageId());
 			}
 			PersistentExecutionManager.cleanDir(machineExecution.getImage().getMainFile().getParentFile());
 				

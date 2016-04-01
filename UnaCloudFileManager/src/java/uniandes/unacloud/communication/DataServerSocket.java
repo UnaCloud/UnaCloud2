@@ -21,7 +21,7 @@ public class DataServerSocket extends AbstractServerSocket{
 	@Override
 	protected Runnable processSocket(Socket s) throws Exception {
 		DataInputStream ds = new DataInputStream(s.getInputStream());
-		int byteOp=ds.read();					
+		int byteOp=ds.readInt();					
 		System.out.println("Request from: "+s.getInetAddress()+" - operation: "+byteOp);
 		if(byteOp==UnaCloudConstants.REQUEST_IMAGE){//Agent request for image
 			System.out.println("Start service to send file");

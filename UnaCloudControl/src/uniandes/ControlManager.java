@@ -94,7 +94,7 @@ public class ControlManager extends ProjectManager{
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_CONTROL);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		processor = new QueueMessageProcessor();
+		processor = new QueueMessageProcessor(50);
 		queueReceiver.startReceiver(processor);		
 	}
 	
@@ -105,8 +105,8 @@ public class ControlManager extends ProjectManager{
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
-		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT),30).start();
-		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT),10).start();
+		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT),50).start();
+		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT),50).start();
 	}	
 	
 	/**
