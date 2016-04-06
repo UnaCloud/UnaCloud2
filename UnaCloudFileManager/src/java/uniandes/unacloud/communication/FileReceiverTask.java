@@ -82,6 +82,7 @@ public class FileReceiverTask implements Runnable{
 							}	
 							System.out.println("Save temp "+tempFile);
 							filesTemp.put(tempFile,entry.getName());
+							tempFile.deleteOnExit();
 						}
 						zis.closeEntry();
 					}
@@ -103,7 +104,8 @@ public class FileReceiverTask implements Runnable{
 									ouFile.write(buffer, 0, n);
 								}															
 							}	
-							sizeImage+= temp.getTotalSpace();
+							
+							sizeImage+= temp.length();
 							temp.delete();
 						}
 					}				

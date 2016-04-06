@@ -29,7 +29,7 @@ class VirtualMachineImage {
     boolean isPublic
 	
 	/**
-	 * Size of files
+	 * Size of files in bytes
 	 */
 	long fixedDiskSize
 	
