@@ -42,7 +42,7 @@
 		                          		<tr class="info">
 										  	<td colspan="12">
 											  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
-											  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
+											  	<div id="btn-group-agent" class="btn-group pull-right ">
 			                                 	 	<a title="Stop Executions" class="stop-executions btn btn-default" href="${createLink(uri: '/services/deployment/stop', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
 			                                   	</div>		  	
 										  	</td>

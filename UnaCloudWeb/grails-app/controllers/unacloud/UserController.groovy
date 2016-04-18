@@ -74,7 +74,7 @@ class UserController {
 		]]
 	
 	/**
-	 * Init action. Selects redirection depending on session status
+	 * Initial action. Selects redirection depending on session status
 	 */
 	def index() {
 		if(session.user){
