@@ -45,7 +45,7 @@ environments {
     test {
         dataSource {
 			username = prop.getProperty("test_username");
-			password = prop.getProperty("test.password");
+			password = prop.getProperty("test_password");
             dbCreate = "create-drop"
             url = prop.getProperty("test_url").replace('\\', '');
         }
