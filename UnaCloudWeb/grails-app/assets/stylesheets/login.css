@@ -27,7 +27,7 @@ body {
     -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
     -moz-box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
-	
+	margin-bottom: 50px;
 }
 
 .login .fa-cloud {
@@ -98,4 +98,27 @@ body {
 	border-bottom-left-radius: 15px;
 	padding: 30px;
     height: 190px;    
+}
+
+.main{
+	padding:30px;
+}
+
+
+.footer{
+	position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #EEEEEE;
+}
+
+.text-muted {
+	text-align:center;
+    color: #777;
+    text-decoration: none !important;
+}
+
+.container .text-muted {
+    margin: 20px 0;
 }

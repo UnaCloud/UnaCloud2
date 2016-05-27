@@ -34,7 +34,7 @@
     
         <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="/" class="logo"><i class="fa fa-cloud"></i>
+            <a href="${createLink(uri: '/home', absolute: true)}" class="logo"><i class="fa fa-cloud"></i>
                 UnaCloud
             </a>
             <!-- Header Navbar: style can be found in header.less -->
@@ -56,7 +56,7 @@
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
-                                   <g:img dir="images/user" file="icon_user.png" class="img-circle" alt="User Image" />
+                                    <i class="fa fa-smile-o"></i>
                                     <p>
                                         ${session.user.name } - ${session.user.description}
                                         <small>Member since ${session.user.registerDate}</small>
@@ -65,7 +65,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        <a href="${createLink(uri: '/user/profile', absolute: true)}" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
                                    		<a href="${createLink(uri: '/logout', absolute: true)}" class="btn btn-default btn-flat">Sign Out</a>                                       
@@ -84,11 +84,8 @@
                 <section class="sidebar">
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
-                        <div class="pull-left image">
-                            <g:img dir="images/user" file="icon_user.png" class="img-circle" alt="User Image"/>
-                        </div>
                         <div class="pull-left info">
-                            <p>Hello, ${session.user.username}</p>
+                           <h4><i class="fa fa-smile-o"> Hello, ${session.user.username}</i></h4>
                         </div>
                     </div>
                     <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -105,18 +102,7 @@
                                 <li id="services-deployment-tree"><a href="${createLink(uri: '/services/deployment/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Deployments</a></li>
                             </ul>
                         </li>
-                        <!--  <li id="external-tree" class="treeview">
-                            <a href="#">
-                                <i class="fa fa-cloud-upload"></i>
-                                <span>External Services</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i>My Accounts</a></li>
-                                <li><a href="pages/charts/flot.html"><i class="fa fa-angle-double-right"></i>My Deployments</a></li>
-                                <li><a href="pages/charts/inline.html"><i class="fa fa-angle-double-right"></i>My Storage</a></li>
-                            </ul>
-                        </li>-->
+                       
                         <g:if test="${session.user.isAdmin()}">
 	                        <li id="admin-tree" class="treeview">
 	                            <a href="#">
@@ -155,31 +141,19 @@
 	                                			Infrastructure
 	                                	</a>
 	                                </li>	      
-	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015 -->                    
+	                                 <!-- Agregado por Carlos E. Gomez - diciembre 11 de 2015   -->                
 	                                <li id="admin-lab-tree">
 	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
 	                                			Repositories
 	                                	</a>
 	                                </li>
-	                                
-	                                <!-- <li><a href="${createLink(uri: '/admin/provider/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Providers</a></li>
-	                                <li><a href="${createLink(uri: '/admin/external/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> External Accounts</a></li>	                                
-	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	                                
-	                                <li><a href="${createLink(uri: '/admin/repo/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Repositories **</a></li>-->
+	                                <!--                               
+	                                <li><a href="${createLink(uri: '/admin/hardware/list', absolute: true)}"><i class="fa fa-angle-double-right"></i> Hardware Profiles **</a></li>	 
+	                            	 -->
 	                            </ul>
 	                        </li>
-	                       <!--  <li id="monitoring-tree" class="treeview">
-	                            <a href="#">
-	                                <i class="fa fa-bar-chart-o"></i> <span>Monitoring</span>
-	                                <i class="fa fa-angle-left pull-right"></i>
-	                            </a>
-	                            <ul class="treeview-menu">
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Physical Monitoring status</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Virtual Monitoring status **</a></li>
-	                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Sensors management</a></li>                          
-	                            </ul>
-	                        </li>-->
+	                     
 	                        <li id="config-tree" class="treeview">
 	                            <a href="#">
 	                                <i class="fa fa-cog"></i> <span>Configuration</span>
@@ -199,7 +173,13 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">              
                 <g:layoutBody/>
+              	<footer class="footer">
+			      <div class="container">
+			        <p class="text-muted"><a href="http://www.uniandes.edu.co/" target="_blank" >Universidad de Los Andes</a> - <a href="https://sistemas.uniandes.edu.co/en/" target="_blank" >Systems and Computer Engineering Department</a> Research Group COMIT - 2015 </p>
+			      </div>
+		    	</footer>
             </aside><!-- /.right-side -->
+            
         </div><!-- ./wrapper -->
 
 		<asset:javascript src="main.js"/>

@@ -34,6 +34,10 @@
 	                            	<input type="text" class="form-control" name="username" placeholder="Username">
 	                         	</div>
 	                         	<div class="form-group">
+	                            	<label>Email</label>
+	                            	<input type="text" class="form-control" name="email" placeholder="Email">
+	                         	</div>
+	                         	<div class="form-group">
 	                            	<label>Password</label>
 	                            	<input type="password" class="form-control" name="passwd">
 	                         	</div>

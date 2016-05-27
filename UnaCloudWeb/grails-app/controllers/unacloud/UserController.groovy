@@ -1,10 +1,20 @@
 package unacloud
 
+import java.util.TreeMap;
+
 import unacloud.pmallocators.AllocatorEnum;
 import unacloud.UserService;
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
+import webutils.UserSession;
 
+/**
+ * This Controller contains actions to manage User services: crud for user, home, login and logout, profile, user restrictions and change password.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions except login, logout and index.
+ * @author CesarF
+ *
+ */
 class UserController {
 	
 	//-----------------------------------------------------------------
@@ -41,16 +51,17 @@ class UserController {
 	
 	/**
 	 * Makes session verifications before executing user administration actions
-	 */
-	
+	 */	
 	def beforeInterceptor = [action:{
 			if(!session.user){
 				flash.message="You must log in first"
 				redirect(uri:"/login", absolute:true)
 				return false
 			}
-			else{			
-				if(!userGroupService.isAdmin(session.user)){
+			else{
+				def user = User.get(session.user.id)
+				session.user.refresh(user)
+				if(!userGroupService.isAdmin(user)){
 					flash.message="You must be administrator to see this content"
 					redirect(uri:"/error", absolute:true)
 					return false
@@ -59,14 +70,21 @@ class UserController {
 		}, except: [
 			'login',
 			'logout',
-			'home'
+			'index'
 		]]
 	
 	/**
-	 * Default action
+	 * Initial action. Selects redirection depending on session status
 	 */
 	def index() {
-		redirect(uri:"/error", absolute:true)
+		if(session.user){
+			redirect(uri:"/home", absolute:true)
+			return true
+		}
+		else{
+			redirect(uri:"/login", absolute:true)
+			return true
+		}
 	}
 	
 	/**
@@ -80,13 +98,13 @@ class UserController {
 	/**
 	 * Validates passwords and changes session user. Redirects to home page
 	 * if credentials are correct, or to login page if they're not
-	 */
-	
+	 */	
 	def login(){
 		def user = userService.getUser(params.username,params.password)
 		if (user){
-			if(user.status==UserStateEnum.AVAILABLE){				
-				session.user = user
+			if(user.status==UserStateEnum.AVAILABLE){	
+				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString(),user.isAdmin())			
+				session.user = userSession
 				flash.message=user.name
 				redirect(uri: '/', absolute: true)
 			}else{
@@ -110,20 +128,57 @@ class UserController {
 	}
 	
 	/**
-	 * Home action. Selects redirection depending on session status and privileges
+	 * Home action. 
 	 */
 	
 	def home(){
-		if(!session.user){
-			flash.message="Your session has expired"
-			redirect(uri:"/login", absolute:true)
-			return false
-		}else{
-			User user = session.user;		
-		}		
+		
+		def user = User.get(session.user.id)
+		
+		TreeMap<String, Integer> treeImages = new TreeMap<String, Integer>();
+		if(user.images.size()>0){
+			treeImages.put('ALL',user.images.size())
+			for(VirtualMachineImage image in user.images){
+				if(treeImages.get(image.state.name)==null)treeImages.put(image.state.name,0)
+				treeImages.put(image.state.name,treeImages.get(image.state.name)+1)
+			}
+		}	
+		
+		TreeMap<String, Integer> treeClusters = new TreeMap<String, Integer>();
+		if(user.userClusters.size()>0){
+			treeClusters.put('ALL',user.userClusters.size())
+			treeClusters.put('DEPLOYED',0)
+			for(Cluster cluster in user.userClusters){
+				if(treeClusters.get(cluster.state.name)==null)treeClusters.put(cluster.state.name,0)
+				treeClusters.put(cluster.state.name,treeClusters.get(cluster.state.name)+1)
+				if(cluster.isDeployed())treeClusters.put('DEPLOYED',treeClusters.get('DEPLOYED')+1)
+			}
+		}
+		
+		TreeMap<String, Integer> treeDeployments = new TreeMap<String, Integer>();
+		if(user.deployments.size()>0){
+			treeDeployments.put('ALL',user.deployments.size())
+			for(Deployment deployment in user.deployments){
+				if(treeDeployments.get(deployment.status.name)==null)treeDeployments.put(deployment.status.name,0)
+				treeDeployments.put(deployment.status.name,treeDeployments.get(deployment.status.name)+1)
+			}
+		}
+		
+		if(user.isAdmin()){
+			def boxes  = []
+			boxes.add([name:'Users',quantity:User.count(),color:'aqua',url:'/admin/user/list',icon:'ion-person'])
+			boxes.add([name:'Groups',quantity:UserGroup.count(),color:'green',url:'/admin/group/list',icon:'ion-person-stalker'])
+			boxes.add([name:'Hypervisors',quantity:Hypervisor.count(),color:'yellow',url:'/admin/hypervisor/list',icon:'ion-star'])
+			boxes.add([name:'Operating Systems',quantity:OperatingSystem.count(),color:'blue',url:'/admin/os/list',icon:'ion-load-a'])			
+			boxes.add([name:'Hosts',quantity:PhysicalMachine.count(),color:'teal',url:'/admin/lab/list',icon:'ion-monitor'])
+			boxes.add([name:'Repositories',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
+			[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments,boxes:boxes]
+		}else		
+		 	[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments]
+		
 	}	
 	/**
-	 * render create view
+	 * renders create view
 	 * @return
 	 */
 	def create(){
@@ -131,12 +186,12 @@ class UserController {
 	}
 
 	/**
-	 * Create a new user
+	 * Creates a new user
 	 */
 	def save(){
 		if(params.name&&params.username&&params.passwd&&params.description){	
 			try{
-				userService.addUser(params.username, params.name,params.description,params.passwd)
+				userService.addUser(params.username, params.name,params.description,params.passwd,params.email)
 				redirect(uri:"/admin/user/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message
@@ -153,12 +208,14 @@ class UserController {
 	 */	
 	def delete(){		
 		def user = User.get(params.id)
-		if (user&&user.id!=session.user.id&&user.status!=UserStateEnum.BLOCKED) {
+		def admin = User.get(session.user.id)
+		if (user&&user.id!=admin.id&&user.status!=UserStateEnum.BLOCKED) {
 			try{
-				userService.deleteUser(user)
+				userService.deleteUser(user,admin)
 				flash.message="The request will be processed in a few time"
 				flash.type="info"
 			}catch(Exception e){
+				e.printStackTrace()
 				flash.message=e.message
 			}
 		}
@@ -188,7 +245,7 @@ class UserController {
 			if(!params.passwd||(params.passwd&&params.passwd.equals(params.cpasswd))){
 				if (user&&user.id!=session.user.id){		
 					try{						
-						userService.setValues(user,params.username, params.name, params.description, params.password)
+						userService.setValues(user,params.username, params.name, params.description, params.passwd, params.email)
 						flash.message="The user has been modified"
 						flash.type="success"
 					}catch(Exception e){
@@ -201,7 +258,7 @@ class UserController {
 	}
 	
 	/**
-	 * Render page to edit restrictions
+	 * Renders page to edit restrictions
 	 * 
 	 */
 	def config(){
@@ -220,8 +277,7 @@ class UserController {
 	}
 	
 	/**
-	 * Set restrictions of user
-	 * @return
+	 * Sets restrictions of user
 	 */
 	def setRestrictions(){
 		def user = User.get(params.id)
@@ -265,4 +321,56 @@ class UserController {
 		}
 	}
 	
+	/**
+	 * Renders page with current user session attributes
+	 */
+	def profile(){
+		def user = User.get(session.user.id)
+		[user: user]
+	}
+	
+	/**
+	 * Sets changed values in profile
+	 */
+	def changeProfile(){
+		if(params.name&&params.description){			
+			try{
+				def user = User.get(session.user.id)
+				userService.setValues(user,user.username, params.name, params.description, null, params.email)
+				session.user.refresh(user)
+				flash.message="Profile values have been modified"
+				flash.type="success"
+			}catch(Exception e){
+				e.printStackTrace()
+				flash.message=e.message
+			}
+		}else flash.message="Email is optional, other values are required"
+		redirect(uri:"/user/profile", absolute:true)
+	}
+	
+	/**
+	 * Renders page to change password
+	 */
+	def changePassword(){		
+	}
+	
+	/**
+	 * Validates and saves new password
+	 */
+	def savePassword(){
+		if(params.passwd&&params.newPasswd&&params.confirmPasswd){
+			if(params.confirmPasswd.equals(params.newPasswd)){
+				try{
+					def user = User.get(session.user.id)
+					userService.changePassword(user, params.passwd, params.newPasswd)
+					session.user.refresh(user)
+					flash.message="Password has been modified"
+					flash.type="success"
+				}catch(Exception e){
+					flash.message=e.message
+				}
+			}else flash.message="Password fields don't match"
+		}else flash.message="All fields are required"
+		redirect(uri:"/user/profile/change", absolute:true)
+	}
 }

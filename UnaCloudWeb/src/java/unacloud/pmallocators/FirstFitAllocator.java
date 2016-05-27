@@ -8,7 +8,17 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute First Fit allocator algorithms
+ * Assigns all possible virtual machines for each physical machine based in available resources
+ * @author Clouder
+ *
+ */
 public class FirstFitAllocator extends VirtualMachineAllocator {
+	
+	/**
+	 * Assigns all possible virtual machines for each physical machine based in available resources
+	 */
 	@Override
 	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {

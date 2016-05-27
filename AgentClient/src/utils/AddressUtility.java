@@ -10,6 +10,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 /**
+ * to manage address for physical machine
  * @author Clouder
  */
 public class AddressUtility {

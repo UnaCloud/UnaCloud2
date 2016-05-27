@@ -2,6 +2,12 @@ package unacloud
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Operating System: Operating System crud.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class OperatingSystemService {
 	

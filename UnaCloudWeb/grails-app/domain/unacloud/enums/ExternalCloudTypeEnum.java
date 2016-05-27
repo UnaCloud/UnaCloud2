@@ -1,7 +1,20 @@
 package unacloud.enums;
 
+/**
+ * Represents type of external cloud service
+ * unused in this UnaCloud Version
+ * @author CesarF
+ *
+ */
 public enum ExternalCloudTypeEnum {
-	COMPUTING("Computing"), STORAGE("Storage");
+	/**
+	 * Computing resources services
+	 */
+	COMPUTING("Computing"), 
+	/**
+	 * Storage services
+	 */
+	STORAGE("Storage");
 	String name;
 	
 	private ExternalCloudTypeEnum(String name) {

@@ -24,6 +24,7 @@
             			</div>		
                  	<!-- form start -->
                  	<div class="box-body">	 
+                 	<p class="help-block">* Deselect all - Select multiple - use ctrl</p>
                  	<g:each status="i" in="${restrictions}" var="restriction">
                  		<form action="${createLink(uri: '/admin/user/restrictions/set', absolute: true)}" role="form">	
                  			<input name="id" type="hidden" value="${user}"/>       

@@ -3,9 +3,15 @@ package unacloud
 import java.text.DecimalFormat
 
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 
+/**
+ * Entity to represent a Virtual Machine Image
+ * A Virtual Machine Image is a configured file for hypervisor to be deployed in Physical Machines
+ * @author CesarF
+ *
+ */
 class VirtualMachineImage {
 	
 	//-----------------------------------------------------------------
@@ -23,7 +29,7 @@ class VirtualMachineImage {
     boolean isPublic
 	
 	/**
-	 * Size of files
+	 * Size of files in bytes
 	 */
 	long fixedDiskSize
 	
@@ -59,12 +65,12 @@ class VirtualMachineImage {
 	int imageVersion
 	
 	/**
-	 * token to validate image message send by client
+	 * token to validate image message sent by client
 	 */	
 	String token
 	
 	/**
-	 *Virtual machine state (DISABLE, AVAILABLE, COPYING) 
+	 *Virtual machine state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
 	 */
 	VirtualMachineImageEnum state = VirtualMachineImageEnum.AVAILABLE;
 	
@@ -92,8 +98,8 @@ class VirtualMachineImage {
 	//-----------------------------------------------------------------	
 	
 	/**
-	 * Return the size of image in GB, MB, KB
-	 * @return
+	 * Returns the size of image in GB, MB, KB
+	 * @return String size of machines: GB, MB, LB depends of files size
 	 */
 	def String getSize(){
 		DecimalFormat df = new DecimalFormat("#.00");
@@ -111,7 +117,8 @@ class VirtualMachineImage {
 	}
 	
 	/**
-	 * Change the state of image to IN_QUEUE and clusters where it is embedded
+	 * Changes the state of image to IN_QUEUE and clusters where it is embedded
+	 * this method is used to avoid that image in cluster could not be deployed 
 	 */
 	def freeze(){
 		this.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
@@ -119,5 +126,14 @@ class VirtualMachineImage {
 		for(cluster in clusteres){
 			cluster.putAt("state", ClusterEnum.FREEZE);
 		}
+		this.save(flush:true)
+	}
+	
+	/**
+	 * Returns database id
+	 * @return Long id
+	 */
+	def Long getDatabaseId(){
+		return id;
 	}
 }	

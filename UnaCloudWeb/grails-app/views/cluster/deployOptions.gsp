@@ -62,7 +62,7 @@
 		                	</div>
 		                	<div class="form-group">
 		                		<label>Instances to deploy</label>
-		                    	<input type="text" class="form-control" name="instances_${image.id}" placeholder="Number of deployments. i.e. 1, 3, 15">
+		                    	<input type="text" class="form-control" name="instances_${image.id}" placeholder="Number of executions i.e. 1, 3, 15">
 		                    </div>  
 		                    <div class="form-group">
 		                		<label>Hostname</label>

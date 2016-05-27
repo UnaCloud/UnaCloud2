@@ -20,21 +20,18 @@
              		<g:render template="/share/message"/>                		     
             		<div class="box box-primary">     	
             			<div class="box-header">
-            				<h5 class="box-title">Update your image</h5> 							    			
+            				<h5 class="box-title">Update your image</h5> <br>            								    			
             			</div>		
                  	<!-- form start -->
                  	<form id="form-change" action="${createLink(uri: '/services/image/update/save', absolute: true)}" enctype="multipart/form-data" role="form">
-                     	 <div class="box-body">	                     		
-            				 <p class="help-block">Upload the new files.</p> 
-            				 <input id="id" name="id" type="hidden" value="${id}">                        	           
-	                         <div class="form-group">
-	                             <label>Image File input</label>
-	                             <input id="files" type="file" name="files" multiple>
-	                         </div>
-	                     </div><!-- /.box-body -->
-	                     <div class="box-footer"> 			
-	                         <a id="button-update" class="btn btn-success" style="cursor:pointer">Submit</a>
-	                         <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>	
+                     	 <div class="box-body">	  
+	                     	 <div class="form-group">    
+	                     	     <label><strong>Image: </strong>${image.name}</label>               		
+	            				 <p class="help-block">Your image will be set as unavailable until image will be uploaded.</p> 
+	            				 <input id="id" name="id" type="hidden" value="${image.id}">                        	           
+		                         <a id="button-update" class="btn btn-success" style="cursor:pointer">Confirm</a>	                         
+		                         <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>
+		                     </div>
 	                     </div>
                 	</form>
              	</div>

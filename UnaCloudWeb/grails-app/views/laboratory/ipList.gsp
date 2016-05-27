@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.IPEnum"%>
+<%@page import="unacloud.share.enums.IPEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -20,6 +20,7 @@
      	<div class="row">     		     
              <div class="col-xs-12">  
              	  <g:render template="/share/message"/>   
+             	  <div class="box box-solid">
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">
                           <thead>
@@ -50,12 +51,12 @@
                                   <td class="column-center">
 	                                  <div class="btn-group">
 		                                  <g:if test="${!ip.state.equals(IPEnum.USED)&&!ip.state.equals(IPEnum.RESERVED)}">
-		                                  <a title="Delete" class="delete_ip btn btn-default" data-id="${ip.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/delete/ip/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
+		                                  <a title="Delete" class="delete_ip btn btn-default" data-id="${ip.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/delete/ip/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
 			                              <g:if test="${!ip.state.equals(IPEnum.DISABLED)}">
-			                              <a title="Disable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" ><i class='fa fa-ban' ></i></a>
+			                              <a title="Disable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-ban' ></i></a>
 			                              </g:if>
 			                              <g:else>
-			                              <a title="Enable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" ><i class='fa fa-check' ></i></a>
+			                              <a title="Enable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-check' ></i></a>
 			                              </g:else>
 			                              </g:if>
 		                              </div>
@@ -65,6 +66,7 @@
                           </tbody>
                       </table>
                   </div><!-- /.box-body -->
+                  </div><!-- /.box -->
              </div>
         </div>     	
 	</section><!-- /.content -->    

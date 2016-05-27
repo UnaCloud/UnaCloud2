@@ -1,12 +1,19 @@
 package unacloud
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
 import unacloud.task.queue.QueueTaskerControl;
+import unacloud.task.queue.QueueTaskerFile;
 import unacloud.utils.Hasher;
 
+/**
+ * This service contains all methods to manage User: User crud methods, change password, validate login, and changes api key.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 class UserService {
 	
 	//-----------------------------------------------------------------
@@ -24,6 +31,12 @@ class UserService {
 	// Methods
 	//-----------------------------------------------------------------
 	
+	/**
+	 * Returns a user searched by password and username
+	 * @param username
+	 * @param password
+	 * @return
+	 */
 	def User getUser(String username, String password){
 		return User.findWhere(username:username,password:Hasher.hashSha256(password));
 	}
@@ -35,11 +48,11 @@ class UserService {
 	 * @param password user password
 	 */
 	
-    def addUser(String username, String name, String description, String password) {
+    def addUser(String username, String name, String description, String password,String email) {
 	   String charset = (('A'..'Z') + ('0'..'9')).join()
 	   Integer length = 32
 	   String randomString = RandomStringUtils.random(length, charset.toCharArray())
-	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date())
+	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date(),email:email)
 	   user.images=[]
 	   user.restrictions=[]
 	   user.userClusters=[]
@@ -61,7 +74,7 @@ class UserService {
 	}
 	
 	/**
-	 * Desing an apikey for user
+	 * Creates an apikey for user
 	 * @return
 	 */
 	def designAPIKey(){
@@ -71,12 +84,19 @@ class UserService {
 	}
 	
 	/**
-	 * Put the task to delete user, deployments, images, clusters
+	 * Puts the task to delete user, deployments, images, clusters
 	 * @param user user to be removed
 	 */	
-	def deleteUser(User user){
-		QueueTaskerControl.deleteUser(user);
-		user.putAt("status", UserStateEnum.BLOCKED);
+	def deleteUser(User user, User admin) throws Exception{
+		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
+		if(user.getNotAvailableImages().size()>0)throw new Exception('It is necessary that all virtual machines have AVAILABLE state')
+		user.deprecate()
+		userGroupService.removeUser(user);
+		if(user.images.size()>0){						
+			QueueTaskerFile.deleteUser(user, admin);			
+		}else{
+			user.delete()
+		}		
 	}
 	
 	/**
@@ -88,18 +108,20 @@ class UserService {
 	 * @param password new password
 	 */
 	
-	def setValues(User user, String username, String name, String description, String password){	
+	def setValues(User user, String username, String name, String description, String password, String email){	
 		user.setName(name)
 		user.setDescription(description)
 		user.setUsername(username)
+		user.setEmail(email)
 		if(password){			
 			user.setPassword( Hasher.hashSha256(password))
 		}
 		user.save(failOnError:true)
+		return user
 	}
 	
 	/**
-	 * Search the restriction in user
+	 * Searches a restriction in user
 	 * @param user
 	 * @param restriction
 	 * @return restriction, null if it does not exist
@@ -133,5 +155,26 @@ class UserService {
 				old.save(failOnError: true)
 			}
 		}
+	}
+	
+	/**
+	 * Changes a current password in user
+	 * @param user to be modified
+	 * @param password current Password
+	 * @param newPassword new Password
+	 */
+	def changePassword(User user, String password, String newPassword){
+		if(!user.password.equals(Hasher.hashSha256(password)))throw new Exception('Current Password is invalid')
+		user.setPassword(Hasher.hashSha256(newPassword))
+		user.save(failOnError:true)
+	}
+	
+	/**
+	 * Returns a requested user based in userId
+	 * @param userId
+	 * @return user requested by id
+	 */
+	def User getUser(long userId){
+		return User.get(userId)
 	}
 }

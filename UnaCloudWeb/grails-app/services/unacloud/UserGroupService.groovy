@@ -1,8 +1,16 @@
 package unacloud
 
+import com.losandes.utils.UnaCloudConstants;
+
 import unacloud.utils.Hasher;
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage User group and users in groups: UserGroup crud methods, and methods to add and remove user from groups.
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class UserGroupService {
 
@@ -21,10 +29,9 @@ class UserGroupService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Add a user to a group
+	 * Adds a user to a group
 	 * @param group to add user
 	 * @param user 
-	 * @return
 	 */
 	def addToGroup(UserGroup group, User user){
 		if(!group.users)group.users =[]
@@ -38,9 +45,9 @@ class UserGroupService {
 	 * @return admin default group
 	 */
 	def UserGroup getAdminGroup(){
-		UserGroup admins = UserGroup.findByName(Constants.ADMIN_GROUP);
+		UserGroup admins = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
 		if(!admins){
-			admins = new UserGroup (name:Constants.ADMIN_GROUP, visualName:Constants.ADMIN_GROUP);
+			admins = new UserGroup (name:UnaCloudConstants.ADMIN_GROUP, visualName:UnaCloudConstants.ADMIN_GROUP);
 			admins.users = []
 			admins.save();
 		}
@@ -54,17 +61,18 @@ class UserGroupService {
 	 * @return user default group
 	 */
 	def UserGroup getDefaultGroup(){
-		UserGroup usersGroup = UserGroup.findByName(Constants.USERS_GROUP);
+		UserGroup usersGroup = UserGroup.findByName(UnaCloudConstants.USERS_GROUP);
 		if(!usersGroup){
-			usersGroup = new UserGroup(name:Constants.USERS_GROUP, visualName:Constants.USERS_GROUP);
+			usersGroup = new UserGroup(name:UnaCloudConstants.USERS_GROUP, visualName:UnaCloudConstants.USERS_GROUP);
 			usersGroup.users = []
 			usersGroup.save();
 		}
 		return usersGroup;
 	}
+	
 	/**
-	 * Method to valid if a user is part of the administrators group
-	 * @param user: to be valid
+	 * Method to valid if a user is part of administrators group
+	 * @param user: to be validate
 	 * @return true is admin, false is not
 	 */
 	def boolean isAdmin(User user){
@@ -72,8 +80,19 @@ class UserGroupService {
 	}
 	
 	/**
+	 * Method to valid if a userId belongs to a user that is part of administrators group
+	 * @param userId
+	 * @return true if user id is from a admin user, false in case not
+	 */
+	def boolean isAdmin(long userId){
+		User user = User.get(userId)
+		if(!user)return false
+		return isAdmin(user)
+	}
+	
+	/**
 	 * Saves a new group with the given users
-	 * @param g new empty group
+	 * @param name new name group
 	 * @param users list of users that will belong to the group
 	 */
 	def addGroup(name, users){
@@ -93,8 +112,7 @@ class UserGroupService {
 	/**
 	 * Deletes the given group
 	 * @param group to be deleted
-	 */
-	
+	 */	
 	def deleteGroup(UserGroup group){
 		for(restriction in group.restrictions)
 			restriction.delete()
@@ -102,12 +120,11 @@ class UserGroupService {
 	}
 	
 	/**
-	 * Edit the given group with new values
+	 * Edits the given group with new values
 	 * @param group group to be edited
 	 * @param users new list of users
 	 * @param name new name
-	 */
-	
+	 */	
 	def setValues(UserGroup group, users, String name){
 		group.putAt("visualName", name)
 		Set newUsers= []
@@ -126,21 +143,16 @@ class UserGroupService {
 	 * @param group with the new restriction
 	 * @param name restriction name
 	 * @param value restriction value
-	 */
-	
+	 */	
 	def setRestriction(UserGroup group, String name, String value){
-		print value
 		UserRestriction old = group.restrictions.find{it.name==name}
-		println "alloc found: "+old
 		if(!old&&value){
 			def newRestriction= new UserRestriction(name: name, value: value)
 			newRestriction.save(failOnError: true)
-			println "alloc created: "+newRestriction
 			group.restrictions.add(newRestriction)
 			group.save(failOnError: true)
 		}
 		else{
-			println "setting value on old: "+old
 			if(!value||value.equals("")){
 				group.restrictions.remove(old)
 				old.delete()
@@ -150,5 +162,14 @@ class UserGroupService {
 				old.save(failOnError: true)
 			}
 		}
+	}
+	
+	/**
+	 * Removes user from all groups where it is added
+	 * @param user to be removed
+	 */
+	def removeUser(User user){
+		def groups = UserGroup.where{users{id == user.id}}.findAll()
+		for(UserGroup group in groups)group.users.remove(user)
 	}
 }

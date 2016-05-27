@@ -1,10 +1,9 @@
 package unacloud
-
 /**
- * 
- * @author Cesar
+ * Entity to represent a Monitoring system.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
  *
- * Representation of a Monitoring System
  */
 class MonitorSystem {
 	

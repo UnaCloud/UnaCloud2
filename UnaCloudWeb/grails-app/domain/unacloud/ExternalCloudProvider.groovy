@@ -3,10 +3,10 @@ package unacloud
 import unacloud.enums.ExternalCloudTypeEnum;
 
 /**
- * 
- * @author Cesar
+ * Entity to represent a cloud provider.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
  *
- *Representation of cloud provider
  */
 class ExternalCloudProvider {
 	

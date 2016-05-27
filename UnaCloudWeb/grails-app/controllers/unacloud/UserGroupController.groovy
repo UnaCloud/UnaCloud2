@@ -1,8 +1,15 @@
 package unacloud
 
 import unacloud.pmallocators.AllocatorEnum;
-import unacloud.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserRestrictionEnum;
 
+/**
+ * This Controller contains actions to manage User Group services: crud and deploy cluster.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
+ * @author CesarF
+ *
+ */
 class UserGroupController {
 
 	//-----------------------------------------------------------------
@@ -48,7 +55,9 @@ class UserGroupController {
 			return false
 		}
 		else{
-			if(!userGroupService.isAdmin(session.user)){
+			def user = User.get(session.user.id)
+			session.user.refresh(user)
+			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
@@ -66,7 +75,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Create group form action
+	 * Creates group form action
 	 * @return list with all user for group creation
 	 */
 	def create(){
@@ -74,7 +83,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Save group action. Redirects to group list when finished.
+	 * Saves group action. Redirects to group list when finished.
 	 */
 	def save(){
 		if(params.name){
@@ -109,7 +118,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Edit group form action
+	 * Renders a group information to be modified by user
 	 * @return list of users and group selected for edition
 	 */
 	def edit(){
@@ -121,7 +130,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * edit values action. Receives new group information and sends it to service 
+	 * edits values action. Receives new group information and sends it to service 
 	 * Redirects to group list when finished
 	 */
 	def saveEdit(){
@@ -144,7 +153,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Render page to edit restrictions
+	 * Renders page to edit restrictions
 	 *
 	 */
 	def config(){
@@ -162,7 +171,7 @@ class UserGroupController {
 	}
 	
 	/**
-	 * Set restrictions of group
+	 * Sets restrictions of a selected group
 	 * @return
 	 */
 	def setRestrictions(){
@@ -197,6 +206,8 @@ class UserGroupController {
 					def allocator = AllocatorEnum.getAllocatorByName(value)
 					userGroupService.setRestriction(group,UserRestrictionEnum.ALLOCATOR.toString(),allocator?allocator.getName():null)
 					modify = true
+				}else if(UserRestrictionEnum.getRestriction(params.restriction)==UserRestrictionEnum.REPOSITORY){
+					//TODO implement
 				}
 			}
 			if(modify){

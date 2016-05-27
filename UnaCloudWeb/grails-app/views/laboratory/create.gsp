@@ -24,12 +24,12 @@
                            <h3 class="box-title">Configure your own lab</h3>
                         </div><!-- /.box-header -->
 		       			<div class="box-body"> 		           	 	 
-                        	 <div class="form-group">
+                        	 <div class="form-group col-sm-6 col-xs-12">
                              	<label>Laboratory Name</label>
                             	<input type="text" class="form-control" name="name" placeholder="Lab Name">
                          	 </div>
-                        	 <div class="form-group">
-	                             <label>Select</label>
+                        	 <div class="form-group col-sm-6 col-xs-12">
+	                             <label>Network</label>
 	                             <select name= "net" class="form-control">
 	                             	<option value="">-- Select an option --</option>
 	                             	<g:each in="${netConfigurations}" status="i" var="net">

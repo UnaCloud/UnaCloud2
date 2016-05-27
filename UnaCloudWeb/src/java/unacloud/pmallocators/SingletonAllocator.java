@@ -6,8 +6,17 @@ import java.util.Map;
 import unacloud.PhysicalMachine;
 import unacloud.VirtualMachineExecution;
 
+/**
+ * Class to execute Singleton allocator algorithms
+ * Assigns only one virtual execution for each physical machine
+ * @author Clouder
+ *
+ */
 public class SingletonAllocator extends VirtualMachineAllocator{
 
+	/**
+	 * Assigns only one virtual execution for each physical machine
+	 */
 	@Override
 	protected void allocateVirtualMachines(
 			List<VirtualMachineExecution> virtualMachineList,

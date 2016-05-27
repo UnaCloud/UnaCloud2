@@ -3,6 +3,11 @@ package communication.messages.vmo;
 import communication.UnaCloudAbstractResponse;
 import communication.messages.vmo.VirtualMachineStartResponse.VirtualMachineState;
 
+/**
+ * Represents response to send current execution to server
+ * @author CesarF
+ *
+ */
 public class VirtualMachineSaveImageResponse extends UnaCloudAbstractResponse{
 
 	private static final long serialVersionUID = 4585003850300062718L;

@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.VirtualMachineExecutionStateEnum"%>
+<%@page import="com.losandes.enums.VirtualMachineExecutionStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -34,6 +34,7 @@
                      <div class="tab-content">
                          <div class="tab-pane active" id="tab_my">
              	</g:else>
+             		<!-- INIT TABLE -->
 		             	<div class=" table-responsive">
 		                	<form method="post" id="form_deployments">
 		                    	<table id="unacloudTable" class="table table-bordered table-striped">
@@ -41,11 +42,9 @@
 		                          		<tr class="info">
 										  	<td colspan="12">
 											  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
-											  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
-			                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab//stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
-			                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
-			                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
-												</div>		  	
+											  	<div id="btn-group-agent" class="btn-group pull-right ">
+			                                 	 	<a title="Stop Executions" class="stop-executions btn btn-default" href="${createLink(uri: '/services/deployment/stop', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
+			                                   	</div>		  	
 										  	</td>
 									  	</tr>
 		                              	<tr>
@@ -62,23 +61,24 @@
 		                          	</thead>
 		                          	<tbody>
 		                          	<g:each in="${myDeployments}" status="i" var="deployment"> 
-		                              	<g:each in="${deployment.cluster.images}" var="image"> 
-		                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
+		                              	<g:each in="${deployment.images}" var="image"> 
+		                              	<g:if test="${image.getActiveExecutions().size()>0}">
+							           	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 		                              	<tr>			                              	
 		                              		<td class="column-center">	
-								      			<input type="checkbox" name="image_${image.id}" class="all"/>  
+								      			<input data-id="${image.id}" type="checkbox" name="image_${image.id}" class="all image_check"/>  
 								      		</td>
-								      		<td><small>${deployment.cluster.cluster.name}</small></td>
-								      		<td><small>${image.image.name}</small></td>
+								      		<td><small>${deployment.cluster.name}</small></td>
+								      		<td><small>${image.image.name}</small> <a title="Add executions" class="add_execution" href="${createLink(uri: '/services/deployment/'+image.id+'/add', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-plus-square' ></i></a>		                									</td>
 								      		<td><small>${image.image.accessProtocol}</small></td>
 								       		<td style="padding:0px !important">
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
+			                                  		    <tr>			                                  		   
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
-					                                  		<small>${execution.name}</small></td>
+				                                  			<input type="checkbox" name="execution_${execution.id}" class="all image_${image.id}"/> 
+					                                  		<small>${execution.name}</small></td>					                                  	
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
@@ -90,20 +90,25 @@
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
-						                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+			                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
+						                                 	 <span class="label label-warning">${execution.status.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:if>
-						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
-						                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
+															    ||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
+						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)
+																||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+						                                  	 <span class="label label-primary">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
-						                                  	 <span class="label label-success">${execution.status.toString()}</span>
+						                                  	 <span class="label label-success">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
-						                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+						                                  	 <span class="label label-danger">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 						                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
-						                                  	 <span class="label label-default">${execution.status.toString()}</span>
+						                                  	 <span class="label label-default">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 														   </td>
 				                                  		</tr>
@@ -115,10 +120,10 @@
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
+			                                  		    <tr>			                                  		    
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-					                                  			<small>${execution.remainingTime()}</small>
-															</td>
+					                                  			<g:if test="${execution.showDetails()}"><small>${execution.remainingTime()}</small></g:if>
+															</td>														
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
@@ -141,16 +146,17 @@
 		                                  		<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
-			                                  		    <tr>
+			                                  		    <tr>			                                  		    
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-					                                  		<a title="Download" class="download_image btn btn-default" data-id="${execution.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>
-		                									</td>
+					                                  		<g:if test="${execution.status==VirtualMachineExecutionStateEnum.DEPLOYED}"><a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a></g:if>	
+		                									</td>		                								
 				                                  		</tr>
 			                                  			</g:each> 
 			                                  		</tbody>
 		                                  	 	</table>
 		                                 	</td>
-		                              	</tr>	
+		                              	</tr>	  		
+							            </g:if>		                              	
 		                              	</g:each>
 								    </g:each>			                                                        
 		                    		</tbody>
@@ -193,14 +199,15 @@
 			                          	</thead>
 			                          	<tbody>
 			                          	<g:each in="${deployments}" status="i" var="deployment"> 
-			                              	<g:each in="${deployment.cluster.images}" var="image"> 
+			                              	<g:each in="${deployment.images}" var="image"> 
+			                              	<g:if test="${image.getActiveExecutions().size()>0}">
 			                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 			                              	<tr>			                              	
 			                              		<td class="column-center">	
 									      			<input type="checkbox" name="image_${image.id}" class="all"/>  
 									      		</td>
 									      		<td><small>${deployment.user.username}</small></td>
-									      		<td><small>${deployment.cluster.cluster.name}</small></td>
+									      		<td><small>${deployment.cluster.name}</small></td>
 									      		<td><small>${image.image.name}</small></td>
 									      		<td><small>${image.image.accessProtocol}</small></td>
 									       		<td style="padding:0px !important">
@@ -222,20 +229,25 @@
 				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 				                                  		    <tr>
 				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.REQUESTED)||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
-							                                 	 <span class="label label-warning">${execution.status.toString()}</span>
+				                                  			   <g:if test="${execution.status.equals(VirtualMachineExecutionStateEnum.QUEUED)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.REQUEST_COPY)
+																 ||execution.status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)}">
+							                                 	 <span class="label label-warning">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:if>
-							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)}">
-							                                  	 <span class="label label-primary">${execution.status.toString()}</span>
+							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.CONFIGURING)
+															    ||execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYING)
+						                                   		||execution.status.equals(VirtualMachineExecutionStateEnum.FINISHING)
+																||execution.status.equals(VirtualMachineExecutionStateEnum.COPYING)}">
+							                                  	 <span class="label label-primary">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)}">
-							                                  	 <span class="label label-success">${execution.status.toString()}</span>
+							                                  	 <span class="label label-success">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FAILED)}">
-							                                  	 <span class="label label-danger">${execution.status.toString()}</span>
+							                                  	 <span class="label label-danger">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 							                                   <g:elseif test="${execution.status.equals(VirtualMachineExecutionStateEnum.FINISHED)}">
-							                                  	 <span class="label label-default">${execution.status.toString()}</span>
+							                                  	 <span class="label label-default">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 															   </td>
 					                                  		</tr>
@@ -283,6 +295,7 @@
 			                                  	 	</table>
 			                                 	</td>
 			                              	</tr>	
+			                              	</g:if>				                              	
 			                              	</g:each>
 									    </g:each>			                                                        
 			                    		</tbody>

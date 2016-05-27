@@ -1,8 +1,12 @@
 package communication.messages;
 
 import communication.UnaCloudAbstractMessage;
-import communication.UnaCloudMessage;
 
+/**
+ * Represents kif of virtual machine operation message sent to agents
+ * @author CesarF
+ *
+ */
 public abstract class VirtualMachineOperationMessage extends UnaCloudAbstractMessage{
 	private static final long serialVersionUID = -719111911251582119L;
 	public static final int VM_START = 1;
@@ -16,9 +20,6 @@ public abstract class VirtualMachineOperationMessage extends UnaCloudAbstractMes
     protected long virtualMachineExecutionId;
 	public VirtualMachineOperationMessage(int subOperation){
 		super(VIRTUAL_MACHINE_OPERATION,subOperation);
-	}
-	public static UnaCloudAbstractMessage fromMessage(UnaCloudMessage message){
-		return null;
 	}
 	public long getVirtualMachineExecutionId() {
 		return virtualMachineExecutionId;

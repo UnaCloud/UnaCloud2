@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.UserStateEnum"%>
+<%@page import="unacloud.share.enums.UserStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -20,6 +20,7 @@
              	  <g:render template="/share/message"/>            
                   <a href="${createLink(uri: '/admin/user/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> New User</a>
                   <hr>
+                  <div class="box box-solid">
                   <div class="box-body table-responsive">
                       <table id="unacloudTable" class="table table-bordered table-striped">
                           <thead>
@@ -35,7 +36,7 @@
                           <tbody>
                           <g:each in="${users}" var="user"> 
                               <tr>
-                                 <td>${user.name} <g:if test="${user.isAdmin()}"><i class='fa fa-trophy text-orange' title="Admin user"></i></g:if></td>
+                                 <td>${user.name} <g:if test="${user.isAdmin()}"><i class='fa fa-trophy text-orange' title="Admin user"  data-toggle="tooltip"></i></g:if></td>
                                  <td>${user.username}</td>
                                  <td>
 	                                  <g:if test="${user.status.equals(UserStateEnum.AVAILABLE)}">
@@ -75,10 +76,10 @@
                                   <div class="btn-group">
                                   <g:if test="${!user.status.equals(UserStateEnum.BLOCKED)}">
                                   	<g:if test="${session.user.id!=user.id}">
-	                                  <a title="Delete" class="delete_user btn btn-default" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" ><i class='fa fa-trash-o' ></i></a>
-	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" ><i class='fa fa-pencil-square' ></i></a>
+	                                  <a title="Delete" class="delete_user btn btn-default" data-id="${user.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+	                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/user/edit/'+user.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-pencil-square' ></i></a>
 	                                </g:if>
-	                                <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" ><i class='fa fa-gear' ></i></a>
+	                                <a title="Config" class="btn btn-default" href="${createLink(uri: '/admin/user/restrictions/'+user.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-gear' ></i></a>
 	                              </g:if>
 	                              </div>
 								  </td>  
@@ -87,6 +88,7 @@
                           </tbody>
                       </table>
                   </div><!-- /.box-body -->
+                  </div><!-- /.box-->
              </div>
         </div>     	
 	</section><!-- /.content -->    

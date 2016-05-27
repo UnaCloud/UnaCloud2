@@ -4,6 +4,12 @@ import com.losandes.utils.Time;
 
 import communication.messages.VirtualMachineOperationMessage;
 
+
+/**
+ * Represents message to add time to execution
+ * @author Clouder
+ *
+ */
 public class VirtualMachineAddTimeMessage extends VirtualMachineOperationMessage{
 	private static final long serialVersionUID = 7525891768407688888L;
 	Time executionTime;

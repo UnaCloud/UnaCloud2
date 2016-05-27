@@ -35,6 +35,10 @@
 	                            	<input type="text" class="form-control" name="username" value="${user.username}" placeholder="Username">
 	                         	</div>
 	                         	<div class="form-group">
+	                            	<label>Email</label>
+	                            	<input type="text" class="form-control" name="email" value="${user.email}" placeholder="Username">
+	                         	</div>
+	                         	<div class="form-group">
 	                            	<label>Password</label>
 	                            	<p class="help-block">* If password field left empty, the user password won't be modified.</p> 
 	                            	<input type="password" class="form-control" name="passwd">

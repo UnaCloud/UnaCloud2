@@ -1,10 +1,19 @@
 package unacloud
 
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
+
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 import webutils.ImageRequestOptions;
 
+/**
+ * This Controller contains actions to manage deployment services: list, deploy and stop deployments, copy instances and add instances for deployments.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * @author CesarF
+ *
+ */
 class DeploymentController {
 	
 	//-----------------------------------------------------------------
@@ -21,6 +30,11 @@ class DeploymentController {
 	 */
 	LaboratoryService laboratoryService
 	
+	/**
+	 * Representation of User Restriction service
+	 */
+	UserRestrictionService userRestrictionService
+	
 	//-----------------------------------------------------------------
 	// Actions MVC
 	//-----------------------------------------------------------------
@@ -34,9 +48,10 @@ class DeploymentController {
 			flash.message="You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
-		}
-		session.user.refresh()
-		if(!session.user.status.equals(UserStateEnum.AVAILABLE)){
+		}		
+		def user = User.get(session.user.id)
+		session.user.refresh(user)
+		if(!user.status.equals(UserStateEnum.AVAILABLE)){
 			flash.message="You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)
 			return false
@@ -55,7 +70,7 @@ class DeploymentController {
 		if(cluster){			
 			def user= User.get(session.user.id)	
 			//validates if user is owner to deploy cluster
-			if(cluster in user.userClusters && cluster.state.equals(ClusterEnum.AVAILABLE)){
+			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
 				//Validates if images are available in the platform
 				def unavailable = cluster.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}
 				if(unavailable.size()!=cluster.images.size()){
@@ -99,13 +114,138 @@ class DeploymentController {
 	 */
 	
 	def list(){
-		if(!session.user.isAdmin()){
-			[myDeployments: session.user.getActiveDeployments()]
+		def user = User.get(session.user.id)
+		if(!user.isAdmin()){
+			[myDeployments: user.getActiveDeployments()]
 		}
 		else {	
-			def deployments = deploymentService.getActiveDeployments(session.user)	
-			[myDeployments: session.user.getActiveDeployments(),deployments: deployments]
+			def deployments = deploymentService.getActiveDeployments(user)	
+			[myDeployments: user.getActiveDeployments(),deployments: deployments]
 		}
 	}
 	
+	
+	/**
+	 * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
+	 * stopped. Redirects to index when the operation is finished.
+	 */
+	
+	def stop(){
+		def user= User.get(session.user.id)
+		List<VirtualMachineExecution> executions = new ArrayList<>();
+		params.each {
+			if (it.key.contains("execution_")){
+				if (it.value.contains("on")){
+					VirtualMachineExecution vm = VirtualMachineExecution.get((it.key - "execution_") as Integer)
+					if(vm != null && (vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||vm.status.equals(VirtualMachineExecutionStateEnum.FAILED))){
+						if(vm.deployImage.deployment.user == user || user.isAdmin())
+							executions.add(vm)
+					}
+				}
+			}
+		}	
+		if(executions.size()>0){
+			flash.message='Your request has been processed'
+			flash.type='info'
+			deploymentService.stopVirtualMachineExecutions(executions,user)
+		}else flash.message='Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
+		redirect(uri:"/services/deployment/list", absolute:true)
+	}
+	
+	/**
+	 * Renders form to add instances to a current deployed image
+	 * @param deployed image
+	 * @return render form
+	 */
+	def addInstances(){
+		DeployedImage image = DeployedImage.get(params.id);
+		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
+			def user= User.get(session.user.id)
+			if(image.deployment.user==user||user.isAdmin()){
+				
+				def hwdProfilesAvoided = []
+				hwdProfilesAvoided.add(image.getDeployedHarwdProfile())
+				def labsAvoided = userRestrictionService.getAvoidLabs(image.deployment.user)
+				def quantitiesTree = new TreeMap<String, Integer>()
+				labsAvoided.each {
+					def results = laboratoryService.calculateDeploys(it,hwdProfilesAvoided, image.highAvaliavility)					
+					for(HardwareProfile hwd in hwdProfilesAvoided){
+						if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
+						else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
+					}
+				}
+				def quantities = []
+				def high = false;
+				for(HardwareProfile hwd in hwdProfilesAvoided){
+					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
+				}
+				[quantities:quantities,image:image]
+			}else{
+				flash.message='You don\'t have privileges to add instances to this deployment'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}else{
+			redirect(uri:"/services/deployment/list", absolute:true)
+		}
+	}
+	
+	/**
+	 * Adds new instances to a selected deployed image
+	 */
+	def saveInstances(){
+		DeployedImage image = DeployedImage.get(params.id);
+		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
+			def user= User.get(session.user.id)
+			if(image.deployment.user==user||user.isAdmin()){
+				try {
+					//validates if cluster is good configured
+					def request=new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(),params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(),image.highAvaliavility);
+				
+					deploymentService.addInstances(image,user, params.time.toLong()*60*60*1000,request)
+					redirect(uri:"/services/deployment/list", absolute:true)
+					return
+					
+				} catch (Exception e) {
+					e.printStackTrace()
+					if(e.message==null)
+						flash.message= e.getCause()
+					else
+						flash.message=e.message
+					redirect(uri:"/services/deployment/"+image.id+'/add', absolute:true)
+				}
+				
+			}else{
+				flash.message='You do not have privileges to add instances to this deployment'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}else{
+			redirect(uri:"/services/deployment/list", absolute:true)
+		}
+	}
+	
+	/**
+	 * Validates if user has permissions and call to deploymentService to create a new task to create a copy
+	 */
+	def createCopy(){
+		VirtualMachineExecution execution = VirtualMachineExecution.get(params.id)
+		if(execution){
+			def user= User.get(session.user.id)
+			if(execution.deployImage.deployment.user==user||user.isAdmin()){
+				try{					
+					deploymentService.createCopy(execution, execution.deployImage.deployment.user, params.name)
+					flash.message='Your request has been sent'
+					flash.type='info'
+				}catch(Exception e){
+					if(e.message==null)
+						flash.message= e.getCause()
+					else
+						flash.message=e.message
+				}
+			}else{
+				flash.message='You do not have privileges to create a copy from this execution'
+				redirect(uri:"/services/deployment/list", absolute:true)
+			}
+		}
+		redirect(uri:"/services/deployment/list", absolute:true)
+	}
 }

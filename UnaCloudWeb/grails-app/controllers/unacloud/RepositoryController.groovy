@@ -1,5 +1,12 @@
 package unacloud
 
+/**
+ * This Controller contains actions to manage repository services: crud for repositories.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
+ * @author CesarF, Carlos
+ *
+ */
 //Agregado por Carlos E. Gomez - diciembre 11 de 2015
 class RepositoryController {
 	//-----------------------------------------------------------------
@@ -34,7 +41,9 @@ class RepositoryController {
 			return false
 		}
 		else{
-			if(!userGroupService.isAdmin(session.user)){
+			def user = User.get(session.user.id)
+			session.user.refresh(user)
+			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
@@ -51,7 +60,7 @@ class RepositoryController {
 	}
 	
 	/**
-	 * render form to create a new repository
+	 * renders form to create a new repository
 	 */
 	def create() {
 	}

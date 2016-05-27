@@ -2,11 +2,20 @@ package unacloud
 
 import java.util.ArrayList;
 
-import unacloud.enums.DeploymentStateEnum;
-import unacloud.enums.UserRestrictionEnum;
-import unacloud.enums.UserStateEnum;
-import unacloud.enums.VirtualMachineImageEnum;
+import com.losandes.utils.UnaCloudConstants;
 
+import unacloud.share.entities.VirtualMachineImageEntity;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.UserRestrictionEnum;
+import unacloud.share.enums.UserStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
+
+/**
+ * Entity to represent a User in system
+ * An User is a UnaCloud user which access to system, upload machines, and configure deployments
+ * @author CesarF
+ *
+ */
 class User {
 	
 	//-----------------------------------------------------------------
@@ -14,7 +23,7 @@ class User {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * User name and lastname
+	 * user Fullname 
 	 */
 	String name
 	
@@ -44,6 +53,11 @@ class User {
 	String description
 	
 	/**
+	 * User email
+	 */
+	String email
+	
+	/**
 	 * list of images, restrictions, clusters and deployments belonging to this user
 	 */
 	static hasMany = [images: VirtualMachineImage, restrictions: UserRestriction, userClusters: Cluster, deployments: Deployment]
@@ -55,6 +69,7 @@ class User {
 	
 	static constraints = {
 		username unique: true
+		email nullable:true
     }
 	
 	//-----------------------------------------------------------------
@@ -62,18 +77,19 @@ class User {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * 
+	 * Validates if user is administrator
 	 * @return true is user is admin, false is not
 	 */
 	
 	def boolean isAdmin(){
-		UserGroup group = UserGroup.findByName(Constants.ADMIN_GROUP);
+		UserGroup group = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
 		if(group)return group.users.find{it.id == this.id}?true:false;
 		return false
 	}
+	
 	/**
-	 * Return the list of images owned by user sorted by name
-	 * @return
+	 * Returns the list of images owned by user sorted by name
+	 * @return list of sorted images
 	 */
 	def getOrderedImages(){
 		if(!this.images){
@@ -82,21 +98,24 @@ class User {
 		}
 		return this.images.sort{it.name}
 	}
+	
 	/**
-	 * Return the list of clusters owned by user sorted by name
-	 * @return
+	 * Returns the list of clusters owned by user sorted by name
+	 * @return list of sorted cluster
 	 */
 	def getOrderedClusters(){
 		if(!this.userClusters){
 			this.userClusters = []
 			this.save()
 		}
-		return this.userClusters.sort{it.name}
+		def clusters = this.userClusters.sort{it.name}
+		for(Cluster cl in clusters)cl.update()
+		return clusters
 	}
 	
 	/**
-	 * Return the list of images owned by user sorted by name and state AVAILABLE
-	 * @return
+	 * Returns the list of images owned by user sorted by name and state AVAILABLE
+	 * @return list of available images
 	 */
 	def getAvailableImages(){
 		if(!this.images){
@@ -107,21 +126,37 @@ class User {
 	}
 	
 	/**
-	 * Return a restriction of user, null if does not exist
+	 * Returns the list of images owned by user sorted by name and state different to AVAILABLE
+	 * @return list of not available images
+	 */
+	def getNotAvailableImages(){
+		if(!this.images){
+			this.images = []
+			this.save()
+		}
+		return this.images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.sort{it.name}
+	}
+	
+	/**
+	 * Searches and return a restriction in user restriction list
+	 * @param user restriction to be requested
+	 * @return a requested restriction of user, null if does not exist
 	 */
 	def getRestriction(UserRestrictionEnum restriction){
 		this.restrictions.find{it.name==restriction.toString()}
 	}
 	
 	/**
-	 * Return all groups where exists the restriction, null if does not exist
+	 * Searches and return a restriction in user group list
+	 * @param user restriction to be requested
+	 * @return all groups where exists the restriction, null if does not exist
 	 */
 	def getGroupsWithRestriction(UserRestrictionEnum restriction){ 
 		return UserGroup.where {users{id==this.id} && restrictions{name==restriction.toString()}}.findAll()
 	}
 	
 	/**
-	 * return the active deployments belonging to the user
+	 * List active deployments which belong to user
 	 * @return active deployments related to user
 	 */
 	def getActiveDeployments(){
@@ -131,5 +166,38 @@ class User {
 			else deployment.putAt('status', DeploymentStateEnum.FINISHED)
 		}
 		return activeDeployments
+	}
+	
+	/**
+	 * Returns database id
+	 * @return Long id
+	 */
+	def Long getDatabaseId(){
+		return id;
+	}
+	
+	/**
+	 * Disables User and delete all components that user is owner
+	 */
+	def deprecate(){
+		this.putAt("status", UserStateEnum.DISABLE);
+		for(UserRestriction restriction in restrictions)	
+			restriction.delete()		
+		restrictions = []
+		for(Deployment deploy in deployments)
+			deploy.deleteDeploy()
+		deployments=[]
+		for(VirtualMachineImage image in images)image.putAt("state", VirtualMachineImageEnum.IN_QUEUE)		
+		this.save()
+	}
+	
+	/**
+	 * Validates if currently user has an image with the same name.
+	 * This avoids to override files in same folder.
+	 * @param name of image
+	 * @return true in case image exist in user false in case not
+	 */
+	def existImage(String name){
+		return images.find{it.name==name}!=null
 	}
 }

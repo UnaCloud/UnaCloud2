@@ -1,5 +1,12 @@
 package unacloud
 
+/**
+ * This Controller contains actions to manage hypervisor services: deployment crud.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
+ * @author CesarF
+ *
+ */
 class HypervisorController {
 	
 	//-----------------------------------------------------------------
@@ -33,7 +40,9 @@ class HypervisorController {
 			return false
 		}
 		else{
-			if(!userGroupService.isAdmin(session.user)){
+			def user = User.get(session.user.id)
+			session.user.refresh(user)
+			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
@@ -50,20 +59,20 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Create hypervisor form action
+	 * Creates hypervisor form action
 	 */
 	def create(){
 	}
 	
 	/**
-	 * Save a new hypervisor based in parameters
+	 * Saves a new hypervisor based in parameters
 	 * redirects to hypervisor list 
 	 * @return
 	 */
 	def save(){
-		if(params.name&&params.version){
+		if(params.name&&params.version&&params.ext){
 			try{
-				hypervisorService.create(params.name,params.version)
+				hypervisorService.create(params.name,params.version,params.ext,params.files_ext)
 				redirect(uri:"/admin/hypervisor/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message
@@ -76,7 +85,7 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Edit hypervisor form action.
+	 * Edits hypervisor form action.
 	 * @return hypervisor selected by user
 	 */
 	def edit(){
@@ -88,15 +97,15 @@ class HypervisorController {
 	}
 	
 	/**
-	 * edit values action. Receives new hypervisor information and sends it to service
+	 * edits values action. Receives new hypervisor information and sends it to service
 	 * Redirects to hypervisor list when finished
 	 */
 	def saveEdit(){
-		if(params.name&&params.version){
+		if(params.name&&params.version&&params.ext){
 			try{
 				Hypervisor hypervisor = Hypervisor.get(params.id)
 				if(Hypervisor){
-					hypervisorService.setValues(hypervisor,params.name,params.version)
+					hypervisorService.setValues(hypervisor,params.name,params.version,params.ext,params.files_ext)
 					flash.message="Hypervisor values have been modified"
 					flash.type="success"
 				}	
@@ -111,7 +120,7 @@ class HypervisorController {
 	}
 	
 	/**
-	 * Delete hypervisor action. Redirects to index when finished
+	 * Deletes hypervisor action. Redirects to index when finished
 	 */	
 	def delete(){
 		def hypervisor = Hypervisor.get(params.id)

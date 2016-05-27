@@ -1,3 +1,9 @@
+import java.io.FileInputStream;
+
+import unacloud.share.utils.EnvironmentManager;
+
+import com.losandes.utils.UnaCloudConstants;
+
 dataSource {
     pooled = true
 	// Other database parameters..
@@ -20,35 +26,36 @@ hibernate {
     cache.use_query_cache = false
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
-Properties prop = new Properties();
-String propFileName = "config.properties";
-InputStream inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-prop.load(inputStream);
+	Properties prop = new Properties();
+	String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
+	println propFileName
+	FileInputStream inputStream = new FileInputStream(propFileName);
+	prop.load(inputStream);
 // environment specific settings
 environments {
     development {
         dataSource {
 			//using properties file
-			username = prop.getProperty("dev.username");
-			password = prop.getProperty("dev.password");
-			dbCreate = prop.getProperty("dev.dbCreate");// one of 'create', 'create-drop', 'update', 'validate', ''
-			url = prop.getProperty("dev.url").replace('\\', '');
+			username = prop.getProperty("dev_username");
+			password = prop.getProperty("dev_password");
+			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
+			url = prop.getProperty("dev_url").replace('\\', '');
         }
     }
     test {
         dataSource {
-			username = prop.getProperty("test.username");
-			password = prop.getProperty("test.password");
-            dbCreate = prop.getProperty("test.dbCreate");
-            url = prop.getProperty("test.url").replace('\\', '');
+			username = prop.getProperty("test_username");
+			password = prop.getProperty("test_password");
+            dbCreate = "create-drop"
+            url = prop.getProperty("test_url").replace('\\', '');
         }
     }
     production {
         dataSource {
-			username = prop.getProperty("prod.username");
-			password = prop.getProperty("prod.password");
-            dbCreate = prop.getProperty("prod.dbCreate");
-            url = prop.getProperty("prod.url").replace('\\', '');
+			username = prop.getProperty(UnaCloudConstants.DB_USERNAME);
+			password = prop.getProperty(UnaCloudConstants.DB_PASS);
+            dbCreate = "update";
+            url = 'jdbc:mysql://'+prop.getProperty(UnaCloudConstants.DB_IP)+':'+prop.getProperty(UnaCloudConstants.DB_PORT)+'/'+prop.getProperty(UnaCloudConstants.DB_NAME)+'?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
             pooled = true
             properties {
                maxActive = -1

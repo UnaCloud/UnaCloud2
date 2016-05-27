@@ -82,5 +82,26 @@ table thead .info{
 	height: 35px;
     overflow: hidden;
 }
+.title-link{
+	text-decoration: none !important;
+	color: white !important;
+}
 
+.footer{
+	position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #DDD;
+    text-align:center;
+}
+
+.text-muted {
+    color: #666 !important;
+    text-decoration: none !important;
+}
+
+.container .text-muted {
+    margin: 20px 0;
+}
 

@@ -1,5 +1,14 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
+
+/**
+ * Entity to represent a Repository.
+ * A Repository is a File System where image files are located
+ * @author CesarF
+ *
+ */
 class Repository {
 	
 	//-----------------------------------------------------------------
@@ -27,14 +36,14 @@ class Repository {
 	static hasMany = [images: VirtualMachineImage]
 	
     static constraints = {
+		name unique:true
 	}
 	
 	/**
-	 *
+	 * Validates if this repository is default one
 	 * @return true is the repository is default, false is not
-	 */
-	
+	 */	
 	def boolean isDefault(){
-		return this == Repository.findByName(Constants.MAIN_REPOSITORY);		
+		return this == Repository.findByName(UnaCloudConstants.MAIN_REPOSITORY);		
 	}
 }

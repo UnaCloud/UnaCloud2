@@ -23,7 +23,8 @@ body {
   min-height: 100%;
  /** max-width:1024px;
   margin:auto!important;**/
-  background: #f9f9f9;
+  background: #f9f9f9 !important;
+  
   text-decoration: none !important;
 }
 a {
@@ -120,6 +121,7 @@ body.fixed .wrapper {
 .content {
   padding: 20px 15px;
   background: #f9f9f9;
+  margin-bottom: 50px;
 }
 /* Utility */
 /* H1 - H6 font */
@@ -135,7 +137,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: 'Open Sans', 'Roboto';
+  font-family: 'Open Sans', 'Roboto' !important;
 }
 /* Page Header */
 .page-header {
@@ -149,7 +151,7 @@ h6,
 }
 /* All images should be responsive */
 img {
-  max-width: 100%important;
+  max-width: 100% !important;
 }
 .sort-highlight {
   background: #f4f4f4;
@@ -882,13 +884,9 @@ body > .header .logo .icon {
   background: #3c8dbc;
   text-align: center;
 }
-.navbar-nav > .user-menu > .dropdown-menu > li.user-header > img {
+.navbar-nav > .user-menu > .dropdown-menu > li.user-header > i {
   z-index: 5;
-  height: 90px;
-  width: 90px;
-  border: 8px solid;
-  border-color: transparent;
-  border-color: rgba(255, 255, 255, 0.2);
+  font-size: 70px;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header > p {
   z-index: 5;
@@ -1288,7 +1286,7 @@ body > .header .logo .icon {
   border-top-color: #f39c12;
 }
 .box.box-success {
-  border-top-color: #00a65a;
+  border-top-color: #45C389;
 }
 .box.height-control .box-body {
   max-height: 300px;
@@ -2350,7 +2348,7 @@ Component: timeline
   }
 }
 .error-page > .headline {
-  float: left;
+  /**float: left;**/
   font-size: 100px;
   font-weight: 300;
 }
@@ -2361,7 +2359,7 @@ Component: timeline
   }
 }
 .error-page > .error-content {
-  margin-left: 190px;
+ /** margin-left: 190px;**/
   display: block;
 }
 @media screen and (max-width: 767px) {
@@ -2630,18 +2628,18 @@ Component: timeline
 }
 /* skin-black sidebar */
 .skin-black .sidebar {
-  border-bottom: 1px solid #333;
-  border-top: 1px solid #333;
+  border-bottom: 1px solid #5F5F5F;
+  border-top: 1px solid #5F5F5F;
 }
 .skin-black .sidebar > .sidebar-menu > li {
-  border-top: 1px solid #333;
+  border-top: 1px solid #5F5F5F;
   border-bottom: 0px solid #444;
 }
 .skin-black .sidebar > .sidebar-menu > li:first-of-type {
   border-top: 1px solid #444;
 }
 .skin-black .sidebar > .sidebar-menu > li:first-of-type > a {
-  border-top: 0px solid #333;
+  border-top: 0px solid #5F5F5F;
 }
 .skin-black .sidebar > .sidebar-menu > li > a {
   margin-right: 1px;
@@ -2649,16 +2647,16 @@ Component: timeline
 .skin-black .sidebar > .sidebar-menu > li > a:hover,
 .skin-black .sidebar > .sidebar-menu > li.active > a {
 
-  color: #444444;
-  background:#E5E5E5;
+  color: #FFF;
+  background:#282828;
   /**background: #4E80A9;**/
 }
 .skin-black .sidebar > .sidebar-menu > li > .treeview-menu {
   margin: 0 1px;
-  background: #444;
+  background: #5F5F5F;
 }
 .skin-black .left-side {
-  background: #333;
+  background: #444;
 }
 .skin-black .sidebar a {
   color: #eee;
@@ -2672,8 +2670,9 @@ Component: timeline
 .skin-black .treeview-menu > li.active > a,
 .skin-black .treeview-menu > li > a:hover {
   color: #FFF;
-  /**background-color: #29445A;**/
-  background-color: #767E84;
+  font-weight: bold;
+  /**background-color: #29445A;
+  background-color: #000;**/
 }
 .skin-black .treeview-menu > li .active{
   color: #FFF;

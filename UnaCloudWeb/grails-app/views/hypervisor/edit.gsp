@@ -34,6 +34,15 @@
 	                            	<label>Version</label>
 	                            	<input type="text" class="form-control" value="${hypervisor.hypervisorVersion}" name="version" placeholder="Hypervisor version">
 	                         	</div>
+	                         	<div class="form-group">
+	                            	<label>Main file extension *</label>
+	                            	<input type="text" class="form-control" value="${hypervisor.mainExtension}"  name="ext" placeholder="Hypervisor main file extension">
+	                         	</div>
+	                         	<div class="form-group">
+	                            	<label>Other file extensions</label>
+	                            	<p class="help-block">Allowed file extension list for this hypervisor separated by comma (.vbox,.vmk,...), not include main file.</p> 
+	                            	<input type="text" class="form-control" value="${hypervisor.filesExtensions}"  name="version" placeholder="Hypervisor file extension list">
+	                         	</div>
 	                         </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
 		                        <g:submitButton name="button-submit" class="btn btn-success" value="Submit" />		

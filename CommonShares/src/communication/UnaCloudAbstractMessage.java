@@ -10,7 +10,7 @@ import communication.messages.PhysicalMachineOperationMessage;
 import communication.messages.VirtualMachineOperationMessage;
 
 /**
- *
+ * Abstract class to be used by programs to send message to agents
  * @author Clouder
  */
 public abstract class UnaCloudAbstractMessage implements Serializable{
@@ -45,6 +45,11 @@ public abstract class UnaCloudAbstractMessage implements Serializable{
     public void setSubOp(int subOp) {
         this.subOp = subOp;
     }
+    /**
+     * Transform message to physical or virtual operation message
+     * @param message to be transformed
+     * @return new message, in case another type return null
+     */
     public static UnaCloudAbstractMessage fromMessage(UnaCloudAbstractMessage message){
     	switch(message.getMainOp()){
     		case PHYSICAL_MACHINE_OPERATION:

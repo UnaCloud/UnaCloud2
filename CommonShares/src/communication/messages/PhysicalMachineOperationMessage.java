@@ -1,8 +1,12 @@
 package communication.messages;
 
 import communication.UnaCloudAbstractMessage;
-import communication.UnaCloudMessage;
 
+/**
+ * Represents kinf of physical machine operation message sent to agents
+ * @author CesarF
+ *
+ */
 public abstract class PhysicalMachineOperationMessage extends UnaCloudAbstractMessage{
 	private static final long serialVersionUID = 6749899457514674239L;
 	public static final int PM_INIT = 1;
@@ -15,8 +19,5 @@ public abstract class PhysicalMachineOperationMessage extends UnaCloudAbstractMe
     public static final int PM_RETRIEVE_FOLDER = 8;
 	public PhysicalMachineOperationMessage(int subOperation){
 		super(PHYSICAL_MACHINE_OPERATION, subOperation);
-	}
-	public static UnaCloudAbstractMessage fromMessage(UnaCloudMessage message){
-		return null;
 	}
 }

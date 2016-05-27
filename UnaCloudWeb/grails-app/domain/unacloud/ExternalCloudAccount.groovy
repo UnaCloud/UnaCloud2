@@ -1,9 +1,10 @@
 package unacloud
 
 /**
- * 
- * @author Cesar
- * Representation of Account in cloud provider
+ * Entity to represent an Account in cloud provider.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
+ *
  */
 class ExternalCloudAccount {
 	

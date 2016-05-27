@@ -4,13 +4,13 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
  * Class used to create random hash, numbers and strings
- * @author Cesar
+ * @author CesarF
  *
  */
 public class Hasher {
@@ -20,7 +20,7 @@ public class Hasher {
 	/**
 	 * Method to create a hash based in a text using sha256
 	 * @param text
-	 * @return
+	 * @return hash String
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
 	 */
@@ -33,7 +33,7 @@ public class Hasher {
 	/**
 	 * Using to create a randomString based in a length sent by user
 	 * @param ln
-	 * @return
+	 * @return random string based in charset
 	 */
 	public static String randomString(int ln){
 		return RandomStringUtils.random(ln, charset.toCharArray());

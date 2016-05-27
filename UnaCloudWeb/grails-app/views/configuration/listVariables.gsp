@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.ServerVariableTypeEnum"%>
+<%@page import="unacloud.share.enums.ServerVariableTypeEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -20,7 +20,7 @@
             		<div id="label-message"></div>               		     
             		<div class="box box-primary">     	
             			<div class="box-header">
-            				<h5 class="box-title">Set the server variables</h5>             										    			
+            				<h5 class="box-title">Set server variables</h5>             										    			
             			</div>
             			<p class="help-block">To modify a variable in the list, click in "Edit" button, modify value and then click "submit".</p>	
 	            		<hr>	
@@ -33,7 +33,7 @@
 	               					<label class="col-lg-3 col-sm-3 col-xs-12">${variable.name}</label>               				
 		               				<div class="col-lg-6 col-sm-6 col-xs-12">	
 			               				<div class="form-group">
-			                 		    <g:if test="${variable.isList()}">
+			                 		    <g:if test="${variable.isList}">
 			                 		    	<select name= "value" class="form-control var-${variable.id}" disabled>		                 		    	
 				                 		    	<option value="NoOne" >-- No one --</option>           		    	
 			                                <g:each in="${variable.values()}" var="val"> 

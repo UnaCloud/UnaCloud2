@@ -1,5 +1,12 @@
 package unacloud
 
+/**
+ * This Controller contains actions to manage operating system services: crud for os's.
+ * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * only administrator users can call this actions.
+ * @author CesarF
+ *
+ */
 class OperatingSystemController {
 	
 	//-----------------------------------------------------------------
@@ -33,7 +40,9 @@ class OperatingSystemController {
 			return false
 		}
 		else{
-			if(!userGroupService.isAdmin(session.user)){
+			def user = User.get(session.user.id)
+			session.user.refresh(user)
+			if(!userGroupService.isAdmin(user)){
 				flash.message="You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
@@ -50,7 +59,7 @@ class OperatingSystemController {
 	}
 	
 	/**
-	 * render form to create a new OS
+	 * renders form to create a new OS
 	 */
 	def create() {
 	}
@@ -92,7 +101,7 @@ class OperatingSystemController {
 	}
 	
 	/**
-	 * Edit OS form action
+	 * Edits OS form action
 	 * @return OS selected by user
 	 */
 	

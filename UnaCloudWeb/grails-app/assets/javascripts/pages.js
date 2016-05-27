@@ -64,6 +64,13 @@ $(document).on('ready',function(){
 		submitConfirm(form, href, 'All selected host machines will be stopped. Do you want to continue?');
 	});
 	
+	$(".stop-executions").click(function (event){		
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_deployments');
+		submitConfirm(form, href, 'All selected executions will be stopped. Do you want to continue?');
+	});
+	
 	$(".cache-agents").click(function (event){		
 		event.preventDefault();
 		var href = $(this).attr("href");
@@ -99,25 +106,14 @@ $(document).on('ready',function(){
 
 	$('#button-upload').click(function (event){		
 		cleanLabel('#label-message');
-		var form = document.getElementById("form-new");
-		if(form["name"].value&&form["name"].value.length > 0&&
-			form["user"].value&&form["user"].value.length > 0&&
-				form["passwd"].value&&form["passwd"].value.length > 0&&
-					form["protocol"].value&&form["protocol"].value.length > 0 ){			
-			if(form["files"].value&&form["files"].value.length > 0){
-			  uploadForm(form);		
-			}
-			else addLabel('#label-message', 'File(s) to upload is/are missing.', true);
-		}else addLabel('#label-message', 'All fields are required', true);
+		var form = $('#form-new');	
+		requestFile(form)
 	});
 
 	$('#button-update').click(function (event){		
 		cleanLabel('#label-message');
-		var form = document.getElementById("form-change");		
-		if(form["files"].value&&form["files"].value.length > 0){
-			uploadForm(form);		
-		}
-		else addLabel('#label-message', 'File(s) to upload is/are missing.', true);		
+		var form = $('#form-change');		
+		requestFile(form)	
 	});	
 	
 	$('.btn-variable').click(function(event){
@@ -134,6 +130,39 @@ $(document).on('ready',function(){
 		parent.find('input.btn-cancel').addClass('hide-segment');
 		parent.find('input.btn-variable').removeClass('hide-segment');
 		$('.'+parent.attr('id')).prop('disabled', true);
+	});	
+	
+	$(".download_btn").on("click",function(event){
+		event.preventDefault();
+		var execution = $(this).data("id");
+		var href = $(this).attr("href");
+		var imagename = $(this).data("imagename");
+		bootbox.dialog({
+			title: "Save Image Copy",
+			message:  "<form id='form_copy' method='post'>"+
+							"<div class='box-body'>"+
+							"<div class='form-group'>"+
+				        		"<label>Write the name that will be used to save the copy</label>"+
+				            	"<input class='form-control' id='imageName' name='name' type='text' value='"+imagename+"'>"+
+				            "</div>"+	
+				            "</div>"+	
+						"</form>",
+			buttons: {
+				success: {
+					label: "Save",
+					className: "btn-success",
+					callback: function () {
+						var form = $('#form_copy');
+						form.attr('action',href+execution);
+						form.submit()
+					}
+				},
+				cancel: {
+					label: "Cancel",
+					className: "btn-danger",								
+				},
+			}
+		});
 	});	
 	
 	tableChecker();
@@ -160,6 +189,24 @@ function tableChecker(){
 		if(checks>=1)$('#btn-group-agent').removeClass("hide-segment");
 		else $('#btn-group-agent').addClass("hide-segment");
 	});
+	$('.image_check').click(function (event) {		
+        var selected = this.checked;
+        var id = $(this).data("id");
+        $('.image_'+id+':checkbox').each(function () {  
+        	if(!this.checked&&selected)checks++;
+            else checks--;
+         	this.checked = selected; 
+        });
+	});	
+	
+}
+
+function showMessage(data, message){
+	 if(data.success){
+		 addLabel('#label-message',message,false);			
+	 }else{
+		 
+	 }
 }
 
 function checkSelected(){
@@ -193,6 +240,37 @@ function sendConfirm(message,href,data){
 	showConfirm('Confirm',message, function(){		
 		window.location.href = href+data;
 	});
+}
+
+function requestFile(form){
+	$.post(form.attr('action'), form.serialize(), function(data){
+		if(data.success){
+			bootbox.dialog({
+				title: "Upload Image",
+				message:"<form id='form_image' method='post' action='"+data.url+"' enctype='multipart/form-data'>"+
+								"<div class='box-body'>"+
+									"<div class='form-group'>"+
+										"<label>Image File input</label>"+
+										"<input type='file' name='files' multiple>"+
+										"<input type='hidden' name='token' value='"+data.token+"'>"+
+									"</div>"+
+								"</div>"+	
+						"</form>",
+				buttons: {
+					success: {
+						label: "Upload",
+						className: "btn-success",
+						callback: function () {
+							var form_image = document.getElementById('form_image');
+							uploadForm(form_image)
+						}
+					},
+				}
+			});
+		}else{
+			addLabel('#label-message',data.message,true)
+		}				
+    }, 'json')	
 }
 function uploadForm(form){	
 	var formData = new FormData(form);
@@ -244,17 +322,8 @@ function editImage(){
 		}else addLabel('#label-message', 'Name and user are required', true);
 	});
 }
-function calculateDeploy(){
-	$('#option-hw').change(function() {
-		var label = $(this).attr('data-img');
-		var hw = $(this).val();
-		 $.get('../maxDeploys', {hwp:hw}, function(data){
-			 $('#'+label).text(data.max);
-		 }, 'json');
-	});
-}
 
 function mask(){
 	$("[data-mask]").inputmask();
-	$("[data-mask-mac]").inputmask("[AA]:[AA]:[AA]:[AA]:[AA]:[AA]");
+	//$("[data-mask-mac]").inputmask("[AA]:[AA]:[AA]:[AA]:[AA]:[AA]");
 }

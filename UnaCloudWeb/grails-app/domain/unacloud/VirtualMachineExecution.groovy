@@ -4,9 +4,16 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import unacloud.enums.IPEnum;
-import unacloud.enums.VirtualMachineExecutionStateEnum;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
+import unacloud.share.enums.IPEnum;
+
+/**
+ * Entity to represent a Virtual Machine Execution
+ * A Virtual Machine Execution is an execution in a 
+ * @author CesarF
+ *
+ */
 class VirtualMachineExecution {
 	
 	//-----------------------------------------------------------------
@@ -19,12 +26,12 @@ class VirtualMachineExecution {
     String name
 	
 	/**
-	 * Virtual machine number of processors
+	 * Virtual machine hardware profile assigned
 	 */
 	HardwareProfile hardwareProfile
 	
 	/**
-	 * Net interfaces
+	 * Configured Net interfaces 
 	 */
 	static hasMany = [interfaces:NetInterface]
 	
@@ -34,12 +41,12 @@ class VirtualMachineExecution {
 	Date startTime
 	
 	/**
-	 * Date when the node was stopped
+	 * Date when the node was or should be stopped
 	 */
 	Date stopTime
 	
 	/**
-	 * Actual node state (REQUESTED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHED)
+	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
 	 */
 	VirtualMachineExecutionStateEnum status
 	
@@ -54,8 +61,8 @@ class VirtualMachineExecution {
 	PhysicalMachine executionNode
 	
 	/**
-	 * 
 	 * Monitoring system configure in virtual execution
+	 * unused
 	 */
 	MonitorSystem monitorSystem
 	
@@ -64,12 +71,18 @@ class VirtualMachineExecution {
 	 */
 	static belongsTo = [deployImage: DeployedImage]
 	
+	/**
+	 * Last report of virtual machine
+	 */
+	Date lastReport
+	
 	
 	static constraints = {
 		executionNode nullable: true
 		monitorSystem nullable: true
 		stopTime nullable: true 
 		startTime nullable:true
+		lastReport nullable:true
 	}
 	
 	//-----------------------------------------------------------------
@@ -81,7 +94,7 @@ class VirtualMachineExecution {
 	 * @return formated remaining time
 	 */
 	def remainingTime(){
-		if(stopTime==null)return '--'
+		if(stopTime==null||status!=VirtualMachineExecutionStateEnum.DEPLOYED)return '--'
 		long millisTime=(stopTime.getTime()-System.currentTimeMillis())/1000
 		String s = ""+millisTime%60;
         String m = ""+((long)(millisTime/60))%60;
@@ -101,32 +114,61 @@ class VirtualMachineExecution {
 	}
 	
 	/**
-	 * Save entity with netinterfaces
-	 * @return
+	 * Saves entity with net interfaces
 	 */
-	def saveExecution(){
+	def saveExecution(){		
+		this.save(failOnError:true,flush:true)
 		for(NetInterface netInterface in interfaces){
-			netInterface.save(failOnerror:true)
+			netInterface.ip.putAt('state',IPEnum.USED)
+			netInterface.save(failOnerror:true,flush:true)
 		}
-		this.save(failOnError:true)
 	}
 	
 	/**
-	 * Set status to finished and breaks free IP from net interfaces.
-	 * @return
+	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
 	def finishExecution(){
 		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
+		this.putAt("stopTime", new Date())
 		for(NetInterface netinterface in interfaces)
 			netinterface.ip.putAt("state",IPEnum.AVAILABLE)
 	}
 	
 	/**
-	 * Return main IP configured in Net interfaces
+	 * Returns main IP configured in Net interfaces
+	 * currently is number one
 	 * @return
 	 */
 	def mainIp(){
 		return interfaces.getAt(0).ip
 	}
 	
+	/**
+ 	 * Returns time of last state from node
+	 * @return last date reported in state machine graph
+	 */
+	def Date getLastStateTime(){
+		def exe = this
+		//def requestExec = ExecutionRequest.findAll("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[max:1, sort:'requestTime', order: "asc"])
+		def requestExec = ExecutionRequest.list(fetch: [execution: exe,status:exe.status],max:1, sort:'requestTime', order: "desc")		
+		if(requestExec&&requestExec.size()>0)return requestExec.get(0).requestTime
+		else new Date();
+	}
+	
+	/**
+	 * Returns database id
+	 * @return Long id
+	 */
+	def Long getDatabaseId(){
+		return id;
+	}
+	
+	/**
+	 * Validates if execution must show its details based in status used in views
+	 * @return true in case execution has DEPLOYED, RECONNECTING or FAILED status
+	 * 
+	 */
+	def boolean showDetails(){
+		return status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)||status.equals(VirtualMachineExecutionStateEnum.FAILED)
+	}
 }

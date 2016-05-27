@@ -3,8 +3,14 @@ package unacloud
 import java.util.ArrayList;
 
 import unacloud.enums.ClusterEnum;
-import unacloud.enums.DeploymentStateEnum;
+import unacloud.share.enums.DeploymentStateEnum;
+import unacloud.share.enums.VirtualMachineImageEnum;
 
+/**
+ * Entity to represent a Cluster as a group of virtual machine image which have to be deployed together.
+ * @author CesarF
+ *
+ */
 class Cluster {
 	
 	//-----------------------------------------------------------------
@@ -28,6 +34,7 @@ class Cluster {
 	
 	/**
 	 * State of cluster
+	 * it could be UNAVAILABLE, DISABLE, AVAILABLE, FREEZE
 	 */
 	ClusterEnum state = ClusterEnum.AVAILABLE;
 	
@@ -50,8 +57,20 @@ class Cluster {
 	def isDeployed(){
 		boolean isDeployed=false
 		Long clusterId = this.id;
-		def deployments= Deployment.where{status == DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
+		def deployments= Deployment.where{status != DeploymentStateEnum.FINISHED && cluster.id==clusterId}.findAll()
 		return deployments&&deployments.size()>0?true:false
+	}
+	
+	/**
+	 * Validates if cluster is FREEZE. 
+	 * If all images are available changes status to AVAILABLE
+	 */
+	def update(){
+		if(state.equals(ClusterEnum.FREEZE)
+			&&images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.size()==0){
+			state=ClusterEnum.AVAILABLE;
+			this.save(failOnError:true)
+		}
 	}
 	
 }

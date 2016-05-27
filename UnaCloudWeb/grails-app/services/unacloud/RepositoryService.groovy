@@ -1,19 +1,38 @@
 package unacloud
 
+import com.losandes.utils.Constants;
+import com.losandes.utils.UnaCloudConstants;
+
 import grails.transaction.Transactional
 
 // Creada por Carlos E. Gomez - diciembre 11 de 2015
+/**
+ * 
+ * This service contains all methods to manage Repository: Repository crud methods.
+ * This class connects with database using hibernate
+ * @author Carlos
+ * @author Refactor by CesarF
+ *
+ */
 @Transactional
 class RepositoryService {
+	
+	/**
+	 * Returns a repository entity queried by name
+	 * @param name
+	 * @return
+	 */
+	def Repository getRepositoryByName(String name){
+		return Repository.findByName(name)
+	}
     	
 	/**
-	 * Return main repository entity
+	 * Returns main repository entity
 	 * @return repository
 	 */
 	def Repository getMainRepository(){
-		return Repository.findByName(Constants.MAIN_REPOSITORY)
-	}
-	
+		return getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY)
+	}	
 	
 	/**
 	 * Creates a new repository
@@ -23,10 +42,7 @@ class RepositoryService {
 	def create(name, path){
 		if (Repository.findByName(name)==null) {
 			new Repository(name: name, path:path).save()
-		} else {
-			// Error. No se como hacerlo.
-		}
-		
+		} 	
 	}
 	
 	/**
@@ -38,7 +54,5 @@ class RepositoryService {
 		if (repo != getMainRepository() ) {
 			repo.delete()
 		}		
-	}
-
-	
+	}	
 }

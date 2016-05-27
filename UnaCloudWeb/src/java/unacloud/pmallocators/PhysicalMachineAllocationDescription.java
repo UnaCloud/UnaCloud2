@@ -1,5 +1,10 @@
 package unacloud.pmallocators;
 
+/**
+ * Class used to represent physical machine resources
+ * @author Clouder
+ *
+ */
 public class PhysicalMachineAllocationDescription {
 	long nodeId;
 	int cores;

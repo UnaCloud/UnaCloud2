@@ -1,8 +1,17 @@
-package unacloud
+package unacloud;
 
-import unacloud.enums.ServerVariableTypeEnum;
+import com.losandes.utils.UnaCloudConstants;
+
+import unacloud.share.enums.ServerVariableTypeEnum;
 import unacloud.pmallocators.AllocatorEnum;
+import unacloud.share.enums.ServerVariableProgramEnum
 
+/**
+ * Entity to represent a Server Variable.
+ * A Server Variable is a variable that is used by server to connect with services talk to other applications and generate configuration files for agents
+ * @author CesarF
+ *
+ */
 class ServerVariable {
 	
 	//-----------------------------------------------------------------
@@ -20,14 +29,25 @@ class ServerVariable {
 	String variable
 	
 	/**
-	 * type of variable (String, Integer)
+	 * type of variable (String, Integer, Boolean)
 	 */
 	ServerVariableTypeEnum serverVariableType
 	
 	/**
-	 * server side variable only
+	 * Program that used variable 
 	 */
-	boolean serverOnly
+	
+	ServerVariableProgramEnum program;
+	
+	/**
+	 * Return if a variable is a list separated by comma
+	 */
+	boolean isList = false
+	
+	/**
+	 * Used to manage which variables could be used for agent configuration
+	 */
+	boolean serverOnly = true
 	
     static constraints = {
     }
@@ -36,21 +56,13 @@ class ServerVariable {
 	// Properties
 	//-----------------------------------------------------------------
 	
-	/**
-	 * Return true if variable is chosen based in a list, false is not
-	 * @return true or false
-	 */
-	def isList(){
-		if(this.name in ['VM_DEFAULT_ALLOCATOR'])return true
-		return false
-	}
 	
 	/**
-	 * Return values in case variable  is chosen based in a list
-	 * @return
+	 * Returns values in variables which are list, currently only used for DEFAULT ALLOCATOR
+	 * @return list of values
 	 */
 	def values(){
-		if(this.name.equals('VM_DEFAULT_ALLOCATOR'))
+		if(this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))
 			return AllocatorEnum.getList()
 		else []
 	}

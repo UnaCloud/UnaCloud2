@@ -5,6 +5,7 @@ import static com.losandes.utils.Constants.ERROR_MESSAGE;
 import java.io.File;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,9 +13,11 @@ import com.losandes.utils.Constants;
 import com.losandes.utils.LocalProcessExecutor;
 
 import utils.AddressUtility;
+import virtualMachineManager.entities.ImageCopy;
+import virtualMachineManager.entities.VirtualMachineExecution;
 
 /**
- * Implementation of hypervisor abstract class to give support for VMwarePlayer
+ * Implementation of hypervisor abstract class to give support for VirtualBox
  * hypervisor.
  */
 public class VirtualBox extends Hypervisor {
@@ -102,7 +105,7 @@ public class VirtualBox extends Hypervisor {
     /**
      * Changes VM configuration
      * @param cores new number of cores for the VM
-     * @param RAM new RAM value for the VM
+     * @param ram new RAM value for the VM
      * @param image Copy to be modified
      */
     @Override
@@ -157,7 +160,7 @@ public class VirtualBox extends Hypervisor {
     }
     
     /**
-     * Delete a snapshot of the VM
+     * Deletes a snapshot of the VM
      * @param image copy of the image to delete its snapshot
      * @param snapshotname 
      */
@@ -203,7 +206,7 @@ public class VirtualBox extends Hypervisor {
 	}
 	
 	/**
-	 * Unregisters all the VMs in the hypervisor
+	 * Unregisters all VMs from hypervisor
 	 */
 	public void unregisterAllVms(){
 		String[] h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms").split("\n|\r");
@@ -224,5 +227,30 @@ public class VirtualBox extends Hypervisor {
 		sleep(20000);
 		takeVirtualMachineSnapshot(dest,"unacloudbase");
         unregisterVirtualMachine(dest);
+	}
+	
+	@Override
+	public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
+		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
+		List<String> list = new ArrayList<String>();
+		try {
+			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
+			for(String vm: result){
+				list.add(vm.split(" ")[0].replace("\"", "").trim());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (VirtualMachineExecution execution: executions) {
+			boolean isRunning = false;
+			for(String exeInHypervisor: list){
+				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){
+					isRunning = true;
+					break;
+				}
+			}	
+			if(!isRunning)executionsToDelete.add(execution);	
+		}
+		return executionsToDelete;
 	}
 }

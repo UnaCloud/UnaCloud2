@@ -14,7 +14,7 @@ public class ByteUtils {
     /**
      * Converts a long number to a byte array
      * @param number
-     * @return
+     * @return bytes as long value
      */
     public static byte[] longToBytes(long number) {
         byte[] ret = new byte[8];
@@ -32,7 +32,7 @@ public class ByteUtils {
     /**
      * Converts a byte array to a long number
      * @param bytes
-     * @return
+     * @return long  as bytes value
      */
     public static long bytesToLong(byte[] bytes) {
         long n = ((long) (bytes[7])) & 0xFFL;

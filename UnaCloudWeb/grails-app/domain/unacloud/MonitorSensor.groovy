@@ -1,10 +1,9 @@
 package unacloud
 
 /**
- * 
- * @author Cesar
- * 
- * representation of a sensor 
+ * Entity to represent a monitoring sensor.
+ * This class is unused in this version of UnaCloud
+ * @author CesarF
  *
  */
 class MonitorSensor {	

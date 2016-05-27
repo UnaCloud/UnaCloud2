@@ -19,9 +19,8 @@
     			<div id="label-message"></div> 
     			<g:render template="/share/message"/>         
     			<form id="form-create" name="newCluster" action="${createLink(uri: '/services/cluster/save', absolute: true)}" enctype="multipart/form-data" role="form">
-	                        		     
-		       		<div class="box box-primary"> 
-		           	 	 <div class="box-body"> 
+	               <div class="box box-primary"> 
+		           	 	<div class="box-body"> 
 		           	 	 	<div class="form-group">
 		                       <label>Cluster Name</label>
 		                       <input type="text" class="form-control" name="name" placeholder="Cluster Name">

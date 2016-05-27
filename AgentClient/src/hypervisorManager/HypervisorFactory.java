@@ -1,13 +1,20 @@
 package hypervisorManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.losandes.utils.VariableManager;
+import utils.VariableManager;
+import virtualMachineManager.entities.VirtualMachineExecution;
+
+import com.losandes.utils.UnaCloudConstants;
 
 /**
- * Factory responsible for managing hypervisor classes and instances. This class provides methods to dinamically load hypervisor clasees and instantiate them.
+ * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.
  * @author Clouder
+ * @author CesarF
  */
 public class HypervisorFactory {
     /**
@@ -21,8 +28,8 @@ public class HypervisorFactory {
     private static Map<String,Hypervisor> map = new HashMap<>();
     
     public static void registerHypervisors(){
-    	String vmRun=VariableManager.local.getStringValue("VMRUN_PATH");
-    	String vBox=VariableManager.local.getStringValue("VBOX_PATH");
+    	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
+    	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
     	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
     	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
     	//TODO add support to vmWarePlayer
@@ -31,12 +38,21 @@ public class HypervisorFactory {
 
     /**
      * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dinamically using java´s reflection API. If there is an associated object, then a new instance is returned by using the method getInstance from Hypervisor abstract class.
-     * @param hypervisorName The hypervisor name to be instantiated
-     * @param executablePath The executable route that represents the given hypervisor.
-     * @param virtualMachinePath The virtual machine path to be associated with the hypervisor.
+     * @param hypervisorId The hypervisor id to be instantiated
      * @return A managed hypervisor for the given name
      */
     public static Hypervisor getHypervisor(final String hypervisorId){
     	return map.get(hypervisorId);
+    }
+    
+    /**
+     * Validates the list of executions in each hypervisor, returns the list of executions that are not running in any hypervisor
+     * @return list of executions that are not running
+     */
+    public static List<VirtualMachineExecution> validateExecutions(Collection<VirtualMachineExecution> executions){
+    	List<VirtualMachineExecution> notRunningExecutions = new ArrayList<VirtualMachineExecution>();
+    	notRunningExecutions.addAll(executions);
+    	for(Hypervisor hypervisor:map.values())notRunningExecutions=hypervisor.checkExecutions(notRunningExecutions);
+    	return notRunningExecutions;
     }
 }

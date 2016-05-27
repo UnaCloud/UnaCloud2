@@ -3,13 +3,20 @@ class UrlMappings {
 	static excludes = ["/virtualMachineImage/update"]
 	static mappings = {
 		
-		"/"(controller:"user", action:"home")
+		"/"(controller:"user", action:"index")
+		"/home"(controller:"user", action:"home")
 		"/login"(view:"/index")
 		"/user/login"(controller:'user',action:'login')
 		"/logout"(controller:'user',action:"logout")
-		"/error"(view:'/error')
-		"404"(view:'/error')
-		"500"(view:'/error')
+		"/error"(controller:'error',action:"error")
+		"404"(controller:'error',action:"fourhundred")
+		"500"(controller:'error',action:"fivehundred")
+		
+		/** services - user**/
+		"/user/profile/"(controller:'user',action:'profile')
+		"/user/profile/save"(controller:'user',action:'changeProfile')
+		"/user/profile/change"(controller:'user',action:'changePassword')
+		"/user/profile/change/save"(controller:'user',action:'savePassword')
 		
 		/** services - my images**/
 		"/services/image/list"(controller:'VirtualMachineImage',action:"list")
@@ -36,6 +43,10 @@ class UrlMappings {
 		/** services - deployments **/
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")
 		"/services/deployment/list"(controller:'Deployment',action:"list")
+		"/services/deployment/stop"(controller:'Deployment',action:"stop")
+		"/services/deployment/$id/add"(controller:'Deployment',action:"addInstances")
+		"/services/deployment/$id/add/save"(controller:'Deployment',action:"saveInstances")
+		"/services/deployment/download/$id"(controller:'Deployment',action:"createCopy")
 		
 		/** admin - users**/
 		"/admin/user/list"(controller:'user',action:"list")

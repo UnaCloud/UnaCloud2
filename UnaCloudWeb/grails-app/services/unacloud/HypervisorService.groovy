@@ -2,6 +2,12 @@ package unacloud
 
 import grails.transaction.Transactional
 
+/**
+ * This service contains all methods to manage Hypervisor: crud hypervisor
+ * This class connects with database using hibernate
+ * @author CesarF
+ *
+ */
 @Transactional
 class HypervisorService {
 
@@ -15,19 +21,21 @@ class HypervisorService {
 	 * @param hyperVersion hypervisor's version
 	 */
 	
-	def create(name, hyperVersion) {
-		new Hypervisor(name:name, hypervisorVersion: hyperVersion).save()
+	def create(name, hyperVersion, ext,fileExts) {
+		new Hypervisor(name:name, hypervisorVersion: hyperVersion, mainExtension: ext, filesExtensions: fileExts).save()
     }
 	
 	/**
-	 * Edit hypervisor's values
+	 * Edits hypervisor's values
 	 * @param hypervisor hypervisor to be edited
 	 * @param name hypervisor's new name
 	 */
 	
-	def setValues(Hypervisor hypervisor, name, hyperVersion){
+	def setValues(Hypervisor hypervisor, name, hyperVersion, mainExt, filesExt){
 		hypervisor.putAt("name", name)
 		hypervisor.putAt("hypervisorVersion", hyperVersion)
+		hypervisor.putAt("mainExtension", mainExt)
+		hypervisor.putAt("filesExtensions", filesExt)
 	}
 	
 	/**
