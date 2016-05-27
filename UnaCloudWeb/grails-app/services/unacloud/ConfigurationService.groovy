@@ -60,11 +60,18 @@ class ConfigurationService {
 	def copyUpdaterOnStream(OutputStream outputStream,File appDir){
 		ZipOutputStream zos=new ZipOutputStream(outputStream);
 		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.UPDATER_JAR),true);
-		copyFile(zos,UnaCloudConstants.CONFIG_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.CONFIG_JAR),true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw=new PrintWriter(zos);
 		for(ServerVariable sv:ServerVariable.where{serverOnly == false}.findAll())
 			pw.println(sv.name+"="+sv.variable);
+		pw.flush();
+		zos.closeEntry();
+		pw=new PrintWriter(zos);
+		zos.putNextEntry(new ZipEntry(UnaCloudConstants.LOCAL_FILE));
+		pw.println("DATA_PATH=path_to_save_logs");
+		pw.println("VM_REPO_PATH=path_to_local_repository");
+		pw.println("VMRUN_PATH=path_to_vmrun.exe");
+		pw.println("VBOX_PATH=path_to_VBoxManage.exe");
 		pw.flush();
 		zos.closeEntry();
 		zos.close();
