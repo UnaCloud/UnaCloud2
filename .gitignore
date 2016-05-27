@@ -13,3 +13,4 @@ UnaCloudFileManager/target/*
 UnaCloudFileManager/target-eclipse/*
 *.class
 *.class
+UnaCloudFileManager/target-eclipse/classes/javascripts/jquery.js
