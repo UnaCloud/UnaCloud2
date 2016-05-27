@@ -1,0 +1,9 @@
+DefaultPackage
+spring
+unacloud
+uniandes.unacloud
+uniandes.unacloud.communication
+uniandes.unacloud.db
+uniandes.unacloud.db.entities
+uniandes.unacloud.files
+uniandes.unacloud.queue

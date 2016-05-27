@@ -1,0 +1,8 @@
+Wed Apr 20 14:28:11 COT 2016 Load file: C:\desarrollo\config.properties
+Wed Apr 20 14:28:11 COT 2016 Start queue service
+Wed Apr 20 14:28:11 COT 2016 Start database service
+Wed Apr 20 14:28:11 COT 2016 Create connection to: jdbc:mysql://157.253.236.161:3306/unacloud2?useUnicode=yes&characterEncoding=UTF-8
+Wed Apr 20 14:28:11 COT 2016 Start communication service
+Wed Apr 20 14:28:11 COT 2016 listening in 10026
+Wed Apr 20 14:28:11 COT 2016 listening in 10027
+Wed Apr 20 14:28:11 COT 2016 UnaCloud Control is running
