@@ -1,1 +1,6 @@
 /Exceptions/
+/communication/
+/hypervisorManager/
+/init/
+/utils/
+/virtualMachineManager/
