@@ -31,7 +31,7 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 			jsonMessage = jsonMessage.getJSONObject("data");
 			if(message.getType().equals(UDPMessageEnum.STATE_PM)){
 				try(Connection con = ControlManager.getInstance().getDBConnection();){
-					System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
+					//System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
 					//JSONObject executions = jsonMessage.getJSONObject("executions");
 					Long[] ids = new Long[0];
 					String executions = jsonMessage.getString("executions").replace("[", "").replace("]","").trim();
@@ -57,8 +57,6 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 					e.printStackTrace();
 				}
 			}
-		}
-		
+		}		
 	}
-
 }
