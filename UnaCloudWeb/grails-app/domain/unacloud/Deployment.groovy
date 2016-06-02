@@ -7,7 +7,7 @@ import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Entity to represent a Deployment.
+ * Entity to represent a group of instances requested by user to be executed on UnaCloud infrastructure.
  * Deployment has a cluster, a list of image in cluster, a time range and a status
  * @author CesarF
  *

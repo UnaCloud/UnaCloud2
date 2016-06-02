@@ -4,8 +4,7 @@ import unacloud.IP;
 import unacloud.share.enums.IPEnum;
 
 /**
- * Entity to represent an ExecutionIP.
- * An Execution IP is a kind of IP that is used for a Virtual Machine
+ * Entity to represent an IP address that is used for a Virtual Machine
  * 
  * @author CesarF
  */

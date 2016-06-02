@@ -7,8 +7,7 @@ import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
- * Entity to represent a Laboratory.
- * A Laboratory is a group of host or machines located in the same place, exactly how works university computer rooms.
+ * Entity to represent a group of hosts or physical machines located in the same place, exactly how works university computer rooms.
  * @author CesarF
  *
  */

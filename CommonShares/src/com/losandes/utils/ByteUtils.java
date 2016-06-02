@@ -6,7 +6,7 @@
 package com.losandes.utils;
 
 /**
- * Cladd containing utilities to data convertion
+ * Class containing utilities to data convertion
  * @author Clouder
  */
 public class ByteUtils {

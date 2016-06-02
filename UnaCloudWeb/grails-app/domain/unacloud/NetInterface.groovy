@@ -2,7 +2,7 @@ package unacloud
 
 /**
  * Entity to represent a Network Interface to be configured in a Virtual Machine.
- * Although this class is used currently system doesn't support more than one IP configured
+ * Although this class is used currently system doesn't support more than one configured IP
  * @author CesarF
  *
  */

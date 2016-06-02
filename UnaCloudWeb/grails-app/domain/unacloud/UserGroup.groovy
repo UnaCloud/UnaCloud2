@@ -5,8 +5,7 @@ import com.losandes.utils.UnaCloudConstants;
 import unacloud.share.enums.UserRestrictionEnum;
 
 /**
- * Entity to represent a User Group
- * An User Group is used to create restrictions for a segment of users
+ * Entity to represent a group of users. This entity allows to assign restrictions to several users
  * @author CesarF
  *
  */

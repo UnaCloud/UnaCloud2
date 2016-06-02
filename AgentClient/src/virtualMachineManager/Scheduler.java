@@ -3,7 +3,8 @@ package virtualMachineManager;
 import java.util.TimerTask;
 
 /**
- * Responsible for undeploying a virtual machine execution
+ * Responsible for un-deploying a virtual machine execution
+ *  @author Clouder
  */
 public class Scheduler extends TimerTask {
 

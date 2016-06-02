@@ -1,6 +1,6 @@
 package unacloud
 /**
- * Entity to represent a Monitoring system.
+ * Entity to represent a monitoring system; a group of applications configured in a physical o virtual machine.
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *

@@ -7,8 +7,7 @@ import unacloud.pmallocators.AllocatorEnum;
 import unacloud.share.enums.ServerVariableProgramEnum
 
 /**
- * Entity to represent a Server Variable.
- * A Server Variable is a variable that is used by server to connect with services talk to other applications and generate configuration files for agents
+ * Entity to represent a variable that is used by server to connect with services talk to other applications and generate configuration files for agents
  * @author CesarF
  *
  */

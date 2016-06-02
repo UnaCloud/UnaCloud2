@@ -18,7 +18,7 @@ import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 import com.losandes.utils.Constants;
 
 /**
- * This class execute a "sender task": a process to send files to agent when an agent doesn't have image in its cache folder.
+ * This class sends files to agent when an agent doesn't have image in its cache folder.
  * @author CesarF
  *
  */

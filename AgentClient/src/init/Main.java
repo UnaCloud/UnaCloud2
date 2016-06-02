@@ -18,7 +18,7 @@ import communication.send.report.PhysicalMachineStateReporter;
 import communication.send.report.ServerMessageSender;
 
 /**
- * Responsible for starting the UnaCloud Client
+ * Responsible for start UnaCloud Client
  *
  */
 public class Main {

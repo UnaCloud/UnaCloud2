@@ -3,7 +3,7 @@ package communication.messages;
 import communication.UnaCloudAbstractMessage;
 
 /**
- * Represents kif of virtual machine operation message sent to agents
+ * Represents kind of virtual machine operation message sent to agents
  * @author CesarF
  *
  */

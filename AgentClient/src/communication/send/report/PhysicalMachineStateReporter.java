@@ -5,7 +5,7 @@ import java.util.List;
 import virtualMachineManager.PersistentExecutionManager;
 
 /**
- * Class responsible for report this physical machine status. Every 30 seconds this class sends a keep alive message to UnaCloud server.
+ * Class responsible to report physical machine status. Every X seconds this class sends a keep alive message to UnaCloud server.
  * @author Clouder
  */
 public class PhysicalMachineStateReporter extends Thread{

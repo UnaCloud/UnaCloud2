@@ -7,7 +7,7 @@ import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Entity to represent a Cluster as a group of virtual machine image which have to be deployed together.
+ * Entity to represent a cluster; a group of virtual machine images configured to be deployed together.
  * @author CesarF
  *
  */

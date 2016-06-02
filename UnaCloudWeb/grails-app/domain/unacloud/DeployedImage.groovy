@@ -6,8 +6,8 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 
 /**
- * Entity to represent a image that has been deployed in infrastructure,
- * this entity has a relationship with deployment and executions that has been requested to be executed..
+ * Entity to represent a image that has been deployed on infrastructure,
+ * this entity has a relationship with deployment and executions that has been requested to be executed.
  * @author CesarF
  *
  */

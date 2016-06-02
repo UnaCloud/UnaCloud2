@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent a Hypervisor.
+ * Entity to represent a Hypervisor Type 2 installed in physical machines.
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *

@@ -10,7 +10,7 @@ import communication.UnaCloudDataSenderUDP;
 import communication.UnaCloudMessageUDP;
 
 /**
- * Singleton class to send message to server 
+ * Singleton class to send message to server using UDP protocol
  * @author CesarF
  *
  */

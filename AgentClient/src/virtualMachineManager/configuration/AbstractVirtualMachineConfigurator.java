@@ -7,7 +7,7 @@ import java.util.Random;
 
 import virtualMachineManager.entities.VirtualMachineExecution;
 /**
- * Abstract configurator for physical machines
+ * Abstract configuration class for physical machines
  * @author Clouder
  *
  */

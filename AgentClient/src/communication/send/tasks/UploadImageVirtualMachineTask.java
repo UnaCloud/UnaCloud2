@@ -19,7 +19,7 @@ import virtualMachineManager.entities.VirtualMachineExecution;
 
 
 /**
- * Task to send a virtual machine execution to server
+ * Task to send a virtual machine execution files to server
  * @author CesarF
  *
  */

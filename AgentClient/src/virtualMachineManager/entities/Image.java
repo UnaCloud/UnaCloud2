@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents image entity
+ * Represents an image entity
  * @author clouder
  *
  */

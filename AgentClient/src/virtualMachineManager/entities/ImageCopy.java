@@ -17,7 +17,8 @@ import virtualMachineManager.PersistentExecutionManager;
 import virtualMachineManager.configuration.AbstractVirtualMachineConfigurator;
 
 /**
- * Represents a copy from an image that is copied in files
+ * Represents a copy from an image. Image files ares copied too
+ *
  * @author CesarF
  *
  */

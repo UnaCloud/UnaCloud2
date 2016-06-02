@@ -1,5 +1,5 @@
 /**
- * In this package are located all classes to manage request to server by tcp connection
+ * In this package are located all classes to manage tasks to send files to server
  * @author CesarF
  * @author Clouder
  *

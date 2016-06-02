@@ -7,8 +7,7 @@ import com.losandes.utils.UnaCloudConstants;
 
 /**
  * Class used to receive messages to manage image files.
- * Sends and receives messages from agents, 
- * The kind of messages are send image files or request image file from agent.
+ * Sends or receives files from agents.
  * @author CesarF
  *
  */

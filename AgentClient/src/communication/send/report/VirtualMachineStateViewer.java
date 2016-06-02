@@ -12,7 +12,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import virtualMachineManager.PersistentExecutionManager;
 
 /**
- * This class is responsible for checking if a VMware virtual machine has been correctly deployed. That is, if the virtual machines has started and if it has well configured its IP address
+ * This class is responsible for checking if a virtual machine has been correctly deployed. That is, if the virtual machines has started and if it has well configured its IP address
  * @author Clouder
  */
 public class VirtualMachineStateViewer {
@@ -23,7 +23,7 @@ public class VirtualMachineStateViewer {
 	/**
 	 * constructs a VirtualMachineStateViewer for the given virtual machine.
 	 * @param virtualMachineCode The virtual machine id to make the virtual machine status report to the server
-     * @param vmIP The ip address to check if the virtual machine is accessible
+     * @param vmIP The IP address to check if the virtual machine is accessible
 	 */
 	public VirtualMachineStateViewer(long virtualMachineCode,String vmIP){
 		this.virtualMachineCode=virtualMachineCode;
@@ -58,8 +58,8 @@ public class VirtualMachineStateViewer {
 
     /**
      * Pings the given address
-     * @param vmIP The ip to be pinged
-     * @return True if the given ip responds ping, false otherwise
+     * @param vmIP The IP to be pinged
+     * @return True if the given IP responds ping, false otherwise
      */
     private boolean pingVerification(String vmIP){
         try {

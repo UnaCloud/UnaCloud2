@@ -1,4 +1,4 @@
-package com.losandes.enums;
+package com.losandes.utils;
 
 /**
  * Utility class to manage time in milliseconds

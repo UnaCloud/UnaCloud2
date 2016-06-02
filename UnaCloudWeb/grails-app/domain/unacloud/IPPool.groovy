@@ -5,7 +5,7 @@ import unacloud.share.enums.IPEnum;
 import groovy.model.NestedValueModel;
 
 /**
- * Entity to represent a group or pool of IP.
+ * Entity to represent a group or pool of IP addresses.
  * @author CesarF
  *
  */

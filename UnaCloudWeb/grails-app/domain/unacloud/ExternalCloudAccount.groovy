@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent an Account in cloud provider.
+ * Entity to represent an account in another cloud provider.
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *

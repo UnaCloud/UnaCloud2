@@ -11,7 +11,7 @@ import virtualMachineManager.entities.ImageCopy;
 import virtualMachineManager.entities.VirtualMachineExecution;
 
 /**
- * This class is an abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
+ * Abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
  * @author Clouder
  */
 public abstract class Hypervisor {

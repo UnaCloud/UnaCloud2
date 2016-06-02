@@ -1,7 +1,7 @@
 package unacloud.enums;
 
 /**
- * Represents Network Quality Types
+ * Represents types of Network Quality 
  * @author CesarF
  *
  */

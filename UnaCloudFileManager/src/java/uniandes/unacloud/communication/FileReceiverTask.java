@@ -27,7 +27,7 @@ import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 
 /**
- * This class execute a "receiver task": a process to receive files from agent when user requests to save image in server.
+ * This class receives files from agent when user requests to save image in server.
  * @author CesarF
  *
  */

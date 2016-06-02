@@ -13,8 +13,7 @@ import uniandes.communication.VmMessageReceiver;
 import uniandes.queue.QueueMessageProcessor;
 
 /**
- *  Initializes and control all services in project
- * extends from Project Manager class and works as a Singleton class.
+ *  Initializes and control all services in project. It class extends from Project Manager class and works as a Singleton class.
  * @author CesarF
  *
  */

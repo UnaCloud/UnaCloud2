@@ -1,4 +1,4 @@
-package communication.send.tasks;
+package communication.receive.tasks;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
