@@ -8,7 +8,7 @@ import communication.send.UDPCommunicator;
 
 
 /**
- * Class used to send quickly messages to UnaCloud server
+ * Class used to send  messages to UnaCloud server
  * @author Clouder
  */
 public class ServerMessageSender {
@@ -30,15 +30,16 @@ public class ServerMessageSender {
     }
     
     /**
-	 * reports a log in event
-     * @throws Exception 
-	 */
+     * Send message reporting the state of a physical machine
+     * @param executions
+     * @throws Exception
+     */
 	public static void reportPhyisicalMachine(String executions) throws Exception{
 		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName(),"executions",executions);
 	}
 	
 	/**
-	 * reports event for log database
+	 * Send message to be save in log database
 	 * @param component where event happened
 	 * @param message describes error
 	 * @throws Exception

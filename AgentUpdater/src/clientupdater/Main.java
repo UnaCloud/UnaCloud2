@@ -13,11 +13,11 @@ import com.losandes.utils.UnaCloudConstants;
 
 
 /**
- * Main class of UnaCloud Client Updater. This component is responsible for downloading the latest version of unacloud client from unacloud server instance.
- * To do this, this class stores a file containing the latest version of unacloud client. When starting the physical machine, if this component finds that
- * the current version differs with the version at unacloud server then it downloads the latest version and replace the current version. This component has a little failure probability.
+ * Main class of UnaCloud Client Updater. This component is responsible for downloading the latest version of UnaCloud client from UnaCloud server instance.
+ * To do this, this class stores a file containing the latest version of UnaCloud client. When starting the physical machine, if this component finds that
+ * the current version differs with the version at UnaCloud server then it downloads the latest version and replace the current version.
  * @author Clouder
- * 
+ * @author CesarF
  */
 public class Main {
 	   

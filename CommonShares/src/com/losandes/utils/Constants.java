@@ -3,9 +3,10 @@ package com.losandes.utils;
 import java.io.File;
 
 /**
+ * Responsible for providing the UnaCloud constant values
  * @author Edgar Eduardo Rosales Rosero
  * @author CesarF
- * Responsible for providing the UnaCloud constant values
+ * 
  */
 public class Constants {
 	

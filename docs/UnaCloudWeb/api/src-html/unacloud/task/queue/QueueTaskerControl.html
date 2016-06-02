@@ -82,10 +82,10 @@
 <span class="sourceLineNo">074</span>         * Puts a task to stop deployments in array<a name="line.74"></a>
 <span class="sourceLineNo">075</span>         * @param deployments<a name="line.75"></a>
 <span class="sourceLineNo">076</span>         */<a name="line.76"></a>
-<span class="sourceLineNo">077</span>        public static void stopExecutions(VirtualMachineExecution[] executions, User user){<a name="line.77"></a>
-<span class="sourceLineNo">078</span>                String[] parts = new String[executions.length];<a name="line.78"></a>
-<span class="sourceLineNo">079</span>                for (int i = 0; i &lt; executions.length; i++) {<a name="line.79"></a>
-<span class="sourceLineNo">080</span>                        parts[i]=executions[i].getDatabaseId()+"";<a name="line.80"></a>
+<span class="sourceLineNo">077</span>        public static void stopExecutions(List&lt;VirtualMachineExecution&gt; executions, User user){<a name="line.77"></a>
+<span class="sourceLineNo">078</span>                String[] parts = new String[executions.size()];<a name="line.78"></a>
+<span class="sourceLineNo">079</span>                for (int i = 0; i &lt; executions.size(); i++) {<a name="line.79"></a>
+<span class="sourceLineNo">080</span>                        parts[i]=executions.get(i).getDatabaseId()+"";<a name="line.80"></a>
 <span class="sourceLineNo">081</span>                }               <a name="line.81"></a>
 <span class="sourceLineNo">082</span>                QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, user.getDatabaseId()+"", parts);<a name="line.82"></a>
 <span class="sourceLineNo">083</span>                controlQueue.sendMessage(message);<a name="line.83"></a>
@@ -96,11 +96,11 @@
 <span class="sourceLineNo">088</span>         * @param image<a name="line.88"></a>
 <span class="sourceLineNo">089</span>         * @param user<a name="line.89"></a>
 <span class="sourceLineNo">090</span>         */<a name="line.90"></a>
-<span class="sourceLineNo">091</span>        public static void addInstancesToDeploy(VirtualMachineExecution[] executions, User user, DeployedImage image){<a name="line.91"></a>
-<span class="sourceLineNo">092</span>                String[] parts = new String[executions.length+1];<a name="line.92"></a>
-<span class="sourceLineNo">093</span>                parts[0]=image.getDatabaseId()+"";<a name="line.93"></a>
-<span class="sourceLineNo">094</span>                for (int i = 0, j = 1; i &lt; executions.length; i++, j++) {<a name="line.94"></a>
-<span class="sourceLineNo">095</span>                        parts[j]=executions[i].getDatabaseId()+"";<a name="line.95"></a>
+<span class="sourceLineNo">091</span>        public static void addInstancesToDeploy(List&lt;VirtualMachineExecution&gt; executions, User user, DeployedImage image){<a name="line.91"></a>
+<span class="sourceLineNo">092</span>                String[] parts = new String[executions.size()+1];<a name="line.92"></a>
+<span class="sourceLineNo">093</span>                parts[0]=image.getImage().getDatabaseId()+"";<a name="line.93"></a>
+<span class="sourceLineNo">094</span>                for (int i = 0, j = 1; i &lt; executions.size(); i++, j++) {<a name="line.94"></a>
+<span class="sourceLineNo">095</span>                        parts[j]=executions.get(i).getDatabaseId()+"";<a name="line.95"></a>
 <span class="sourceLineNo">096</span>                }       <a name="line.96"></a>
 <span class="sourceLineNo">097</span>                QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", parts);<a name="line.97"></a>
 <span class="sourceLineNo">098</span>                controlQueue.sendMessage(message);<a name="line.98"></a>
@@ -112,8 +112,8 @@
 <span class="sourceLineNo">104</span>         * @param image<a name="line.104"></a>
 <span class="sourceLineNo">105</span>         * @param user<a name="line.105"></a>
 <span class="sourceLineNo">106</span>         */<a name="line.106"></a>
-<span class="sourceLineNo">107</span>        public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage image, User user){<a name="line.107"></a>
-<span class="sourceLineNo">108</span>                QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",image.getDatabaseId()+""});<a name="line.108"></a>
+<span class="sourceLineNo">107</span>        public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage newImage, VirtualMachineImage pastImage, User user){<a name="line.107"></a>
+<span class="sourceLineNo">108</span>                QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",newImage.getDatabaseId()+"",pastImage.getDatabaseId()+""});<a name="line.108"></a>
 <span class="sourceLineNo">109</span>                controlQueue.sendMessage(message);<a name="line.109"></a>
 <span class="sourceLineNo">110</span>        }<a name="line.110"></a>
 <span class="sourceLineNo">111</span>}<a name="line.111"></a>

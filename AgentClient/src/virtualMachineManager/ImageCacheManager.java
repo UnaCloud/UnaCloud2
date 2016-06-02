@@ -26,13 +26,13 @@ import com.losandes.utils.Constants;
 import com.losandes.utils.RandomUtils;
 import com.losandes.utils.UnaCloudConstants;
 
-import communication.send.tasks.DownloadImageVirtualMachineTask;
+import communication.receive.tasks.DownloadImageVirtualMachineTask;
 import exceptions.VirtualMachineExecutionException;
 
 /**
- * Responsible to manage cache for images
+ * Responsible to manage list of images in cache
  * @author Clouder
- *
+
  */
 public class ImageCacheManager {
 	

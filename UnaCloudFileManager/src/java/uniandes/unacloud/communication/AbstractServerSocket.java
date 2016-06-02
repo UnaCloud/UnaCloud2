@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 
 /**
- * Abstract class to be implemented in processes to receive messages from agents in ports.
+ * Abstract class to be implemented by processes to receive messages from agents.
  * @author CesarF
  *
  */

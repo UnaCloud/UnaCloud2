@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent an IP which is assign to Physical Machine
+ * Entity to represent an IP address assigned to a Physical Machine
  * This entity extends from IP
  * @author CesarF
  *

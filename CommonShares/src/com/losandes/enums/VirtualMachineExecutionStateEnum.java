@@ -1,5 +1,7 @@
 package com.losandes.enums;
 
+import com.losandes.utils.CalendarUtils;
+
 /**
  * Represents state of virtual machine executions
  * @author CesarF

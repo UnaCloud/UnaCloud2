@@ -1,4 +1,5 @@
 communication.receive
+communication.receive.tasks
 communication.send
 communication.send.report
 communication.send.tasks

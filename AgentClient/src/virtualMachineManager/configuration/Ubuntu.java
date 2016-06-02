@@ -12,7 +12,7 @@ import java.io.PrintWriter;
  */
 public class Ubuntu extends AbstractVirtualMachineConfigurator{
     /**
-     * Configures the ip address of a Ubuntu managed virtual machine
+     * Configures the IP address of a Ubuntu managed virtual machine
      */
     @Override
     public void configureIP() throws HypervisorOperationException {

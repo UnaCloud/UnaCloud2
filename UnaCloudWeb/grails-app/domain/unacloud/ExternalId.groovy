@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent an external id in cloud provider.
+ * Entity to represent an id in external cloud provider.
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *

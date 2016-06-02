@@ -13,8 +13,7 @@ import uniandes.unacloud.db.entities.ServerVariableEntity;
 import uniandes.unacloud.files.AgentManager;
 
 /**
- * Class used to process task to update agent
- * receives message from agent validate if agent request agent files and call manager to copy files in socket stream
+ * Class used to process task to update agent. It receives message from agent validate if agent requests agent files and call manager to copy files in socket stream
  * @author CesarF
  *
  */

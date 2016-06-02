@@ -11,7 +11,7 @@ import virtualMachineManager.task.ExecutorService;
 import com.losandes.utils.UnaCloudConstants;
 
 /**
- * Responsible for listening to the Clouder Server
+ * Responsible for listening Clouder Server
  * @author CesarF
  * @author Clouder
  */

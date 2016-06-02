@@ -82,7 +82,7 @@ function windowTitle()
                                     Cluster
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Cluster as a group of virtual machine image which have to be deployed together.</td>
+                            <td>Entity to represent a cluster; a group of virtual machine images configured to be deployed together.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -126,8 +126,8 @@ function windowTitle()
                                     DeployedImage
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a image that has been deployed in infrastructure,
- this entity has a relationship with deployment and executions that has been requested to be executed..</td>
+                            <td>Entity to represent a image that has been deployed on infrastructure,
+ this entity has a relationship with deployment and executions that has been requested to be executed.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -135,7 +135,7 @@ function windowTitle()
                                     Deployment
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Deployment.
+                            <td>Entity to represent a group of instances requested by user to be executed on UnaCloud infrastructure.
  </td>
                         </tr>
 <tr class="altColor">
@@ -170,8 +170,7 @@ function windowTitle()
                                     ExecutionIP
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an ExecutionIP.
- </td>
+                            <td>Entity to represent an IP address that is used for a Virtual Machine</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -188,7 +187,7 @@ function windowTitle()
                                     ExternalCloudAccount
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an Account in cloud provider.
+                            <td>Entity to represent an account in another cloud provider.
  </td>
                         </tr>
 <tr class="altColor">
@@ -197,7 +196,7 @@ function windowTitle()
                                     ExternalCloudProvider
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a cloud provider.
+                            <td>Entity to represent a external cloud provider.
  </td>
                         </tr>
 <tr class="altColor">
@@ -206,7 +205,7 @@ function windowTitle()
                                     ExternalId
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an external id in cloud provider.
+                            <td>Entity to represent an id in external cloud provider.
  </td>
                         </tr>
 <tr class="altColor">
@@ -215,7 +214,7 @@ function windowTitle()
                                     HardwareProfile
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Hardware Profile base in external cloud providers.</td>
+                            <td>Entity to represent a Hardware Profile. </td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -232,7 +231,7 @@ function windowTitle()
                                     Hypervisor
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Hypervisor.
+                            <td>Entity to represent a Hypervisor Type 2 installed in physical machines.
  </td>
                         </tr>
 <tr class="altColor">
@@ -259,7 +258,7 @@ function windowTitle()
                                     IP
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an IP.
+                            <td>Entity to represent an IP address.
  </td>
                         </tr>
 <tr class="altColor">
@@ -268,7 +267,7 @@ function windowTitle()
                                     IPPool
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a group or pool of IP.</td>
+                            <td>Entity to represent a group or pool of IP addresses.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -276,8 +275,7 @@ function windowTitle()
                                     Laboratory
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Laboratory.
- </td>
+                            <td>Entity to represent a group of hosts or physical machines located in the same place, exactly how works university computer rooms.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -303,7 +301,7 @@ function windowTitle()
                                     MonitorSensor
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a monitoring sensor.
+                            <td>Entity to represent a monitoring application configured in a virtual machine or physical machine.
  </td>
                         </tr>
 <tr class="altColor">
@@ -312,7 +310,7 @@ function windowTitle()
                                     MonitorSystem
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Monitoring system.
+                            <td>Entity to represent a monitoring system; a group of applications configured in a physical o virtual machine.
  </td>
                         </tr>
 <tr class="altColor">
@@ -330,7 +328,7 @@ function windowTitle()
                                     OperatingSystem
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an Operating System that is supported by UnaCloud.</td>
+                            <td>Entity to represent an operating system supported by UnaCloud.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -356,7 +354,7 @@ function windowTitle()
                                     PhysicalIP
                                 </a></strong>
                             </td>
-                            <td>Entity to represent an IP which is assign to Physical Machine
+                            <td>Entity to represent an IP address assigned to a Physical Machine
  This entity extends from IP</td>
                         </tr>
 <tr class="altColor">
@@ -365,8 +363,7 @@ function windowTitle()
                                     PhysicalMachine
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Physical Machine.
- </td>
+                            <td>Entity to represent a host located in a computer room o laboratory</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -374,8 +371,8 @@ function windowTitle()
                                     PhysicalMachineSensor
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a sensor for monitoring configured in a virtual machine or physical machine.
- </td>
+                            <td>Entity to represent a monitoring application 
+ This class is unused in this version of UnaCloud</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -383,8 +380,7 @@ function windowTitle()
                                     Repository
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Repository.
- </td>
+                            <td>Entity to represent a file system where virtual machine image files are located</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -410,8 +406,7 @@ function windowTitle()
                                     ServerVariable
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Server Variable.
- </td>
+                            <td>Entity to represent a variable that is used by server to connect with services talk to other applications and generate configuration files for agents</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -428,8 +423,7 @@ function windowTitle()
                                     User
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a User in system
- An User is a UnaCloud user which access to system, upload machines, and configure deployments</td>
+                            <td>Entity to represent a User with access to UnaCloud.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -446,8 +440,7 @@ function windowTitle()
                                     UserGroup
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a User Group
- An User Group is used to create restrictions for a segment of users</td>
+                            <td>Entity to represent a group of users. </td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -473,8 +466,7 @@ function windowTitle()
                                     UserRestriction
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a User Restriction
- An UserRestriction is a restriction for a group or user, like allocator, laboratories and hardware profiles.</td>
+                            <td>Entity to represent a restriction for a group or user. </td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -500,8 +492,7 @@ function windowTitle()
                                     VirtualMachineExecution
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Virtual Machine Execution
- A Virtual Machine Execution is an execution in a</td>
+                            <td>Entity to represent a virtual machine in execution; an instance of a virtual machine which has been deployed by user on UnaCloud infrastructure.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">
@@ -509,8 +500,7 @@ function windowTitle()
                                     VirtualMachineImage
                                 </a></strong>
                             </td>
-                            <td>Entity to represent a Virtual Machine Image
- A Virtual Machine Image is a configured file for hypervisor to be deployed in Physical Machines</td>
+                            <td>Entity to represent a virtual machine image which is represented by group of files to be executed by an hypervisor.</td>
                         </tr>
 <tr class="altColor">
                             <td class="colOne">

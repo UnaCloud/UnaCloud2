@@ -28,7 +28,7 @@ import uniandes.unacloud.db.entities.UserEntity;
 import uniandes.unacloud.db.entities.VirtualImageFileEntity;
 
 /**
- * Class to process messages sent to manage files from web application
+ * Class to process messages in queue. This messages represent tasks to manage files from web application
  * @author CesarF
  *
  */

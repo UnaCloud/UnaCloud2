@@ -34,7 +34,6 @@ import communication.messages.vmo.VirtualMachineStartResponse;
 import communication.messages.vmo.VirtualMachineStopMessage;
 
 
-
 /**
  * Responsible for attending or discarding a
  * Server operation request in a thread

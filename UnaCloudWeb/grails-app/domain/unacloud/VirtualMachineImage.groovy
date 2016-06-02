@@ -7,8 +7,7 @@ import unacloud.share.enums.DeploymentStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Entity to represent a Virtual Machine Image
- * A Virtual Machine Image is a configured file for hypervisor to be deployed in Physical Machines
+ * Entity to represent a virtual machine image which is represented by group of files to be executed by an hypervisor.
  * @author CesarF
  *
  */

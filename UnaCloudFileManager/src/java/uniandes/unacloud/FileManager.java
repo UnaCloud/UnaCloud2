@@ -13,8 +13,7 @@ import uniandes.unacloud.communication.DataServerSocket;
 import uniandes.unacloud.queue.QueueMessageFileProcessor;
 
 /**
- * Initializes and control all services in project
- * extends from Project Manager class and works as a Singleton class.
+ * Initializes and control all services in project. It class extends from Project Manager class and works as a Singleton class.
  * 
  * @author CesarF
  */

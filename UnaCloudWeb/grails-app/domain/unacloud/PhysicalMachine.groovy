@@ -6,8 +6,7 @@ import unacloud.share.enums.PhysicalMachineStateEnum;
 import unacloud.enums.MonitoringStatus;
 
 /**
- * Entity to represent a Physical Machine.
- * A Physical Machine is a host placed in a computer room o laboratory
+ * Entity to represent a host located in a computer room o laboratory
  * @author CesarF
  *
  */

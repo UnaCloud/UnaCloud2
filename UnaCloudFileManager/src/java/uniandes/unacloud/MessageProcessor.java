@@ -3,7 +3,7 @@ package uniandes.unacloud;
 import unacloud.share.queue.QueueMessage;
 
 /**
- * Abstract class used to process a Message from queue
+ * Abstract class used to process a Message from queue. 
  * Extends from thread to process message asynchronous 
  * @author CesarF
  *

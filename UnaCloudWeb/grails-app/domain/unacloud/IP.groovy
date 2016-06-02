@@ -3,7 +3,7 @@ package unacloud
 import unacloud.share.enums.IPEnum;
 
 /**
- * Entity to represent an IP.
+ * Entity to represent an IP address.
  * The purpose of this entity is to be extended by other kinds of IP
  * @author CesarF
  *

@@ -9,8 +9,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import unacloud.share.enums.IPEnum;
 
 /**
- * Entity to represent a Virtual Machine Execution
- * A Virtual Machine Execution is an execution in a 
+ * Entity to represent a virtual machine in execution; an instance of a virtual machine which has been deployed by user on UnaCloud infrastructure.
  * @author CesarF
  *
  */

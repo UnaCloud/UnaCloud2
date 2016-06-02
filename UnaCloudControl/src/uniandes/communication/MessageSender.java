@@ -12,8 +12,7 @@ import uniandes.ControlManager;
 import uniandes.communication.processor.AbstractResponseProcessor;
 
 /**
- * Class to send message to list of machines
- * extends from thread to manage asynchronous connection to agents
+ * Class to send message to list of machines. It class extends from thread to manage parallel connection to agents
  * @author CesarF
  *
  */

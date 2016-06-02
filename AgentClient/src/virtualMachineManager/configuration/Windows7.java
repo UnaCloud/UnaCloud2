@@ -21,12 +21,10 @@ public class Windows7 extends AbstractVirtualMachineConfigurator{
     }
 	@Override
 	public void configureHostname() throws HypervisorOperationException {
-		// TODO to be implemented
 		
 	}
 	@Override
 	public void configureHostTable() throws HypervisorOperationException {
-		// TODO to be implemented
 		
 	}
 	@Override

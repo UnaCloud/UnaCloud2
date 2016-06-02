@@ -4,8 +4,7 @@ import com.losandes.utils.Constants;
 import com.losandes.utils.UnaCloudConstants;
 
 /**
- * Entity to represent a Repository.
- * A Repository is a File System where image files are located
+ * Entity to represent a file system where virtual machine image files are located
  * @author CesarF
  *
  */

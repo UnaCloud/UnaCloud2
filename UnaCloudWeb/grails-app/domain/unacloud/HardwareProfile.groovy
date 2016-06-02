@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent a Hardware Profile base in external cloud providers.
+ * Entity to represent a Hardware Profile. Default values are based in external cloud providers.
  * @author CesarF
  *
  */

@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent an Operating System that is supported by UnaCloud.
+ * Entity to represent an operating system supported by UnaCloud.
  *  
  * @author CesarF
  *

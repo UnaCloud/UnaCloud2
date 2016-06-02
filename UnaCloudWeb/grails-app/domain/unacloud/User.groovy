@@ -11,8 +11,7 @@ import unacloud.share.enums.UserStateEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 
 /**
- * Entity to represent a User in system
- * An User is a UnaCloud user which access to system, upload machines, and configure deployments
+ * Entity to represent a User with access to UnaCloud.
  * @author CesarF
  *
  */

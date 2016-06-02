@@ -4,7 +4,7 @@ import java.net.Socket;
 
 /**
  * Class used to process message from agents to manage agent files
- * @author Cesar
+ * @author CesarF
  *
  */
 public class AgentServerSocket extends AbstractServerSocket{

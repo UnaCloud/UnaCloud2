@@ -3,7 +3,7 @@ package unacloud
 import unacloud.enums.MonitoringStatus
 
 /**
- * Entity to represent a sensor for monitoring configured in a virtual machine or physical machine.
+ * Entity to represent a monitoring application 
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *

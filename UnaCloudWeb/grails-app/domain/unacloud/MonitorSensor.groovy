@@ -1,7 +1,7 @@
 package unacloud
 
 /**
- * Entity to represent a monitoring sensor.
+ * Entity to represent a monitoring application configured in a virtual machine or physical machine.
  * This class is unused in this version of UnaCloud
  * @author CesarF
  *
