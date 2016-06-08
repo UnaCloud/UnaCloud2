@@ -59,12 +59,7 @@ class VirtualMachineExecution {
 	 */
 	PhysicalMachine executionNode
 	
-	/**
-	 * Monitoring system configure in virtual execution
-	 * unused
-	 */
-	MonitorSystem monitorSystem
-	
+		
 	/**
 	 * deployed Image 
 	 */
