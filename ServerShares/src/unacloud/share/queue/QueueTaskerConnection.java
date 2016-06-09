@@ -4,7 +4,6 @@ package unacloud.share.queue;
  * Abstract class to represent connection to Queue
  * It allows to send and collect message
  * @author CesarF
- *
  */
 
 public abstract class QueueTaskerConnection {

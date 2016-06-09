@@ -1,8 +1,10 @@
 package unacloud.task.queue;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 import unacloud.share.queue.QueueTaskerConnection;
+import unacloud.share.queue.messages.MessageCreateCopyFromPublic;
+import unacloud.share.queue.messages.MessageDeleteUser;
+import unacloud.share.queue.messages.MessageIdOfImage;
 import unacloud.User;
 import unacloud.VirtualMachineImage;
 
@@ -32,7 +34,7 @@ public class QueueTaskerFile {
 	 * @param user image owner
 	 */
 	public static void createPublicCopy(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_PUBLIC_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CREATE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
 	/**
@@ -42,7 +44,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void createCopyFromPublic(VirtualMachineImage publicImage, VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY_FROM_PUBLIC, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+"",publicImage.getDatabaseId()+""});
+		MessageCreateCopyFromPublic message = new MessageCreateCopyFromPublic(String.valueOf(user.getDatabaseId()), image.getDatabaseId(), publicImage.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
 	/**
@@ -51,7 +53,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deleteImage(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
 	
@@ -61,7 +63,7 @@ public class QueueTaskerFile {
 	 * @param user
 	 */
 	public static void deletePublicImage(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_PUBLIC_IMAGE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
 	
@@ -70,7 +72,7 @@ public class QueueTaskerFile {
 	 * @param user User that will be removed
 	 */
 	public static void deleteUser(User user, User admin){
-		QueueMessage message = new QueueMessage(QueueMessageType.DELETE_USER, admin.getDatabaseId()+"", new String[]{user.getDatabaseId()+""});
+		MessageDeleteUser message = new MessageDeleteUser(String.valueOf(admin.getDatabaseId()), user.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
 	

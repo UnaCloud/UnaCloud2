@@ -29,6 +29,12 @@ import unacloud.share.db.PhysicalMachineManager;
 import unacloud.share.db.VirtualImageManager;
 import unacloud.share.queue.QueueMessage;
 import unacloud.share.queue.QueueReader;
+import unacloud.share.queue.messages.MessageAddInstances;
+import unacloud.share.queue.messages.MessageCreateCopyFromExecution;
+import unacloud.share.queue.messages.MessageDeployCluster;
+import unacloud.share.queue.messages.MessageIdOfImage;
+import unacloud.share.queue.messages.MessageStopExecutions;
+import unacloud.share.queue.messages.MessageTaskMachines;
 import unacloud.share.entities.DeployedImageEntity;
 import unacloud.share.entities.DeploymentEntity;
 import unacloud.share.entities.NetInterfaceEntity;
@@ -37,7 +43,6 @@ import unacloud.share.entities.VirtualMachineExecutionEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
 import unacloud.share.enums.IPEnum;
 import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.QueueMessageType;
 import unacloud.share.enums.TaskEnum;
 import unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.ControlManager;
@@ -95,8 +100,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void clearCache(QueueMessage message){
-		try(Connection con = ControlManager.getInstance().getDBConnection();) {		
-			final Long imageId =  Long.parseLong(message.getMessageParts()[0]);
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {
+			MessageIdOfImage messageId = (MessageIdOfImage) message;
+			final Long imageId =  messageId.getIdImage();
+			
 			VirtualMachineImageEntity image = new VirtualMachineImageEntity(imageId, null, null, VirtualMachineImageEnum.REMOVING_CACHE, null);
 			VirtualImageManager.setVirtualMachine(image, con);
 			try {				
@@ -143,11 +150,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void sendTaskToAgents(QueueMessage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			TaskEnum task = TaskEnum.getEnum(message.getMessageParts()[0]);
-			Long[] ids = new Long[message.getMessageParts().length-1];
-			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
-				ids[j]=Long.parseLong(message.getMessageParts()[i]);
-			}
+			MessageTaskMachines messageTask = (MessageTaskMachines) message;
+			TaskEnum task = messageTask.getTask();
+			Long[] ids = messageTask.getIdMachines();
+			
 			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
 			for (int i = 0; i < machines.size(); i+=threads+1) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
@@ -181,8 +187,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 */
 	private void doDeploy(QueueMessage message){
-		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			Long deploymentId =  Long.parseLong(message.getMessageParts()[0]);
+		try(Connection con = ControlManager.getInstance().getDBConnection();) {
+			MessageDeployCluster messageDeploy = (MessageDeployCluster) message;
+			Long deploymentId =  messageDeploy.getIdDeployment();
+			
 			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
 			System.out.println("Deploy "+deploy.getId());
 			if(deploy!=null){
@@ -235,12 +243,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param executionIds
 	 */
 	public void remoteStopDeploy(Long[] executionIds){
-		String[] parts = new String[executionIds.length];
 		for (int i = 0; i < executionIds.length; i++) {
-			parts[i]=executionIds[i]+"";
-			System.out.println("\t Stop: "+parts[i]);
-		}		
-		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, "0", parts);
+			System.out.println("\t Stop: "+executionIds[i]);
+		}
+		MessageStopExecutions message = new MessageStopExecutions("0", executionIds);
 		stopDeploy(message,"Execution is not running in server");
 	}
 	
@@ -251,10 +257,9 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void stopDeploy(QueueMessage message, final String text){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			Long[] ids = new Long[message.getMessageParts().length];
-			for (int i = 0; i < message.getMessageParts().length; i++) {
-				ids[i]=Long.parseLong(message.getMessageParts()[i]);
-			}
+			MessageStopExecutions messageStop = (MessageStopExecutions) message;
+			Long[] ids = messageStop.getIdExecutions();
+			
 			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,null,false, con);
 			for(final VirtualMachineExecutionEntity execution: executions)
 				if(execution.getState().equals(VirtualMachineExecutionStateEnum.FINISHED)
@@ -295,11 +300,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void addInstances(QueueMessage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			Long imageId = Long.parseLong(message.getMessageParts()[0]);
-			Long[] ids = new Long[message.getMessageParts().length-1];
-			for (int i = 1, j=0; i < message.getMessageParts().length; i++, j++) {
-				ids[j]=Long.parseLong(message.getMessageParts()[i]);
-			}
+			MessageAddInstances messageInstances = (MessageAddInstances) message;
+			Long imageId = messageInstances.getIdImage();
+			Long[] ids = messageInstances.getIdExecutions();
+			
 			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEUED,true, con);
 			for(final VirtualMachineExecutionEntity execution : executions) {
 				VirtualMachineStartMessage vmsm = new VirtualMachineStartMessage();
@@ -346,9 +350,11 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void requestCopy(QueueMessage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			Long executionId = Long.parseLong(message.getMessageParts()[0]);
-			Long newImageId = Long.parseLong(message.getMessageParts()[1]);
-			Long oldImageId = Long.parseLong(message.getMessageParts()[2]);
+			MessageCreateCopyFromExecution messageCreate = (MessageCreateCopyFromExecution) message;
+			Long executionId = messageCreate.getIdExecution();
+			Long newImageId = messageCreate.getIdImage();
+			Long oldImageId = messageCreate.getIdPastImage();
+			
 			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, con);
 			if(execution!=null){
 				final VirtualMachineImageEntity image = VirtualImageManager.getVirtualMachine(newImageId, VirtualMachineImageEnum.COPYING, con);
