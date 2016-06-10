@@ -34,6 +34,12 @@ public class MessageTaskMachines extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 	
+	public MessageTaskMachines(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+	
 	/**
 	 * Return the Task in class TaskEnum
 	 * @return TaskEnum

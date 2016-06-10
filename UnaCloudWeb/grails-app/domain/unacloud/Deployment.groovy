@@ -171,7 +171,6 @@ class Deployment {
 		for(DeployedImage image: images){
 			image.virtualMachines.each{
 				def exec = it
-				exec.monitorSystem.delete()
 				ExecutionRequest.where{execution==exec}.list().each {
 					it.delete();
 				}

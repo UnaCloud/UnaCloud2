@@ -65,7 +65,9 @@ public class QueueMessage {
 	 * @param ToParse String of Message
 	 */
 	public void setMessage(String toParse){
-		JSONObject json = new JSONObject(toParse);
+		JSONObject json;
+		json = new JSONObject(toParse);
+		
 		this.requester = json.getString(REQUESTER_MESSAGE);
 		this.type = QueueMessageType.getType(json.getString(TYPE_MESSAGE));
 		this.messageContent = json.getJSONObject(CONTENT_MESSAGE);

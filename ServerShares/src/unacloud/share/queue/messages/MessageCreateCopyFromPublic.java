@@ -27,6 +27,12 @@ public class MessageCreateCopyFromPublic extends QueueMessage{
 		
 		this.setMessageContent(temp);
 	}
+	
+	public MessageCreateCopyFromPublic(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
 
 	/**
 	 * Return the Id of Image

@@ -23,6 +23,12 @@ public class MessageDeployCluster extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 	
+	public MessageDeployCluster(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+	
 	/**
 	 * Return the ID of Deployment
 	 * @return

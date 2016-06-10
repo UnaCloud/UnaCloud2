@@ -26,6 +26,12 @@ public class MessageDeleteUser extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 
+	public MessageDeleteUser(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+
 	/**
 	 * Return the Id of User
 	 * @return Long Id User

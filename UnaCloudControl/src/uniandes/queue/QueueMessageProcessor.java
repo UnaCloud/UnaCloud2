@@ -73,22 +73,22 @@ public class QueueMessageProcessor implements QueueReader{
 		System.out.println("Receive message "+message.getType());
 		switch (message.getType()) {
 		case CLEAR_CACHE:
-			clearCache(message);
+			clearCache(new MessageIdOfImage(message));
 			break;
 		case SEND_TASK:	
-			sendTaskToAgents(message);
+			sendTaskToAgents(new MessageTaskMachines(message));
 			break;
 		case DEPLOY_CLUSTER:
-			doDeploy(message);
+			doDeploy(new MessageDeployCluster(message));
 			break;
 		case STOP_DEPLOYS:	
-			stopDeploy(message, "Finished by request");
+			stopDeploy(new MessageStopExecutions(message), "Finished by request");
 			break;
 		case ADD_INSTANCES:	
-			addInstances(message);
+			addInstances(new MessageAddInstances(message));
 			break;
 		case CREATE_COPY:
-			requestCopy(message);
+			requestCopy(new MessageCreateCopyFromExecution(message));
 			break;
 		default:
 			break;
@@ -99,7 +99,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 * Get virtual image in queue message and process request to remove the image from agents cache
 	 * @param message
 	 */
-	private void clearCache(QueueMessage message){
+	private void clearCache(MessageIdOfImage message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {
 			MessageIdOfImage messageId = (MessageIdOfImage) message;
 			final Long imageId =  messageId.getIdImage();
@@ -146,11 +146,11 @@ public class QueueMessageProcessor implements QueueReader{
 	
 	/**
 	 * Sends stop, update o clear cache message to specific list of physical machines
-	 * @param message
+	 * @param messageTask
 	 */
-	private void sendTaskToAgents(QueueMessage message){
+	private void sendTaskToAgents(MessageTaskMachines messageTask){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			MessageTaskMachines messageTask = (MessageTaskMachines) message;
+			
 			TaskEnum task = messageTask.getTask();
 			Long[] ids = messageTask.getIdMachines();
 			
@@ -186,10 +186,9 @@ public class QueueMessageProcessor implements QueueReader{
 	 * Sends message to agents to start deploy in physical machines
 	 * @param message
 	 */
-	private void doDeploy(QueueMessage message){
+	private void doDeploy(MessageDeployCluster message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {
-			MessageDeployCluster messageDeploy = (MessageDeployCluster) message;
-			Long deploymentId =  messageDeploy.getIdDeployment();
+			Long deploymentId =  message.getIdDeployment();
 			
 			DeploymentEntity deploy = DeploymentManager.getDeployment(deploymentId, con);
 			System.out.println("Deploy "+deploy.getId());
@@ -255,10 +254,9 @@ public class QueueMessageProcessor implements QueueReader{
 	 * @param message
 	 * @param text to be saved in database in case of success
 	 */
-	private void stopDeploy(QueueMessage message, final String text){
+	private void stopDeploy(MessageStopExecutions message, final String text){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			MessageStopExecutions messageStop = (MessageStopExecutions) message;
-			Long[] ids = messageStop.getIdExecutions();
+			Long[] ids = message.getIdExecutions();
 			
 			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,null,false, con);
 			for(final VirtualMachineExecutionEntity execution: executions)
@@ -298,11 +296,10 @@ public class QueueMessageProcessor implements QueueReader{
 	 * Sends message to agents to add physical machines 
 	 * @param message
 	 */
-	private void addInstances(QueueMessage message){
+	private void addInstances(MessageAddInstances message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			MessageAddInstances messageInstances = (MessageAddInstances) message;
-			Long imageId = messageInstances.getIdImage();
-			Long[] ids = messageInstances.getIdExecutions();
+			Long imageId = message.getIdImage();
+			Long[] ids = message.getIdExecutions();
 			
 			List<VirtualMachineExecutionEntity> executions = DeploymentManager.getExecutions(ids,VirtualMachineExecutionStateEnum.QUEUED,true, con);
 			for(final VirtualMachineExecutionEntity execution : executions) {
@@ -348,12 +345,11 @@ public class QueueMessageProcessor implements QueueReader{
 	 * Sends a message to one agent to request send a current virtual execution to server
 	 * @param message
 	 */
-	private void requestCopy(QueueMessage message){
+	private void requestCopy(MessageCreateCopyFromExecution message){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
-			MessageCreateCopyFromExecution messageCreate = (MessageCreateCopyFromExecution) message;
-			Long executionId = messageCreate.getIdExecution();
-			Long newImageId = messageCreate.getIdImage();
-			Long oldImageId = messageCreate.getIdPastImage();
+			Long executionId = message.getIdExecution();
+			Long newImageId = message.getIdImage();
+			Long oldImageId = message.getIdPastImage();
 			
 			final VirtualMachineExecutionEntity execution = DeploymentManager.getExecution(executionId, VirtualMachineExecutionStateEnum.REQUEST_COPY, con);
 			if(execution!=null){

@@ -32,6 +32,12 @@ public class MessageAddInstances extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 	
+	public MessageAddInstances(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+	
 	/**
 	 * Return the Id of Image
 	 * @return Long Id Image

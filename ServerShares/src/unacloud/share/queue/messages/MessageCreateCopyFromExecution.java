@@ -30,6 +30,12 @@ public class MessageCreateCopyFromExecution extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 	
+	public MessageCreateCopyFromExecution(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+	
 	/**
 	 * Return the Id of Execution
 	 * @return Long Id Execution

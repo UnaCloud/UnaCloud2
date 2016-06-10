@@ -31,6 +31,12 @@ public class MessageStopExecutions extends QueueMessage{
 		this.setMessageContent(temp);
 	}
 	
+	public MessageStopExecutions(QueueMessage message) {
+		super(message.getRequester());
+		this.setType(message.getType());
+		this.setMessageContent(message.getMessageContent());
+	}
+	
 	/**
 	 * Return long array of id's Executions
 	 * @return Long[]

@@ -87,7 +87,6 @@ class PhysicalMachine {
 		
 	static constraints = {
 		name unique:true
-		monitorSystem nullable:true
 		lastReport nullable:true
 		ip nullable:true
 	}

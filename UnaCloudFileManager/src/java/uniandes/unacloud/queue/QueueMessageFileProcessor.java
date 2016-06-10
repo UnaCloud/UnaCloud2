@@ -76,7 +76,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					MessageIdOfImage messageId = (MessageIdOfImage) message;
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
 					Long imageId = messageId.getIdImage();
 					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
@@ -119,7 +119,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					MessageCreateCopyFromPublic messageFromPublic = (MessageCreateCopyFromPublic) message;
+					MessageCreateCopyFromPublic messageFromPublic = new MessageCreateCopyFromPublic(message);
 					Long imageId = messageFromPublic.getIdImage();
 					Long publicImageId = messageFromPublic.getIdPublicImage();
 					
@@ -174,7 +174,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					MessageIdOfImage messageId = (MessageIdOfImage) message;
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
 					Long imageId = messageId.getIdImage();
 					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
@@ -219,9 +219,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					//TODO CRISTIAN Change this configuration
-					MessageDeleteUser messageDelete = (MessageDeleteUser) message;
+					MessageDeleteUser messageDelete = new MessageDeleteUser(message);
 					Long userId = messageDelete.getIdUser();
+					
 					UserEntity user = UserManager.getUser(userId,con);
 					if(user!=null&&user.getState().equals(UserStateEnum.DISABLE)){
 						System.out.println("Delete user: "+user.getId());
@@ -266,7 +266,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					MessageIdOfImage messageId = (MessageIdOfImage) message;
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
 					Long imageId = messageId.getIdImage();
 					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
