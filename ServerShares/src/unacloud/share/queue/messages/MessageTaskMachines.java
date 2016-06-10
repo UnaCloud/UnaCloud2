@@ -55,7 +55,7 @@ public class MessageTaskMachines extends QueueMessage{
 	 */
 	public Long[] getIdMachines() {
 		JSONObject temp = this.getMessageContent();
-		JSONArray list = temp.getJSONArray(TAG_TASK);
+		JSONArray list = temp.getJSONArray(TAG_LIST_MACHINES_ID);
 		Long[] array = new Long[list.length()];
 		for (int i = 0; i < list.length(); i++) {
 			array[i] = list.getLong(i);
