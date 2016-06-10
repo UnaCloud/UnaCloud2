@@ -32,8 +32,13 @@ public class MessageDeployCluster extends QueueMessage{
 	 * Return the ID of Deployment
 	 * @return
 	 */
-	public long getIdDeployment() {
+	public Long getIdDeployment() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_DEPLOYMENT);
+		try {
+			return temp.getLong(TAG_DEPLOYMENT);
+		} catch(Exception e){
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

@@ -43,10 +43,6 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 			}
 		}
 		
-		if(hostUser==null) {
-			hostUser = "None";
-		}
-		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(TAG_EXECUTIONS, arrayExecutions);
 		tempMessage.put(TAG_HOST_USER, hostUser);
@@ -80,6 +76,11 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 	 * @return String HostUser
 	 */
 	public String getHostUser(){
-		return this.getMessage().getString(TAG_HOST_USER);
+		try{
+			return this.getMessage().getString(TAG_HOST_USER);
+		} catch(Exception e){
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

@@ -34,12 +34,6 @@ public class UnaCloudMessageUDP implements Serializable{
 	
 	public UnaCloudMessageUDP(String ip, int port, String host, UDPMessageEnum type) {
 		super();
-		if(ip==null) {
-			ip = "None";
-		}
-		if(host==null){
-			host = "None";
-		}
 		this.message = new JSONObject();
 		this.ip = ip;
 		this.port = port;

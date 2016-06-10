@@ -31,8 +31,13 @@ public class MessageIdOfImage extends QueueMessage{
 	 * Return the Number
 	 * @return
 	 */
-	public long getIdImage() {
+	public Long getIdImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_IMAGE);
+		try {
+			return temp.getLong(TAG_ID_IMAGE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

@@ -71,8 +71,13 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	 * Return Virtual Machine Code  in the message
 	 * @return long Virtual Machine Code
 	 */
-	public long getVirtualMachineCode() {
-		return this.getMessage().getLong(TAG_VIRTUALMACHINE_CODE);
+	public Long getVirtualMachineCode() {
+		try {
+			return this.getMessage().getLong(TAG_VIRTUALMACHINE_CODE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 	
 	/**
@@ -80,6 +85,11 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	 * @return String Message
 	 */
 	public String getMessageExecution(){
-		return this.getMessage().getString(TAG_MESSAGE_EXECUTION);
+		try{
+			return this.getMessage().getString(TAG_MESSAGE_EXECUTION);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

@@ -37,6 +37,11 @@ public class MessageDeleteUser extends QueueMessage{
 	 */
 	public Long getIdUser() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_USER);
+		try{
+			return temp.getLong(TAG_ID_USER);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

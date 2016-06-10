@@ -34,13 +34,6 @@ public class UDPMessageLogPM extends UnaCloudMessageUDP{
 	public UDPMessageLogPM(String ip, int port, String host, String component, String logMessage){
 		super(ip, port, host, UDPMessageEnum.LOG_PM);
 		
-		if(component==null) {
-			component = "None";
-		}
-		if(logMessage==null) {
-			logMessage = "None";
-		}
-		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(TAG_COMPONENT, component);
 		tempMessage.put(TAG_LOG_MESSAGE, logMessage);
@@ -66,6 +59,11 @@ public class UDPMessageLogPM extends UnaCloudMessageUDP{
 	 * @return String Log Message
 	 */
 	public String getLogMessage(){
-		return this.getMessage().getString(TAG_LOG_MESSAGE);
+		try{
+			return this.getMessage().getString(TAG_LOG_MESSAGE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

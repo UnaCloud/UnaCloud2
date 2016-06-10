@@ -26,13 +26,8 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 	@Override
 	public void processMessage(UnaCloudMessageUDP messageUnaCloud) throws JSONException, SQLException {
 		if(messageUnaCloud.getMessage()!=null){
-//			JSONObject jsonMessage = new JSONObject(message.getMessage());
-//			message.setType(UDPMessageEnum.getType(jsonMessage.getString("type")));
-//			jsonMessage = jsonMessage.getJSONObject("data");
 			if(messageUnaCloud.getType().equals(UDPMessageEnum.STATE_PM)){
 				try(Connection con = ControlManager.getInstance().getDBConnection();){
-					//System.out.println("Report PM: "+message.getIp()+" - "+message.getHost()+" - "+message.getMessage());
-					//JSONObject executions = jsonMessage.getJSONObject("executions");
 					UDPMessageStatePM message = new UDPMessageStatePM(messageUnaCloud);
 					Long[] ids = message.getExecutions();
 					

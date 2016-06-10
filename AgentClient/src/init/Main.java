@@ -62,12 +62,12 @@ public class Main {
       //Start log     	
     	{
     		//Validate if the user that is executing agent is system user
-//    		String user=OperatingSystem.getWhoAmI();
-//        	if(user!=null&&!user.toLowerCase().contains("system")){
-//        		System.out.println("You can't execute the agent as "+user);
-//        		System.exit(0);
-//        		return;
-//        	}
+    		String user=OperatingSystem.getWhoAmI();
+        	if(user!=null&&!user.toLowerCase().contains("system")){
+        		System.out.println("You can't execute the agent as "+user);
+        		System.exit(0);
+        		return;
+        	}
     	}    
     	  if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
           if(mainCase==UnaCloudConstants.TEST){
