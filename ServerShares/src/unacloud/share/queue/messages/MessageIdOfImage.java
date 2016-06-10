@@ -3,7 +3,6 @@ package unacloud.share.queue.messages;
 import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 
 public class MessageIdOfImage extends QueueMessage{
 

@@ -1,5 +1,7 @@
 package unacloud.share.queue;
 
+import unacloud.share.queue.messages.QueueMessage;
+
 /**
  * Class to create connection with queue and start receiving messages
  * @author CesarF

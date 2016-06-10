@@ -1,6 +1,7 @@
 package uniandes.unacloud;
 
-import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.messages.QueueMessage;
+
 
 /**
  * Abstract class used to process a Message from queue. 

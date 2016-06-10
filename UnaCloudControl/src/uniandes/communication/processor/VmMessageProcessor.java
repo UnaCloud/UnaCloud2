@@ -11,7 +11,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import uniandes.ControlManager;
 import uniandes.db.PhysicalMachineUpdater;
 import communication.UDPMessageEnum;
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UnaCloudMessageUDP;
 
 /**
  * Process message from physical machines with reports about virtual machines

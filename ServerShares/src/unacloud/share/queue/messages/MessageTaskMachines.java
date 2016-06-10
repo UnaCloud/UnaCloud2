@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
 import unacloud.share.enums.TaskEnum;
-import unacloud.share.queue.QueueMessage;
 
 
 /**
@@ -25,8 +24,10 @@ public class MessageTaskMachines extends QueueMessage{
 		JSONObject temp = this.getMessageContent();
 		
 		JSONArray array = new JSONArray();
-		for (int i = 0; i < machines.length; i++) {
-			array.put(machines[i]);
+		if(machines!=null) {
+			for (int i = 0; i < machines.length; i++) {
+				array.put(machines[i]);
+			}	
 		}
 		temp.put(TAG_TASK, task);
 		temp.put(TAG_LIST_MACHINES_ID, array);

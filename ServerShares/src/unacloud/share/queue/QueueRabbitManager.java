@@ -3,6 +3,8 @@ package unacloud.share.queue;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import unacloud.share.queue.messages.QueueMessage;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

@@ -3,7 +3,7 @@ package uniandes.communication;
 import java.net.SocketException;
 
 import uniandes.communication.processor.PmMessageProcessor;
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UnaCloudMessageUDP;
 
 /**
  * Receives message as reports about physical machines states and put it in message processor to be executed in thread pool

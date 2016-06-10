@@ -13,7 +13,7 @@ import com.losandes.utils.UnaCloudConstants;
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.db.RepositoryManager;
 import unacloud.share.db.VirtualImageManager;
-import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.messages.QueueMessage;
 import unacloud.share.queue.QueueReader;
 import unacloud.share.queue.messages.MessageCreateCopyFromPublic;
 import unacloud.share.queue.messages.MessageDeleteUser;

@@ -1,4 +1,4 @@
-package unacloud.share.queue;
+package unacloud.share.queue.messages;
 
 import java.io.StringWriter;
 
