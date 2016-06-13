@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 
 
 /**
@@ -15,36 +14,43 @@ import unacloud.share.queue.QueueMessage;
 public class MessageAddInstances extends QueueMessage{
 	private final static String TAG_LIST_EXECUTIONS = "list_executions";
 	private final static String TAG_ID_IMAGE = "id_image";
-	
+
 	public MessageAddInstances(String requester, Long idImage, Long[] executions){
 		super(requester);
 		this.setType(QueueMessageType.ADD_INSTANCES);
-		
+
 		JSONObject temp = this.getMessageContent();
-		
+
 		JSONArray array = new JSONArray();
-		for (int i = 0; i < executions.length; i++) {
-			array.put(executions[i]);
+		if(executions!=null) {
+			for (int i = 0; i < executions.length; i++) {
+				array.put(executions[i]);
+			}
 		}
 		temp.put(TAG_ID_IMAGE, idImage);
 		temp.put(TAG_LIST_EXECUTIONS, array);
-		
+
 		this.setMessageContent(temp);
 	}
-	
+
 	public MessageAddInstances(QueueMessage message) {
 		super(message.getRequester());
 		this.setType(message.getType());
 		this.setMessageContent(message.getMessageContent());
 	}
-	
+
 	/**
 	 * Return the Id of Image
 	 * @return Long Id Image
 	 */
 	public Long getIdImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_IMAGE);
+		try {
+			return temp.getLong(TAG_ID_IMAGE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 
 	/**

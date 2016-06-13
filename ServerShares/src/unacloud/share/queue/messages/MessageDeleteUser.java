@@ -3,7 +3,6 @@ package unacloud.share.queue.messages;
 import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 
 
 /**
@@ -38,6 +37,11 @@ public class MessageDeleteUser extends QueueMessage{
 	 */
 	public Long getIdUser() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_USER);
+		try{
+			return temp.getLong(TAG_ID_USER);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

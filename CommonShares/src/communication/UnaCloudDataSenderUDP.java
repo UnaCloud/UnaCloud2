@@ -5,6 +5,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import communication.messages.udp.UnaCloudMessageUDP;
+
 /**
  * Class used to send and receive message using UDP protocol
  * @author CesarF

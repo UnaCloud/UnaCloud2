@@ -3,7 +3,7 @@ package uniandes.communication;
 import java.net.SocketException;
 
 import uniandes.communication.processor.VmMessageProcessor;
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UnaCloudMessageUDP;
 
 
 /**

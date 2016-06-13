@@ -3,7 +3,6 @@ package unacloud.share.queue.messages;
 import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 
 
 /**
@@ -42,7 +41,12 @@ public class MessageCreateCopyFromExecution extends QueueMessage{
 	 */
 	public Long getIdExecution() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_EXECUTION);
+		try {
+			return temp.getLong(TAG_ID_EXECUTION);			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 
 	/**
@@ -51,7 +55,12 @@ public class MessageCreateCopyFromExecution extends QueueMessage{
 	 */
 	public Long getIdImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_IMAGE);
+		try {
+			return temp.getLong(TAG_ID_IMAGE);			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 	
 	/**
@@ -60,6 +69,11 @@ public class MessageCreateCopyFromExecution extends QueueMessage{
 	 */
 	public Long getIdPastImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_PAST_ID_IMAGE);
+		try {
+			return temp.getLong(TAG_PAST_ID_IMAGE);			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

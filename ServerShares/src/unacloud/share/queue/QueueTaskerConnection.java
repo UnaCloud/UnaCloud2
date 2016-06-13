@@ -1,5 +1,7 @@
 package unacloud.share.queue;
 
+import unacloud.share.queue.messages.QueueMessage;
+
 /**
  * Abstract class to represent connection to Queue
  * It allows to send and collect message

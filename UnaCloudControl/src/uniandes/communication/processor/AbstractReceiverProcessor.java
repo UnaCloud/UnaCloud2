@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.json.JSONException;
 
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UnaCloudMessageUDP;
 
 /**
  * Class to process UDP messages sent by agents

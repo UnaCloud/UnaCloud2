@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import communication.UnaCloudDataSenderUDP;
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UnaCloudMessageUDP;
 
 /**
  * Class used to receive UDP messages and put the in threads to be executed

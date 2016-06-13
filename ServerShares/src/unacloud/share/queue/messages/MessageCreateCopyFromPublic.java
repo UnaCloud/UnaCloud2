@@ -3,7 +3,6 @@ package unacloud.share.queue.messages;
 import org.json.JSONObject;
 
 import unacloud.share.enums.QueueMessageType;
-import unacloud.share.queue.QueueMessage;
 
 
 /**
@@ -40,7 +39,12 @@ public class MessageCreateCopyFromPublic extends QueueMessage{
 	 */
 	public Long getIdImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_IMAGE);
+		try {
+			return temp.getLong(TAG_ID_IMAGE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 	
 	/**
@@ -49,6 +53,11 @@ public class MessageCreateCopyFromPublic extends QueueMessage{
 	 */
 	public Long getIdPublicImage() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getLong(TAG_ID_PUBLIC_IMAGE);
+		try{
+			return temp.getLong(TAG_ID_PUBLIC_IMAGE);
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

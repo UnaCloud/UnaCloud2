@@ -2,12 +2,13 @@ package communication.send;
 
 import utils.VariableManager;
 
-import com.losandes.utils.OperatingSystem;
+import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.UnaCloudConstants;
 
-import communication.UDPMessageEnum;
 import communication.UnaCloudDataSenderUDP;
-import communication.UnaCloudMessageUDP;
+import communication.messages.udp.UDPMessageLogPM;
+import communication.messages.udp.UDPMessageStatePM;
+import communication.messages.udp.UDPMessageStateVM;
 
 /**
  * Singleton class to send message to server using UDP protocol
@@ -35,10 +36,12 @@ public class UDPCommunicator {
 	 * @return true if message was sent, false in case not
 	 * @throws Exception 
 	 */
-	public boolean pushInfoPM(UDPMessageEnum type, Object...params) throws Exception{
+	public boolean pushInfoPM(String hostName, String userName, Long[] executions) throws Exception{
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
-		return pushInfo(serverIP, serverPort, type, params);	
+		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, executions);
+		
+		return sender.sendMessage(message);
 	}
 	
 	/**
@@ -47,27 +50,27 @@ public class UDPCommunicator {
 	 * @return Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
 	 * @throws Exception 
 	 */
-	public boolean pushInfoVM(UDPMessageEnum type, Object...params) throws Exception{		
+	public boolean pushInfoVM(String hostName, long virtualMachineCode, VirtualMachineExecutionStateEnum state, String messageExecution) throws Exception{		
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
-		return pushInfo(serverIP, serverPort, type, params);
+		UDPMessageStateVM message = new UDPMessageStateVM(serverIP, serverPort, hostName, virtualMachineCode, state, messageExecution);
+		return sender.sendMessage(message);
 	}
 	
 	/**
-	 * Sends message to server
-	 * @param ip
-	 * @param port
-	 * @param type
-	 * @param params
-	 * @return true in case message was sent, false in case not
+	 * Push Info by UDP Protocol to server port for Log in Physical Machines
+	 * @param type UDPMessageEnum
+	 * @param hostName Sender
+	 * @param component
+	 * @param logMessage
+	 * @return true if message was sent, false in case not
 	 * @throws Exception
 	 */
-	private boolean pushInfo(String ip, int port,UDPMessageEnum type, Object...params)throws Exception{
-		String msgParams="{";
-		for(int e=0,i=params.length;e<i;e+=2)msgParams+=","+"\""+params[e]+"\":\""+params[e+1]+"\"";
-		msgParams=msgParams.replaceFirst(",", "");
-		msgParams+="}";	
-		UnaCloudMessageUDP message = new UnaCloudMessageUDP(msgParams, ip, port, OperatingSystem.getHostname(), type);
-		return sender.sendMessage(message);		
+	public boolean pushInfoLogPM(String hostName, String component, String logMessage) throws Exception {
+		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
+		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
+		UDPMessageLogPM message = new UDPMessageLogPM(serverIP, serverPort, hostName, component, logMessage);
+		return sender.sendMessage(message);
 	}
+	
 }
