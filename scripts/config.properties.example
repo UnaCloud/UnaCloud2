@@ -1,0 +1,60 @@
+# Rename this file to config.properties
+# Put it where you prefer and set the path in the variable CONFIG_PATH in the file unacloud_start.sh
+
+# UnaCloud Images Repository ##########
+MAIN_REPOSITORY=UnaCloud Images Repository
+#######################################
+
+# UnaCloud Server Configuration #######
+# Default UnaCloud Administrator User: admin
+# Password for UnaCloud Administrator User
+DEFAULT_USER_PASSWORD=UnaCloud Administrator Password
+#######################################
+
+# Queue Connection ####################
+QUEUE_IP=Queue IP Address
+# RabbitMQ Default Port: 5672
+QUEUE_PORT=Queue Port
+QUEUE_USER=Queue User
+QUEUE_PASS=Queue User Password
+#######################################
+
+# Database Connection #################
+DB_IP=Database IP Address
+# MySQL Default Port: 3306
+DB_PORT=Database Port
+DB_USERNAME=Database User
+DB_PASS=Database User Password
+DB_NAME=Database Name
+#######################################
+
+# UnaCloud Web Server Configuration ###
+# Web Project Configuration
+WEB_SERVER_URL=Application URL (http://ip:port/UnaCloud/)
+AGENT_VERSION=Agent Version Number
+
+# Control Project Configuration
+CONTROL_SERVER_IP=IP Address
+CONTROL_MANAGE_PM_PORT=PM Port
+CONTROL_MANAGE_VM_PORT=VM Port
+AGENT_PORT=Agent Port
+
+# File Manager Configuration
+WEB_FILE_SERVER_URL=Application URL: (http://ip:port/UnaCloudFile/)
+FILE_SERVER_IP=File Server IP Address
+FILE_SERVER_PORT=File Server File Transfer Port
+VERSION_MANAGER_PORT=Version Manager Port (for update requests from the agents)
+#######################################
+
+# ONLY FOR DEVELOPMENT ################
+# Set these values if you want to use a test environment
+# Developer User
+DEV_URL=jdbc:mysql://ip:port/dbname?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true
+DEV_USERNAME=Developer User
+DEV_PASSWORD=Developer User Password
+
+# Test User
+TEST_URL=jdbc:mysql://ip:port/dbname?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true
+TEST_USERNAME=Test User
+TEST_PASSWORD=Test User Password
+#######################################
