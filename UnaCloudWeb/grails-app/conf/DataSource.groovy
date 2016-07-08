@@ -27,7 +27,7 @@ hibernate {
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
 	Properties prop = new Properties();
-	String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
+	String propFileName = EnvironmentManager.getConfigPath()+'/'+UnaCloudConstants.FILE_CONFIG;
 	println propFileName
 	FileInputStream inputStream = new FileInputStream(propFileName);
 	prop.load(inputStream);
@@ -36,18 +36,18 @@ environments {
     development {
         dataSource {
 			//using properties file
-			username = prop.getProperty("dev_username");
-			password = prop.getProperty("dev_password");
+			username = prop.getProperty("DEV_USERNAME");
+			password = prop.getProperty("DEV_PASSWORD");
 			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
-			url = prop.getProperty("dev_url").replace('\\', '');
+			url = prop.getProperty("DEV_URL").replace('\\', '');
         }
     }
     test {
         dataSource {
-			username = prop.getProperty("test_username");
-			password = prop.getProperty("test_password");
+			username = prop.getProperty("TEST_USERNAME");
+			password = prop.getProperty("TEST_PASSWORD");
             dbCreate = "create-drop"
-            url = prop.getProperty("test_url").replace('\\', '');
+            url = prop.getProperty("TEST_URL").replace('\\', '');
         }
     }
     production {

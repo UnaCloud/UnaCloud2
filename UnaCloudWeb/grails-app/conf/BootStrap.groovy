@@ -47,7 +47,7 @@ class BootStrap {
 
 	def init = { servletContext ->
 		Properties prop = new Properties();
-		String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
+		String propFileName = EnvironmentManager.getConfigPath()+'/'+UnaCloudConstants.FILE_CONFIG;
 		println propFileName
 		InputStream inputStream = new FileInputStream(propFileName);
 		prop.load(inputStream);
