@@ -40,8 +40,8 @@ public class FileManager extends ProjectManager{
 
 	@Override
 	protected String getPropetiesFileName() {	
-		System.out.println("Load file: "+EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG);
-		return EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;	
+		System.out.println("Load file: "+EnvironmentManager.getConfigPath()+'/'+UnaCloudConstants.FILE_CONFIG);
+		return EnvironmentManager.getConfigPath()+'/'+UnaCloudConstants.FILE_CONFIG;	
 	}
 
 	@Override
