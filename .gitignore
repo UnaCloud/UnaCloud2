@@ -10,6 +10,9 @@ AgentClient/global.properties
 AgentClient/imageList
 AgentClient/executions.txt
 AgentClient/local.properties
+AgentClient/target/*
+AgentClient/src/main/java/com
+AgentClient/src/main/java/communication
 UnaCloudFileManager/target/*
 UnaCloudFileManager/target-eclipse/*
 UnaCloudFileManager/target-eclipse/classes/javascripts/jquery.js
