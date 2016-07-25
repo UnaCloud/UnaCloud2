@@ -1,6 +1,6 @@
-#UnaCloud 2
+#UnaCloud
 ##Overview
-UnaCloud is a project developed by the investigation group COMIT (Comunicaciones y Tecnología de Información) from Universidad de los Andes, Colombia. It is an open source opportunistic cloud computing Infrastructure as a Service (IaaS) implementation which provides basic computing resources (processing, storage, and networking) to run arbitrary software, including operating systems and applications.
+UnaCloud is a project developed by the research group COMIT (Comunicaciones y Tecnología de Información) from Universidad de los Andes, Colombia. It is an open source opportunistic cloud computing Infrastructure as a Service (IaaS) implementation which provides basic computing resources (processing, storage, and networking) to run arbitrary software, including operating systems and applications.
 
 UnaCloud is able to execute single instances and/or clusters of virtual machines. Its execution is mostly supported by off-the-shelf, volatile, non-dedicated, distributed, and heterogeneous computing resources (such as desktops) that belong to a variety of administrative domains on a university campus.
 
@@ -29,8 +29,10 @@ Memory | At least 200 MB of free RAM.
 Free Disk	| 50 MB for UnaCloud client and at least 20 GB of hard disk for Virtual Machines.
 OS	| ¿Anyone?
 Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors: VMware Player 7, VMware Workstation 6 or better (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or better</li></ul>
+
 ##Installation
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
+
 ###Quick Installation
 Download Files
 ```
