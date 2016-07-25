@@ -35,7 +35,7 @@ Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the followin
 The project could be download from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=recursos:descargas) You could find three different options, manual installation, installation using scripts (Ubuntu or Debian) and using Vagrant (VirtualBox).
 
 ##Pre-Configuration
-The first step after download project is modify configuration file config.properties, this file is used in all installation options.
+First step after download project is modify configuration file config.properties, this file is used in all installation options.
 
 Set properties:
 
@@ -72,12 +72,12 @@ Set properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ###Quick Installation using scripts
-This kind of installation features a great velocity and not distributed components. Download package to install UnaCloud using scripts, this scripts are designed to run in Ubuntu (12 or better) or Debian  (6 or better), don't forget to check requeriments.
+This kind of installation features a great velocity and not distributed components. Download package to install UnaCloud using scripts, scripts are designed to run in Ubuntu (12 or better) or Debian (6 or better), don't forget check requeriments.
 * Install SSH server to allow access to server
-* Unzip package in path of your preferences.
+* Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with execution privilegies restricted.
 * Update config.properties file. Check pre-configuration section.
-* Create environment variable PATH_CONFIG pointed to config.properties file path.
+* Set environment variable PATH_CONFIG pointed to config.properties file path.
 * Execute file install.sh
 ```
 bash install.sh
@@ -91,11 +91,11 @@ bash install.sh
 * Log in with user defined in config.properties file.
 
 ###Quick Installation using Vagrant
-This kind of installation features a great velocity, not distributed components and it is not needed to configure a machine for server. Download package to install UnaCloud using Vagrant, this installation will run in a virtual machine be sure your physical machine requeriments.
+This kind of installation features a great velocity, not distributed components and it is not needed a previous configured machine for server. Download package to install UnaCloud using Vagrant, this installation will run in a virtual machine, therefore your physical machine should accomplish requeriments.
 * Install Vagrant from https://www.vagrantup.com/
 * Install VirtualBox 4.3 or better.
 * Unzip package in path of your preferences.
-* Execute in terminal vagrantfile located in folder by command:
+* Execute in terminal vagrantfile located in folder using command:
 ```
 vagrant up
 ```
@@ -126,12 +126,12 @@ This kind of installation package is designed to be distribuited and required fr
 * Validate communication with MySQL port.
 * Set database port in config.properties file.
 * Create a database.
-* Create an user with granted privilegies on database.
+* Create an user with read and write privilegies on database.
 * Set database name and user credentials in config.properties file.
 
 ####Node for RabbitMQ
 * Install RabbitMQ
-* Configure user with privilegies to read and write in queues.
+* Configure user with read and write queues privilegies.
 * Validate communication with RabbitMQ port.
 * Set RabbitMQ port and user credentials in config.properties file.
 
