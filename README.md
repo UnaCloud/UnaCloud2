@@ -15,10 +15,11 @@ It is important to clarify that instead of volunteering their desktops, end-user
 ####UnaCloud Server
 Specifications | Content
 ------------ | -------------
+Number of machines	| 1 to 5 virtual or physical machines to deploy components
 CPU	| 2 Cores Machine
 Memory | 4GB
 Free Disk	| 1 GB for UnaCloud Server and at least 80 GB of hard disk for Virtual Machines
-OS	| Windows Server 2003 or Windows 7
+OS	| Windows Server 2003, Windows 7, Ubuntu 14, Debian (6,7,8)
 Supporting Features | Java JDK SE 7
 
 ####UnaCloud Agents
@@ -27,8 +28,8 @@ Specifications | Content
 CPU	| 2 Cores Machine
 Memory | At least 200 MB of free RAM.
 Free Disk	| 50 MB for UnaCloud client and at least 20 GB of hard disk for Virtual Machines.
-OS	| ¿Anyone?
-Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors: VMware Player 7, VMware Workstation 6 or better (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or better</li></ul>
+OS	| Windows XP, 7 or 8
+Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors:  VMware Workstation 6 or better (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or 4.3</li></ul>
 
 ##Installation
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
