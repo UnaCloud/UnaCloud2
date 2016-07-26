@@ -90,7 +90,7 @@ bash install.sh
 * Log in with user defined in config.properties file.
 
 ###Quick Installation using Vagrant
-This kind of installation is very fast, does not use distributed components and it is not need a previous configured machine for server. Download package for Vagrant Installation, this installation will run in a virtual machine therefore your physical machine should meet requeriments.
+This kind of installation is very fast, does not use distributed components and does not need a previous configured machine for server. Download package for Vagrant Installation, this installation will run in a virtual machine therefore your physical machine should meet system requeriments.
 * Install Vagrant from https://www.vagrantup.com/
 * Install VirtualBox 4.3 or better.
 * Unzip package in path of your preference.
