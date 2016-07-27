@@ -17,7 +17,7 @@ import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineImageStatus;
 
 import com.losandes.utils.UnaCloudConstants;
 
-import exceptions.VirtualMachineExecutionException;
+import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 
 /**
  * Class to download files from server

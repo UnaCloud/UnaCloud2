@@ -12,7 +12,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 import co.edu.uniandes.communication.send.report.ServerMessageSender;
 
-import exceptions.VirtualMachineExecutionException;
+import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 import co.edu.uniandes.virtualMachineManager.PersistentExecutionManager;
 import co.edu.uniandes.virtualMachineManager.configuration.AbstractVirtualMachineConfigurator;
 

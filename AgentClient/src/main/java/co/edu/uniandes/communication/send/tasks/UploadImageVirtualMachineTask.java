@@ -11,7 +11,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.UnaCloudConstants;
 
 import co.edu.uniandes.communication.send.report.ServerMessageSender;
-import exceptions.VirtualMachineExecutionException;
+import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 import co.edu.uniandes.utils.VariableManager;
 import co.edu.uniandes.virtualMachineManager.ImageCacheManager;
 import co.edu.uniandes.virtualMachineManager.PersistentExecutionManager;

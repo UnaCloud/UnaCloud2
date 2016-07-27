@@ -27,7 +27,7 @@ import com.losandes.utils.RandomUtils;
 import com.losandes.utils.UnaCloudConstants;
 
 import co.edu.uniandes.communication.receive.tasks.DownloadImageVirtualMachineTask;
-import exceptions.VirtualMachineExecutionException;
+import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 
 /**
  * Responsible to manage list of images in cache

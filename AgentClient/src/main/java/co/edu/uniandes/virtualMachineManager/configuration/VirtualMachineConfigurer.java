@@ -4,7 +4,7 @@ import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 import communication.messages.vmo.VirtualMachineStartResponse;
 import co.edu.uniandes.communication.send.report.ServerMessageSender;
-import exceptions.VirtualMachineExecutionException;
+import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 import co.edu.uniandes.virtualMachineManager.ImageCacheManager;
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
