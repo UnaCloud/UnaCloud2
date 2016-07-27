@@ -12,14 +12,14 @@ import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.AMQP.BasicProperties;
 
 /**
- * Extends from Queue Tasker connection, manage connection to RabbitMQ service
+ * Extends from Queue Tasker connection, manages connection to RabbitMQ service
  * @author CesarF
  *
  */
 public class QueueRabbitManager extends QueueTaskerConnection{
 	
 	/**
-	 * Factory of connection to rabbit
+	 * RabbitMQ Connection factory
 	 */
 	ConnectionFactory factory ;
 	Connection connection;
@@ -68,7 +68,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	}
 	
 	/**
-	 * Creates a new factory to generate connections to queue
+	 * Creates a new factory to generate queue connections
 	 * @throws TimeoutException 
 	 * @throws IOException 
 	 */
