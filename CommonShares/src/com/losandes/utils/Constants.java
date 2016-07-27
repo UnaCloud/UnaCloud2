@@ -33,10 +33,13 @@ public class Constants {
     public static final String PATH_SEPARATOR = File.separator;
     public static final String JAR_NAME="/UnaCloudClient.jar";
     
-    //UnaCloud Client VMware Workstation constants
+    //UnaCloud Client Hypervisor Names
     public static final String VM_WARE_WORKSTATION="Workstation";
     public static final String VM_WARE_PLAYER="Player";
     public static final String VIRTUAL_BOX="VBox";
+    public static final String QEMU_KVM="Qemu/KVM";
+    
+    //UnaCloud Client VMware Workstation constants
     public static final String VMW_RUN_FILE="\\vmrun.exe";
     public static final String VMW_VMX_EXTENSION=".vmx";
     public static final String VMW_TURN_ON="start";
