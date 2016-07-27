@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  *
- * @author cronot99
+ * @author Juan Pablo Vinchira Salazar
  */
 public class Libvirt extends Hypervisor {
     
