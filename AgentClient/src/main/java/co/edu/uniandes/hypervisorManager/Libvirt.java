@@ -7,9 +7,11 @@ package co.edu.uniandes.hypervisorManager;
 
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
+import org.libvirt.Connect;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import org.libvirt.LibvirtException;
 
 /**
  *
@@ -19,37 +21,83 @@ public class Libvirt extends Hypervisor {
     
     public static String HYPERVISOR_ID="";
     private String driver="";
-    private String connection="";
+    private Connect connection = null;
 
-    public Libvirt(String hypervisorId) {
-        super(""); // Hypervisor without path
-        this.HYPERVISOR_ID=hypervisorId;
-    }
-    
-    public void connect(){
+    /**
+     * Temp main method for development goals
+     * @param args
+     * @throws LibvirtException 
+     */
+    public static void main(String[] args) throws LibvirtException {
         
+        Libvirt libvirtTest = new Libvirt(com.losandes.utils.Constants.QEMU_KVM, com.losandes.utils.Constants.QEMU_KVM_DRV);
+        
+        System.out.println("Attempting to connect...");
+        libvirtTest.connect();
+    }
+
+    public Libvirt(String hypervisorId, String hypervisorDrv) {
+        super(""); // Hypervisor without path
+        this.HYPERVISOR_ID = hypervisorId;
+        this.driver = hypervisorDrv;
     }
     
+    /**
+     * Connect with the local libvirt instance
+     */
+    public void connect() {
+        try{
+            this.connection = new Connect(this.driver + ":///session");
+        }catch(LibvirtException le){
+            System.err.println("Error: " + le.toString());
+        }
+    }
+    
+    /**
+     * Set virtual machine process priority
+     * @param image 
+     */
     private void setPriority(ImageCopy image){
         
     }
     
+    /**
+     * Unregister all the Hypervisor Virtual Machines
+     */
     public void unregisterAllVms(){
         
     }
     
-    public String getConnection() {
+    /**
+     * Get the current connection
+     * @return 
+     */
+    public Connect getConnection() {
         return this.connection;
     }
     
+    /**
+     * Get the current hypervisor id
+     * @return 
+     */
     public String getHypervisorId() {
         return this.HYPERVISOR_ID;
     }
-    public void setConnection(String uri) {
     
+    /**
+     * Replace the current connection
+     * @param newConnection 
+     */
+    public void setConnection(Connect newConnection) {
+        this.connection = newConnection;
     }
-    public void setHypervisorId(String hypervisorId) {
     
+    /**
+     * Replace the current hypervisor id
+     * @param hypervisorId 
+     */
+    public void setHypervisorId(String hypervisorId) {
+        this.HYPERVISOR_ID = hypervisorId;
     }
 
     @Override

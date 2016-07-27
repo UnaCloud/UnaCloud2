@@ -39,6 +39,9 @@ public class Constants {
     public static final String VIRTUAL_BOX="VBox";
     public static final String QEMU_KVM="Qemu/KVM";
     
+    //Libvirt Hypervisor Drivers
+    public static final String QEMU_KVM_DRV="qemu";
+    
     //UnaCloud Client VMware Workstation constants
     public static final String VMW_RUN_FILE="\\vmrun.exe";
     public static final String VMW_VMX_EXTENSION=".vmx";
