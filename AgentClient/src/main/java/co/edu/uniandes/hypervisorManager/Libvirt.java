@@ -8,10 +8,11 @@ package co.edu.uniandes.hypervisorManager;
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
 import org.libvirt.Connect;
+import org.libvirt.Domain;
+import org.libvirt.LibvirtException;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import org.libvirt.LibvirtException;
 
 /**
  *
@@ -28,12 +29,20 @@ public class Libvirt extends Hypervisor {
      * @param args
      * @throws LibvirtException 
      */
-    public static void main(String[] args) throws LibvirtException {
+    public static void main(String[] args) throws LibvirtException, HypervisorOperationException {
         
         Libvirt libvirtTest = new Libvirt(com.losandes.utils.Constants.QEMU_KVM, com.losandes.utils.Constants.QEMU_KVM_DRV);
         
         System.out.println("Attempting to connect...");
         libvirtTest.connect();
+        
+        // System.out.println("Starting virtual machine...");
+        // libvirtTest.startVirtualMachine(null);
+        
+        // System.out.println("Destroying virtual machine");
+        // libvirtTest.stopVirtualMachine(null);
+        
+        System.out.println("Done.");
     }
 
     public Libvirt(String hypervisorId, String hypervisorDrv) {
@@ -102,7 +111,13 @@ public class Libvirt extends Hypervisor {
 
     @Override
     public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        try{
+            Domain virtualMachine = this.connection.domainLookupByName("Debian8");
+            virtualMachine.create();
+        }catch(LibvirtException le){
+            System.err.println("Error starting the Virtual Machine: " + le.toString());
+        }
     }
 
     @Override
@@ -112,7 +127,13 @@ public class Libvirt extends Hypervisor {
 
     @Override
     public void stopVirtualMachine(ImageCopy image) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        try{
+            Domain virtualMachine = this.connection.domainLookupByName("Debian8");
+            virtualMachine.destroy();
+        }catch(LibvirtException le){
+            System.err.println("Error starting the Virtual Machine: " + le.toString());
+        }
     }
 
     @Override
@@ -152,7 +173,7 @@ public class Libvirt extends Hypervisor {
 
     @Override
     public void changeVirtualMachineMac(ImageCopy image) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported cómoyet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
