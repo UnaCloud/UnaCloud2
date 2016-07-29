@@ -18,37 +18,16 @@ import java.util.List;
  *
  * @author Juan Pablo Vinchira Salazar
  */
-public class Libvirt extends Hypervisor {
+public abstract class Libvirt extends Hypervisor {
     
     public static String HYPERVISOR_ID="";
     private String driver="";
     private Connect connection = null;
+    private String testVM = "debian-jessie";
 
-    /**
-     * Temp main method for development goals
-     * @param args
-     * @throws LibvirtException 
-     */
-    public static void main(String[] args) throws LibvirtException, HypervisorOperationException {
-        
-        Libvirt libvirtTest = new Libvirt(com.losandes.utils.Constants.QEMU_KVM, com.losandes.utils.Constants.QEMU_KVM_DRV);
-        
-        System.out.println("Attempting to connect...");
-        libvirtTest.connect();
-        
-        // System.out.println("Starting virtual machine...");
-        // libvirtTest.startVirtualMachine(null);
-        
-        // System.out.println("Destroying virtual machine");
-        // libvirtTest.stopVirtualMachine(null);
-        
-        System.out.println("Done.");
-    }
-
-    public Libvirt(String hypervisorId, String hypervisorDrv) {
-        super(""); // Hypervisor without path
-        this.HYPERVISOR_ID = hypervisorId;
-        this.driver = hypervisorDrv;
+    public Libvirt(String path, String driver) {
+        super(path);
+        this.driver = driver;
     }
     
     /**
@@ -113,7 +92,7 @@ public class Libvirt extends Hypervisor {
     public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
         
         try{
-            Domain virtualMachine = this.connection.domainLookupByName("Debian8");
+            Domain virtualMachine = this.connection.domainLookupByName(testVM);
             virtualMachine.create();
         }catch(LibvirtException le){
             System.err.println("Error starting the Virtual Machine: " + le.toString());
@@ -129,7 +108,7 @@ public class Libvirt extends Hypervisor {
     public void stopVirtualMachine(ImageCopy image) {
         
         try{
-            Domain virtualMachine = this.connection.domainLookupByName("Debian8");
+            Domain virtualMachine = this.connection.domainLookupByName(testVM);
             virtualMachine.destroy();
         }catch(LibvirtException le){
             System.err.println("Error starting the Virtual Machine: " + le.toString());
@@ -138,7 +117,12 @@ public class Libvirt extends Hypervisor {
 
     @Override
     public void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            Domain virtualMachine = this.connection.domainLookupByName(testVM);
+            virtualMachine.reboot(0);
+        }catch(LibvirtException le){
+            System.err.println("Error rebooting the Virtual Machine: " + le.toString());
+        }
     }
 
     @Override
