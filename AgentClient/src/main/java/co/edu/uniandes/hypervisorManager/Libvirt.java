@@ -11,8 +11,26 @@ import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.LibvirtException;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -80,14 +98,6 @@ public abstract class Libvirt extends Hypervisor {
         this.connection = newConnection;
     }
     
-    /**
-     * Replace the current hypervisor id
-     * @param hypervisorId 
-     */
-    public void setHypervisorId(String hypervisorId) {
-        this.HYPERVISOR_ID = hypervisorId;
-    }
-
     @Override
     public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
         
@@ -101,7 +111,50 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(cores!=0&&ram!=0){
+            
+            try{
+                // Get Domain configuration
+                Domain virtualMachine = this.connection.domainLookupByName(testVM);
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                Document confXML = docBuilder.parse(new InputSource(new StringReader(virtualMachine.getXMLDesc(0))));
+                
+                // Set new number of cores
+                confXML.getElementsByTagName("vcpu").item(0).setTextContent("" + cores);
+                
+                // Set new amount of memory
+                ram = ram * 1024;
+                confXML.getElementsByTagName("memory").item(0).setTextContent("" + ram);
+                confXML.getElementsByTagName("currentMemory").item(0).setTextContent("" + ram);
+                
+                // 
+                TransformerFactory transFactory = TransformerFactory.newInstance();
+                Transformer trans = transFactory.newTransformer();
+                trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                
+                // Convert to string the new Domain configuration
+                StringWriter newConfXML = new StringWriter();
+                trans.transform(new DOMSource(confXML), new StreamResult(newConfXML));
+                
+                // Update the Domain configuration
+                virtualMachine.undefine();
+                connection.domainDefineXML(newConfXML.toString());
+                
+            }catch(LibvirtException le){
+                System.err.println("Error setting cpu or ram values: " + le.toString());
+            }catch(ParserConfigurationException pce){
+                System.err.println("Error creating xml document builder: " + pce.toString());
+            }catch(TransformerConfigurationException tce){
+                System.err.println("Error creating xml domain transformer: " + tce.toString());
+            }catch(SAXException se){
+                System.err.println("Error parsing virtual machine configuration file: " + se.toString());
+            }catch(IOException ioe){
+                System.err.println("Error reading virtual machine configuration file: " + ioe.toString());
+            }catch(TransformerException te){
+                System.err.println("Error transforming virtual machine configuration file: " + te.toString());
+            }
+        }
     }
 
     @Override

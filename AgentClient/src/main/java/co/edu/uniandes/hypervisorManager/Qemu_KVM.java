@@ -26,6 +26,9 @@ public class Qemu_KVM extends Libvirt {
         System.out.println("Attempting to connect...");
         libvirtTest.connect();
         
+        // System.out.println("Configuring virtual machine...");
+        // libvirtTest.configureVirtualMachineHardware(1, 1024, null);
+        
         // System.out.println("Starting virtual machine...");
         // libvirtTest.startVirtualMachine(null);
         
@@ -40,5 +43,6 @@ public class Qemu_KVM extends Libvirt {
     
     public Qemu_KVM(String path){
         super(path, Constants.QEMU_KVM_DRV);
+        HYPERVISOR_ID = Constants.QEMU_KVM;
     }
 }
