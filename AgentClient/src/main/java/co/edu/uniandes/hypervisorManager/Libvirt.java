@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -39,7 +40,7 @@ public abstract class Libvirt extends Hypervisor {
     public static String HYPERVISOR_ID="";
     private String driver="";
     private Connect connection = null;
-    private String testVM = "debian-jessie";
+    private String testVM = "Debian8";
 
     public Libvirt(String path, String driver) {
         super(path);
@@ -183,7 +184,41 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void takeVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+                // Get Domain configuration
+                Domain virtualMachine = this.connection.domainLookupByName(testVM);
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                Document snapshotXML = docBuilder.newDocument();
+                
+                // Create snapshot XML structure
+                Element root = snapshotXML.createElement("domainsnapshot");
+                snapshotXML.appendChild(root);
+                
+                root.appendChild(snapshotXML.createElement("name")).setTextContent(snapshotname);
+                root.appendChild(snapshotXML.createElement("description")).setTextContent(snapshotname);
+                
+                // Format the new snapshot file
+                TransformerFactory transFactory = TransformerFactory.newInstance();
+                Transformer trans = transFactory.newTransformer();
+                trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                
+                // Convert to string the new Domain configuration
+                StringWriter newSnapshotXML = new StringWriter();
+                trans.transform(new DOMSource(snapshotXML), new StreamResult(newSnapshotXML));
+                
+                // Create new snapshot
+                virtualMachine.snapshotCreateXML(newSnapshotXML.toString());
+                
+            }catch(LibvirtException le){
+                System.err.println("Error creating the snapshot: " + le.toString());
+            }catch(ParserConfigurationException pce){
+                System.err.println("Error creating xml document builder: " + pce.toString());
+            }catch(TransformerConfigurationException tce){
+                System.err.println("Error creating xml domain transformer: " + tce.toString());
+            }catch(TransformerException te){
+                System.err.println("Error transforming virtual machine configuration file: " + te.toString());
+            }
     }
 
     @Override

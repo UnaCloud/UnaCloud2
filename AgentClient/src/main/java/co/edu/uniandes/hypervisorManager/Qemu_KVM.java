@@ -7,6 +7,9 @@ package co.edu.uniandes.hypervisorManager;
 
 import org.libvirt.LibvirtException;
 import com.losandes.utils.Constants;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -20,6 +23,9 @@ public class Qemu_KVM extends Libvirt {
      * @throws LibvirtException 
      */
     public static void main(String[] args) throws LibvirtException, HypervisorOperationException {
+        
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = new Date();
         
         Libvirt libvirtTest = new Qemu_KVM("NoPath");
         
@@ -37,6 +43,9 @@ public class Qemu_KVM extends Libvirt {
         
         // System.out.println("Rebooting virtual machine...");
         // libvirtTest.restartVirtualMachine(null);
+        
+        // System.out.println("Creating virtual machine snapshot...");
+        // libvirtTest.takeVirtualMachineSnapshot(null, "Test");
         
         System.out.println("Done.");
     }
