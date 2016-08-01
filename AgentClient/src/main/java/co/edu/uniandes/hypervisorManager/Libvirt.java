@@ -9,6 +9,7 @@ import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
+import org.libvirt.DomainSnapshot;
 import org.libvirt.LibvirtException;
 import java.io.File;
 import java.io.IOException;
@@ -158,7 +159,6 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void stopVirtualMachine(ImageCopy image) {
-        
         try{
             Domain virtualMachine = this.connection.domainLookupByName(testVM);
             virtualMachine.destroy();
@@ -223,7 +223,13 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void deleteVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            Domain virtualMachine = connection.domainLookupByName(testVM);
+            DomainSnapshot snapshot = virtualMachine.snapshotLookupByName(snapshotname);
+            snapshot.delete(0);
+        }catch(LibvirtException le){
+            System.err.println("Error deleting the snapshot: " + le.toString());
+        }
     }
 
     @Override

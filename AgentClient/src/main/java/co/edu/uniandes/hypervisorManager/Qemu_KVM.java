@@ -47,6 +47,9 @@ public class Qemu_KVM extends Libvirt {
         // System.out.println("Creating virtual machine snapshot...");
         // libvirtTest.takeVirtualMachineSnapshot(null, "Test");
         
+        // System.out.println("Deleting snapshot...");
+        // libvirtTest.deleteVirtualMachineSnapshot(null, "Test");
+        
         System.out.println("Done.");
     }
     
