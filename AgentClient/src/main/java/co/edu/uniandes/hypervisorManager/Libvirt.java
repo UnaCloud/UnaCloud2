@@ -7,6 +7,7 @@ package co.edu.uniandes.hypervisorManager;
 
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
+import com.losandes.utils.LocalProcessExecutor;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.DomainSnapshot;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +43,7 @@ public abstract class Libvirt extends Hypervisor {
     public static String HYPERVISOR_ID="";
     private String driver="";
     private Connect connection = null;
-    private String testVM = "Debian8";
+    private String testVM = "debian-jessie";
 
     public Libvirt(String path, String driver) {
         super(path);
@@ -234,7 +236,13 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            Domain virtualMachine = connection.domainLookupByName(testVM);
+            DomainSnapshot snapshot = virtualMachine.snapshotLookupByName(snapshotname);
+            virtualMachine.revertToSnapshot(snapshot);
+        }catch(LibvirtException le){
+            System.err.println("Error reverting to snapshot " + snapshotname + ": " + le.toString());
+        }
     }
 
     @Override
@@ -285,7 +293,28 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
+		List<String> list = new ArrayList<String>();
+                try{
+                    int[] activeDomains = connection.listDomains();
+                    for(int eachDomain: activeDomains){
+                        list.add(connection.domainLookupByID(eachDomain).getName());
+                    }
+                }catch(LibvirtException le){
+                    System.err.println("Error trying to retrieve active virtual machines list: " + le.toString());
+                }
+                
+		for (VirtualMachineExecution execution: executions) {
+			boolean isRunning = false;
+			for(String exeInHypervisor: list){
+				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){
+					isRunning = true;
+					break;
+				}
+			}	
+			if(!isRunning)executionsToDelete.add(execution);	
+		}
+		return executionsToDelete;    
     }
     
 }

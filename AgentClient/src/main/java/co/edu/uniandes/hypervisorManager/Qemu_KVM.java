@@ -7,9 +7,7 @@ package co.edu.uniandes.hypervisorManager;
 
 import org.libvirt.LibvirtException;
 import com.losandes.utils.Constants;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 /**
  *
@@ -23,9 +21,6 @@ public class Qemu_KVM extends Libvirt {
      * @throws LibvirtException 
      */
     public static void main(String[] args) throws LibvirtException, HypervisorOperationException {
-        
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = new Date();
         
         Libvirt libvirtTest = new Qemu_KVM("NoPath");
         
@@ -45,13 +40,19 @@ public class Qemu_KVM extends Libvirt {
         // libvirtTest.restartVirtualMachine(null);
         
         // System.out.println("Creating virtual machine snapshot...");
-        // libvirtTest.takeVirtualMachineSnapshot(null, "Test");
+        // libvirtTest.takeVirtualMachineSnapshot(null, "tmux");
         
         // System.out.println("Deleting snapshot...");
         // libvirtTest.deleteVirtualMachineSnapshot(null, "Test");
         
         // System.out.println("Searching snapshot...");
         // System.out.println(libvirtTest.existsVirtualMachineSnapshot(null, "Test"));
+        
+        // System.out.println("Reverting to snapshot...");
+        // libvirtTest.restoreVirtualMachineSnapshot(null, "tmux");
+        
+        // System.out.println("Checking domains...");
+        // Pending to implement test call
         
         System.out.println("Done.");
     }
