@@ -239,7 +239,23 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            boolean domainExists = false;
+            
+            Domain virtualMachine = connection.domainLookupByName(testVM);
+            if(virtualMachine.snapshotLookupByName(snapshotname) != null){
+                System.out.println("Snapshot " + snapshotname + " Found");
+                domainExists = true;
+            }
+            return domainExists;
+        }catch(LibvirtException le){
+            if(le.toString().contains("no domain snapshot")){
+                System.out.println("Snapshot " + snapshotname + " Not found");
+            }else{
+                System.err.println("Error trying to access to snapshots list: " + le.toString());
+            }
+            return false;
+        }
     }
 
     @Override
