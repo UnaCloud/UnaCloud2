@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.edu.uniandes.hypervisorManager;
 
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
-import com.losandes.utils.LocalProcessExecutor;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.DomainSnapshot;
@@ -43,7 +37,6 @@ public abstract class Libvirt extends Hypervisor {
     public static String HYPERVISOR_ID="";
     private String driver="";
     private Connect connection = null;
-    private String testVM = "debian-jessie";
 
     public Libvirt(String path, String driver) {
         super(path);
@@ -104,7 +97,7 @@ public abstract class Libvirt extends Hypervisor {
     public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
         
         try{
-            Domain virtualMachine = this.connection.domainLookupByName(testVM);
+            Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
             virtualMachine.create();
         }catch(LibvirtException le){
             System.err.println("Error starting the Virtual Machine: " + le.toString());
@@ -117,7 +110,7 @@ public abstract class Libvirt extends Hypervisor {
             
             try{
                 // Get Domain configuration
-                Domain virtualMachine = this.connection.domainLookupByName(testVM);
+                Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
                 DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
                 Document confXML = docBuilder.parse(new InputSource(new StringReader(virtualMachine.getXMLDesc(0))));
@@ -162,7 +155,7 @@ public abstract class Libvirt extends Hypervisor {
     @Override
     public void stopVirtualMachine(ImageCopy image) {
         try{
-            Domain virtualMachine = this.connection.domainLookupByName(testVM);
+            Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
             virtualMachine.destroy();
         }catch(LibvirtException le){
             System.err.println("Error starting the Virtual Machine: " + le.toString());
@@ -172,7 +165,7 @@ public abstract class Libvirt extends Hypervisor {
     @Override
     public void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException {
         try{
-            Domain virtualMachine = this.connection.domainLookupByName(testVM);
+            Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
             virtualMachine.reboot(0);
         }catch(LibvirtException le){
             System.err.println("Error rebooting the Virtual Machine: " + le.toString());
@@ -188,7 +181,7 @@ public abstract class Libvirt extends Hypervisor {
     public void takeVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
         try{
                 // Get Domain configuration
-                Domain virtualMachine = this.connection.domainLookupByName(testVM);
+                Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
                 DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
                 Document snapshotXML = docBuilder.newDocument();
@@ -226,7 +219,7 @@ public abstract class Libvirt extends Hypervisor {
     @Override
     public void deleteVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
         try{
-            Domain virtualMachine = connection.domainLookupByName(testVM);
+            Domain virtualMachine = connection.domainLookupByName(image.getVirtualMachineName());
             DomainSnapshot snapshot = virtualMachine.snapshotLookupByName(snapshotname);
             snapshot.delete(0);
         }catch(LibvirtException le){
@@ -237,7 +230,7 @@ public abstract class Libvirt extends Hypervisor {
     @Override
     public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
         try{
-            Domain virtualMachine = connection.domainLookupByName(testVM);
+            Domain virtualMachine = connection.domainLookupByName(image.getVirtualMachineName());
             DomainSnapshot snapshot = virtualMachine.snapshotLookupByName(snapshotname);
             virtualMachine.revertToSnapshot(snapshot);
         }catch(LibvirtException le){
@@ -250,7 +243,7 @@ public abstract class Libvirt extends Hypervisor {
         try{
             boolean domainExists = false;
             
-            Domain virtualMachine = connection.domainLookupByName(testVM);
+            Domain virtualMachine = connection.domainLookupByName(image.getVirtualMachineName());
             if(virtualMachine.snapshotLookupByName(snapshotname) != null){
                 System.out.println("Snapshot " + snapshotname + " Found");
                 domainExists = true;
