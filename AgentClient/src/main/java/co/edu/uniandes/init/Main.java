@@ -63,7 +63,7 @@ public class Main {
     	{
     		//Validate if the user that is executing agent is system user
     		String user=OperatingSystem.getWhoAmI();
-        	if(user!=null&&!user.toLowerCase().contains("system")){
+        	if(user!=null&&(!user.toLowerCase().contains("system")) && !user.equals(UnaCloudConstants.AGENT_USER)){
         		System.out.println("You can't execute the agent as "+user);
         		System.exit(0);
         		return;

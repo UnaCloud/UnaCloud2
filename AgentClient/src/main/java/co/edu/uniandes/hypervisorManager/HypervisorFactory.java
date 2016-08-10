@@ -30,8 +30,10 @@ public class HypervisorFactory {
     public static void registerHypervisors(){
     	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
     	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
+	String vQemu=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.QEMU_KVM_PATH);
     	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
     	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
+	if(vQemu!=null)map.put(Qemu_KVM.HYPERVISOR_ID, new Qemu_KVM(vQemu));
     	//TODO add support to vmWarePlayer
     	//map.put(VMwarePlayer.HYPERVISOR_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
     }
