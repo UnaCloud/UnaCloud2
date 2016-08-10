@@ -20,6 +20,21 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>co.edu.uniandes.init.Main</mainClass>
+                        </manifest>
+                    </archive>
+		    <descriptorRefs>
+		        <descriptorRef>jar-with-dependencies</descriptorRef>
+		    </descriptorRefs>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     
@@ -41,12 +56,14 @@
             <groupId>org.libvirt</groupId>
             <artifactId>libvirt</artifactId>
             <version>0.5.1</version>
+	    <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>3.5.0</version>
             <type>jar</type>
+	    <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
