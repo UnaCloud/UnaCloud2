@@ -85,7 +85,7 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left info">
-                           <h4><i class="fa fa-smile-o"> Hello, ${session.user.username}</i></h4>
+                           <h4><i class="fa fa-smile-o"></i> Hello, ${session.user.username}</h4>
                         </div>
                     </div>
                     <!-- sidebar menu: : style can be found in sidebar.less -->

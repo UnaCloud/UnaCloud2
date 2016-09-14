@@ -111,6 +111,7 @@ class BootStrap {
 			Repository repo = new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: prop.getProperty(UnaCloudConstants.MAIN_REPOSITORY))
 			repo.save(failOnError:true)
 		}
+
 		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_CONTROL);		
 		QueueTaskerControl.setQueueConnection(queueControl)		

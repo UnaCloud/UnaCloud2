@@ -49,14 +49,14 @@ class UrlMappings {
 		"/services/deployment/download/$id"(controller:'Deployment',action:"createCopy")
 		
 		/** admin - users**/
-		"/admin/user/list"(controller:'user',action:"list")
-		"/admin/user/new"(controller:'user',action:"create")
-		"/admin/user/save"(controller:'user',action:"save")
-		"/admin/user/delete/$id"(controller:'user',action:"delete")
-		"/admin/user/edit/$id"(controller:'user',action:"edit")
-		"/admin/user/edit/save"(controller:'user',action:"saveEdit")
-		"/admin/user/restrictions/$id"(controller:'user',action:"config")
-		"/admin/user/restrictions/set"(controller:'user',action:"setRestrictions")
+		"/admin/user/list"(controller:'admin',action:"list")
+		"/admin/user/new"(controller:'admin',action:"create")
+		"/admin/user/save"(controller:'admin',action:"save")
+		"/admin/user/delete/$id"(controller:'admin',action:"delete")
+		"/admin/user/edit/$id"(controller:'admin',action:"edit")
+		"/admin/user/edit/save"(controller:'admin',action:"saveEdit")
+		"/admin/user/restrictions/$id"(controller:'admin',action:"config")
+		"/admin/user/restrictions/set"(controller:'admin',action:"setRestrictions")
 		
 		/** admin - groups**/
 		"/admin/group/list"(controller:'userGroup',action:"list")
