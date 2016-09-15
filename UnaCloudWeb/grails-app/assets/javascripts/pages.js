@@ -297,7 +297,7 @@ function uploadForm(form){
     };
     xhr.onerror = function() {
     	hideLoading();
-    	showError('Error!','Upload failed. Can not connect to server.')
+    	showError('Error!','Upload failed. Cannot connect to server.')
     };
     showLoadingUploading();
 	xhr.open("POST", form.action)	
