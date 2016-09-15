@@ -17,11 +17,11 @@ public class UnaCloudMessageUDP implements Serializable{
 	
 	private static final long serialVersionUID = -8785226165731609571L;
 	
-	public static String TAG_HOST = "host";
-	public static String TAG_IP = "ip";
-	public static String TAG_PORT = "post";
-	public static String TAG_TYPE_MESSAGE = "type_message";
-	public static String TAG_MESSAGE = "message";
+	public static final String TAG_HOST = "host";
+	public static final String TAG_IP = "ip";
+	public static final String TAG_PORT = "post";
+	public static final String TAG_TYPE_MESSAGE = "type_message";
+	public static final String TAG_MESSAGE = "message";
 	
 	private String host;
 	private String ip;
