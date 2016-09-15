@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import unacloud.share.utils.EnvironmentManager;
+import com.losandes.utils.ConfigurationReader
 import com.losandes.utils.UnaCloudConstants;
 
 dataSource {
@@ -24,35 +25,32 @@ hibernate {
     cache.use_query_cache = false
     cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
 }
-Properties prop = new Properties();
-String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
-FileInputStream inputStream = new FileInputStream(propFileName);
-prop.load(inputStream);
+ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG)
 // environment specific settings
 environments {
     development {
         dataSource {
 			//using properties file
-			username = prop.getProperty("dev_username");
-			password = prop.getProperty("dev_password");
-			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
-			url = prop.getProperty("dev_url").replace('\\', '');
+			username = reader.getStringVariable("dev_username");
+			password = reader.getStringVariable("dev_password");
+			dbCreate = 'create-drop'// one of 'create', 'create-drop', 'update', 'validate', ''
+			url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
         }
     }
     test {
         dataSource {
-			username = prop.getProperty("test_username");
-			password = prop.getProperty("test_password");
+			username = reader.getStringVariable("test_username");
+			password = reader.getStringVariable("test_password");
             dbCreate = "create-drop"
-            url = prop.getProperty("test_url").replace('\\', '');
+            url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
         }
     }
     production {
         dataSource {
-			username = prop.getProperty(UnaCloudConstants.DB_USERNAME);
-			password = prop.getProperty(UnaCloudConstants.DB_PASS);
+			username = reader.getStringVariable(UnaCloudConstants.DB_USERNAME);
+			password = reader.getStringVariable(UnaCloudConstants.DB_PASS);
             dbCreate = "update";
-            url = 'jdbc:mysql://'+prop.getProperty(UnaCloudConstants.DB_IP)+':'+prop.getProperty(UnaCloudConstants.DB_PORT)+'/'+prop.getProperty(UnaCloudConstants.DB_NAME)+'?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
+            url = 'jdbc:mysql://'+reader.getStringVariable(UnaCloudConstants.DB_IP)+':'+reader.getStringVariable(UnaCloudConstants.DB_PORT)+'/'+reader.getStringVariable(UnaCloudConstants.DB_NAME)+'?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
             pooled = true
             properties {
                maxActive = -1

@@ -1,5 +1,8 @@
 import java.io.FileInputStream;
+
 import unacloud.share.utils.EnvironmentManager;
+
+import com.losandes.utils.ConfigurationReader;
 import com.losandes.utils.UnaCloudConstants;
 
 // locations to search for config files that get merged into the main config;
@@ -93,13 +96,10 @@ grails.hibernate.pass.readonly = false
 grails.hibernate.osiv.readonly = false
 
 //cors.url.pattern = ['/upload/*', '/update/*','/file/*']
-Properties prop = new Properties();
-String propFileName = EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG;
-FileInputStream inputStream = new FileInputStream(propFileName);
 
-prop.load(inputStream);
-
-cors.headers = ['Access-Control-Allow-Origin': prop.getProperty("WEB_SERVER_URL")]
+ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG, new String()[]{"WEB_SERVER_URL"})
+String path = reader.getStringVariable("WEB_SERVER_URL")
+cors.headers = ['Access-Control-Allow-Origin': path.substring(0,path.lastIndexOf("/"))]
 
 environments {
     development {
