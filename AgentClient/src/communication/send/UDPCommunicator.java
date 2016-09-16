@@ -39,8 +39,7 @@ public class UDPCommunicator {
 	public boolean pushInfoPM(String hostName, String userName, Long[] executions) throws Exception{
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
-		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, executions);
-		
+		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, executions);		
 		return sender.sendMessage(message);
 	}
 	

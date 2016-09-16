@@ -70,9 +70,9 @@ class HypervisorController {
 	 * @return
 	 */
 	def save(){
-		if(params.name&&params.version&&params.ext){
+		if(params.name&&params.vers&&params.ext){
 			try{
-				hypervisorService.create(params.name,params.version,params.ext,params.files_ext)
+				hypervisorService.create(params.name,params.vers,params.ext,params.files_ext)
 				redirect(uri:"/admin/hypervisor/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message

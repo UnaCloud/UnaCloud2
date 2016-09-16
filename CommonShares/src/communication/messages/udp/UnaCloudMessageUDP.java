@@ -86,49 +86,45 @@ public class UnaCloudMessageUDP implements Serializable{
 	 * @return String
 	 */
 	public String getStringMessage(){
-		JSONObject total = new JSONObject();
-		
+		JSONObject total = new JSONObject();		
 		total.put(TAG_HOST, this.host);
 		total.put(TAG_IP, this.ip);
 		total.put(TAG_PORT, this.port);
 		total.put(TAG_TYPE_MESSAGE, this.type.name());
 		total.put(TAG_MESSAGE, this.message);
-		
 		StringWriter out = new StringWriter();
-		total.write(out);
-		
+		total.write(out);		
 		String jsonText = out.toString();
-		return jsonText;
-		
+		return jsonText;		
 	}
 	
 	/**
 	 * generates a byte array to send message based in components in message
 	 * @return byte array
+	 * @throws UnsupportedEncodingException 
 	 */
-	public byte[] generateByteMessage(){
+	public byte[] generateByteMessage() throws UnsupportedEncodingException{
 		String messageString = this.getStringMessage();
-		return messageString.getBytes();
+		return messageString.getBytes("UTF-8");
 	}
 	
 	/**
-	 * Transform a byte array in parts of message (JSON Format)
+	 * Transforms a byte array in parts of message (JSON Format)
 	 * @param bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public void setMessageByBytes(byte[] bytes) throws UnsupportedEncodingException{
 		String tempMessage = new String(bytes, "UTF-8");
-		this.getMessageByString(tempMessage);
+		this.setMessageByString(tempMessage);
 	}
 
 	/**
-	 * Read the String of a message and set with the variables.
+	 * Reads the String of a message and set with the variables.
 	 * @param format
 	 */
-	public void getMessageByString(String format) {
+	public void setMessageByString(String format) {
 		JSONObject json;
-		json = new JSONObject(format);
-		
+		json = new JSONObject(format);		
 		this.host = json.getString(TAG_HOST);
 		this.ip = json.getString(TAG_IP);
 		this.port = json.getInt(TAG_PORT);

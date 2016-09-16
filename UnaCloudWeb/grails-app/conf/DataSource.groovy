@@ -33,7 +33,7 @@ environments {
 			//using properties file
 			username = reader.getStringVariable("dev_username");
 			password = reader.getStringVariable("dev_password");
-			dbCreate = 'create-drop'// one of 'create', 'create-drop', 'update', 'validate', ''
+			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
 			url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
         }
     }
@@ -41,7 +41,7 @@ environments {
         dataSource {
 			username = reader.getStringVariable("test_username");
 			password = reader.getStringVariable("test_password");
-            dbCreate = "create-drop"
+            dbCreate = "update"
             url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
         }
     }
