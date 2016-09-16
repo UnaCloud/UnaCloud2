@@ -42,10 +42,9 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 				arrayExecutions.put(executions[i]);
 			}
 		}
-		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(TAG_EXECUTIONS, arrayExecutions);
-		tempMessage.put(TAG_HOST_USER, hostUser);
+		tempMessage.put(TAG_HOST_USER,hostUser);
 		this.setMessage(tempMessage);
 
 	}
@@ -61,13 +60,11 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 	 */
 	public Long[] getExecutions(){
 		JSONObject temp = this.getMessage();
-
 		JSONArray array = temp.getJSONArray(TAG_EXECUTIONS);
 		Long[] toReturn = new Long[array.length()];
 		for (int i = 0; i < array.length(); i++) {
 			toReturn[i] = array.getLong(i);
 		}
-
 		return toReturn;
 	}
 
@@ -79,7 +76,6 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 		try{
 			return this.getMessage().getString(TAG_HOST_USER);
 		} catch(Exception e){
-			System.out.println(e.getMessage());
 			return null;
 		}
 	}

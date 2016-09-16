@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.losandes.enums.VirtualMachineExecutionStateEnum;
 
 import uniandes.ControlManager;
 import uniandes.db.PhysicalMachineUpdater;
@@ -26,17 +23,17 @@ public class VmMessageProcessor extends AbstractReceiverProcessor{
 	}
 
 	@Override
-	public void processMessage(UnaCloudMessageUDP UnacloudMessage) throws JSONException, SQLException {
-		System.out.println(UnacloudMessage.getMessage());
-		if(UnacloudMessage.getMessage()!=null){
-			if(UnacloudMessage.getType().equals(UDPMessageEnum.STATE_VM)){
+	public void processMessage(UnaCloudMessageUDP unacloudMessage) throws JSONException, SQLException {
+		System.out.println(unacloudMessage.getMessage());
+		if(unacloudMessage.getMessage()!=null){
+			if(unacloudMessage.getType().equals(UDPMessageEnum.STATE_VM)){
 				try(Connection con = ControlManager.getInstance().getDBConnection();){
-					UDPMessageStateVM message = new UDPMessageStateVM(UnacloudMessage);
+					UDPMessageStateVM message = new UDPMessageStateVM(unacloudMessage);
 					System.out.println("Report VM: "+message.getHost()+" - ");
 					PhysicalMachineUpdater.updateVirtualExecution(message.getVirtualMachineCode(), message.getHost(), message.getMessageExecution(), message.getState(), con);
 				}catch (Exception e) {
 					e.printStackTrace();
-				}			
+				}			 
 			}
 		}
 	}

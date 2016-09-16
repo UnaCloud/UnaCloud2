@@ -41,15 +41,11 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	
 	public UDPMessageStateVM(String ip, int port, String host, long virtualMachineCode, VirtualMachineExecutionStateEnum state, String messageExecution){
 		super(ip, port, host, UDPMessageEnum.STATE_VM);
-		
-		if(messageExecution==null) {
-			messageExecution = "None";
-		}
-		
+				
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(TAG_VIRTUALMACHINE_CODE, virtualMachineCode);
 		tempMessage.put(TAG_STATE, state.name());
-		tempMessage.put(TAG_MESSAGE_EXECUTION, messageExecution);
+		tempMessage.put(TAG_MESSAGE_EXECUTION, messageExecution==null?"None":messageExecution);
 		this.setMessage(tempMessage);
 		
 	}
