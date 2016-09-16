@@ -64,7 +64,6 @@ public class UnaCloudDataSenderUDP {
 			UnaCloudMessageUDP udpMessage = new UnaCloudMessageUDP();
 			udpMessage.setMessageByBytes(request.getData());
 			udpMessage.setIp(request.getAddress().getHostAddress());
-			udpMessage.setHost(request.getAddress().getHostName());
 			udpMessage.setPort(0);
 			return udpMessage;
 		} catch (Exception e) {
