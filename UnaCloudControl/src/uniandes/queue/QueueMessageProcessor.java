@@ -56,21 +56,24 @@ import uniandes.communication.processor.AbstractResponseProcessor;
  */
 public class QueueMessageProcessor implements QueueReader{
 	
-	private int threads;
-	
+	/**
+	 * Quantity of messages send in each thread
+	 */
+	private int messagesByThread;
+		
 	/**
 	 * Pool of threads to attend messages
 	 */
 	private ExecutorService threadPool;
 	
-	public QueueMessageProcessor(int threads) {
+	public QueueMessageProcessor(int threads, int messages) {
 		threadPool=Executors.newFixedThreadPool(threads);
-		this.threads=threads;
+		this.messagesByThread = messages;
 	}
 
 	@Override
 	public void processMessage(QueueMessage message) {
-		System.out.println("Receive message "+message.getType());
+		System.out.println("Receive message "+message.getMessage());
 		switch (message.getType()) {
 		case CLEAR_CACHE:
 			clearCache(new MessageIdOfImage(message));
@@ -109,8 +112,8 @@ public class QueueMessageProcessor implements QueueReader{
 			try {				
 				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);	
 				if(machines.size()>0){
-					for (int i = 0; i < machines.size(); i+=threads+1) {
-						threadPool.submit(new MessageSender(machines.subList(i, i+threads>machines.size()?machines.size():i+threads), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
+					for (int i = 0; i < machines.size() ; i+=messagesByThread) {
+						threadPool.submit(new MessageSender(machines.subList(i, i+messagesByThread>machines.size()?machines.size():i+messagesByThread), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
 							@Override
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
@@ -155,11 +158,11 @@ public class QueueMessageProcessor implements QueueReader{
 			Long[] ids = messageTask.getIdMachines();
 			
 			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
-			for (int i = 0; i < machines.size(); i+=threads+1) {
+			for (int i = 0; i < machines.size() ; i+=messagesByThread) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
 								new StopAgentMessage():new UpdateAgentMessage();
-				threadPool.submit(new MessageSender(machines.subList(i, i+threads>machines.size()?machines.size():i+threads), 
+				threadPool.submit(new MessageSender(machines.subList(i, i+messagesByThread>machines.size()?machines.size():i+messagesByThread), 
 						absMessage, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {

@@ -93,7 +93,7 @@ public class ControlManager extends ProjectManager{
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_CONTROL);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		processor = new QueueMessageProcessor(50);
+		processor = new QueueMessageProcessor(50,5);
 		queueReceiver.startReceiver(processor);		
 	}
 	
