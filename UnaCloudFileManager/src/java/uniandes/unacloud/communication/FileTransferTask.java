@@ -56,6 +56,8 @@ public class FileTransferTask implements Runnable{
 					pw.println(Constants.VM_WARE_WORKSTATION);
 				else if(image.getMainFile().endsWith("vbox"))
 					pw.println(Constants.VIRTUAL_BOX);
+				else if(image.getMainFile().endsWith("img"))
+					pw.println(Constants.QEMU_KVM);
 				pw.println(new File(image.getMainFile()).getName());
 				pw.println(image.getPassword());
 				pw.println(image.getUser());
