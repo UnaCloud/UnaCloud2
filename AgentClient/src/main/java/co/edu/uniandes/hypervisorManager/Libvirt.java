@@ -286,6 +286,7 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
+                this.connect();
 		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
 		List<String> list = new ArrayList<String>();
                 try{
