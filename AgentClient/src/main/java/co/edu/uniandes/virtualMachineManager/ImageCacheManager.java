@@ -37,7 +37,7 @@ import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
 public class ImageCacheManager {
 	
 	
-	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(UnaCloudConstants.VM_REPO_PATH,"E:\\GRID\\");
+	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(UnaCloudConstants.VM_REPO_PATH,VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VM_REPO_PATH));
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	
