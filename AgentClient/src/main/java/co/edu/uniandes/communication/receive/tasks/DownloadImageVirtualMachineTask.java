@@ -26,6 +26,8 @@ import co.edu.uniandes.exceptions.VirtualMachineExecutionException;
  */
 public class DownloadImageVirtualMachineTask {
 	
+        private static String fsep = File.separator;
+    
 	/**
 	 * Creates a new image copy requesting images from server
 	 * @param image base image
@@ -33,7 +35,7 @@ public class DownloadImageVirtualMachineTask {
 	 * @throws Exception 
 	 */
 	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws Exception{
-		File root=new File(repository+"\\"+image.getId()+"\\base");
+		File root = new File(repository+fsep+image.getId()+fsep+"base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
