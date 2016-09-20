@@ -10,6 +10,6 @@ public class Qemu_KVM extends Libvirt {
     
     public Qemu_KVM(String path){
         super(path, Constants.QEMU_KVM_DRV);
-        HYPERVISOR_ID = Constants.QEMU_KVM;
+        super.HYPERVISOR_ID = Constants.QEMU_KVM;
     }
 }
