@@ -368,7 +368,13 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void unregisterVirtualMachine(ImageCopy image) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            this.connect();
+            Domain virtualMachine = connection.domainLookupByName(image.getVirtualMachineName());
+            virtualMachine.undefine();
+        }catch(LibvirtException le){
+            System.err.println("Error trying to undefine the virtual machine: " + le.toString());
+        }
     }
 
     @Override
