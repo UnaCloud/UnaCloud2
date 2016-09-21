@@ -278,8 +278,45 @@ public abstract class Libvirt extends Hypervisor {
     }
 
     @Override
-    public void changeVirtualMachineMac(ImageCopy image) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported cómoyet."); //To change body of generated methods, choose Tools | Templates.
+    public void changeVirtualMachineMac(ImageCopy image) {
+        
+        try{
+            this.connect();
+            
+            // Get Domain configuration
+            Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document confXML = docBuilder.parse(new InputSource(new StringReader(virtualMachine.getXMLDesc(0))));
+                
+            // Set new mac address
+            confXML.getElementsByTagName("mac").item(0).getAttributes().getNamedItem("address").setTextContent(this.genMACAddress());
+                
+            TransformerFactory transFactory = TransformerFactory.newInstance();
+            Transformer trans = transFactory.newTransformer();
+            trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                
+            // Convert to string the new Domain configuration
+            StringWriter newConfXML = new StringWriter();
+            trans.transform(new DOMSource(confXML), new StreamResult(newConfXML));
+                
+            // Update the Domain configuration
+            virtualMachine.undefine();
+            connection.domainDefineXML(newConfXML.toString());
+                
+            }catch(LibvirtException le){
+                System.err.println("Error setting cpu or ram values: " + le.toString());
+            }catch(ParserConfigurationException pce){
+                System.err.println("Error creating xml document builder: " + pce.toString());
+            }catch(TransformerConfigurationException tce){
+                System.err.println("Error creating xml domain transformer: " + tce.toString());
+            }catch(SAXException se){
+                System.err.println("Error parsing virtual machine configuration file: " + se.toString());
+            }catch(IOException ioe){
+                System.err.println("Error reading virtual machine configuration file: " + ioe.toString());
+            }catch(TransformerException te){
+                System.err.println("Error transforming virtual machine configuration file: " + te.toString());
+            }
     }
 
     @Override
