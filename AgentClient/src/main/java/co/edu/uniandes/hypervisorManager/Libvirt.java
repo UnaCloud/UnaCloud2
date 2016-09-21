@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +26,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -41,6 +43,17 @@ public abstract class Libvirt extends Hypervisor {
     public Libvirt(String path, String driver) {
         super(path);
         this.driver = driver;
+    }
+    
+    private String genMACAddress(){
+        
+        String vendorOctets = "52:54:00", octeta = "", octetb = "", octetc = "";
+        
+        octeta = Integer.toHexString((int)(Math.round(Math.random() * 255)));
+        octetb = Integer.toHexString((int)(Math.round(Math.random() * 255)));
+        octetc = Integer.toHexString((int)(Math.round(Math.random() * 255)));
+        
+        return vendorOctets + ":" + octeta + ":" + octetb + ":" + octetc ;
     }
     
     /**
@@ -271,7 +284,86 @@ public abstract class Libvirt extends Hypervisor {
 
     @Override
     public void registerVirtualMachine(ImageCopy image) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        try{
+            this.connect();
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            String sp = File.separator;
+            File confXMLFile = new File(System.getProperty("user.dir") + sp + "vmtemplates" + sp + "vmtemplate.xml");
+            Document confXML = docBuilder.parse(confXMLFile);
+            String vmUUID = UUID.randomUUID().toString();
+            
+            // Set new vm name
+            confXML.getElementsByTagName("name").item(0).setTextContent(image.getVirtualMachineName());
+            
+            // Set new vm uuid
+            confXML.getElementsByTagName("uuid").item(0).setTextContent(vmUUID);
+            
+            // Set new vm title
+            confXML.getElementsByTagName("title").item(0).setTextContent(image.getVirtualMachineName());
+            
+            // Set new vm description
+            confXML.getElementsByTagName("description").item(0).setTextContent("UnaCloud deployment: vm_" + image.getVirtualMachineName());
+            
+            // Set new number of cores
+            confXML.getElementsByTagName("vcpu").item(0).setTextContent("1");
+                
+            // Set new amount of memory to 512MiB
+            int ram = 524288;
+            confXML.getElementsByTagName("memory").item(0).setTextContent("" + ram);
+            confXML.getElementsByTagName("currentMemory").item(0).setTextContent("" + ram);
+
+            // Set new vm emulator path
+            confXML.getElementsByTagName("emulator").item(0).setTextContent(super.getExecutablePath());
+            
+            // Set new machine type
+            confXML.getElementsByTagName("type").item(0).getAttributes().getNamedItem("machine").setTextContent("pc-i440fx-2.1");
+            
+            // Set new mac address
+            confXML.getElementsByTagName("mac").item(0).getAttributes().getNamedItem("address").setTextContent(this.genMACAddress());
+            
+            // Set disk
+            int numNodes = confXML.getElementsByTagName("disk").getLength();
+            for(int i = 0; i < numNodes; i++){
+                Node node = confXML.getElementsByTagName("disk").item(i);
+                if (node.getAttributes().getNamedItem("type").getTextContent().equalsIgnoreCase("file") && node.getAttributes().getNamedItem("device").getTextContent().equalsIgnoreCase("disk")){
+                    int childNodesCount = node.getChildNodes().getLength();
+                    for(int j = 0; j < childNodesCount; j++){
+                        Node childNode = node.getChildNodes().item(j);
+                        if(childNode.getNodeName().equals("source")){
+                            childNode.getAttributes().getNamedItem("file").setTextContent(image.getMainFile().getPath());
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            
+            TransformerFactory transFactory = TransformerFactory.newInstance();
+            Transformer trans = transFactory.newTransformer();
+            trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                
+            // Convert to string the new Domain configuration
+            StringWriter newConfXML = new StringWriter();
+            trans.transform(new DOMSource(confXML), new StreamResult(newConfXML));
+                
+            // Define the new domain
+            connection.domainDefineXML(newConfXML.toString());
+
+        }catch(ParserConfigurationException pce){
+            System.err.println("Error creating xml document builder: " + pce.toString());
+        }catch(SAXException se){
+            System.err.println("Error parsing virtual machine configuration file: " + se.toString());
+        }catch(IOException ioe){
+            System.err.println("Error reading virtual machine configuration file: " + ioe.toString());
+        }catch(TransformerConfigurationException tce){
+            System.err.println("Error creating xml domain transformer: " + tce.toString());
+        }catch(TransformerException te){
+            System.err.println("Error transforming virtual machine configuration file: " + te.toString());
+        }catch(LibvirtException le){
+            System.err.println("Error trying to define the new virtual machine: " + le.toString());
+        }
     }
 
     @Override
