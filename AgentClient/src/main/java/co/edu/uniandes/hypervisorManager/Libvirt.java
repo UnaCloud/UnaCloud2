@@ -2,6 +2,7 @@ package co.edu.uniandes.hypervisorManager;
 
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
+import com.losandes.utils.LocalProcessExecutor;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.DomainSnapshot;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -71,8 +74,32 @@ public abstract class Libvirt extends Hypervisor {
      * Set virtual machine process priority
      * @param image 
      */
-    private void setPriority(ImageCopy image){
+    public void setPriority(ImageCopy image){
         
+        try {
+                String vmPID = "";
+                
+                // List all processes with complete execution command information
+                String[] psResult = LocalProcessExecutor.executeCommandOutput("ps", "-A", "-o", "pid args").split("\n");
+                
+                // Search the Virtual Machine PID
+                for(String process:psResult){
+                    if(process.contains(super.getExecutablePath()) && process.contains("-name " + image.getVirtualMachineName())){
+                        Pattern pidPattern = Pattern.compile("^[ ]*([0-9]*).*");
+                        Matcher pidMatches = pidPattern.matcher(process);
+                        pidMatches.find();
+                        vmPID = pidMatches.group(1);
+                        break;
+                    }
+                }
+    		sleep(1000);
+                
+                // Set the lowest priority
+    		LocalProcessExecutor.executeCommandOutput("renice", "-n", "19", "-p", vmPID);
+    		sleep(1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
     /**
