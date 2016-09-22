@@ -106,7 +106,26 @@ public abstract class Libvirt extends Hypervisor {
      * Unregister all the Hypervisor Virtual Machines
      */
     public void unregisterAllVms(){
-        
+        try{
+            this.connect();
+            String[] definedDomains = this.connection.listDefinedDomains();
+            int[] activeDomains = this.connection.listDomains();
+            
+            Domain vm = null;
+            
+            for(String definedDomain:definedDomains){
+                vm = this.connection.domainLookupByName(definedDomain);
+                vm.undefine();
+            }
+            
+            for(int activeDomain:activeDomains){
+                vm = this.connection.domainLookupByID(activeDomain);
+                vm.undefine();
+            }
+            
+        }catch(LibvirtException le){
+            System.err.println("Error attemping to unregister all virtual machines: " + le.toString());
+        }
     }
     
     /**
