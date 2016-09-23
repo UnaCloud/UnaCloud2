@@ -19,11 +19,22 @@
         <asset:stylesheet src="ionicons.min.css"/>
    </head>
    <body>
-	   <g:layoutBody/>
-	   <footer class="footer">
-	      <div class="container">
-	        <p class="text-muted"><a href="http://www.uniandes.edu.co/" target="_blank" >Universidad de Los Andes</a> - <a href="https://sistemas.uniandes.edu.co/en/" target="_blank" >Systems and Computer Engineering Department</a> Research Group COMIT - 2015 </p>
-	      </div>
-	   	</footer>
+   		<div class="wrapper">
+	   		<div class="center_login">
+		   		<g:layoutBody/>
+		   	</div>	   
+		   <footer class="footer">
+		      <div class="container">
+		        <div class="center">
+						Universidad de los Andes | Vigilada Mineducaci&oacute;n <br>
+						Reconocimiento como Universidad: Decreto 1297 del 30 de mayo de 1964. <br>
+						Reconocimiento personer&iacute;a jur&iacute;dica: Resoluci&oacute;n 28 del 23 de febrero de 1949 Minjusticia  <br>
+						Edificio Mario Laserna Cra 1Este No 19A - 40 Bogot&aacute; (Colombia) | Tel: [571] 3394949 Ext: 2860, 2861, 2862 | Fax: [571] 3324325 <br>
+						&copy; 2016 - <a href="https://sistemas.uniandes.edu.co"> Departamento de Ingenier&iacute;a de Sistemas y Computaci&oacute;n </a>
+				</div>
+		      </div>
+	    	</footer>   		
+   		</div>
+	   
    </body>
 </html>

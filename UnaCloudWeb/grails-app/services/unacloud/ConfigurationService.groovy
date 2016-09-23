@@ -11,7 +11,7 @@ import com.losandes.utils.UnaCloudConstants;
 import unacloud.share.enums.ServerVariableProgramEnum;
 
 /**
- * This service contains all methods to manage configuration: update server variables, manager agent version and download agent files.
+ * This service contains all methods to manage configuration: update server variables, manage agent version and download agent files.
  * This class connects with database using hibernate
  * @author CesarF
  *
@@ -24,7 +24,7 @@ class ConfigurationService {
 	//-----------------------------------------------------------------
 
 	/**
-	 * Set value in a server variable
+	 * Sets value in a server variable
 	 * @param variable to be modified
 	 * @param value to be recorded in variable
 	 * @return
@@ -34,7 +34,7 @@ class ConfigurationService {
     }
 	
 	/**
-	 * return the current agent version in system
+	 * returns the current agent version in system
 	 * @return
 	 */
 	def getAgentVersion(){
@@ -42,7 +42,7 @@ class ConfigurationService {
 	}
 	
 	/**
-	 * Set the version of agent increasing the minor number of version server variable
+	 * Sets the version of agent increasing the minor number of version server variable
 	 * @return
 	 */
 	def setAgentVersion(){

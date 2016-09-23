@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">   
     <head>
-        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>UnaCloud | Dashboard</title>
         <link rel="shortcut icon" type="image/x-icon" href="${createLink(uri: '/images/favicon.ico', absolute: true)}"/>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
@@ -173,15 +173,21 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">              
                 <g:layoutBody/>
-              	<footer class="footer">
-			      <div class="container">
-			        <p class="text-muted"><a href="http://www.uniandes.edu.co/" target="_blank" >Universidad de Los Andes</a> - <a href="https://sistemas.uniandes.edu.co/en/" target="_blank" >Systems and Computer Engineering Department</a> Research Group COMIT - 2015 </p>
-			      </div>
-		    	</footer>
+              	
             </aside><!-- /.right-side -->
             
         </div><!-- ./wrapper -->
-
+		<footer class="footer">
+	      <div class="container">
+	        <div class="center">
+					Universidad de los Andes | Vigilada Mineducaci&oacute;n <br>
+					Reconocimiento como Universidad: Decreto 1297 del 30 de mayo de 1964. <br>
+					Reconocimiento personer&iacute;a jur&iacute;dica: Resoluci&oacute;n 28 del 23 de febrero de 1949 Minjusticia  <br>
+					Edificio Mario Laserna Cra 1Este No 19A - 40 Bogot&aacute; (Colombia) | Tel: [571] 3394949 Ext: 2860, 2861, 2862 | Fax: [571] 3324325 <br>
+					&copy; 2016 - <a href="https://sistemas.uniandes.edu.co"> Departamento de Ingenier&iacute;a de Sistemas y Computaci&oacute;n </a>
+			</div>
+	      </div>
+    	</footer>
 		<asset:javascript src="main.js"/>
 		<asset:javascript src="cloud.js"/>   		
 		<script>$(document).on('ready',activator())</script>
