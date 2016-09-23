@@ -1,8 +1,8 @@
 import java.io.FileInputStream;
 
-import unacloud.share.utils.EnvironmentManager;
-import com.losandes.utils.ConfigurationReader;
-import com.losandes.utils.UnaCloudConstants;
+import uniandes.unacloud.share.utils.EnvironmentManager;
+import uniandes.unacloud.common.utils.ConfigurationReader;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes

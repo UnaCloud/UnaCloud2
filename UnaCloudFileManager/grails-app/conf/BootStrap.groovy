@@ -1,8 +1,7 @@
-import com.losandes.utils.UnaCloudConstants;
-
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 import grails.util.Environment;
-import unacloud.FileService
-import uniandes.unacloud.FileManager;
+import uniandes.unacloud.file.FileManager;
+import uniandes.unacloud.file.services.FileService;
 
 /**
  * Initial point in app

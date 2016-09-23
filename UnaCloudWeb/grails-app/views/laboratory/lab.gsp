@@ -1,4 +1,4 @@
-<%@page import="unacloud.share.enums.PhysicalMachineStateEnum"%>
+<%@page import="uniandes.unacloud.share.enums.PhysicalMachineStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>

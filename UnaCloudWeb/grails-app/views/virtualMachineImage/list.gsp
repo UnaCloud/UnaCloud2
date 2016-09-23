@@ -1,4 +1,4 @@
-<%@page import="unacloud.share.enums.VirtualMachineImageEnum"%>
+<%@page import="uniandes.unacloud.share.enums.VirtualMachineImageEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>

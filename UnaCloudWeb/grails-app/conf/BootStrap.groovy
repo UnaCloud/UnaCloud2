@@ -2,40 +2,41 @@
 import java.io.FileInputStream;
 
 
-import com.losandes.utils.ConfigurationReader
-import com.losandes.utils.Constants;
-import com.losandes.utils.UnaCloudConstants;
+
+import uniandes.unacloud.common.utils.ConfigurationReader
+import uniandes.unacloud.common.utils.Constants;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
 
-import unacloud.share.queue.QueueRabbitManager;
-import unacloud.share.utils.EnvironmentManager;
-import unacloud.ExternalCloudProvider;
-import unacloud.UserGroup
-import unacloud.UserGroupService
-import unacloud.HardwareProfile;
-import unacloud.Hypervisor;
-import unacloud.IP
-import unacloud.IPPool;
-import unacloud.Laboratory;
-import unacloud.OperatingSystem;
-import unacloud.PhysicalMachine;
-import unacloud.ServerVariable
-import unacloud.User
-import unacloud.Repository
-import unacloud.UserService
-import unacloud.enums.ExternalCloudTypeEnum;
-import unacloud.enums.NetworkQualityEnum;
-import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.ServerVariableProgramEnum;
-import unacloud.share.enums.ServerVariableTypeEnum;
-import unacloud.init.DatabaseService
-import unacloud.task.queue.QueueTaskerControl;
-import unacloud.task.queue.QueueTaskerFile;
-import unacloud.utils.Hasher;
-import unacloud.pmallocators.AllocatorEnum;
+import uniandes.unacloud.share.queue.QueueRabbitManager;
+import uniandes.unacloud.share.utils.EnvironmentManager;
+import uniandes.unacloud.web.domain.ExternalCloudProvider;
+import uniandes.unacloud.web.domain.UserGroup
+import uniandes.unacloud.web.services.UserGroupService
+import uniandes.unacloud.web.domain.HardwareProfile;
+import uniandes.unacloud.web.domain.Hypervisor;
+import uniandes.unacloud.web.domain.IP
+import uniandes.unacloud.web.domain.IPPool;
+import uniandes.unacloud.web.domain.Laboratory;
+import uniandes.unacloud.web.domain.OperatingSystem;
+import uniandes.unacloud.web.domain.PhysicalMachine;
+import uniandes.unacloud.web.domain.ServerVariable
+import uniandes.unacloud.web.domain.User
+import uniandes.unacloud.web.domain.Repository
+import uniandes.unacloud.web.services.UserService
+import uniandes.unacloud.web.domain.enums.ExternalCloudTypeEnum;
+import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
+import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
+import uniandes.unacloud.share.enums.ServerVariableProgramEnum;
+import uniandes.unacloud.share.enums.ServerVariableTypeEnum;
+import uniandes.unacloud.web.queue.QueueTaskerControl;
+import uniandes.unacloud.web.queue.QueueTaskerFile;
+import uniandes.unacloud.web.utils.java.Hasher;
+import uniandes.unacloud.web.pmallocators.AllocatorEnum;
+import uniandes.unacloud.web.services.init.DatabaseService;
 
 /**
  * Start APP

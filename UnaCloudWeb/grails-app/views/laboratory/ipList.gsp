@@ -1,4 +1,4 @@
-<%@page import="unacloud.share.enums.IPEnum"%>
+<%@page import="uniandes.unacloud.share.enums.IPEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
