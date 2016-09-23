@@ -1,4 +1,4 @@
-<%@page import="unacloud.enums.ClusterEnum"%>
+<%@page import="uniandes.unacloud.web.domain.enums.ClusterEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>

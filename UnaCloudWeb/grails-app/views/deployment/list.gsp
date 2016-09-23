@@ -1,4 +1,4 @@
-<%@page import="com.losandes.enums.VirtualMachineExecutionStateEnum"%>
+<%@page import="uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
