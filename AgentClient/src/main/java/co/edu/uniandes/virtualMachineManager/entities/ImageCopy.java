@@ -78,7 +78,7 @@ public class ImageCopy implements Serializable{
 			try {
 				if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
 				if(status!=VirtualMachineImageStatus.STARTING)status=VirtualMachineImageStatus.STARTING;
-				Class<?> configuratorClass=Class.forName("virtualMachineManager.configuration."+getImage().getConfiguratorClass());
+				Class<?> configuratorClass=Class.forName("co.edu.uniandes.virtualMachineManager.configuration."+getImage().getConfiguratorClass());
 				Object configuratorObject=configuratorClass.getConstructor().newInstance();
 				if(configuratorObject instanceof AbstractVirtualMachineConfigurator){
 					AbstractVirtualMachineConfigurator configurator=(AbstractVirtualMachineConfigurator)configuratorObject;
