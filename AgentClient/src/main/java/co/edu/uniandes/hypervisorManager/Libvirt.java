@@ -166,47 +166,14 @@ public abstract class Libvirt extends Hypervisor {
     @Override
     public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws HypervisorOperationException {
         if(cores!=0&&ram!=0){
-            
             try{
-                // Get Domain configuration
-                Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                Document confXML = docBuilder.parse(new InputSource(new StringReader(virtualMachine.getXMLDesc(0))));
-                
-                // Set new number of cores
-                confXML.getElementsByTagName("vcpu").item(0).setTextContent("" + cores);
-                
-                // Set new amount of memory
-                ram = ram * 1024;
-                confXML.getElementsByTagName("memory").item(0).setTextContent("" + ram);
-                confXML.getElementsByTagName("currentMemory").item(0).setTextContent("" + ram);
-                
-                // 
-                TransformerFactory transFactory = TransformerFactory.newInstance();
-                Transformer trans = transFactory.newTransformer();
-                trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-                
-                // Convert to string the new Domain configuration
-                StringWriter newConfXML = new StringWriter();
-                trans.transform(new DOMSource(confXML), new StreamResult(newConfXML));
-                
-                // Update the Domain configuration
-                virtualMachine.undefine();
-                connection.domainDefineXML(newConfXML.toString());
-                
-            }catch(LibvirtException le){
-                System.err.println("Error setting cpu or ram values: " + le.toString());
-            }catch(ParserConfigurationException pce){
-                System.err.println("Error creating xml document builder: " + pce.toString());
-            }catch(TransformerConfigurationException tce){
-                System.err.println("Error creating xml domain transformer: " + tce.toString());
-            }catch(SAXException se){
-                System.err.println("Error parsing virtual machine configuration file: " + se.toString());
-            }catch(IOException ioe){
-                System.err.println("Error reading virtual machine configuration file: " + ioe.toString());
-            }catch(TransformerException te){
-                System.err.println("Error transforming virtual machine configuration file: " + te.toString());
+                String domainName = image.getVirtualMachineName();
+                LocalProcessExecutor.executeCommandOutput("virsh", "-c", this.connection.getURI(), "setmaxmem", "--size", ram + "M", "--domain", domainName, "--config");
+                LocalProcessExecutor.executeCommandOutput("virsh", "-c", this.connection.getURI(), "setmem", "--size",ram + "M", "--domain", domainName, "--config");
+                LocalProcessExecutor.executeCommandOutput("virsh", "-c", this.connection.getURI(), "setvcpus", "--count", cores + "", "--domain", domainName, "--config");
+                sleep(1000);
+            }catch(Exception e){
+                System.err.println("Error setting cpu or ram values: " + e.toString());
             }
         }
     }
@@ -389,14 +356,6 @@ public abstract class Libvirt extends Hypervisor {
             // Set new vm description
             confXML.getElementsByTagName("description").item(0).setTextContent("UnaCloud deployment: vm_" + image.getVirtualMachineName());
             
-            // Set new number of cores
-            confXML.getElementsByTagName("vcpu").item(0).setTextContent("1");
-                
-            // Set new amount of memory to 512MiB
-            int ram = 524288;
-            confXML.getElementsByTagName("memory").item(0).setTextContent("" + ram);
-            confXML.getElementsByTagName("currentMemory").item(0).setTextContent("" + ram);
-
             // Set new vm emulator path
             confXML.getElementsByTagName("emulator").item(0).setTextContent(super.getExecutablePath());
             
