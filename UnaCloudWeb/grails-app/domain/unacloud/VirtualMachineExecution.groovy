@@ -59,12 +59,7 @@ class VirtualMachineExecution {
 	 */
 	PhysicalMachine executionNode
 	
-	/**
-	 * Monitoring system configure in virtual execution
-	 * unused
-	 */
-	MonitorSystem monitorSystem
-	
+		
 	/**
 	 * deployed Image 
 	 */
@@ -78,7 +73,6 @@ class VirtualMachineExecution {
 	
 	static constraints = {
 		executionNode nullable: true
-		monitorSystem nullable: true
 		stopTime nullable: true 
 		startTime nullable:true
 		lastReport nullable:true

@@ -13,8 +13,11 @@ import com.losandes.utils.UnaCloudConstants;
 import unacloud.share.db.HypervisorManager;
 import unacloud.share.db.RepositoryManager;
 import unacloud.share.db.VirtualImageManager;
-import unacloud.share.queue.QueueMessage;
+import unacloud.share.queue.messages.QueueMessage;
 import unacloud.share.queue.QueueReader;
+import unacloud.share.queue.messages.MessageCreateCopyFromPublic;
+import unacloud.share.queue.messages.MessageDeleteUser;
+import unacloud.share.queue.messages.MessageIdOfImage;
 import unacloud.share.entities.HypervisorEntity;
 import unacloud.share.entities.RepositoryEntity;
 import unacloud.share.entities.VirtualMachineImageEntity;
@@ -73,7 +76,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					Long imageId = Long.parseLong(message.getMessageParts()[0]);
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
+					Long imageId = messageId.getIdImage();
+					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 					if(image!=null){
 						if(!image.isPublic()){
@@ -114,8 +119,10 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					Long imageId = Long.parseLong(message.getMessageParts()[0]);
-					Long publicImageId = Long.parseLong(message.getMessageParts()[1]);
+					MessageCreateCopyFromPublic messageFromPublic = new MessageCreateCopyFromPublic(message);
+					Long imageId = messageFromPublic.getIdImage();
+					Long publicImageId = messageFromPublic.getIdPublicImage();
+					
 					VirtualImageFileEntity publicImage = VirtualMachineImageManager.getVirtualImageWithFile(publicImageId, VirtualMachineImageEnum.AVAILABLE, false,false,con);
 					VirtualImageFileEntity privateImage = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE, true,false,con);
 					if(publicImage!=null&&privateImage!=null){
@@ -167,7 +174,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					Long imageId = Long.parseLong(message.getMessageParts()[0]);
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
+					Long imageId = messageId.getIdImage();
+					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 					if(image!=null){
 						try {
@@ -210,7 +219,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					Long userId = Long.parseLong(message.getMessageParts()[0]);
+					MessageDeleteUser messageDelete = new MessageDeleteUser(message);
+					Long userId = messageDelete.getIdUser();
+					
 					UserEntity user = UserManager.getUser(userId,con);
 					if(user!=null&&user.getState().equals(UserStateEnum.DISABLE)){
 						System.out.println("Delete user: "+user.getId());
@@ -255,7 +266,9 @@ public class QueueMessageFileProcessor implements QueueReader{
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception{
 				try(Connection con = FileManager.getInstance().getDBConnection()){
-					Long imageId = Long.parseLong(message.getMessageParts()[0]);
+					MessageIdOfImage messageId = new MessageIdOfImage(message);
+					Long imageId = messageId.getIdImage();
+					
 					VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.IN_QUEUE,false,false,con);
 					if(image!=null){
 						if(image.isPublic()){

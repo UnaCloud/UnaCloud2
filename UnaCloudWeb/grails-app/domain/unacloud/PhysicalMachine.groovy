@@ -84,15 +84,9 @@ class PhysicalMachine {
 	
 	static belongsTo =  [laboratory:Laboratory]
 	
-	
-	/**
-	 * Monitoring System configured in physical machine
-	 */
-	MonitorSystem monitorSystem
-	
+		
 	static constraints = {
 		name unique:true
-		monitorSystem nullable:true
 		lastReport nullable:true
 		ip nullable:true
 	}

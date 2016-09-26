@@ -31,7 +31,7 @@
 	                         	</div>
 	                         	<div class="form-group">
 	                            	<label>Version *</label>
-	                            	<input type="text" class="form-control" name="version" placeholder="Hypervisor version">
+	                            	<input type="text" class="form-control" name="vers" placeholder="Hypervisor version">
 	                         	</div>
 	                         	<div class="form-group">
 	                            	<label>Main file extension *</label>
@@ -40,7 +40,7 @@
 	                         	<div class="form-group">
 	                            	<label>Other file extensions</label>
 	                            	<p class="help-block">Allowed file extension list for this hypervisor separated by comma (.vbox,.vmk,...), not include main file.</p> 
-	                            	<input type="text" class="form-control" name="version" placeholder="Hypervisor file extension list">
+	                            	<input type="text" class="form-control" name="files_ext" placeholder="Hypervisor file extension list">
 	                         	</div>
 	                         </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			

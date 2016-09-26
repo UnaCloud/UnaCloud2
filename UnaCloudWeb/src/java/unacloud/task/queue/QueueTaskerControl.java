@@ -2,8 +2,13 @@ package unacloud.task.queue;
 
 import java.util.List;
 
-import unacloud.share.queue.QueueMessage;
 import unacloud.share.queue.QueueTaskerConnection;
+import unacloud.share.queue.messages.MessageAddInstances;
+import unacloud.share.queue.messages.MessageCreateCopyFromExecution;
+import unacloud.share.queue.messages.MessageDeployCluster;
+import unacloud.share.queue.messages.MessageIdOfImage;
+import unacloud.share.queue.messages.MessageStopExecutions;
+import unacloud.share.queue.messages.MessageTaskMachines;
 import unacloud.DeployedImage;
 import unacloud.Deployment;
 import unacloud.PhysicalMachine;
@@ -39,7 +44,7 @@ public class QueueTaskerControl {
 	 * @param user who asks the task
 	 */
 	public static void clearCache(VirtualMachineImage image, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.CLEAR_CACHE, user.getDatabaseId()+"", new String[]{image.getDatabaseId()+""});
+		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CLEAR_CACHE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}	
 	
@@ -50,13 +55,14 @@ public class QueueTaskerControl {
 	 * @param user
 	 * @throws Exception in case task is null or number of machines is 0
 	 */
-	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user){		
-		String[] parts = new String[machines.size()+1];
-		parts[0]=task.getName();
+	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user){
+		long[] listIds = new long[machines.size()];
 		for (int i = 0; i < machines.size(); i++) {
-			parts[i+1]=machines.get(i).getDatabaseId()+"";
-		}		
-		QueueMessage message = new QueueMessage(QueueMessageType.SEND_TASK, user.getDatabaseId()+"", parts);
+			listIds[i]=machines.get(i).getDatabaseId();
+		}
+		String nameTask = task.getName();
+		
+		MessageTaskMachines message = new MessageTaskMachines(String.valueOf(user.getDatabaseId()), listIds, nameTask);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -66,7 +72,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void deployCluster(Deployment deployment, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.DEPLOY_CLUSTER, user.getDatabaseId()+"", new String[]{deployment.getDatabaseId()+""});
+		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}
 	
@@ -75,11 +81,11 @@ public class QueueTaskerControl {
 	 * @param deployments
 	 */
 	public static void stopExecutions(List<VirtualMachineExecution> executions, User user){
-		String[] parts = new String[executions.size()];
+		Long[] idExecutions = new Long[executions.size()];
 		for (int i = 0; i < executions.size(); i++) {
-			parts[i]=executions.get(i).getDatabaseId()+"";
-		}		
-		QueueMessage message = new QueueMessage(QueueMessageType.STOP_DEPLOYS, user.getDatabaseId()+"", parts);
+			idExecutions[i]=executions.get(i).getDatabaseId();
+		}
+		MessageStopExecutions message = new MessageStopExecutions(String.valueOf(user.getDatabaseId()), idExecutions);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -89,12 +95,11 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void addInstancesToDeploy(List<VirtualMachineExecution> executions, User user, DeployedImage image){
-		String[] parts = new String[executions.size()+1];
-		parts[0]=image.getImage().getDatabaseId()+"";
-		for (int i = 0, j = 1; i < executions.size(); i++, j++) {
-			parts[j]=executions.get(i).getDatabaseId()+"";
-		}	
-		QueueMessage message = new QueueMessage(QueueMessageType.ADD_INSTANCES, user.getDatabaseId()+"", parts);
+		Long[] listIds = new Long[executions.size()];
+		for (int i = 0; i < executions.size(); i++) {
+			listIds[i]=executions.get(i).getDatabaseId();
+		}
+		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), image.getImage().getDatabaseId(), listIds);
 		controlQueue.sendMessage(message);
 	}
 	
@@ -105,7 +110,7 @@ public class QueueTaskerControl {
 	 * @param user
 	 */
 	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage newImage, VirtualMachineImage pastImage, User user){
-		QueueMessage message = new QueueMessage(QueueMessageType.CREATE_COPY, user.getDatabaseId()+"", new String[]{execution.getDatabaseId()+"",newImage.getDatabaseId()+"",pastImage.getDatabaseId()+""});
+		MessageCreateCopyFromExecution message = new MessageCreateCopyFromExecution(String.valueOf(user.getDatabaseId()), execution.getDatabaseId(), newImage.getDatabaseId(), pastImage.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}
 }

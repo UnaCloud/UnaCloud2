@@ -36,6 +36,14 @@ class FileController {
 	// Actions
 	//-----------------------------------------------------------------
 
+	/**
+	 * Service to test if application is running
+	 * @return
+	 */
+	def test(){
+		render 'I am running ;)'
+	}
+	
    /**
 	 * Validates file parameters are correct and save new uploaded image. Redirects
 	 * to index when finished or renders an error message if uploaded

@@ -3,7 +3,6 @@ package communication.send.report;
 import com.losandes.enums.VirtualMachineExecutionStateEnum;
 import com.losandes.utils.OperatingSystem;
 
-import communication.UDPMessageEnum;
 import communication.send.UDPCommunicator;
 
 
@@ -26,7 +25,7 @@ public class ServerMessageSender {
      * @throws Exception 
      */
     public static boolean reportVirtualMachineState(long virtualMachineCode,VirtualMachineExecutionStateEnum state,String message) throws Exception{    	
-    	return UDPCommunicator.getInstance().pushInfoVM(UDPMessageEnum.STATE_VM, "hostname",OperatingSystem.getHostname(),"executionId",virtualMachineCode,"state",state.toString(),"message",message);
+    	return UDPCommunicator.getInstance().pushInfoVM(OperatingSystem.getHostname(), virtualMachineCode, state, message);
     }
     
     /**
@@ -34,8 +33,8 @@ public class ServerMessageSender {
      * @param executions
      * @throws Exception
      */
-	public static void reportPhyisicalMachine(String executions) throws Exception{
-		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.STATE_PM, "hostname",OperatingSystem.getHostname(),"hostuser",OperatingSystem.getUserName(),"executions",executions);
+	public static void reportPhyisicalMachine(Long[] executions) throws Exception{
+		UDPCommunicator.getInstance().pushInfoPM(OperatingSystem.getHostname(), OperatingSystem.getUserName(), executions);
 	}
 	
 	/**
@@ -45,6 +44,6 @@ public class ServerMessageSender {
 	 * @throws Exception
 	 */
 	public static void reportMachineLogEvent(String component, String message) throws Exception{
-		UDPCommunicator.getInstance().pushInfoPM(UDPMessageEnum.LOG_PM, "hostname",OperatingSystem.getHostname(),"component",component, "message",message);
+		UDPCommunicator.getInstance().pushInfoLogPM(OperatingSystem.getHostname(), component, message);
 	}
 }

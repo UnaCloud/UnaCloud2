@@ -21,6 +21,7 @@
 	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
 	<classpathentry kind="lib" path="lib/servershares.jar"/>
 	<classpathentry kind="lib" path="lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.6/grails-app/conf">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>

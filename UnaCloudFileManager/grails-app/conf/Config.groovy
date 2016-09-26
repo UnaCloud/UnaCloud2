@@ -1,3 +1,9 @@
+import java.io.FileInputStream;
+
+import unacloud.share.utils.EnvironmentManager;
+import com.losandes.utils.ConfigurationReader;
+import com.losandes.utils.UnaCloudConstants;
+
 // locations to search for config files that get merged into the main config;
 // config files can be ConfigSlurper scripts, Java properties files, or classes
 // in the classpath in ConfigSlurper format
@@ -88,7 +94,10 @@ grails.hibernate.pass.readonly = false
 // configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
 grails.hibernate.osiv.readonly = false
 
-cors.url.pattern = ['/upload/*', '/update/*','/file/*']
+//cors.url.pattern = ['/upload/*', '/update/*','/file/*']
+ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG)
+String path = reader.getStringVariable("WEB_SERVER_URL")
+cors.headers = ['Access-Control-Allow-Origin': path.substring(0,path.lastIndexOf("/"))]
 
 environments {
     development {

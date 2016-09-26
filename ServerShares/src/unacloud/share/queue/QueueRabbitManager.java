@@ -3,6 +3,8 @@ package unacloud.share.queue;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import unacloud.share.queue.messages.QueueMessage;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -12,14 +14,14 @@ import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.AMQP.BasicProperties;
 
 /**
- * Extends from Queue Tasker connection, manages connection to RabbitMQ service
+ * Extends from Queue Tasker connection, manage connection to RabbitMQ service
  * @author CesarF
  *
  */
 public class QueueRabbitManager extends QueueTaskerConnection{
 	
 	/**
-	 * RabbitMQ Connection factory
+	 * Factory of connection to rabbit
 	 */
 	ConnectionFactory factory ;
 	Connection connection;
@@ -68,7 +70,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	}
 	
 	/**
-	 * Creates a new factory to generate queue connections
+	 * Creates a new factory to generate connections to queue
 	 * @throws TimeoutException 
 	 * @throws IOException 
 	 */

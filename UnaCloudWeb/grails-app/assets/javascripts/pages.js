@@ -1,6 +1,5 @@
 $(document).on('ready',function(){
-	$("#unacloudTable").dataTable();
-	$("#unacloudTable2").dataTable();
+
 	$('.delete_user').click(function (event){	
 		event.preventDefault();
 		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'User')	
@@ -164,7 +163,8 @@ $(document).on('ready',function(){
 			}
 		});
 	});	
-	
+	$("#unacloudTable").dataTable();
+	$("#unacloudTable2").dataTable();
 	tableChecker();
 });
 
@@ -297,7 +297,7 @@ function uploadForm(form){
     };
     xhr.onerror = function() {
     	hideLoading();
-    	showError('Error!','Upload failed. Can not connect to server.')
+    	showError('Error!','Upload failed. Cannot connect to server.')
     };
     showLoadingUploading();
 	xhr.open("POST", form.action)	

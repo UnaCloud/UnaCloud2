@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
-	<classpathentry kind="lib" path="lib/java-json.jar"/>
+	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CommonShares"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ServerShares"/>
 	<classpathentry kind="output" path="bin"/>

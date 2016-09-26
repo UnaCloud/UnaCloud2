@@ -199,6 +199,7 @@ class LaboratoryController {
 	 */
 	def ipDelete(){
 		def lab = Laboratory.get(params.id)
+		print lab
 		if(lab&&params.ip&&params.pool){
 			try{
 				laboratoryService.deleteIP(lab,params.ip)

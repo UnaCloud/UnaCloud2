@@ -5,6 +5,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
+import communication.messages.udp.UnaCloudMessageUDP;
+
 /**
  * Class used to send and receive message using UDP protocol
  * @author CesarF
@@ -62,7 +64,6 @@ public class UnaCloudDataSenderUDP {
 			UnaCloudMessageUDP udpMessage = new UnaCloudMessageUDP();
 			udpMessage.setMessageByBytes(request.getData());
 			udpMessage.setIp(request.getAddress().getHostAddress());
-			udpMessage.setHost(request.getAddress().getHostName());
 			udpMessage.setPort(0);
 			return udpMessage;
 		} catch (Exception e) {

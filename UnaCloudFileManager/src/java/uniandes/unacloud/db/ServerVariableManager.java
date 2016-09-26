@@ -27,7 +27,6 @@ public class ServerVariableManager {
 			List<ServerVariableEntity> list = new ArrayList<ServerVariableEntity>();	
 			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list FROM server_variable sv WHERE sv.server_only = 0;";
 			PreparedStatement ps = con.prepareStatement(query);		
-			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			while(rs.next())list.add(new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(2)));
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -51,7 +50,6 @@ public class ServerVariableManager {
 			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list FROM server_variable sv WHERE sv.name = ?;";
 			PreparedStatement ps = con.prepareStatement(query);		
 			ps.setString(1, name);
-			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			if(rs.next())variable = new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(4));
 			try{rs.close();ps.close();}catch(Exception e){}
