@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.communication.send;
 
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
-import uniandes.unacloud.common.utils.OperatingSystem;
 
 
 /**
@@ -23,7 +23,7 @@ public class ServerMessageSender {
      * @throws Exception 
      */
     public static boolean reportVirtualMachineState(long virtualMachineCode,VirtualMachineExecutionStateEnum state,String message) throws Exception{    	
-    	return UDPCommunicator.getInstance().pushInfoVM(OperatingSystem.getHostname(), virtualMachineCode, state, message);
+    	return UDPCommunicator.getInstance().pushInfoVM(OSFactory.getOS().getHostname(), virtualMachineCode, state, message);
     }
     
     /**
@@ -32,7 +32,7 @@ public class ServerMessageSender {
      * @throws Exception
      */
 	public static void reportPhyisicalMachine(Long[] executions) throws Exception{
-		UDPCommunicator.getInstance().pushInfoPM(OperatingSystem.getHostname(), OperatingSystem.getUserName(), executions);
+		UDPCommunicator.getInstance().pushInfoPM(OSFactory.getOS().getHostname(), OSFactory.getOS().getUserName(), executions);
 	}
 	
 	/**
@@ -42,6 +42,6 @@ public class ServerMessageSender {
 	 * @throws Exception
 	 */
 	public static void reportMachineLogEvent(String component, String message) throws Exception{
-		UDPCommunicator.getInstance().pushInfoLogPM(OperatingSystem.getHostname(), component, message);
+		UDPCommunicator.getInstance().pushInfoLogPM(OSFactory.getOS().getHostname(), component, message);
 	}
 }

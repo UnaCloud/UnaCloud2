@@ -1,7 +1,6 @@
 package uniandes.unacloud.agent.communication.receive;
 
 import static uniandes.unacloud.common.utils.Constants.ERROR_MESSAGE;
-import static uniandes.unacloud.common.utils.Constants.MESSAGE_SEPARATOR_TOKEN;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,6 +13,7 @@ import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
 import uniandes.unacloud.agent.execution.task.StartVirtualMachineTask;
 import uniandes.unacloud.agent.execution.task.StopVirtualMachineTask;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.com.UnaCloudAbstractMessage;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
 import uniandes.unacloud.common.com.messages.AgentMessage;
@@ -29,7 +29,6 @@ import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStopMessage;
-import uniandes.unacloud.common.utils.OperatingSystem;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 
@@ -170,13 +169,17 @@ public class ClouderServerAttentionThread implements Runnable {
      * send additional data
      */
     private UnaCloudAbstractResponse attendPhysicalMachineOperation(UnaCloudAbstractMessage message) {
-        switch (message.getSubOp()) {
+    	try {
+    		switch (message.getSubOp()) {
             case PhysicalMachineOperationMessage.PM_TURN_OFF:
-                return new InformationResponse("PM_TURN_OFF" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().turnOff());
+            	OSFactory.getOS().turnOff();
+                return new InformationResponse("PM_TURN_OFF");
             case PhysicalMachineOperationMessage.PM_RESTART:
-                return new InformationResponse("PM_RESTART" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().restart());
+            	OSFactory.getOS().restart();
+                return new InformationResponse("PM_RESTART");
             case PhysicalMachineOperationMessage.PM_LOGOUT:
-                return new InformationResponse("PM_LOGOUT" + MESSAGE_SEPARATOR_TOKEN + new OperatingSystem().logOut());
+            	OSFactory.getOS().logOut();
+                return new InformationResponse("PM_LOGOUT");
             case PhysicalMachineOperationMessage.PM_TURN_ON:
                     PhysicalMachineTurnOnMessage turnOn=(PhysicalMachineTurnOnMessage)message;
                 for (String mac : turnOn.getMacs()) {
@@ -188,6 +191,9 @@ public class ClouderServerAttentionThread implements Runnable {
                 return new InformationResponse("successful");          
             default:
                 return new InformationResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getSubOp());
-        }
+    		}
+		} catch (Exception e) {
+			return new InformationResponse(e.getMessage());
+		}        
     }
 }

@@ -6,7 +6,7 @@ import uniandes.unacloud.common.utils.ConfigurationReader;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Singleton class to control properties file
+ * Singleton class to control properties files
  * @author CesarF
  *
  */

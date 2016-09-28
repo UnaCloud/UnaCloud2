@@ -31,7 +31,6 @@ public class Constants {
     public static final String DOUBLE_QUOTE = "\"";
     public static final String SEPARATOR = File.pathSeparator;
     public static final String PATH_SEPARATOR = File.separator;
-    public static final String JAR_NAME="/UnaCloudClient.jar";
     
     //UnaCloud Client VMware Workstation constants
     public static final String VM_WARE_WORKSTATION="Workstation";
@@ -48,18 +47,7 @@ public class Constants {
     public static final String VMW_VMX_MEMORY = "memsize";
     public static final String VMW_VMX_HW = "virtualHW.version";
     public static final String VMW_VMX_HW_VER = "7";
-    
-    //UnaCloud Client operating system operations constants
-    public static final String WINDOWS_TURN_OFF_COMMAND = "c:\\windows\\system32\\shutdown.exe -s -t 60";
-    public static final String WINDOWS_RESTART_COMMAND = "c:\\windows\\system32\\shutdown.exe -r -t 30";
-    public static final String WINDOWS_LOGOUT_COMMAND = "c:\\windows\\system32\\shutdown.exe -l -f";
-    public static final String LINUX_TURN_OFF_FILE_COMMAND = "turnOffLinux.sh ";
-    public static final String LINUX_RESTART_FILE_COMMAND = "restartLinux.sh ";
-    public static final String LINUX_LOGOUT_FILE_COMMAND = "logoutLinux.sh ";
-    public static final String MAC_PERL_COMMAND = "/usr/bin/perl";
-    public static final String MAC_TURN_OFF_FILE_COMMAND = "turnOffMac.sh";
-    public static final String MAC_RESTART_FILE_COMMAND = "restartMac.sh";
-    public static final String MAC_LOGOUT_FILE_COMMAND = "logoutMac.pl";
+       
     
     //UnaCloud Client tools constants
     public static final String WOL_CMD = "WolCmd";

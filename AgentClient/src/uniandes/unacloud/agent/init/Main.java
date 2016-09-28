@@ -10,8 +10,8 @@ import uniandes.unacloud.agent.communication.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.utils.OperatingSystem;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -59,12 +59,21 @@ public class Main {
       //Start log     	
     	{
     		//Validate if the user that is executing agent is system user
-    		String user=OperatingSystem.getWhoAmI();
-        	if(user!=null&&!user.toLowerCase().contains("system")){
-        		System.out.println("You can't execute the agent as "+user);
-        		System.exit(0);
-        		return;
-        	}
+    		
+			try {
+				String user;
+				user = OSFactory.getOS().getWhoAmI();
+				if(user!=null&&!user.toLowerCase().contains("system")){
+	        		System.out.println("You can't execute the agent as "+user);
+	        		System.exit(0);
+	        		return;
+	        	}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
+				return;
+			} 
+        	
     	}    
     	  if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
           if(mainCase==UnaCloudConstants.TEST){
