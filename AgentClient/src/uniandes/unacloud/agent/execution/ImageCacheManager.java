@@ -22,9 +22,9 @@ import uniandes.unacloud.agent.hypervisor.VMwareWorkstation;
 import uniandes.unacloud.agent.hypervisor.VirtualBox;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.RandomUtils;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
 /**
  * Responsible to manage list of images in cache
@@ -34,7 +34,7 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
 public class ImageCacheManager {
 	
 	
-	static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(UnaCloudConstants.VM_REPO_PATH,"E:\\GRID\\");
+	private static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(VM_REPO_PATH,"E:\\GRID\\");
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	
@@ -132,19 +132,18 @@ public class ImageCacheManager {
 		try{			
 			try {				
 				for(Image image: imageList.values())
-					if(image.getHypervisorId().equals(Constants.VM_WARE_WORKSTATION))
+					if(image.getHypervisorId().equals(VM_WARE_WORKSTATION))
 						for(ImageCopy copy: image.getImageCopies())
-							((VMwareWorkstation)HypervisorFactory.getHypervisor(Constants.VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
-				((VirtualBox)HypervisorFactory.getHypervisor(Constants.VIRTUAL_BOX)).unregisterAllVms();
+							((VMwareWorkstation)HypervisorFactory.getHypervisor(VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
+				((VirtualBox)HypervisorFactory.getHypervisor(VIRTUAL_BOX)).unregisterAllVms();
 			} catch (Exception e) {
-				// TODO: handle exception
 			}					
 			for(File f:new File(machineRepository).listFiles())cleanDir(f);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
 		saveImages();
-		return "Success";
+		return UnaCloudConstants.SUCCESSFUL_OPERATION;
 	}
 	
 	
@@ -170,7 +169,7 @@ public class ImageCacheManager {
 			imageList.remove(imageId);
 			saveImages();
 		}
-		return "Success";
+		return UnaCloudConstants.SUCCESSFUL_OPERATION;
 	}
 	
 	/**

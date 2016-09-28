@@ -14,24 +14,20 @@ public class Image implements Serializable{
 	private static final long serialVersionUID = -2386734224180305694L;
 	
 	/**
-	 * image properties
-	 * 
+	 * Id 
 	 */
+	private long id;
 	
-	long id;
-	String username;
-	String password;
-	String configuratorClass;
-	String hypervisorId;
+	private String username;
+	private String password;
+	private String configuratorClass;
+	private String hypervisorId;
 	
 	/**
 	 * image copies in disk
 	 */
 	List<ImageCopy> imageCopies=new ArrayList<>();
 	
-	/**
-	 * getters and setters
-	 */
 	
 	public long getId() {
 		return id;

@@ -1,6 +1,6 @@
 package uniandes.unacloud.agent.hypervisor;
 
-import static uniandes.unacloud.common.utils.Constants.ERROR_MESSAGE;
+import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
 import java.io.File;
 import java.net.NetworkInterface;
@@ -12,15 +12,15 @@ import java.util.List;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
 import uniandes.unacloud.agent.utils.AddressUtility;
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Implementation of hypervisor abstract class to give support for VirtualBox
  * hypervisor.
  */
 public class VirtualBox extends Hypervisor {
-	public static final String HYPERVISOR_ID=Constants.VIRTUAL_BOX;
+	public static final String HYPERVISOR_ID=UnaCloudConstants.VIRTUAL_BOX;
     
 	/**
 	 * Class constructor

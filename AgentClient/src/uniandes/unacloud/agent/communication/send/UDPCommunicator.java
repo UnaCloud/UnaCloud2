@@ -15,15 +15,28 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class UDPCommunicator {
 
+	/**
+	 * Object to send udp messages
+	 */
 	private UnaCloudDataSenderUDP sender;
 	
+	/**
+	 * Singleton instance
+	 */
 	private static UDPCommunicator instance;
 	
+	/**
+	 * Responsible to return instance from this class
+	 * @return
+	 */
 	public static UDPCommunicator getInstance(){
 		if(instance == null)instance = new UDPCommunicator();
 		return instance;
 	}
 	
+	/**
+	 * Constructor method
+	 */
 	private UDPCommunicator() {
 		sender = new UnaCloudDataSenderUDP();
 	}

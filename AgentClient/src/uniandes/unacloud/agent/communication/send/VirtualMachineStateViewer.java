@@ -58,7 +58,7 @@ public class VirtualMachineStateViewer {
 
 
     /**
-     * Pings the given address
+     * Pings a given address
      * @param vmIP The IP to be pinged
      * @return True if the given IP responds ping, false otherwise
      */

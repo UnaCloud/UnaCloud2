@@ -12,11 +12,24 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class VariableManager {
 	
+	/**
+	 * Reader for local configuration
+	 */
 	private ConfigurationReader propLocal;
+	/**
+	 * Reader for global configuration
+	 */
 	private ConfigurationReader propGlobal;
 	
+	/**
+	 * Singleton instance
+	 */
 	private static VariableManager instance;
 	
+	/**
+	 * Gets instance
+	 * @return instance
+	 */
 	public static VariableManager getInstance() {
 		try {
 			if(instance==null)instance = new VariableManager();
@@ -27,7 +40,11 @@ public class VariableManager {
 		}		
 	}
 	
-	public VariableManager() throws IOException {
+	/**
+	 *  Class constructor
+	 * @throws IOException
+	 */
+	private VariableManager() throws IOException {
 		propLocal = new ConfigurationReader(UnaCloudConstants.LOCAL_FILE);
 		propGlobal = new ConfigurationReader(UnaCloudConstants.GLOBAL_FILE);
 	}

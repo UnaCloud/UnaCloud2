@@ -44,6 +44,7 @@ public class Ubuntu extends AbstractVirtualMachineConfigurator{
      */
     @Override
     public void configureDHCP() {
+    	
     }
 
 	public void configureHostname() throws HypervisorOperationException{
@@ -59,7 +60,6 @@ public class Ubuntu extends AbstractVirtualMachineConfigurator{
 
 	@Override
 	public void configureHostTable() throws HypervisorOperationException {
-		// TODO Auto-generated method stub
 		
 	}
 

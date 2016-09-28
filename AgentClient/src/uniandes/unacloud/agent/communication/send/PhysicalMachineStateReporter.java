@@ -5,14 +5,25 @@ import java.util.List;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 
 /**
- * Class responsible to report physical machine status. Every X seconds this class sends a keep alive message to UnaCloud server.
+ * Class responsible to report physical machine status. Every REPORT DELAY milliseconds this class sends a keep alive message to UnaCloud server.
  * @author Clouder
  */
 public class PhysicalMachineStateReporter extends Thread{
 
-	private int REPORT_DELAY=60000;
+	/**
+	 * Milliseconds range to send a new message
+	 */
+	private static final int REPORT_DELAY=60000;
 
+	/**
+	 * Singleton instance
+	 */
 	private static PhysicalMachineStateReporter instance;
+	
+	/**
+	 * Returns singleton instance
+	 * @return instance
+	 */
 	public static synchronized PhysicalMachineStateReporter getInstance(){
 		if(instance==null)instance=new PhysicalMachineStateReporter();
 		return instance;
@@ -25,7 +36,7 @@ public class PhysicalMachineStateReporter extends Thread{
     private PhysicalMachineStateReporter(){}
 
     /**
-     * Method that is used to start the reporting thread
+     * Method that is used to start the reporting thread process
      */
     @Override
     public void run() {

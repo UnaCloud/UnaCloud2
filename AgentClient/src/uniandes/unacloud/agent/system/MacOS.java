@@ -3,7 +3,7 @@ package uniandes.unacloud.agent.system;
 import uniandes.unacloud.agent.exceptions.UnsupportedCommandException;
 
 /**
- * Class which represents Macintosh Operating System
+ * Class which represents Mac Operating System
  * Response commands and execute tasks for this OS
  * @author CesarF
  *
@@ -44,5 +44,10 @@ public class MacOS extends OperatingSystem{
 	@Override
 	public String getHostNameCommand() throws UnsupportedCommandException {
 		return MAC_HOSTNAME_COMMAND;
+	}
+
+	@Override
+	public String turnOnMachines(String[] message)throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Turn on", "Mac");
 	}
 }

@@ -18,7 +18,7 @@ import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Class to download files from server
+ * Class responsible for manage download files process from server
  * @author CesarF
  *
  */
@@ -37,14 +37,18 @@ public class DownloadImageVirtualMachineTask {
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 		System.out.println("Connecting to "+ip+":"+puerto);
+		
 		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
+			//Sends operation type ID
 			System.out.println("Successful connection");
 			System.out.println("Operation type 1");
 			ds.writeInt(UnaCloudConstants.REQUEST_IMAGE);
 			ds.flush();
-			System.out.println("send ID");
+			//sends image id
+			System.out.println("send ID "+image.getId());
 			ds.writeLong(image.getId());
 			ds.flush();
+			//Receives zip elements
 			try(ZipInputStream zis=new ZipInputStream(s.getInputStream())){
 				System.out.println("Zip open");
 				byte[] buffer=new byte[1024*100];
@@ -55,7 +59,7 @@ public class DownloadImageVirtualMachineTask {
 						System.out.println("Hypervisor: "+image.getHypervisorId());
 						String mainFile=br.readLine();
 						if(mainFile==null){
-							throw new VirtualMachineExecutionException("Error: image mainFile is null");
+							throw new VirtualMachineExecutionException(UnaCloudConstants.ERROR_MESSAGE+" image mainFile is null");
 						}
 						copy.setMainFile(new File(root,mainFile));
 						System.out.println("Main: "+mainFile);

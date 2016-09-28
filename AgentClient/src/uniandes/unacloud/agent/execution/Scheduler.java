@@ -8,8 +8,15 @@ import java.util.TimerTask;
  */
 public class Scheduler extends TimerTask {
 
+	/**
+	 * Id from execution which is controlled by this timer
+	 */
     private long executionId;
  
+    /**
+     * Creates a new scheduler undeploying task with an executiond Id.
+     * @param executionId
+     */
     public Scheduler(long executionId) {
 		this.executionId = executionId;
 	}

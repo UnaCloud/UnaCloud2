@@ -5,6 +5,7 @@ import java.util.Random;
 
 import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
 import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
  * Abstract configuration class for physical machines
  * @author Clouder
@@ -12,8 +13,15 @@ import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
  */
 public abstract class AbstractVirtualMachineConfigurator{
 	
-	private static Random r=new Random();
-	VirtualMachineExecution execution;
+	/**
+	 * Random object to calculate numbers
+	 */
+	private static Random random=new Random();
+	
+	/**
+	 * Execution instance 
+	 */
+	protected VirtualMachineExecution execution;
 	
 	/**
 	 * sets VM property
@@ -27,8 +35,8 @@ public abstract class AbstractVirtualMachineConfigurator{
 	 * @return file created
 	 */
 	public static File generateRandomFile(){
-		if(!new File("temp").exists())new File("temp").mkdir();
-		return new File("temp/"+Math.abs(r.nextLong())+".txt");
+		if(!new File(UnaCloudConstants.TEMP_FILE).exists())new File(UnaCloudConstants.TEMP_FILE).mkdir();
+		return new File(UnaCloudConstants.TEMP_FILE+"/"+Math.abs(random.nextLong())+UnaCloudConstants.FILE_EXTENSION);
 	}
 	
 	/**

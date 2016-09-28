@@ -37,7 +37,7 @@ public class HypervisorFactory {
 
 
     /**
-     * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dinamically using java´s reflection API. If there is an associated object, then a new instance is returned by using the method getInstance from Hypervisor abstract class.
+     * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dynamically using java's reflection API. If there is an associated object, then a new instance is returned by using the method getInstance from Hypervisor abstract class.
      * @param hypervisorId The hypervisor id to be instantiated
      * @return A managed hypervisor for the given name
      */

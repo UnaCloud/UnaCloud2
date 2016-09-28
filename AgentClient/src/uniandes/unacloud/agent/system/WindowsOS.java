@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedCommandException;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Class which represents Windows Operating System
@@ -76,6 +77,17 @@ public class WindowsOS extends OperatingSystem{
 	@Override
 	public String getHostNameCommand() throws UnsupportedCommandException {
 		return WINDOWS_HOSTNAME_COMMAND;
+	}
+
+	@Override
+	public String turnOnMachines(String[] machines) throws UnsupportedCommandException {
+        for (String mac : machines) {
+            try {
+                 Runtime.getRuntime().exec("wol.exe " + mac.replace(":", ""));
+            } catch (IOException ex) {
+            }
+        }
+		return UnaCloudConstants.SUCCESSFUL_OPERATION;
 	}
 
 }

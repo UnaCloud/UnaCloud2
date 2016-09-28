@@ -1,12 +1,12 @@
 package uniandes.unacloud.agent.communication.receive;
 
-import static uniandes.unacloud.common.utils.Constants.ERROR_MESSAGE;
+import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
@@ -29,7 +29,6 @@ import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStopMessage;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 
 /**
@@ -79,7 +78,7 @@ public class ClouderServerAttentionThread implements Runnable {
 		            oos.writeObject(attendAgentOperation(clouderServerRequest));
 		            break;
 		        default:
-	                oos.writeObject(new InvalidOperationResponse("Opeartion "+clouderServerRequest.getMainOp()+" is invalid as main operation."));
+	                oos.writeObject(new InvalidOperationResponse("Operation "+clouderServerRequest.getMainOp()+" is invalid as main operation."));
 	            break;
 	        }
         } catch (Exception ex) {
@@ -119,42 +118,14 @@ public class ClouderServerAttentionThread implements Runnable {
      */
     private UnaCloudAbstractResponse attendAgentOperation(UnaCloudAbstractMessage message) {
         switch (message.getSubOp()) {
-            case AgentMessage.UPDATE_OPERATION:
-            	ClouderClientAttention.close();
-                try {
-        			Runtime.getRuntime().exec(new String[]{"javaw","-jar",UnaCloudConstants.UPDATER_JAR,UnaCloudConstants.DELAY+""});
-                } catch (Exception e) {
-                }
-                new Thread(){
-                	public void run() {
-                		try {
-                			Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-                		System.exit(6);
-                	};
-                }.start();
-                return new InformationResponse("successful");
-            case AgentMessage.STOP_CLIENT:
-                ClouderClientAttention.close();
-                new Thread(){
-                	public void run() {
-                		try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-                		System.exit(0);
-                	};
-                }.start();
-                return  new InformationResponse("successful");
+            case AgentMessage.UPDATE_OPERATION:            	
+                return new InformationResponse(AgentManager.updateAgent());
+            case AgentMessage.STOP_CLIENT:           
+                return  new InformationResponse(AgentManager.stopAgent());
             case AgentMessage.GET_VERSION:
-            	//TODO unuseful
-                return new InformationResponse("1.30");
+                return new InformationResponse(AgentManager.getVersion());
             case AgentMessage.CLEAR_CACHE:
-                return new InformationResponse(ImageCacheManager.clearCache());
-                
+                return new InformationResponse(ImageCacheManager.clearCache());                
             case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
                 return new InformationResponse(ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId()));
         }
@@ -171,24 +142,15 @@ public class ClouderServerAttentionThread implements Runnable {
     private UnaCloudAbstractResponse attendPhysicalMachineOperation(UnaCloudAbstractMessage message) {
     	try {
     		switch (message.getSubOp()) {
-            case PhysicalMachineOperationMessage.PM_TURN_OFF:
-            	OSFactory.getOS().turnOff();
-                return new InformationResponse("PM_TURN_OFF");
-            case PhysicalMachineOperationMessage.PM_RESTART:
-            	OSFactory.getOS().restart();
-                return new InformationResponse("PM_RESTART");
-            case PhysicalMachineOperationMessage.PM_LOGOUT:
-            	OSFactory.getOS().logOut();
-                return new InformationResponse("PM_LOGOUT");
+            case PhysicalMachineOperationMessage.PM_TURN_OFF:            	
+                return new InformationResponse(OSFactory.getOS().turnOff());
+            case PhysicalMachineOperationMessage.PM_RESTART:            	
+                return new InformationResponse(OSFactory.getOS().restart());
+            case PhysicalMachineOperationMessage.PM_LOGOUT:            	
+                return new InformationResponse(OSFactory.getOS().logOut());
             case PhysicalMachineOperationMessage.PM_TURN_ON:
-                    PhysicalMachineTurnOnMessage turnOn=(PhysicalMachineTurnOnMessage)message;
-                for (String mac : turnOn.getMacs()) {
-                    try {
-                        Runtime.getRuntime().exec("wol.exe " + mac.replace(":", ""));
-                    } catch (IOException ex) {
-                    }
-                }
-                return new InformationResponse("successful");          
+                PhysicalMachineTurnOnMessage turnOn=(PhysicalMachineTurnOnMessage)message;                
+                return new InformationResponse(OSFactory.getOS().turnOnMachines(turnOn.getMacs()));          
             default:
                 return new InformationResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getSubOp());
     		}

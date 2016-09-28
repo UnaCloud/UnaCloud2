@@ -32,7 +32,7 @@ public class Main {
     public static void main(String[] args){      	
     	
         int mainCase = 0;
-      //Validates data path
+        //Validates data path  
     	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
     	if(dataPath==null||dataPath.isEmpty()){
     		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
@@ -58,8 +58,7 @@ public class Main {
       
       //Start log     	
     	{
-    		//Validate if the user that is executing agent is system user
-    		
+    		//Validate if the user that is executing agent is system user    		
 			try {
 				String user;
 				user = OSFactory.getOS().getWhoAmI();
@@ -75,29 +74,31 @@ public class Main {
 			} 
         	
     	}    
-    	  if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
-          if(mainCase==UnaCloudConstants.TEST){
-          	try {
-  				ServerMessageSender.reportPhyisicalMachine(null);
-  			} catch (Exception e) {
-  				e.printStackTrace();
-  			}
-          	System.exit(0);
-          	return;
-          }
+		if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
+	    if(mainCase==UnaCloudConstants.TEST){
+	    	try {
+				ServerMessageSender.reportPhyisicalMachine(null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	      	System.exit(0);
+	      	return;
+	    }
     	
     	//Init services
     	//register hypervisors
     	System.out.println("Register hypervisors");
     	HypervisorFactory.registerHypervisors();
+    	
     	//load executions in files
     	System.out.println("Load data");
         PersistentExecutionManager.refreshData();
+        
     	System.out.println("Start reporter");
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
         try {
-			ClouderClientAttention.getInstance();
+			ClouderClientAttention.getInstance().start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

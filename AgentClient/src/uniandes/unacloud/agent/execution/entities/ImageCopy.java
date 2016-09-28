@@ -12,6 +12,7 @@ import uniandes.unacloud.agent.hypervisor.Hypervisor;
 import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
 import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
 import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Represents a copy from an image. Image files ares copied too
@@ -23,27 +24,35 @@ public class ImageCopy implements Serializable{
 	
 	private static final long serialVersionUID = 8911955514393569155L;
 	
-	//String virtualMachineName;
 	/**
 	 * executable file name
 	 */
-	File mainFile;
+	private File mainFile;
+	
 	/**
 	 * Original image
 	 */
-	Image image;
+	private Image image;
 	
-	transient VirtualMachineImageStatus status=VirtualMachineImageStatus.FREE;
+	private transient VirtualMachineImageStatus status=VirtualMachineImageStatus.FREE;
 	
 	/**
-	 * Getters and setters
+	 * Get manin file
 	 */
 	public File getMainFile() {
 		return mainFile;
 	}
+	/**
+	 * Update main file
+	 * @param mainFile
+	 */
 	public void setMainFile(File mainFile) {
 		this.mainFile = mainFile;
 	}
+	/**
+	 * Gets virtual machine name
+	 * @return
+	 */
 	public String getVirtualMachineName() {
 		if(mainFile==null)return "null";
 		String h=mainFile.getName();
@@ -51,15 +60,32 @@ public class ImageCopy implements Serializable{
 		if(l==-1)return h;
 		return h.substring(0,l);
 	}
+	/**
+	 * Gets virtual machine status
+	 * @return status
+	 */
 	public VirtualMachineImageStatus getStatus() {
 		return status;
 	}
+	/**
+	 * Update virtual machine status
+	 * @param status
+	 */
 	public void setStatus(VirtualMachineImageStatus status) {
 		this.status = status;
 	}
+	/**
+	 * Return image
+	 * @return
+	 */
 	public Image getImage() {
 		return image;
 	}
+	
+	/**
+	 * Update images
+	 * @param image
+	 */
 	public void setImage(Image image) {
 		this.image = image;
 	}
@@ -67,8 +93,7 @@ public class ImageCopy implements Serializable{
 	/**
 	 * Configures and starts the copy
 	 * @param machineExecution
-	 */
-	
+	 */	
 	public synchronized void configureAndStart(VirtualMachineExecution machineExecution){
 		Hypervisor hypervisor=HypervisorFactory.getHypervisor(getImage().getHypervisorId());
 		try {
@@ -127,7 +152,7 @@ public class ImageCopy implements Serializable{
 		hypervisor.registerVirtualMachine(this);
 		try {
 			hypervisor.changeVirtualMachineMac(this);
-			hypervisor.takeVirtualMachineSnapshot(this,"unacloudbase");
+			hypervisor.takeVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);
 		} catch (HypervisorOperationException e) {
 			e.printStackTrace();
 		}
@@ -141,7 +166,7 @@ public class ImageCopy implements Serializable{
 	 */
 	public synchronized void deleteSnapshot()throws VirtualMachineExecutionException, HypervisorOperationException{
 		Hypervisor hypervisor=HypervisorFactory.getHypervisor(this.getImage().getHypervisorId());
-		hypervisor.deleteVirtualMachineSnapshot(this,"unacloudbase");		
+		hypervisor.deleteVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
 	}
 
 	

@@ -54,25 +54,41 @@ public class AddressUtility {
     }
     
     /**
-     * getter methods
+     * Gets broadcast
+     * @return broadcast
      */
-    
     public String getBroadcast() {
         return broadcast;
     }
 
+    /**
+     * gets gateway
+     * @return gateway
+     */
     public String getGateway() {
         return gateway;
     }
 
+    /**
+     * Gets IP address
+     * @return ip
+     */
     public String getIp() {
         return ip;
     }
 
+    /**
+     * Gets network mask
+     * @return mask
+     */
     public String getNetmask() {
         return netmask;
     }
 
+    /**
+     * Gets network 
+     * @return
+     */
     public String getNetwork() {
         return network;
     }

@@ -4,7 +4,7 @@
  */
 package uniandes.unacloud.agent.hypervisor;
 
-import uniandes.unacloud.common.utils.Constants;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Implementation of hypervisor abstract class to give support for
@@ -14,7 +14,7 @@ import uniandes.unacloud.common.utils.Constants;
  */
 
 public class VMwareWorkstation extends VMwareAbstractHypervisor{
-	public static final String HYPERVISOR_ID=Constants.VM_WARE_WORKSTATION;
+	public static final String HYPERVISOR_ID=UnaCloudConstants.VM_WARE_WORKSTATION;
 	public VMwareWorkstation(String path) {
 		super(path);
 	}

@@ -53,8 +53,7 @@ public class Debian extends AbstractVirtualMachineConfigurator{
      * Configures a DHCP client of the Debian managed virtual machine
      */
     @Override
-    public void configureDHCP() {
-        
+    public void configureDHCP() {        
     }
 
     /**

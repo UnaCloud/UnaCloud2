@@ -10,7 +10,7 @@ import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Responsible for listening Clouder Server
+ * Responsible for listening messages from Server
  * @author CesarF
  * @author Clouder
  */
@@ -22,32 +22,34 @@ public class ClouderClientAttention{
 
     private ServerSocket serverSocket;
     /**
-     * Port to be used by the listening server socket
+     * Port where socket is listening
      */
     private static int localPort;
     
+    private static ClouderClientAttention instance;    
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
 
-    private static ClouderClientAttention instance;
+   
+    
     public synchronized static ClouderClientAttention getInstance() throws Exception {
-            if(instance==null)instance=new ClouderClientAttention();
-                return instance;
-        }
+        if(instance==null)instance=new ClouderClientAttention();
+            return instance;
+    }
+    
     /**
      * Responsible for obtaining data connection and listening to Server
      * @throws Exception 
      */
     private ClouderClientAttention() throws Exception{
-        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT);
-        connect();
+        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT);      
     }
 
     /**
      * Responsible for connecting with Server and start a communication thread
      */
-    private final void connect() {
+    public final void start() {
         try {
 			serverSocket = new ServerSocket(localPort);
 			System.out.println("Listening in "+localPort);
@@ -57,8 +59,7 @@ public class ClouderClientAttention{
 	        		ExecutorService.executeRequestTask(new ClouderServerAttentionThread(s));
 	            }catch(SocketException ex){
 	            	break;
-	            }
-	        	catch (IOException ex) {
+	            }catch (IOException ex) {
 	            	ex.printStackTrace();
 	            }
 	        }

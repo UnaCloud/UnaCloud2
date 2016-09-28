@@ -1,6 +1,6 @@
 package uniandes.unacloud.agent.execution;
 
-import static uniandes.unacloud.common.utils.Constants.ERROR_MESSAGE;
+import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +30,7 @@ import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageResponse;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse.VirtualMachineState;
 import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Responsible for managing virtual machine executions. This class is responsible to schedule virtual machine startups and
@@ -47,6 +48,9 @@ public class PersistentExecutionManager {
      */
     private static final String executionsFile = "executions.txt";
     
+    /**
+     * Execution hash map, contains list of execution
+     */
     private static final Map<Long,VirtualMachineExecution> executionList=new TreeMap<>();
         
     /**
@@ -190,7 +194,7 @@ public class PersistentExecutionManager {
     }
     
     /**
-     * Return a list of id executions that currently are running,
+     * Returns a list of id executions that currently are running,
      * not return images in state STARTING (testing running)
      * @return list of execution ids
      */
@@ -238,13 +242,12 @@ public class PersistentExecutionManager {
 				response.setState(VirtualMachineState.COPYNG);
 				ExecutorService.executeBackgroundTask(new UploadImageVirtualMachineTask(execution,message.getTokenCom()));
             }else{
-				response.setMessage("Failed: Execution doesn't exist");
+				response.setMessage(UnaCloudConstants.ERROR_MESSAGE+" Execution doesn't exist");
 				response.setState(VirtualMachineState.FAILED);
 			}
     		return response;
-		} catch (Exception e) {
-			
-			return new InvalidOperationResponse("Error: "+e);
+		} catch (Exception e) {			
+			return new InvalidOperationResponse(UnaCloudConstants.ERROR_MESSAGE+e);
 		}       
     }
 }

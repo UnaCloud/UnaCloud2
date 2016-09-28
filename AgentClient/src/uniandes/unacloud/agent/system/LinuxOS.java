@@ -50,4 +50,9 @@ public class LinuxOS extends OperatingSystem{
 		return LINUX_HOSTNAME_COMMAND;
 	}
 
+	@Override
+	public String turnOnMachines(String[] message)throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Turn on", "Mac");
+	}
+
 }

@@ -4,6 +4,7 @@ import java.io.File;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedCommandException;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * @author Eduardo Rosales 
@@ -16,8 +17,10 @@ public abstract class OperatingSystem {
     public static final String PATH_SEPARATOR = File.separator;
     public static final String BIN="bin";
 
-    private String operatingSystemName = getOperatingSystemName();
+    @SuppressWarnings("unused")
+	private String operatingSystemName = getOperatingSystemName();
 	private String operatingArchitecture = getOperatingSystemArchitect();
+	@SuppressWarnings("unused")
 	private String operatingSystemVersion = getOperatingSystemVersion();
 	private String hostname;
 	
@@ -25,8 +28,18 @@ public abstract class OperatingSystem {
      * Responsible for turning off the local operating system
      * @return result for process
      */
-    public void turnOff() throws UnsupportedCommandException{
-    	LocalProcessExecutor.executeCommand(getTurnOffCommand());
+    public String turnOff() throws UnsupportedCommandException{
+    	new Thread(){
+         	public void run() {
+         		try {
+					Thread.sleep(1000);
+		            LocalProcessExecutor.executeCommand(getTurnOffCommand());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+         	};
+         }.start();
+         return UnaCloudConstants.SUCCESSFUL_OPERATION;
     }
 
     /**
@@ -40,8 +53,18 @@ public abstract class OperatingSystem {
      * Responsible for restarting the local operating system
      * @return result for restart process
      */
-    public void restart() throws UnsupportedCommandException{
-    	LocalProcessExecutor.executeCommand(getRestartCommand());       
+    public String restart() throws UnsupportedCommandException{    	
+    	new Thread(){
+         	public void run() {
+         		try {
+					Thread.sleep(1000);
+					LocalProcessExecutor.executeCommand(getRestartCommand());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+         	};
+         }.start();
+         return UnaCloudConstants.SUCCESSFUL_OPERATION;
     }
         
     /**
@@ -55,8 +78,18 @@ public abstract class OperatingSystem {
      * @return result for log out process
      * @throws UnsupportedCommandException 
      */
-    public void logOut() throws UnsupportedCommandException {
-    	LocalProcessExecutor.executeCommand(getLogOutCommand());        
+    public String logOut() throws UnsupportedCommandException {
+    	new Thread(){
+         	public void run() {
+         		try {
+					Thread.sleep(1000);
+			    	LocalProcessExecutor.executeCommand(getLogOutCommand());   
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+         	};
+         }.start();
+         return UnaCloudConstants.SUCCESSFUL_OPERATION;
     }
     
     /**
@@ -80,7 +113,7 @@ public abstract class OperatingSystem {
     
     /**
      * Responsible for obtaining the hostname
-     * @return return hostname of machine
+     * @return machine hostmname
      * @throws UnsupportedCommandException 
      */
     public String getHostname() throws UnsupportedCommandException {
@@ -91,12 +124,17 @@ public abstract class OperatingSystem {
     
     /**
      * Responsible for returning the command to get hostname from host machine
-     * @return
+     * @return operation result
      * @throws UnsupportedCommandException 
      */
 	public abstract String getHostNameCommand() throws UnsupportedCommandException;
 	
-    
+    /**
+     * Responsible for turning on other physical machines connected by lan 
+     * @return operation result
+     * @throws UnsupportedCommandException
+     */
+	public abstract String turnOnMachines(String[] message) throws UnsupportedCommandException;
 	
 	 /**
      * Responsible for obtaining the operating system name

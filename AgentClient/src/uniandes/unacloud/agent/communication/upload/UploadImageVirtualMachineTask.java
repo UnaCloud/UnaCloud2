@@ -36,29 +36,36 @@ public class UploadImageVirtualMachineTask implements Runnable{
 		try {
 			System.out.println("Stop execution: "+machineExecution.getId()+", of Image: "+machineExecution.getImageId() );
 			PersistentExecutionManager.stopExecution(machineExecution.getId());
+			
 			System.out.println("Delete snapshot: "+machineExecution.getId());
 			try {
 				machineExecution.getImage().deleteSnapshot();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
 			System.out.println("Unregister execution: "+machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
+			
 			//Send files
 			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 			final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 			System.out.println("Connecting to "+ip+":"+puerto);
 			try(Socket s=new Socket(ip,puerto);OutputStream os=s.getOutputStream()){
+				
 				DataOutputStream ds=new DataOutputStream(os);
 				System.out.println("Connection succesful");
 				ds.writeInt(UnaCloudConstants.SEND_IMAGE);
 				ds.flush();
+				
 				System.out.println("Execution "+machineExecution.getId());
 				ds.writeLong(machineExecution.getId());
 				ds.flush();
+				
 				System.out.println("Token "+secureToken);
 				ds.writeUTF(secureToken);
 				ds.flush();
+				
 				ZipOutputStream zos=new ZipOutputStream(ds);
 				
 				System.out.println("\tSending "+machineExecution.getId());
@@ -81,13 +88,13 @@ public class UploadImageVirtualMachineTask implements Runnable{
 					
 				} catch (Exception e) {
 					PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Error copying images to server");
-					throw new VirtualMachineExecutionException("Error deleting images",e);
+					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
+					throw new VirtualMachineExecutionException(UnaCloudConstants.ERROR_MESSAGE+" deleting images",e);
 				}					
 				
 			}catch (Exception e) {	
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Error copying images to server");
-				throw new VirtualMachineExecutionException("Error opening connection",e);
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
+				throw new VirtualMachineExecutionException(UnaCloudConstants.ERROR_MESSAGE+" opening connection",e);
 			}
 			
 			System.out.println("Delete Image "+machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
