@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import java.io.File;
 import java.util.Collection;
@@ -8,20 +8,20 @@ import java.util.logging.Logger;
 
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 
 /**
  * Abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
  * @author Clouder
  */
-public abstract class Hypervisor {
+public abstract class Platform {
 
     /**
      * Path to this hypervisor executable
      */
     private String executablePath;
     
-    public Hypervisor(String path){
+    public Platform(String path){
     	this.executablePath=path;
     }
 
@@ -32,11 +32,11 @@ public abstract class Hypervisor {
     /**
      * Stars a image
      * @param image to be started
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-    public abstract void startVirtualMachine(ImageCopy image) throws HypervisorOperationException;
+    public abstract void startVirtualMachine(ImageCopy image) throws PlatformOperationException;
     
-    public abstract void configureVirtualMachineHardware(int cores,int ram,ImageCopy image) throws HypervisorOperationException;
+    public abstract void configureVirtualMachineHardware(int cores,int ram,ImageCopy image) throws PlatformOperationException;
     
     /**
      * turns off the managed virtual machine
@@ -48,9 +48,9 @@ public abstract class Hypervisor {
     /**
      * Restarts the managed virtual machine
      * @param image  virtual machine will be restarted
-     * @throws HypervisorOperationException If there is an error restating the virtual machine
+     * @throws PlatformOperationException If there is an error restating the virtual machine
      */ 
-    public abstract void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException;
+    public abstract void restartVirtualMachine(ImageCopy image) throws PlatformOperationException;
 
    
     /**
@@ -58,28 +58,28 @@ public abstract class Hypervisor {
      * @param image where will be execute command
      * @param command to be executed
      * @param args
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-    public abstract void executeCommandOnMachine(ImageCopy image, String command,String...args) throws HypervisorOperationException;
+    public abstract void executeCommandOnMachine(ImageCopy image, String command,String...args) throws PlatformOperationException;
 
-    public abstract void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws HypervisorOperationException;
+    public abstract void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
 
-    public abstract void deleteVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws HypervisorOperationException;
+    public abstract void deleteVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
     
-    public abstract void restoreVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws HypervisorOperationException;
+    public abstract void restoreVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
     
-    public abstract boolean existsVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws HypervisorOperationException;
+    public abstract boolean existsVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
    
     /**
      * writes a file on the virtual machine file system
      * @param image where will be copied file
      * @param destinationRoute the route on the virtual machine file system where the file is going to be written
      * @param sourceFile file that will be copied
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-    public abstract void copyFileOnVirtualMachine(ImageCopy image,String destinationRoute, File sourceFile) throws HypervisorOperationException;
+    public abstract void copyFileOnVirtualMachine(ImageCopy image,String destinationRoute, File sourceFile) throws PlatformOperationException;
     
-    public abstract void changeVirtualMachineMac(ImageCopy image) throws HypervisorOperationException;
+    public abstract void changeVirtualMachineMac(ImageCopy image) throws PlatformOperationException;
     
     public abstract void registerVirtualMachine(ImageCopy image);
     public abstract void unregisterVirtualMachine(ImageCopy image);
@@ -104,5 +104,5 @@ public abstract class Hypervisor {
      * @param executions
      * @return List of execution that are not running in hypervisor
      */
-	public abstract List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions);
+	public abstract List<Execution> checkExecutions(Collection<Execution> executions);
 }

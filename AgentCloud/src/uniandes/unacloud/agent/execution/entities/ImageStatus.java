@@ -5,9 +5,9 @@ package uniandes.unacloud.agent.execution.entities;
  * @author clouder
  *
  */
-public enum VirtualMachineImageStatus {
+public enum ImageStatus {
 	/**
-	 * represents an image used by hypervisors
+	 * represents an image used by one platform
 	 */
 	LOCK,
 	/**

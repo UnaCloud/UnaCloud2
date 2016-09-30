@@ -15,11 +15,11 @@ import uniandes.unacloud.agent.communication.download.DownloadImageVirtualMachin
 import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineImageStatus;
-import uniandes.unacloud.agent.hypervisor.Hypervisor;
-import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
-import uniandes.unacloud.agent.hypervisor.VMwareWorkstation;
-import uniandes.unacloud.agent.hypervisor.VirtualBox;
+import uniandes.unacloud.agent.execution.entities.ImageStatus;
+import uniandes.unacloud.agent.platform.Platform;
+import uniandes.unacloud.agent.platform.PlatformFactory;
+import uniandes.unacloud.agent.platform.VMwareWorkstation;
+import uniandes.unacloud.agent.platform.VirtualBox;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.RandomUtils;
@@ -64,8 +64,8 @@ public class ImageCacheManager {
 				return copy;
 			}else{
 				for(ImageCopy copy:vmi.getImageCopies()){
-					if(copy.getStatus()==VirtualMachineImageStatus.FREE){
-						copy.setStatus(VirtualMachineImageStatus.LOCK);
+					if(copy.getStatus()==ImageStatus.FREE){
+						copy.setStatus(ImageStatus.LOCK);
 						System.out.println(" Using free");
 						return copy;
 					}
@@ -77,7 +77,7 @@ public class ImageCacheManager {
 				vmi.getImageCopies().add(dest);
 				File root=new File(machineRepository+"\\"+imageId+"\\"+vmName);
 				dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split("\\.")[1]));
-				dest.setStatus(VirtualMachineImageStatus.LOCK);
+				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);
 			}
@@ -107,7 +107,7 @@ public class ImageCacheManager {
 	 * @param vmiCopy image to be freed
 	 */
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy){
-		vmiCopy.setStatus(VirtualMachineImageStatus.FREE);
+		vmiCopy.setStatus(ImageStatus.FREE);
 	}
 	
 	
@@ -134,8 +134,8 @@ public class ImageCacheManager {
 				for(Image image: imageList.values())
 					if(image.getHypervisorId().equals(VM_WARE_WORKSTATION))
 						for(ImageCopy copy: image.getImageCopies())
-							((VMwareWorkstation)HypervisorFactory.getHypervisor(VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
-				((VirtualBox)HypervisorFactory.getHypervisor(VIRTUAL_BOX)).unregisterAllVms();
+							((VMwareWorkstation)PlatformFactory.getHypervisor(VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
+				((VirtualBox)PlatformFactory.getHypervisor(VIRTUAL_BOX)).unregisterAllVms();
 			} catch (Exception e) {
 			}					
 			for(File f:new File(machineRepository).listFiles())cleanDir(f);
@@ -158,7 +158,7 @@ public class ImageCacheManager {
 		if(vmi!=null){
 			try {
 				for(ImageCopy copy: vmi.getImageCopies()){
-					Hypervisor hypervisor=HypervisorFactory.getHypervisor(vmi.getHypervisorId());
+					Platform hypervisor=PlatformFactory.getHypervisor(vmi.getHypervisorId());
 					hypervisor.unregisterVirtualMachine(copy);
 				}				
 			} catch (Exception e) {
@@ -193,7 +193,7 @@ public class ImageCacheManager {
 			try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(imageListFile))){
 				imageList=(Map<Long,Image>)ois.readObject();
 				for(Image im:imageList.values())for(ImageCopy copy:im.getImageCopies()){
-					copy.setStatus(VirtualMachineImageStatus.FREE);
+					copy.setStatus(ImageStatus.FREE);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

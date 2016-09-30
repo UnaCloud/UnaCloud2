@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Random allocator algorithms
@@ -21,13 +21,13 @@ public class RandomAllocator extends VirtualMachineAllocator {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException{
+	protected void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException{
 		if(virtualMachineList.size()>2*physicalMachines.size()){
 		}else{
 			Collections.shuffle(virtualMachineList);
 			
 			for(int e=0;e<virtualMachineList.size();e++){
-				VirtualMachineExecution vm= virtualMachineList.get(e);
+				Execution vm= virtualMachineList.get(e);
 				Collections.shuffle(physicalMachines);
 				for (Iterator iterator = physicalMachines.iterator(); iterator
 						.hasNext();) {

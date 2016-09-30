@@ -9,17 +9,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.entities.DeployedImageEntity;
 import uniandes.unacloud.share.entities.DeploymentEntity;
 import uniandes.unacloud.share.entities.NetInterfaceEntity;
 import uniandes.unacloud.share.entities.PhysicalMachineEntity;
-import uniandes.unacloud.share.entities.VirtualMachineExecutionEntity;
-import uniandes.unacloud.share.entities.VirtualMachineImageEntity;
+import uniandes.unacloud.share.entities.ExecutionEntity;
+import uniandes.unacloud.share.entities.ImageEntity;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Class used to process queries and updates on Deployment entities
@@ -56,24 +56,24 @@ public class DeploymentManager {
 						+ " FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id INNER JOIN deployed_image dp ON dp.id = vme.deploy_image_id "
 						+ " INNER JOIN virtual_machine_image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.status = ?;");
 				ps.setLong(1, id);
-				ps.setString(2, VirtualMachineExecutionStateEnum.QUEUED.name());
+				ps.setString(2, ExecutionStateEnum.QUEUED.name());
 				rs = ps.executeQuery();	
 				System.out.println(ps.toString());
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
 				while(rs.next()){
 					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
-					if(pm==null)setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FAILED, null,"Communication error"),con);
+					if(pm==null)setVirtualMachineExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, new Date(), null, ExecutionStateEnum.FAILED, null,"Communication error"),con);
 					else{
-						VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3),new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8),rs.getString(13));
+						ExecutionEntity vme = new ExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3),new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, ExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8),rs.getString(13));
 						if(executions.get(rs.getLong(9))==null)
-							executions.put(rs.getLong(9), new DeployedImageEntity(new VirtualMachineImageEntity(rs.getLong(9), rs.getString(10), rs.getString(11), VirtualMachineImageEnum.getEnum(rs.getString(12)), rs.getString(14)),new ArrayList<VirtualMachineExecutionEntity>()));
+							executions.put(rs.getLong(9), new DeployedImageEntity(new ImageEntity(rs.getLong(9), rs.getString(10), rs.getString(11), ImageEnum.getEnum(rs.getString(12)), rs.getString(14)),new ArrayList<ExecutionEntity>()));
 						executions.get(rs.getLong(9)).getExecutions().add(vme);						
 					}
 				}
 				try{rs.close();ps.close();}catch(Exception e){}
 				deploy.setImages(new ArrayList<DeployedImageEntity>());
 				for(DeployedImageEntity image:executions.values()){
-					for(VirtualMachineExecutionEntity execution: image.getExecutions()){
+					for(ExecutionEntity execution: image.getExecutions()){
 						execution.getInterfaces().addAll(getInterfaces(execution,con));
 					}
 				}
@@ -93,7 +93,7 @@ public class DeploymentManager {
 	 * @param con Database connection
 	 * @return true in case execution was updated, false in case not
 	 */
-	public static boolean setVirtualMachineExecution(VirtualMachineExecutionEntity execution,Connection con){
+	public static boolean setVirtualMachineExecution(ExecutionEntity execution,Connection con){
 		if(execution.getId()==null||execution.getId()<1)return false;
 		try {
 			String query = "update virtual_machine_execution vme set "; 
@@ -130,7 +130,7 @@ public class DeploymentManager {
 	 * @param con Database connection
 	 * @return list of net interfaces configured for image
 	 */
-	public static List<NetInterfaceEntity> getInterfaces(VirtualMachineExecutionEntity execution, Connection con){
+	public static List<NetInterfaceEntity> getInterfaces(ExecutionEntity execution, Connection con){
 		try {
 			List<NetInterfaceEntity> list = new ArrayList<NetInterfaceEntity>();		
 			String query = "SELECT ni.id, ni.name, i.ip, ipl.mask FROM net_interface ni INNER JOIN ip i ON ni.ip_id = i.id INNER JOIN ippool ipl ON i.ip_pool_id = ipl.id WHERE ni.virtual_execution_id = ? ;";
@@ -155,7 +155,7 @@ public class DeploymentManager {
 	 * @param con Database connection
 	 * @return list of virtual machine execution
 	 */
-	public static List<VirtualMachineExecutionEntity> getExecutions(Long[]ids, VirtualMachineExecutionStateEnum state, boolean withInterfaces, Connection con){
+	public static List<ExecutionEntity> getExecutions(Long[]ids, ExecutionStateEnum state, boolean withInterfaces, Connection con){
 		try {			
 			StringBuilder builder = new StringBuilder();
 			for(@SuppressWarnings("unused") Long id: ids){
@@ -174,21 +174,21 @@ public class DeploymentManager {
 			if(state!=null)ps.setString(index, state.name());
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
-			List<VirtualMachineExecutionEntity> executions = new ArrayList<VirtualMachineExecutionEntity>();
+			List<ExecutionEntity> executions = new ArrayList<ExecutionEntity>();
 			while(rs.next()){
 				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON,con);
 				if(pm==null){
-					state = VirtualMachineExecutionStateEnum.getEnum(rs.getString(6));
-					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
-						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
-					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
-						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
+					state = ExecutionStateEnum.getEnum(rs.getString(6));
+					if(state.equals(ExecutionStateEnum.DEPLOYED))				
+						setVirtualMachineExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
+					if(state.equals(ExecutionStateEnum.QUEUED))				
+						setVirtualMachineExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
-					VirtualMachineExecutionEntity vme = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+					ExecutionEntity vme = new ExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, ExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
 					executions.add(vme);		
 				}
 			}		
-			if(withInterfaces)for(VirtualMachineExecutionEntity execution:executions){
+			if(withInterfaces)for(ExecutionEntity execution:executions){
 				execution.getInterfaces().addAll(getInterfaces(execution,con));
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
@@ -206,7 +206,7 @@ public class DeploymentManager {
 	 * @param con Database Connection
 	 * @return Virtualmachine execution object, could be null
 	 */
-	public static VirtualMachineExecutionEntity getExecution(Long id, VirtualMachineExecutionStateEnum state, Connection con){
+	public static ExecutionEntity getExecution(Long id, ExecutionStateEnum state, Connection con){
 		try {			
 			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
 						+ "FROM virtual_machine_execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
@@ -216,16 +216,16 @@ public class DeploymentManager {
 			ps.setLong(2, id);
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
-			VirtualMachineExecutionEntity execution = null;
+			ExecutionEntity execution = null;
 			if(rs.next()){
 				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON,con);
 				if(pm==null){
-					if(state.equals(VirtualMachineExecutionStateEnum.DEPLOYED))				
-						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
-					if(state.equals(VirtualMachineExecutionStateEnum.QUEUED))				
-						setVirtualMachineExecution(new VirtualMachineExecutionEntity(rs.getLong(1), 0, 0, null, null, null, VirtualMachineExecutionStateEnum.FAILED, null, "Communication error"),con);	
+					if(state.equals(ExecutionStateEnum.DEPLOYED))				
+						setVirtualMachineExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Lost connection in server"),con);					
+					if(state.equals(ExecutionStateEnum.QUEUED))				
+						setVirtualMachineExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"),con);	
 				}else{
-					execution = new VirtualMachineExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, VirtualMachineExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
+					execution = new ExecutionEntity(rs.getLong(1), rs.getInt(2), rs.getInt(3), new java.util.Date(rs.getTimestamp(4).getTime()), new java.util.Date(rs.getTimestamp(5).getTime()), pm, ExecutionStateEnum.getEnum(rs.getString(6)),rs.getString(8), rs.getString(9));
 				}
 			}	
 			try{rs.close();ps.close();}catch(Exception e){}

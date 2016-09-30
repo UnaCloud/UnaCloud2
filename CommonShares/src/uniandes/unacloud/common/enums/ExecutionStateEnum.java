@@ -7,7 +7,7 @@ import uniandes.unacloud.common.utils.CalendarUtils;
  * @author CesarF
  *
  */
-public enum VirtualMachineExecutionStateEnum {
+public enum ExecutionStateEnum {
 	/**
 	 * Execution has a task in queue, can't exceed 2 minutes
 	 */
@@ -52,7 +52,7 @@ public enum VirtualMachineExecutionStateEnum {
 	private long time;
 	public String name;
 	
-	private VirtualMachineExecutionStateEnum(String name, long time) {
+	private ExecutionStateEnum(String name, long time) {
 		this.name = name;
 		this.time = time;
 	}
@@ -70,7 +70,7 @@ public enum VirtualMachineExecutionStateEnum {
 	 * @param name of virtual machine execution
 	 * @return Virtual Machine execution state
 	 */
-	public static VirtualMachineExecutionStateEnum getEnum(String name){
+	public static ExecutionStateEnum getEnum(String name){
 		if(QUEUED.name.equals(name)||QUEUED.name().equals(name))return QUEUED;
 		if(CONFIGURING.name.equals(name)||CONFIGURING.name().equals(name))return CONFIGURING;
 		if(DEPLOYING.name.equals(name)||DEPLOYING.name().equals(name))return DEPLOYING;

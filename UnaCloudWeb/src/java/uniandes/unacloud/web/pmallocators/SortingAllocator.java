@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Sorting allocator algorithm
@@ -49,14 +49,14 @@ public class SortingAllocator extends VirtualMachineAllocator {
 	 * Extends BEST FIT algorithm adding user as a variable in sort process
 	 */
 	@Override
-	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	protected void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new PhysicalMachineComparator(physicalMachineDescriptions));
-		Collections.sort(virtualMachineList, new Comparator<VirtualMachineExecution>() {
-			public int compare(VirtualMachineExecution v1, VirtualMachineExecution v2) {
+		Collections.sort(virtualMachineList, new Comparator<Execution>() {
+			public int compare(Execution v1, Execution v2) {
 				return Integer.compare(v2.getHardwareProfile().getCores(),v1.getHardwareProfile().getCores());
 			}
 		});
-		vmCycle:for(VirtualMachineExecution vme:virtualMachineList){
+		vmCycle:for(Execution vme:virtualMachineList){
 			for(PhysicalMachine pm:physicalMachines){
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
 				if(fitVMonPM(vme, pm, pmad)){

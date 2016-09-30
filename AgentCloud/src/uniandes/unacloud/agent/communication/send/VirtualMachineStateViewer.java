@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
  * This class is responsible for checking if a virtual machine has been correctly deployed. That is, if the virtual machines has started and if it has well configured its IP address
@@ -42,12 +42,12 @@ public class VirtualMachineStateViewer {
         }
         try {
         	if(red){
-        		ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.DEPLOYED,"Machine started");
+        		ServerMessageSender.reportVirtualMachineState(virtualMachineCode,ExecutionStateEnum.DEPLOYED,"Machine started");
         		return true;
         	}
             else{
                 PersistentExecutionManager.removeExecution(virtualMachineCode,false);
-                ServerMessageSender.reportVirtualMachineState(virtualMachineCode,VirtualMachineExecutionStateEnum.FAILED,"Network error, machine initial ping doesn't respond");
+                ServerMessageSender.reportVirtualMachineState(virtualMachineCode,ExecutionStateEnum.FAILED,"Network error, machine initial ping doesn't respond");
             }
 		} catch (Exception e) {
 			PersistentExecutionManager.removeExecution(virtualMachineCode,false);

@@ -2,12 +2,12 @@ package uniandes.unacloud.web.test
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(VirtualMachineExecution)
+@TestFor(Execution)
 class VirtualMachineExecutionSpec extends Specification {
 
     def setup() {

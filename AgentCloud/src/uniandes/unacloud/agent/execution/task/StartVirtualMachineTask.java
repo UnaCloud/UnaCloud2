@@ -4,8 +4,8 @@ import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
  * Task to start a virtual machine execution
@@ -13,12 +13,12 @@ import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
  *
  */
 public class StartVirtualMachineTask implements Runnable{
-	VirtualMachineExecution machineExecution;
+	Execution machineExecution;
 	/**
 	 * class constructor
 	 * @param machineExecution VM instance to be started
 	 */
-	public StartVirtualMachineTask(VirtualMachineExecution machineExecution) {
+	public StartVirtualMachineTask(Execution machineExecution) {
 		this.machineExecution = machineExecution;
 	}
 	
@@ -37,7 +37,7 @@ public class StartVirtualMachineTask implements Runnable{
 			System.out.println("endStartVirtualMachine");
 		}catch(VirtualMachineExecutionException ex){
 			try {
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

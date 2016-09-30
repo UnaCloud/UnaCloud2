@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Entity to represent a cluster; a group of virtual machine images configured to be deployed together.
@@ -25,7 +25,7 @@ class Cluster {
 	/**
 	 * List of virtual machine images in the cluster 
 	 */
-	static hasMany = [images: VirtualMachineImage]
+	static hasMany = [images: Image]
 	
 	/**
 	 * Owner
@@ -67,7 +67,7 @@ class Cluster {
 	 */
 	def update(){
 		if(state.equals(ClusterEnum.FREEZE)
-			&&images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.size()==0){
+			&&images.findAll{it.state!=ImageEnum.AVAILABLE}.size()==0){
 			state=ClusterEnum.AVAILABLE;
 			this.save(failOnError:true)
 		}

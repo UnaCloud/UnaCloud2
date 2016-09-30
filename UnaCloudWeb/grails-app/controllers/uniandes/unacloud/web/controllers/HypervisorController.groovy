@@ -2,7 +2,7 @@ package uniandes.unacloud.web.controllers
 
 import uniandes.unacloud.web.services.HypervisorService;
 import uniandes.unacloud.web.services.UserGroupService;
-import uniandes.unacloud.web.domain.Hypervisor;
+import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.User;
 
 /**
@@ -60,7 +60,7 @@ class HypervisorController {
 	 * @return list of all hypervisors
 	 */
 	def list() {
-		[hypervisors: Hypervisor.list()];
+		[hypervisors: Platform.list()];
 	}
 	
 	/**
@@ -94,7 +94,7 @@ class HypervisorController {
 	 * @return hypervisor selected by user
 	 */
 	def edit(){
-		def hypervisor= Hypervisor.get(params.id)
+		def hypervisor= Platform.get(params.id)
 		if (!hypervisor)
 			redirect(uri:"/admin/hypervisor/list", absolute:true)
 		else
@@ -108,8 +108,8 @@ class HypervisorController {
 	def saveEdit(){
 		if(params.name&&params.version&&params.ext){
 			try{
-				Hypervisor hypervisor = Hypervisor.get(params.id)
-				if(Hypervisor){
+				Platform hypervisor = Platform.get(params.id)
+				if(Platform){
 					hypervisorService.setValues(hypervisor,params.name,params.version,params.ext,params.files_ext)
 					flash.message="Hypervisor values have been modified"
 					flash.type="success"
@@ -128,7 +128,7 @@ class HypervisorController {
 	 * Deletes hypervisor action. Redirects to index when finished
 	 */	
 	def delete(){
-		def hypervisor = Hypervisor.get(params.id)
+		def hypervisor = Platform.get(params.id)
 		if (hypervisor) {			
 			try{
 				hypervisorService.deleteHypervisor(hypervisor)

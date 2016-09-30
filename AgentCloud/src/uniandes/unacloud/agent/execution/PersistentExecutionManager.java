@@ -17,11 +17,11 @@ import java.util.TreeMap;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.communication.send.VirtualMachineStateViewer;
 import uniandes.unacloud.agent.communication.upload.UploadImageVirtualMachineTask;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineImageStatus;
+import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
-import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.agent.platform.PlatformFactory;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
 import uniandes.unacloud.common.com.messages.InvalidOperationResponse;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineAddTimeMessage;
@@ -29,7 +29,7 @@ import uniandes.unacloud.common.com.messages.vmo.VirtualMachineRestartMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageResponse;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse.VirtualMachineState;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -51,7 +51,7 @@ public class PersistentExecutionManager {
     /**
      * Execution hash map, contains list of execution
      */
-    private static final Map<Long,VirtualMachineExecution> executionList=new TreeMap<>();
+    private static final Map<Long,Execution> executionList=new TreeMap<>();
         
     /**
      * Timer used to schedule shutdown events
@@ -64,7 +64,7 @@ public class PersistentExecutionManager {
      * @param checkTime 
      */
     public static void removeExecution(long virtualMachineExecutionId,boolean checkTime) {
-    	VirtualMachineExecution execution=executionList.remove(virtualMachineExecutionId);
+    	Execution execution=executionList.remove(virtualMachineExecutionId);
 		if(execution!=null&&(!checkTime||System.currentTimeMillis()>execution.getShutdownTime())){
 			execution.getImage().stopAndUnregister();
 		}
@@ -76,7 +76,7 @@ public class PersistentExecutionManager {
      * @param virtualMachineExecutionId
      */
     public static void stopExecution(long virtualMachineExecutionId) {
-    	VirtualMachineExecution execution=executionList.get(virtualMachineExecutionId);
+    	Execution execution=executionList.get(virtualMachineExecutionId);
 		if(execution!=null){
 			execution.getImage().stop();
 		}
@@ -87,7 +87,7 @@ public class PersistentExecutionManager {
      * @param virtualMachineExecutionId
      */
     public static void unregisterExecution(long virtualMachineExecutionId) {
-    	VirtualMachineExecution execution=executionList.get(virtualMachineExecutionId);
+    	Execution execution=executionList.get(virtualMachineExecutionId);
 		if(execution!=null){
 			execution.getImage().unregister();
 		}
@@ -106,12 +106,12 @@ public class PersistentExecutionManager {
      * @return response to server
      */
     public static UnaCloudAbstractResponse restartMachine(VirtualMachineRestartMessage restartMessage) {
-    	VirtualMachineExecution execution=executionList.get(restartMessage.getVirtualMachineExecutionId());
+    	Execution execution=executionList.get(restartMessage.getVirtualMachineExecutionId());
         try {
         	execution.getImage().restartVirtualMachine();
-        } catch (HypervisorOperationException ex) {
+        } catch (PlatformOperationException ex) {
             try {
-				ServerMessageSender.reportVirtualMachineState(restartMessage.getVirtualMachineExecutionId(), VirtualMachineExecutionStateEnum.FAILED, ex.getMessage());
+				ServerMessageSender.reportVirtualMachineState(restartMessage.getVirtualMachineExecutionId(), ExecutionStateEnum.FAILED, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -126,25 +126,25 @@ public class PersistentExecutionManager {
      * @param started if execution should be started
      * @return result message
      */
-    public static String startUpMachine(VirtualMachineExecution execution,boolean started){
+    public static String startUpMachine(Execution execution,boolean started){
     	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
     	try {
 	        try {
 	            if(!started)execution.getImage().startVirtualMachine();
 	            executionList.put(execution.getId(),execution);
 	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
-	            ServerMessageSender.reportVirtualMachineState(execution.getId(),VirtualMachineExecutionStateEnum.DEPLOYING,"Starting virtual machine");
+	            ServerMessageSender.reportVirtualMachineState(execution.getId(),ExecutionStateEnum.DEPLOYING,"Starting virtual machine");
 	            if(new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
-	            	execution.getImage().setStatus(VirtualMachineImageStatus.LOCK);
-	        } catch (HypervisorOperationException e) {
+	            	execution.getImage().setStatus(ImageStatus.LOCK);
+	        } catch (PlatformOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
-	        	ServerMessageSender.reportVirtualMachineState(execution.getId(), VirtualMachineExecutionStateEnum.FAILED, e.getMessage());
+	        	ServerMessageSender.reportVirtualMachineState(execution.getId(), ExecutionStateEnum.FAILED, e.getMessage());
 	            return ERROR_MESSAGE + e.getMessage();
 	        }
         } catch (Exception e) {
 			e.printStackTrace();
-			execution.getImage().setStatus(VirtualMachineImageStatus.FREE);
+			execution.getImage().setStatus(ImageStatus.FREE);
 		}
         saveData();
         return "";
@@ -157,7 +157,7 @@ public class PersistentExecutionManager {
      * @return unacloud response
      */
     public static UnaCloudAbstractResponse extendsVMTime(VirtualMachineAddTimeMessage timeMessage) {
-    	VirtualMachineExecution execution=executionList.get(timeMessage.getVirtualMachineExecutionId());
+    	Execution execution=executionList.get(timeMessage.getVirtualMachineExecutionId());
     	execution.setExecutionTime(timeMessage.getExecutionTime());
     	execution.setShutdownTime(System.currentTimeMillis()+timeMessage.getExecutionTime().toMillis());
     	timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
@@ -182,9 +182,9 @@ public class PersistentExecutionManager {
 			List<Long>ids = ImageCacheManager.getCurrentImages();
 			System.out.println("There are images "+ids.size());
 			loadData();
-			List<VirtualMachineExecution> removeExecutions = HypervisorFactory.validateExecutions(executionList.values());
-			for(VirtualMachineExecution execution: removeExecutions){		
-				if(execution.getImage().getStatus()!=VirtualMachineImageStatus.STARTING){
+			List<Execution> removeExecutions = PlatformFactory.validateExecutions(executionList.values());
+			for(Execution execution: removeExecutions){		
+				if(execution.getImage().getStatus()!=ImageStatus.STARTING){
 					removeExecution(execution.getId(),false);
 				}								
 			}
@@ -203,7 +203,7 @@ public class PersistentExecutionManager {
     	try {
     		refreshData();
         	List<Long> ids = new ArrayList<Long>();
-        	for(VirtualMachineExecution execution: executionList.values())if(execution.getImage().getStatus()!=VirtualMachineImageStatus.STARTING)ids.add(execution.getId());
+        	for(Execution execution: executionList.values())if(execution.getImage().getStatus()!=ImageStatus.STARTING)ids.add(execution.getId());
         	return ids;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -216,11 +216,11 @@ public class PersistentExecutionManager {
      */
     @SuppressWarnings("unchecked")
 	private static void loadData(){
-    	Map<Long,VirtualMachineExecution> executions=null;
+    	Map<Long,Execution> executions=null;
     	try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(executionsFile))){
-        	executions=(Map<Long,VirtualMachineExecution>)ois.readObject();
+        	executions=(Map<Long,Execution>)ois.readObject();
         	if(executions!=null){
-        		for(VirtualMachineExecution execution:executions.values())if(execution!=null){
+        		for(Execution execution:executions.values())if(execution!=null){
     				//execution.getImage().stopAndUnregister();
         			executionList.put(execution.getId(), execution);
         		}
@@ -234,7 +234,7 @@ public class PersistentExecutionManager {
      */
     public static UnaCloudAbstractResponse sendImageCopy(VirtualMachineSaveImageMessage message){
     	try {
-    		VirtualMachineExecution execution=executionList.get(message.getVirtualMachineExecutionId());
+    		Execution execution=executionList.get(message.getVirtualMachineExecutionId());
     		VirtualMachineSaveImageResponse response = new VirtualMachineSaveImageResponse();
     		if(execution!=null&&execution.getImageId()==message.getImageId()){
     			System.out.println("Start copy service with token "+message.getTokenCom());

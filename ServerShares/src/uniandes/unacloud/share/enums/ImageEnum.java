@@ -6,7 +6,7 @@ package uniandes.unacloud.share.enums;
  *
  */
 
-public enum VirtualMachineImageEnum {
+public enum ImageEnum {
 
 	/**
 	 * Image is no unavailable because doesn't have files
@@ -35,7 +35,7 @@ public enum VirtualMachineImageEnum {
 	
 	String name;
 	
-	private VirtualMachineImageEnum(String name){
+	private ImageEnum(String name){
 		this.name = name;
 	}	
 	
@@ -44,7 +44,7 @@ public enum VirtualMachineImageEnum {
 	 * @param name of state
 	 * @return Virtual Machine image state
 	 */
-	public static VirtualMachineImageEnum getEnum(String name){
+	public static ImageEnum getEnum(String name){
 		if(UNAVAILABLE.name().equals(name))return UNAVAILABLE;
 		if(DISABLE.name().equals(name))return DISABLE;
 		if(AVAILABLE.name().equals(name))return AVAILABLE;

@@ -1,18 +1,18 @@
 package uniandes.unacloud.agent.execution.configuration;
 
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 /**
  * Responsible to configure Windows 7 machine
  * @author Clouder
  */
-public class Windows7 extends AbstractVirtualMachineConfigurator{
+public class Windows7 extends AbstractExecutionConfigurator{
 	/**
 	 * Check AbstractVirtualMachineConfigurator for more information
 	 */
     @Override
-    public void configureIP() throws HypervisorOperationException {
+    public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	execution.getImage().executeCommandOnMachine("netsh.exe","interface","ip","set","address","name=Conexión de Área local","static",au.getIp(),au.getNetmask(),au.getGateway(),"1");
     }
@@ -20,11 +20,11 @@ public class Windows7 extends AbstractVirtualMachineConfigurator{
     public void configureDHCP() {
     }
 	@Override
-	public void configureHostname() throws HypervisorOperationException {
+	public void configureHostname() throws PlatformOperationException {
 		
 	}
 	@Override
-	public void configureHostTable() throws HypervisorOperationException {
+	public void configureHostTable() throws PlatformOperationException {
 		
 	}
 	@Override

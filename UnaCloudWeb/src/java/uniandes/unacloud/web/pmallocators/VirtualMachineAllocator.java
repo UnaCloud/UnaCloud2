@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Abstract class with main methods to allocate deployments. Validates enough resources in physical machine and enough IPs in lab
@@ -28,7 +28,7 @@ public abstract class VirtualMachineAllocator{
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	public synchronized void startAllocation(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	public synchronized void startAllocation(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		ipsNeeded = new TreeMap<Long, Integer>();
 		allocateVirtualMachines(virtualMachineList, physicalMachines, physicalMachineDescriptions);
 	}
@@ -40,7 +40,7 @@ public abstract class VirtualMachineAllocator{
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	protected abstract void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
+	protected abstract void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
 	
 	/**
 	 * validates if an execution fits with resources of a physical machine
@@ -49,7 +49,7 @@ public abstract class VirtualMachineAllocator{
 	 * @param pmad
 	 * @return true if there is enough resources in physical machine to assign virtual execution 
 	 */
-	protected boolean fitVMonPM(VirtualMachineExecution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
+	protected boolean fitVMonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
 		
 		System.out.println("Required: vm cores"+vme.getHardwareProfile().getCores()+"vm ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
 		System.out.println("Used "+pmad);

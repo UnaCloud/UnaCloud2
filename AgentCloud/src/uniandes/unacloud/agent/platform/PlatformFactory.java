@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -15,18 +15,18 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * @author Clouder
  * @author CesarF
  */
-public class HypervisorFactory {
+public class PlatformFactory {
 	
     /**
      * All provide services must be statically accessed
      */
-    private HypervisorFactory() {
+    private PlatformFactory() {
     }
     
     /**
      * Map that contains a relation between hypervisor names and hypervisor objects
      */
-    private static Map<String,Hypervisor> map = new HashMap<>();
+    private static Map<String,Platform> map = new HashMap<>();
     
     public static void registerHypervisors(){
     	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
@@ -44,7 +44,7 @@ public class HypervisorFactory {
      * @param hypervisorId The hypervisor id to be instantiated
      * @return A managed hypervisor for the given name
      */
-    public static Hypervisor getHypervisor(final String hypervisorId){
+    public static Platform getHypervisor(final String hypervisorId){
     	return map.get(hypervisorId);
     }
     
@@ -52,10 +52,10 @@ public class HypervisorFactory {
      * Validates the list of executions in each hypervisor, returns the list of executions that are not running in any hypervisor
      * @return list of executions that are not running
      */
-    public static List<VirtualMachineExecution> validateExecutions(Collection<VirtualMachineExecution> executions){
-    	List<VirtualMachineExecution> notRunningExecutions = new ArrayList<VirtualMachineExecution>();
+    public static List<Execution> validateExecutions(Collection<Execution> executions){
+    	List<Execution> notRunningExecutions = new ArrayList<Execution>();
     	notRunningExecutions.addAll(executions);
-    	for(Hypervisor hypervisor:map.values())notRunningExecutions=hypervisor.checkExecutions(notRunningExecutions);
+    	for(Platform hypervisor:map.values())notRunningExecutions=hypervisor.checkExecutions(notRunningExecutions);
     	return notRunningExecutions;
     }
 }

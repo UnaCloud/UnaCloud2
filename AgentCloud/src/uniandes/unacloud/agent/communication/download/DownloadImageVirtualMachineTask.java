@@ -13,7 +13,7 @@ import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineImageStatus;
+import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -65,7 +65,7 @@ public class DownloadImageVirtualMachineTask {
 						System.out.println("Main: "+mainFile);
 						image.setPassword(br.readLine());
 						image.setUsername(br.readLine());
-						copy.setStatus(VirtualMachineImageStatus.LOCK);
+						copy.setStatus(ImageStatus.LOCK);
 						/*copy.setVirtualMachineName();*/br.readLine();
 						image.setConfiguratorClass(br.readLine());
 						System.out.println("config: "+image.getConfiguratorClass());

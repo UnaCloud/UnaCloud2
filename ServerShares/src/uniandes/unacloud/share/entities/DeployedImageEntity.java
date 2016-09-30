@@ -9,11 +9,11 @@ import java.util.List;
  */
 public class DeployedImageEntity {
 	
-	private VirtualMachineImageEntity image;
-	private List<VirtualMachineExecutionEntity> executions;
+	private ImageEntity image;
+	private List<ExecutionEntity> executions;
 	
-	public DeployedImageEntity(VirtualMachineImageEntity image,
-			List<VirtualMachineExecutionEntity> executions) {
+	public DeployedImageEntity(ImageEntity image,
+			List<ExecutionEntity> executions) {
 		this.image = image;
 		this.executions = executions;
 	}
@@ -21,19 +21,19 @@ public class DeployedImageEntity {
 	public DeployedImageEntity() {	
 	}
 
-	public VirtualMachineImageEntity getImage() {
+	public ImageEntity getImage() {
 		return image;
 	}
 
-	public void setImage(VirtualMachineImageEntity image) {
+	public void setImage(ImageEntity image) {
 		this.image = image;
 	}
 
-	public List<VirtualMachineExecutionEntity> getExecutions() {
+	public List<ExecutionEntity> getExecutions() {
 		return executions;
 	}
 
-	public void setExecutions(List<VirtualMachineExecutionEntity> executions) {
+	public void setExecutions(List<ExecutionEntity> executions) {
 		this.executions = executions;
 	}
 }

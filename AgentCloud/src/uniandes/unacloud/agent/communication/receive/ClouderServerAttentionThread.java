@@ -9,7 +9,7 @@ import java.net.Socket;
 import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
 import uniandes.unacloud.agent.execution.task.StartVirtualMachineTask;
 import uniandes.unacloud.agent.execution.task.StopVirtualMachineTask;
@@ -96,7 +96,7 @@ public class ClouderServerAttentionThread implements Runnable {
             	VirtualMachineStartResponse resp=new VirtualMachineStartResponse();
         		resp.setState(VirtualMachineStartResponse.VirtualMachineState.STARTING);
         		resp.setMessage("Starting virtual machine...");
-        		ExecutorService.executeBackgroundTask(new StartVirtualMachineTask(VirtualMachineExecution.getFromStartVirtualMachineMessage((VirtualMachineStartMessage)message)));
+        		ExecutorService.executeBackgroundTask(new StartVirtualMachineTask(Execution.getFromStartVirtualMachineMessage((VirtualMachineStartMessage)message)));
             	return resp;
             case VirtualMachineOperationMessage.VM_STOP:
             	ExecutorService.executeBackgroundTask(new StopVirtualMachineTask((VirtualMachineStopMessage)message));

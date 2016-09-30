@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
- * Class to represent a Virtual Machine Execution entity 
+ * Class to represent a Execution entity 
  * @author CesarF
  *
  */
-public class VirtualMachineExecutionEntity {
+public class ExecutionEntity {
 	
 	private Long id;
 	private int cores;
@@ -19,14 +19,14 @@ public class VirtualMachineExecutionEntity {
 	private Date startTime;
 	private Date stopTime;
 	private PhysicalMachineEntity node;
-	private VirtualMachineExecutionStateEnum state;
+	private ExecutionStateEnum state;
 	private String hostName;
 	private List<NetInterfaceEntity> interfaces;
 	private String message;
 	
-	public VirtualMachineExecutionEntity(Long id, int cores, int ram, Date startTime,
+	public ExecutionEntity(Long id, int cores, int ram, Date startTime,
 			Date stopTime, PhysicalMachineEntity node,
-			VirtualMachineExecutionStateEnum state, String hostName, String message) {
+			ExecutionStateEnum state, String hostName, String message) {
 		super();
 		this.id = id;
 		this.cores = cores;
@@ -88,11 +88,11 @@ public class VirtualMachineExecutionEntity {
 		this.node = node;
 	}
 
-	public VirtualMachineExecutionStateEnum getState() {
+	public ExecutionStateEnum getState() {
 		return state;
 	}
 
-	public void setState(VirtualMachineExecutionStateEnum state) {
+	public void setState(ExecutionStateEnum state) {
 		this.state = state;
 	}
 

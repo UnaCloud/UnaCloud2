@@ -5,7 +5,7 @@ import uniandes.unacloud.common.com.UnaCloudDataSenderUDP;
 import uniandes.unacloud.common.com.messages.udp.UDPMessageLogPM;
 import uniandes.unacloud.common.com.messages.udp.UDPMessageStatePM;
 import uniandes.unacloud.common.com.messages.udp.UDPMessageStateVM;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -60,7 +60,7 @@ public class UDPCommunicator {
 	 * @return Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
 	 * @throws Exception 
 	 */
-	public boolean pushInfoVM(String hostName, long virtualMachineCode, VirtualMachineExecutionStateEnum state, String messageExecution) throws Exception{		
+	public boolean pushInfoVM(String hostName, long virtualMachineCode, ExecutionStateEnum state, String messageExecution) throws Exception{		
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
 		UDPMessageStateVM message = new UDPMessageStateVM(serverIP, serverPort, hostName, virtualMachineCode, state, messageExecution);

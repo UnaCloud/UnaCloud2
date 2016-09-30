@@ -1,6 +1,6 @@
 package uniandes.unacloud.agent.execution.configuration;
 
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 import java.io.File;
@@ -10,12 +10,12 @@ import java.io.PrintWriter;
  * Class responsible to implement methods to configure Ubuntu virtual machines
  * @author Clouder
  */
-public class Ubuntu extends AbstractVirtualMachineConfigurator{
+public class Ubuntu extends AbstractExecutionConfigurator{
     /**
      * Configures the IP address of a Ubuntu managed virtual machine
      */
     @Override
-    public void configureIP() throws HypervisorOperationException {
+    public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	
     	File out=generateRandomFile();
@@ -47,7 +47,7 @@ public class Ubuntu extends AbstractVirtualMachineConfigurator{
     	
     }
 
-	public void configureHostname() throws HypervisorOperationException{
+	public void configureHostname() throws PlatformOperationException{
 		File out=generateRandomFile();
 		try(PrintWriter pw = new LinuxPrintWriter(out)){
 			pw.println(execution.getHostname());
@@ -59,7 +59,7 @@ public class Ubuntu extends AbstractVirtualMachineConfigurator{
 	}
 
 	@Override
-	public void configureHostTable() throws HypervisorOperationException {
+	public void configureHostTable() throws PlatformOperationException {
 		
 	}
 

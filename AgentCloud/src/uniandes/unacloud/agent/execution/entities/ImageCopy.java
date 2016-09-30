@@ -7,11 +7,11 @@ import java.util.Date;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.agent.execution.configuration.AbstractVirtualMachineConfigurator;
-import uniandes.unacloud.agent.hypervisor.Hypervisor;
-import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigurator;
+import uniandes.unacloud.agent.platform.Platform;
+import uniandes.unacloud.agent.platform.PlatformFactory;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -34,7 +34,7 @@ public class ImageCopy implements Serializable{
 	 */
 	private Image image;
 	
-	private transient VirtualMachineImageStatus status=VirtualMachineImageStatus.FREE;
+	private transient ImageStatus status=ImageStatus.FREE;
 	
 	/**
 	 * Get manin file
@@ -64,14 +64,14 @@ public class ImageCopy implements Serializable{
 	 * Gets virtual machine status
 	 * @return status
 	 */
-	public VirtualMachineImageStatus getStatus() {
+	public ImageStatus getStatus() {
 		return status;
 	}
 	/**
 	 * Update virtual machine status
 	 * @param status
 	 */
-	public void setStatus(VirtualMachineImageStatus status) {
+	public void setStatus(ImageStatus status) {
 		this.status = status;
 	}
 	/**
@@ -94,16 +94,16 @@ public class ImageCopy implements Serializable{
 	 * Configures and starts the copy
 	 * @param machineExecution
 	 */	
-	public synchronized void configureAndStart(VirtualMachineExecution machineExecution){
-		Hypervisor hypervisor=HypervisorFactory.getHypervisor(getImage().getHypervisorId());
+	public synchronized void configureAndStart(Execution machineExecution){
+		Platform hypervisor=PlatformFactory.getHypervisor(getImage().getHypervisorId());
 		try {
 			try {
 				if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
-				if(status!=VirtualMachineImageStatus.STARTING)status=VirtualMachineImageStatus.STARTING;
+				if(status!=ImageStatus.STARTING)status=ImageStatus.STARTING;
 				Class<?> configuratorClass=Class.forName("virtualMachineManager.configuration."+getImage().getConfiguratorClass());
 				Object configuratorObject=configuratorClass.getConstructor().newInstance();
-				if(configuratorObject instanceof AbstractVirtualMachineConfigurator){
-					AbstractVirtualMachineConfigurator configurator=(AbstractVirtualMachineConfigurator)configuratorObject;
+				if(configuratorObject instanceof AbstractExecutionConfigurator){
+					AbstractExecutionConfigurator configurator=(AbstractExecutionConfigurator)configuratorObject;
 					//configurator.setHypervisor(hypervisor);
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
@@ -116,14 +116,14 @@ public class ImageCopy implements Serializable{
 	    			System.out.println("image config "+new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());	    	       
 				}else {
-					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
-					status=VirtualMachineImageStatus.FREE;
+					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+					status=ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
-				status=VirtualMachineImageStatus.FREE;
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+				status=ImageStatus.FREE;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,7 +137,7 @@ public class ImageCopy implements Serializable{
 	 * @return cloned image
 	 */
 	public synchronized ImageCopy cloneCopy(ImageCopy dest){
-		Hypervisor hypervisor=HypervisorFactory.getHypervisor(this.getImage().getHypervisorId());
+		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
 		hypervisor.cloneVirtualMachine(this,dest);
 		return dest;
 	}
@@ -147,13 +147,13 @@ public class ImageCopy implements Serializable{
 	 * @throws VirtualMachineExecutionException
 	 */
 	public synchronized void init()throws VirtualMachineExecutionException{
-		Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+		Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
 		if(hypervisor==null)throw new VirtualMachineExecutionException("Hypervisor doesn't exists on machine. Hypervisor was "+image.getHypervisorId());
 		hypervisor.registerVirtualMachine(this);
 		try {
 			hypervisor.changeVirtualMachineMac(this);
 			hypervisor.takeVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);
-		} catch (HypervisorOperationException e) {
+		} catch (PlatformOperationException e) {
 			e.printStackTrace();
 		}
 		hypervisor.unregisterVirtualMachine(this);
@@ -162,20 +162,20 @@ public class ImageCopy implements Serializable{
 	/**
 	 * Delete the snapshot of this image to save it with current state and files
 	 * @throws VirtualMachineExecutionException
-	 * @throws HypervisorOperationException 
+	 * @throws PlatformOperationException 
 	 */
-	public synchronized void deleteSnapshot()throws VirtualMachineExecutionException, HypervisorOperationException{
-		Hypervisor hypervisor=HypervisorFactory.getHypervisor(this.getImage().getHypervisorId());
+	public synchronized void deleteSnapshot()throws VirtualMachineExecutionException, PlatformOperationException{
+		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
 		hypervisor.deleteVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
 	}
 
 	
 	/**
 	 * Starts copy
-	 * @throws HypervisorOperationException
+	 * @throws PlatformOperationException
 	 */
-	public void startVirtualMachine()throws HypervisorOperationException{
-		Hypervisor hypervisor=HypervisorFactory.getHypervisor(this.getImage().getHypervisorId());
+	public void startVirtualMachine()throws PlatformOperationException{
+		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
 		hypervisor.startVirtualMachine(this);
 	}
     
@@ -183,10 +183,10 @@ public class ImageCopy implements Serializable{
 	 * Executes given command on this copy
 	 * @param command command to get executed
 	 * @param args command arguments
-	 * @throws HypervisorOperationException
+	 * @throws PlatformOperationException
 	 */
-    public void executeCommandOnMachine( String command,String...args) throws HypervisorOperationException{
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+    public void executeCommandOnMachine( String command,String...args) throws PlatformOperationException{
+    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
     	hypervisor.executeCommandOnMachine(this,command,args);
     }
     
@@ -194,19 +194,19 @@ public class ImageCopy implements Serializable{
      * copies a file in this image clone
      * @param destinationRoute destination path in the VM
      * @param sourceFile original file
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-    public void copyFileOnVirtualMachine(String destinationRoute, File sourceFile) throws HypervisorOperationException{
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+    public void copyFileOnVirtualMachine(String destinationRoute, File sourceFile) throws PlatformOperationException{
+    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
     	hypervisor.copyFileOnVirtualMachine(this,destinationRoute,sourceFile);
     }
     
     /**
      * Restarts this VM
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-    public void restartVirtualMachine() throws HypervisorOperationException{
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(this.getImage().getHypervisorId());
+    public void restartVirtualMachine() throws PlatformOperationException{
+    	Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
 		hypervisor.restartVirtualMachine(this);
     }
     
@@ -214,21 +214,21 @@ public class ImageCopy implements Serializable{
      * Finalizes copy execution
      */
     public synchronized void stopAndUnregister(){
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
     	hypervisor.stopAndUnregister(this);
     }
     /**
      * Finalizes copy execution without unregistering and freeing image
      */
     public synchronized void stop(){
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
     	hypervisor.stopVirtualMachine(this);
     }
     /**
      * Unregistering image copy
      */
     public synchronized void unregister(){
-    	Hypervisor hypervisor=HypervisorFactory.getHypervisor(image.getHypervisorId());
+    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
     	hypervisor.unregisterVirtualMachine(this);
     }
 }

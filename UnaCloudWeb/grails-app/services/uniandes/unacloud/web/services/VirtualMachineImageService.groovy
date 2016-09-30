@@ -5,13 +5,13 @@ import org.apache.commons.io.FileUtils
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.queue.QueueTaskerFile;
 import uniandes.unacloud.web.utils.java.Hasher;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.Repository;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 
 import grails.transaction.Transactional
 
@@ -62,9 +62,9 @@ class VirtualMachineImageService {
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		Repository repo = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(name+new Date().getTime())
-		def image= new VirtualMachineImage(owner: user, repository:repo, name: name, lastUpdate:new Date(),
+		def image= new Image(owner: user, repository:repo, name: name, lastUpdate:new Date(),
 			isPublic: isPublic, imageVersion: 0,accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId),
-			user: username, password: password, token:token,fixedDiskSize:0, state: VirtualMachineImageEnum.UNAVAILABLE)	
+			user: username, password: password, token:token,fixedDiskSize:0, state: ImageEnum.UNAVAILABLE)	
 		image.save(failOnError: true)
 		return token;
     }
@@ -78,10 +78,10 @@ class VirtualMachineImageService {
 	 */
 	def newPublic(name, imageId, User user){
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
-		def publicImage = VirtualMachineImage.get(imageId)
+		def publicImage = Image.get(imageId)
 		if(publicImage){
 			def repo= userRestrictionService.getRepository(user)
-			def image= new VirtualMachineImage(state: VirtualMachineImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
+			def image= new Image(state: ImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
 				owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),isPublic: false, imageVersion: 0,
 				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 
 				password:  publicImage.password)
@@ -96,7 +96,7 @@ class VirtualMachineImageService {
 	 * @return list of available public images
 	 */
 	def getAvailablePublicImages(){
-		return VirtualMachineImage.where{isPublic==true&&state==VirtualMachineImageEnum.AVAILABLE}.findAll()
+		return Image.where{isPublic==true&&state==ImageEnum.AVAILABLE}.findAll()
 	}
 	
 	/**
@@ -107,7 +107,7 @@ class VirtualMachineImageService {
 	 * @return true in case image has been deleted, false in case not
 	 */
 	
-	def deleteImage(User user,VirtualMachineImage image){		
+	def deleteImage(User user,Image image){		
 		def clusteres = Cluster.where{images{id==image.id;}}.findAll();
 		if(clusteres&&clusteres.size()>0){
 			return false;
@@ -122,7 +122,7 @@ class VirtualMachineImageService {
 	 * Sends a task to remove image from cache in all physical machines
 	 * @param image
 	 */
-	def clearCache(VirtualMachineImage image){
+	def clearCache(Image image){
 		image.freeze()
 		QueueTaskerControl.clearCache(image, image.owner);		
 	}
@@ -135,7 +135,7 @@ class VirtualMachineImageService {
 	 * @param password new image password
 	 */
 	
-	def setValues(VirtualMachineImage image, name, user, password){
+	def setValues(Image image, name, user, password){
 		if(image.name!=name&&image.owner.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		image.putAt("name", name)
 		image.putAt("user", user)
@@ -149,7 +149,7 @@ class VirtualMachineImageService {
 	 * @param image
 	 * @param user
 	 */
-	def alterImagePrivacy(toPublic, VirtualMachineImage image){
+	def alterImagePrivacy(toPublic, Image image){
 		image.freeze()
 		if(!toPublic && image.isPublic){
 			QueueTaskerFile.deletePublicImage(image, image.owner);
@@ -165,10 +165,10 @@ class VirtualMachineImageService {
 	 * @param user owner user
 	 * @return token to validates image
 	 */	
-	def updateFiles(VirtualMachineImage image){		
+	def updateFiles(Image image){		
 		String token = Hasher.hashSha256(image.getName()+new Date().getTime())
 		image.putAt("token",token)
-		image.putAt("state",VirtualMachineImageEnum.UNAVAILABLE)
+		image.putAt("state",ImageEnum.UNAVAILABLE)
 		return token
 	}
 }

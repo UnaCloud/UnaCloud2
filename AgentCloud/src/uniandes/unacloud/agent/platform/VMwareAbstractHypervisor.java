@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 
@@ -20,7 +20,7 @@ import uniandes.unacloud.common.utils.LocalProcessExecutor;
  * VMware hypervisor.
  */
 
-public abstract class VMwareAbstractHypervisor extends Hypervisor{
+public abstract class VMwareAbstractHypervisor extends Platform{
 	
 	public static final String VMW_VMX_CPU = "numvcpus";
     public static final String VMW_VMX_MEMORY = "memsize";
@@ -34,73 +34,73 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
     }
 
     @Override
-    public void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException {
+    public void restartVirtualMachine(ImageCopy image) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"reset",image.getMainFile().getPath());
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
 
     @Override
-    public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
+    public void startVirtualMachine(ImageCopy image) throws PlatformOperationException {
         correctDataStores();
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"start",image.getMainFile().getPath(),"nogui");
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
     }
     
     @Override
-    public void executeCommandOnMachine(ImageCopy image,String command, String... args) throws HypervisorOperationException {
+    public void executeCommandOnMachine(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com=new ArrayList<>();
         Collections.addAll(com, getExecutablePath(),"-T",getType(),"-gu",image.getImage().getUsername(),"-gp",image.getImage().getPassword(),"runProgramInGuest",image.getMainFile().getPath());
         com.add(command);
         Collections.addAll(com,args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
 
     @Override
-    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws HypervisorOperationException {
+    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"-gu",image.getImage().getUsername(),"-gp",image.getImage().getPassword(),"copyFileFromHostToGuest",image.getMainFile().getPath(),sourceFile.getAbsolutePath(),destinationRoute);
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
 
     @Override
-    public void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws HypervisorOperationException {
+    public void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"snapshot",image.getMainFile().getPath(),snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
     @Override
-    public void deleteVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
+    public void deleteVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
     	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"deleteSnapshot",image.getMainFile().getPath(),snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     };
     @Override
-    public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws HypervisorOperationException {
+    public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	if(cores!=0&&ram!=0){
             new Context(image.getMainFile().getPath()).changeVMXFileContext(cores,ram);
        }
     }
     @Override
-    public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
+    public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
     	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"listSnapshots",image.getMainFile().getPath());
     	return h!=null&&h.contains(snapshotname);
     }
     @Override
-    public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
+    public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
     	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(),"revertToSnapshot",image.getMainFile().getPath(),snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
     /**
@@ -120,7 +120,7 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
         }
     }
 
-    public void changeVirtualMachineMac(ImageCopy image) throws HypervisorOperationException {
+    public void changeVirtualMachineMac(ImageCopy image) throws PlatformOperationException {
     }
 	@Override
 	public void registerVirtualMachine(ImageCopy image) {
@@ -140,15 +140,15 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
 		sleep(20000);
 		try {
 			takeVirtualMachineSnapshot(dest,"unacloudbase");
-		} catch (HypervisorOperationException e) {
+		} catch (PlatformOperationException e) {
 			e.printStackTrace();
 		}
         unregisterVirtualMachine(dest);
 	}	
 	
 	@Override
-	public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
-		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
+	public List<Execution> checkExecutions(Collection<Execution> executions) {
+		List<Execution> executionsToDelete = new ArrayList<Execution>();
 		List<String> list = new ArrayList<String>();
 		try {
 			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"-T",getType(), "list").split("\n|\r");
@@ -159,7 +159,7 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		for (VirtualMachineExecution execution: executions) {
+		for (Execution execution: executions) {
 			boolean isRunning = false;
 			for(String exeInHypervisor: list){
 				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){

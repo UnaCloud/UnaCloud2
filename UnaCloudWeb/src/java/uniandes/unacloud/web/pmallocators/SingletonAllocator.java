@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Singleton allocator algorithms
@@ -19,14 +19,14 @@ public class SingletonAllocator extends VirtualMachineAllocator{
 	 */
 	@Override
 	protected void allocateVirtualMachines(
-			List<VirtualMachineExecution> virtualMachineList,
+			List<Execution> virtualMachineList,
 			List<PhysicalMachine> physicalMachines,
 			Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)
 			throws AllocatorException {
 			for(PhysicalMachine pm: physicalMachines){
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
 				if (pmad == null){
-					for (VirtualMachineExecution vm : virtualMachineList){
+					for (Execution vm : virtualMachineList){
 						if(fitVMonPM(vm, pm, pmad)){
 							vm.setExecutionNode(pm);
 							if(pmad==null){

@@ -2,7 +2,7 @@ package uniandes.unacloud.web.services
 
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 import grails.transaction.Transactional
 
 /**
@@ -34,7 +34,7 @@ class OperatingSystemService {
 	 */
 	
 	def delete(OperatingSystem os){
-		if(PhysicalMachine.where{operatingSystem==os}.find()||VirtualMachineImage.where{operatingSystem==os}.find())
+		if(PhysicalMachine.where{operatingSystem==os}.find()||Image.where{operatingSystem==os}.find())
 			throw new Exception("Operating System is being used by some Physical Machine or Virtual Machine")
 		os.delete()
 	}

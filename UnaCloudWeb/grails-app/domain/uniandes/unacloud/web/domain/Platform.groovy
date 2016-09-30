@@ -6,7 +6,7 @@ package uniandes.unacloud.web.domain
  * @author CesarF
  *
  */
-class Hypervisor {
+class Platform {
 	
 	//-----------------------------------------------------------------
 	// Properties

@@ -1,8 +1,8 @@
 package uniandes.unacloud.file.db.entities;
 
 import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.VirtualMachineImageEntity;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Class to represent a Virtual Image in database.
@@ -11,7 +11,7 @@ import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
  * @author CesarF
  *
  */
-public class VirtualImageFileEntity extends VirtualMachineImageEntity{
+public class ImageFileEntity extends ImageEntity{
 	
 	private RepositoryEntity repository;
 	private Boolean isPublic;
@@ -21,7 +21,7 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 	private UserEntity owner;
 	private String configurer;
 	
-	public VirtualImageFileEntity(Long id, VirtualMachineImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
+	public ImageFileEntity(Long id, ImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
 		
 		super(id, null, null, state, token);
 		this.repository = repository;
@@ -90,7 +90,7 @@ public class VirtualImageFileEntity extends VirtualMachineImageEntity{
 
 	@Override
 	public String toString() {
-		return "VirtualImageFileEntity [repository=" + repository
+		return "ImageFileEntity [repository=" + repository
 				+ ", isPublic=" + isPublic + ", fixDisk=" + fixDisk
 				+ ", mainFile=" + mainFile + ", name=" + name + ", owner="
 				+ owner + ", configurer=" + configurer + ", " +getId()+"  - "+getState()+ "]";

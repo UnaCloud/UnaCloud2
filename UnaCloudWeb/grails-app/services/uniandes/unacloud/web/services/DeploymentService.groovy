@@ -1,12 +1,12 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.pmallocators.AllocatorException
 import uniandes.unacloud.web.pmallocators.PhysicalMachineAllocationDescription
 import uniandes.unacloud.web.queue.QueueTaskerControl;
@@ -16,8 +16,8 @@ import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Execution;
+import uniandes.unacloud.web.domain.Image;
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions;
 
 import grails.transaction.Transactional
@@ -110,7 +110,7 @@ class DeploymentService {
 			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new VirtualMachineExecution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: start,stopTime:stop, interfaces:[])
+				def virtualExecution = new Execution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: start,stopTime:stop, interfaces:[])
 				executions.add(virtualExecution)
 			}
 			depImage.virtualMachines=executions
@@ -135,7 +135,7 @@ class DeploymentService {
 		for(DeployedImage image in images){
 			image.deployment = dep
 			image.save(failOnError: true,flush:true)
-			for(VirtualMachineExecution execution in image.virtualMachines){
+			for(Execution execution in image.virtualMachines){
 				execution.deployImage = image
 				execution.saveExecution()
 			}
@@ -178,7 +178,7 @@ class DeploymentService {
 					
 		def executions = []
 		for(int j=0;j<requestOptions.instances;j++){
-			def virtualExecution = new VirtualMachineExecution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: VirtualMachineExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
+			def virtualExecution = new Execution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
 			executions.add(virtualExecution)
 		}
 		
@@ -190,7 +190,7 @@ class DeploymentService {
 		physicalMachineAllocatorService.allocatePhysicalMachines(user,executions.sort(),pms,pmDescriptions)
 		ipAllocatorService.allocateIPAddresses(executions.sort())	
 			
-		for(VirtualMachineExecution execution in executions){
+		for(Execution execution in executions){
 			execution.saveExecution()
 		}
 		image.virtualMachines.addAll(executions)
@@ -221,13 +221,13 @@ class DeploymentService {
 	 * @param executions
 	 * @param user that request stop executions
 	 */
-	def stopVirtualMachineExecutions(List<VirtualMachineExecution> executions, User requester){
-		List<VirtualMachineExecution> executionsToStop = new ArrayList<VirtualMachineExecution>()
-		for(VirtualMachineExecution vm : executions){
-			if(vm.status.equals(VirtualMachineExecutionStateEnum.FAILED)){				
+	def stopVirtualMachineExecutions(List<Execution> executions, User requester){
+		List<Execution> executionsToStop = new ArrayList<Execution>()
+		for(Execution vm : executions){
+			if(vm.status.equals(ExecutionStateEnum.FAILED)){				
 				vm.finishExecution()
-			}else if(vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)){
-				vm.putAt("status", VirtualMachineExecutionStateEnum.FINISHING)				
+			}else if(vm.status.equals(ExecutionStateEnum.DEPLOYED)){
+				vm.putAt("status", ExecutionStateEnum.FINISHING)				
 				executionsToStop.add(vm)
 			}
 		}
@@ -244,16 +244,16 @@ class DeploymentService {
 	 * @throws Exception
 	 */
 	//Validates capacity
-	def createCopy(VirtualMachineExecution execution, User user, String newName)throws Exception{
+	def createCopy(Execution execution, User user, String newName)throws Exception{
 		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
-		if(VirtualMachineImage.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
+		if(Image.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
 		def repository = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(newName+new Date().getTime())
-		VirtualMachineImage image = new VirtualMachineImage(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
+		Image image = new Image(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
-			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:VirtualMachineImageEnum.COPYING,owner:user,repository:repository,token:token)
+			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:ImageEnum.COPYING,owner:user,repository:repository,token:token)
 		image.save(failOnError:true,flush:true)
-		execution.putAt("status", VirtualMachineExecutionStateEnum.REQUEST_COPY)
+		execution.putAt("status", ExecutionStateEnum.REQUEST_COPY)
 		execution.putAt("message", 'Copy request to image '+image.id)
 		QueueTaskerControl.createCopyFromExecution(execution,image,execution.deployImage.image,user)
 	}

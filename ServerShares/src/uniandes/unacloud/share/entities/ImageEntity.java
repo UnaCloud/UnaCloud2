@@ -1,22 +1,22 @@
 package uniandes.unacloud.share.entities;
 
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
- * Class to represent a Virtual Machine Image entity 
+ * Class to represent a Image entity 
  * @author CesarF
  *
  */
-public class VirtualMachineImageEntity {
+public class ImageEntity {
 	
 	private Long id;
 	private String user;
 	private String password;
-	private VirtualMachineImageEnum state;
+	private ImageEnum state;
 	private String token;
 	
-	public VirtualMachineImageEntity(Long id, String user, String password,
-			VirtualMachineImageEnum state, String token) {
+	public ImageEntity(Long id, String user, String password,
+			ImageEnum state, String token) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -49,11 +49,11 @@ public class VirtualMachineImageEntity {
 		this.password = password;
 	}
 
-	public VirtualMachineImageEnum getState() {
+	public ImageEnum getState() {
 		return state;
 	}
 
-	public void setState(VirtualMachineImageEnum state) {
+	public void setState(ImageEnum state) {
 		this.state = state;
 	}	
 	

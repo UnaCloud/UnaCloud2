@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Round Robin allocator algorithms
@@ -20,7 +20,7 @@ public class RoundRobinAllocator extends VirtualMachineAllocator {
 	 * Assigns a virtual machine for each physical machine order by physical machine id
 	 */
 	@Override
-	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	protected void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {
 			public int compare(PhysicalMachine p1, PhysicalMachine p2) {
 				return Long.compare(p1.getDatabaseId(), p2.getDatabaseId());
@@ -30,7 +30,7 @@ public class RoundRobinAllocator extends VirtualMachineAllocator {
 			for (PhysicalMachine pm : physicalMachines) {
 				if (nextVm >= virtualMachineList.size())break ciclo1;
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
-				VirtualMachineExecution nextVirtualMachine = virtualMachineList.get(nextVm);
+				Execution nextVirtualMachine = virtualMachineList.get(nextVm);
 				if(fitVMonPM(nextVirtualMachine, pm, pmad)){
 					nextVirtualMachine.setExecutionNode(pm);
 					if(pmad==null){

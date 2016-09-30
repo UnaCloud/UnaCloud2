@@ -2,11 +2,11 @@ package uniandes.unacloud.share.entities;
 
 
 /**
- * Class to represent a Physical Machine entity 
+ * Class to represent a Platform to execute images
  * @author CesarF
  *
  */
-public class HypervisorEntity {
+public class PlatformEntity {
 	
 	private Long id;
 	private String version;
@@ -15,7 +15,7 @@ public class HypervisorEntity {
 	private String otherExtensions;
 	
 	
-	public HypervisorEntity(Long id, String version, String name, String extension, String otherExt) {
+	public PlatformEntity(Long id, String version, String name, String extension, String otherExt) {
 		super();
 		this.id = id;
 		this.version = version;

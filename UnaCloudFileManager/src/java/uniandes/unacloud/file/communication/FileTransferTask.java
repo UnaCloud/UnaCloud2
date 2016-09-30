@@ -10,10 +10,10 @@ import java.sql.Connection;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
-import uniandes.unacloud.file.db.VirtualMachineImageManager;
-import uniandes.unacloud.file.db.entities.VirtualImageFileEntity;
+import uniandes.unacloud.file.db.ImageFileManager;
+import uniandes.unacloud.file.db.entities.ImageFileEntity;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -33,7 +33,7 @@ public class FileTransferTask implements Runnable{
 			ZipOutputStream zos=new ZipOutputStream(os);
 			long imageId=ds.readLong();
 			System.out.println("\tWorking "+imageId);
-			VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(imageId, VirtualMachineImageEnum.AVAILABLE, false,true, con);
+			ImageFileEntity image = ImageFileManager.getVirtualImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
 			if(image!=null){
 				System.out.println(image+" - "+imageId+" - "+image.getState());
 				final byte[] buffer=new byte[1024*100];
@@ -59,7 +59,6 @@ public class FileTransferTask implements Runnable{
 				pw.println(image.getPassword());
 				pw.println(image.getUser());
 				pw.println(image.getName());
-				//System.out.println("en el servidor el configurator class es "++" "+image.getName());
 				pw.println(image.getConfigurer());
 				pw.flush();
 				

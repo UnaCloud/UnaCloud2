@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 

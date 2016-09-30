@@ -3,7 +3,7 @@ package uniandes.unacloud.common.com.messages.udp;
 import org.json.JSONObject;
 
 import uniandes.unacloud.common.com.UDPMessageEnum;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
  * Class to represent an UDP Message Type State Virtual Machine
@@ -38,7 +38,7 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 		
 	}
 	
-	public UDPMessageStateVM(String ip, int port, String host, long virtualMachineCode, VirtualMachineExecutionStateEnum state, String messageExecution){
+	public UDPMessageStateVM(String ip, int port, String host, long virtualMachineCode, ExecutionStateEnum state, String messageExecution){
 		super(ip, port, host, UDPMessageEnum.STATE_VM);
 				
 		JSONObject tempMessage = this.getMessage();
@@ -58,8 +58,8 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	 * Return state of the Message
 	 * @return VirtualMachineExecutionStateEnum State
 	 */
-	public VirtualMachineExecutionStateEnum getState() {
-		return VirtualMachineExecutionStateEnum.getEnum(this.getMessage().getString(TAG_STATE));
+	public ExecutionStateEnum getState() {
+		return ExecutionStateEnum.getEnum(this.getMessage().getString(TAG_STATE));
 	}
 	
 	/**

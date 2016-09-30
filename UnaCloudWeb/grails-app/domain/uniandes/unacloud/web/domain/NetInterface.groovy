@@ -25,7 +25,7 @@ class NetInterface {
 	/**
 	 * Virtual Execution where this interface is configured
 	 */	
-	static belongsTo = [virtualExecution:VirtualMachineExecution]
+	static belongsTo = [virtualExecution:Execution]
 
     static constraints = {
     }

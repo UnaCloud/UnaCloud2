@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.communication.send;
 
 import uniandes.unacloud.agent.system.OSFactory;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 
 /**
@@ -22,7 +22,7 @@ public class ServerMessageSender {
      * @return If the message could be sent or not
      * @throws Exception 
      */
-    public static boolean reportVirtualMachineState(long virtualMachineCode,VirtualMachineExecutionStateEnum state,String message) throws Exception{    	
+    public static boolean reportVirtualMachineState(long virtualMachineCode,ExecutionStateEnum state,String message) throws Exception{    	
     	return UDPCommunicator.getInstance().pushInfoVM(OSFactory.getOS().getHostname(), virtualMachineCode, state, message);
     }
     

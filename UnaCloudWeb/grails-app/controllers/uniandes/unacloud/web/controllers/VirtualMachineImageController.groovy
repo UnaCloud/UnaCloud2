@@ -2,11 +2,11 @@ package uniandes.unacloud.web.controllers
 
 import uniandes.unacloud.web.services.ServerVariableService;
 import uniandes.unacloud.web.services.VirtualMachineImageService;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 import grails.converters.JSON
 
 /**
@@ -113,8 +113,8 @@ class VirtualMachineImageController {
 	 * and error message if the validation processes failed
 	 */	
 	def delete(){
-		def image = VirtualMachineImage.get(params.id)
-		if (!image||!image.state==VirtualMachineImageEnum.AVAILABLE)
+		def image = Image.get(params.id)
+		if (!image||!image.state==ImageEnum.AVAILABLE)
 			redirect(uri:"/services/image/list", absolute:true)
 		else {	
 			def user= User.get(session.user.id)
@@ -133,8 +133,8 @@ class VirtualMachineImageController {
 	 * Verifies if image is AVAILABLE
 	 */	
 	def clearFromCache(){
-		VirtualMachineImage image = VirtualMachineImage.get(params.id);
-		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){	
+		Image image = Image.get(params.id);
+		if (image&&image.state==ImageEnum.AVAILABLE){	
 			if(image.owner.id==session.user.id){				
 				virtualMachineImageService.clearCache(image);
 				flash.message="Your request has been sent, image will be deleted from physical machines in a few time";
@@ -148,8 +148,8 @@ class VirtualMachineImageController {
 	 * Validates if image can be edited by user and render view
 	 */
 	def edit(){
-		VirtualMachineImage image = VirtualMachineImage.get(params.id);
-		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){
+		Image image = Image.get(params.id);
+		if (image&&image.state==ImageEnum.AVAILABLE){
 			if(image.owner.id==session.user.id){	
 				[image: image]
 			}else{
@@ -164,8 +164,8 @@ class VirtualMachineImageController {
 	 * Saves image information changes. Redirects to index when finished
 	 */	
 	def saveEdit(){
-		def image = VirtualMachineImage.get(params.id)
-		if (image&&image.state==VirtualMachineImageEnum.AVAILABLE){
+		def image = Image.get(params.id)
+		if (image&&image.state==ImageEnum.AVAILABLE){
 			if(image.owner.id==session.user.id){
 				boolean toPublic = params.isPublic!=null;
 				def res = null;
@@ -199,7 +199,7 @@ class VirtualMachineImageController {
 	 * @return id of the image to be edited.
 	 */	
 	def update(){
-		def image = VirtualMachineImage.get(params.id)
+		def image = Image.get(params.id)
 		if (image)	[image:image]
 		else redirect(uri:"/services/image/list", absolute:true)
 	}
@@ -247,7 +247,7 @@ class VirtualMachineImageController {
 	 */	
 	def updateFiles(){
 		def resp
-		VirtualMachineImage image= VirtualMachineImage.get(params.id)
+		Image image= Image.get(params.id)
 		if (image!= null&&image.owner.id==session.user.id){	
 			try{
 				def token = virtualMachineImageService.updateFiles(image)

@@ -2,7 +2,7 @@ package uniandes.unacloud.web.services.init
 
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import grails.transaction.Transactional
 import groovy.sql.Sql
@@ -50,8 +50,8 @@ class DatabaseService {
 		}catch(Exception e){println e.message}
 		try{
 			sql.execute ('DROP PROCEDURE IF EXISTS sp_check_vm')
-			sql.execute ('CREATE PROCEDURE sp_check_vm() BEGIN UPDATE virtual_machine_execution SET status = \''+VirtualMachineExecutionStateEnum.RECONNECTING.name()+'\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND status = \''+VirtualMachineExecutionStateEnum.DEPLOYED.name()+'\' AND id > 0; '+ 
-															'UPDATE virtual_machine_execution SET status = \''+VirtualMachineExecutionStateEnum.FAILED.name()+'\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 10 MINUTE) AND status = \''+VirtualMachineExecutionStateEnum.RECONNECTING.name()+'\' AND id> 0; END')
+			sql.execute ('CREATE PROCEDURE sp_check_vm() BEGIN UPDATE virtual_machine_execution SET status = \''+ExecutionStateEnum.RECONNECTING.name()+'\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND status = \''+ExecutionStateEnum.DEPLOYED.name()+'\' AND id > 0; '+ 
+															'UPDATE virtual_machine_execution SET status = \''+ExecutionStateEnum.FAILED.name()+'\' where CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 10 MINUTE) AND status = \''+ExecutionStateEnum.RECONNECTING.name()+'\' AND id> 0; END')
 			//sql.execute ('DROP EVENT update_vms');
 			sql.execute ('CREATE EVENT if not exists update_vms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_vm')
 		}catch(Exception e){println e.message}

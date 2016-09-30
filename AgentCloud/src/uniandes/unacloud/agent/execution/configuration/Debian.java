@@ -3,15 +3,15 @@ package uniandes.unacloud.agent.execution.configuration;
 import java.io.File;
 import java.io.PrintWriter;
 
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 /**
  * Class responsible to implement methods to configure Debian virtual machines
  */
-public class Debian extends AbstractVirtualMachineConfigurator{
+public class Debian extends AbstractExecutionConfigurator{
 	@Override
-	public void configureHostname() throws HypervisorOperationException{
+	public void configureHostname() throws PlatformOperationException{
 		File out=generateRandomFile();
 		try(PrintWriter pw = new LinuxPrintWriter(out)){
             pw.println(execution.getHostname());
@@ -24,10 +24,10 @@ public class Debian extends AbstractVirtualMachineConfigurator{
 	}
     /**
      * Configures the IP address of the Debian managed virtual machine
-     * @throws HypervisorOperationException 
+     * @throws PlatformOperationException 
      */
     @Override
-    public void configureIP() throws HypervisorOperationException {
+    public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	File out=generateRandomFile();
     	try(PrintWriter pw = new LinuxPrintWriter(out)){

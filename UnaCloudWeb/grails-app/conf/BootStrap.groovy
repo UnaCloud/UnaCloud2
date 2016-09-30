@@ -16,7 +16,7 @@ import uniandes.unacloud.web.domain.ExternalCloudProvider;
 import uniandes.unacloud.web.domain.UserGroup
 import uniandes.unacloud.web.services.UserGroupService
 import uniandes.unacloud.web.domain.HardwareProfile;
-import uniandes.unacloud.web.domain.Hypervisor;
+import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.IP
 import uniandes.unacloud.web.domain.IPPool;
 import uniandes.unacloud.web.domain.Laboratory;
@@ -98,8 +98,8 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT),program:ServerVariableProgramEnum.FILE_MANAGER,serverOnly:false).save()
 			
 		}			
-		if(Hypervisor.count() == 0){
-			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk').save()
+		if(Platform.count() == 0){
+			new Platform(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk').save()
 		}
 		//new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()

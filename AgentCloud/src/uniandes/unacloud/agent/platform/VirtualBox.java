@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
@@ -20,7 +20,7 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * Implementation of hypervisor abstract class to give support for VirtualBox
  * hypervisor.
  */
-public class VirtualBox extends Hypervisor {
+public class VirtualBox extends Platform {
 	public static final String HYPERVISOR_ID=UnaCloudConstants.VIRTUAL_BOX;
     
 	/**
@@ -66,10 +66,10 @@ public class VirtualBox extends Hypervisor {
      * @param image Image to be restarted
      */
     @Override
-    public void restartVirtualMachine(ImageCopy image) throws HypervisorOperationException {
+    public void restartVirtualMachine(ImageCopy image) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getVirtualMachineName(), "reset");
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
     }
@@ -79,11 +79,11 @@ public class VirtualBox extends Hypervisor {
      * @param image Image to be started
      */
     @Override
-	public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
+	public void startVirtualMachine(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
         String h;
         if((h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getVirtualMachineName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
         try {
@@ -94,7 +94,7 @@ public class VirtualBox extends Hypervisor {
         sleep(1000);
     }
 
-	private void setPriority(ImageCopy image) throws HypervisorOperationException {
+	private void setPriority(ImageCopy image) throws PlatformOperationException {
 		//To correct executions in Vbox 4.3 and forward
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getVirtualMachineName());
@@ -113,7 +113,7 @@ public class VirtualBox extends Hypervisor {
      * @param image Copy to be modified
      */
     @Override
-    public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws HypervisorOperationException {
+    public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	if(cores!=0&&ram!=0){
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getVirtualMachineName(),"--memory",""+ram,"--cpus",""+cores);
             sleep(20000);
@@ -127,13 +127,13 @@ public class VirtualBox extends Hypervisor {
      * @param args command arguments 
      */
     @Override
-    public void executeCommandOnMachine(ImageCopy image,String command, String... args) throws HypervisorOperationException {
+    public void executeCommandOnMachine(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
         Collections.addAll(com, getExecutablePath(), "--nologo", "guestcontrol", image.getVirtualMachineName(), "execute", "--image", command, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword(), "--wait-exit", "--");
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(10000);
     }
@@ -144,10 +144,10 @@ public class VirtualBox extends Hypervisor {
      * @param sourceFile file to be copied
      */
     @Override
-    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws HypervisorOperationException {
+    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "guestcontrol", image.getVirtualMachineName(), "copyto", sourceFile.getAbsolutePath(), destinationRoute, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword());
         if (h.contains(ERROR_MESSAGE)) {
-            throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
+            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(10000);
     }
@@ -179,7 +179,7 @@ public class VirtualBox extends Hypervisor {
      * @param image copy to be modified
      */
     @Override
-    public void changeVirtualMachineMac(ImageCopy image) throws HypervisorOperationException {
+    public void changeVirtualMachineMac(ImageCopy image) throws PlatformOperationException {
     	NetworkInterface ninterface=AddressUtility.getDefaultNetworkInterface();
     	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getVirtualMachineName(),"--bridgeadapter1",ninterface.getDisplayName(),"--macaddress1","auto");
         sleep(20000);
@@ -192,7 +192,7 @@ public class VirtualBox extends Hypervisor {
      * @param snapshotname snapshot to which image will be restored
      */
 	@Override
-	public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
+	public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
 		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getVirtualMachineName(), "restorecurrent");
         sleep(20000);
 	}
@@ -203,7 +203,7 @@ public class VirtualBox extends Hypervisor {
 	 * @param snapshotname 
 	 */
 	@Override
-	public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
+	public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
 		String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getVirtualMachineName(), "list");
         sleep(20000);
         return h != null && !h.contains("does not");
@@ -234,8 +234,8 @@ public class VirtualBox extends Hypervisor {
 	}
 	
 	@Override
-	public List<VirtualMachineExecution> checkExecutions(Collection<VirtualMachineExecution> executions) {
-		List<VirtualMachineExecution> executionsToDelete = new ArrayList<VirtualMachineExecution>();
+	public List<Execution> checkExecutions(Collection<Execution> executions) {
+		List<Execution> executionsToDelete = new ArrayList<Execution>();
 		List<String> list = new ArrayList<String>();
 		try {
 			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
@@ -245,7 +245,7 @@ public class VirtualBox extends Hypervisor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		for (VirtualMachineExecution execution: executions) {
+		for (Execution execution: executions) {
 			boolean isRunning = false;
 			for(String exeInHypervisor: list){
 				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){

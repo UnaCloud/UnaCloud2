@@ -1,6 +1,6 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.web.domain.Hypervisor;
+import uniandes.unacloud.web.domain.Platform;
 import grails.transaction.Transactional
 
 /**
@@ -23,7 +23,7 @@ class HypervisorService {
 	 */
 	
 	def create(name, hyperVersion, ext,fileExts) {
-		new Hypervisor(name:name, hypervisorVersion: hyperVersion, mainExtension: ext, filesExtensions: fileExts).save()
+		new Platform(name:name, hypervisorVersion: hyperVersion, mainExtension: ext, filesExtensions: fileExts).save()
     }
 	
 	/**
@@ -32,7 +32,7 @@ class HypervisorService {
 	 * @param name hypervisor's new name
 	 */
 	
-	def setValues(Hypervisor hypervisor, name, hyperVersion, mainExt, filesExt){
+	def setValues(Platform hypervisor, name, hyperVersion, mainExt, filesExt){
 		hypervisor.putAt("name", name)
 		hypervisor.putAt("hypervisorVersion", hyperVersion)
 		hypervisor.putAt("mainExtension", mainExt)
@@ -44,7 +44,7 @@ class HypervisorService {
 	 * @param hypervisor hypervisor to be deleted
 	 */
 	
-	def deleteHypervisor(Hypervisor hypervisor){
+	def deleteHypervisor(Platform hypervisor){
 		hypervisor.delete()
 	}
 }

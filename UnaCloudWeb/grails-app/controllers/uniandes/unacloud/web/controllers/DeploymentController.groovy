@@ -1,6 +1,6 @@
 package uniandes.unacloud.web.controllers
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import uniandes.unacloud.web.services.DeploymentService;
 import uniandes.unacloud.web.services.LaboratoryService;
@@ -8,12 +8,12 @@ import uniandes.unacloud.web.services.UserRestrictionService;
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions;
 
 /**
@@ -80,7 +80,7 @@ class DeploymentController {
 			//validates if user is owner to deploy cluster
 			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
 				//Validates if images are available in the platform
-				def unavailable = cluster.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}
+				def unavailable = cluster.images.findAll{it.state==ImageEnum.AVAILABLE}
 				if(unavailable.size()!=cluster.images.size()){
 					flash.message= "Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster."
 					redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)	
@@ -140,12 +140,12 @@ class DeploymentController {
 	
 	def stop(){
 		def user= User.get(session.user.id)
-		List<VirtualMachineExecution> executions = new ArrayList<>();
+		List<Execution> executions = new ArrayList<>();
 		params.each {
 			if (it.key.contains("execution_")){
 				if (it.value.contains("on")){
-					VirtualMachineExecution vm = VirtualMachineExecution.get((it.key - "execution_") as Integer)
-					if(vm != null && (vm.status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||vm.status.equals(VirtualMachineExecutionStateEnum.FAILED))){
+					Execution vm = Execution.get((it.key - "execution_") as Integer)
+					if(vm != null && (vm.status.equals(ExecutionStateEnum.DEPLOYED)||vm.status.equals(ExecutionStateEnum.FAILED))){
 						if(vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
@@ -235,7 +235,7 @@ class DeploymentController {
 	 * Validates if user has permissions and call to deploymentService to create a new task to create a copy
 	 */
 	def createCopy(){
-		VirtualMachineExecution execution = VirtualMachineExecution.get(params.id)
+		Execution execution = Execution.get(params.id)
 		if(execution){
 			def user= User.get(session.user.id)
 			if(execution.deployImage.deployment.user==user||user.isAdmin()){

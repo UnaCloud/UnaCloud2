@@ -31,7 +31,7 @@ class Repository {
 	/**
 	 * Images stored in this repository
 	 */
-	static hasMany = [images: VirtualMachineImage]
+	static hasMany = [images: Image]
 	
     static constraints = {
 		name unique:true

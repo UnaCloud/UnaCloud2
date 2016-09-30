@@ -2,7 +2,7 @@ package uniandes.unacloud.web.domain
 
 import java.util.Date;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 
 /**
@@ -17,7 +17,7 @@ class ExecutionRequest {
 	/**
 	 * Node state (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
 	 */
-	VirtualMachineExecutionStateEnum status
+	ExecutionStateEnum status
 	
 	/**
 	 * Date when the node change of status
@@ -27,7 +27,7 @@ class ExecutionRequest {
 	/**
 	 * Execution which belongs this request
 	 */
-	static belongsTo=  [execution:VirtualMachineExecution]
+	static belongsTo=  [execution:Execution]
 
 	/**
 	 * status and time never can be null

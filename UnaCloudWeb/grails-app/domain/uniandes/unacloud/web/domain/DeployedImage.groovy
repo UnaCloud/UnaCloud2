@@ -2,7 +2,7 @@ package uniandes.unacloud.web.domain
 
 import java.util.ArrayList;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 
 /**
@@ -20,7 +20,7 @@ class DeployedImage {
 	/**
 	 * representation of the virtual machine image
 	 */
-	VirtualMachineImage image
+	Image image
 	
 	/**
 	 * it tells if the image is set to be deployed in high availability machines
@@ -30,7 +30,7 @@ class DeployedImage {
 	/**
 	 * list of deployed nodes from the image
 	 */
-	static hasMany = [virtualMachines: VirtualMachineExecution]
+	static hasMany = [virtualMachines: Execution]
 	
 	/**
 	 * Representation of deployed cluster 
@@ -53,7 +53,7 @@ class DeployedImage {
 	 * @return list of active executions
 	 */
 	def getActiveExecutions(){
-		return virtualMachines.findAll{it.status !=VirtualMachineExecutionStateEnum.FINISHED}.sort{it.id}
+		return virtualMachines.findAll{it.status !=ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**

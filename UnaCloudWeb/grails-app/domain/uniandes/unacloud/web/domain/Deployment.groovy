@@ -1,10 +1,10 @@
 package uniandes.unacloud.web.domain
 
 import uniandes.unacloud.common.utils.CalendarUtils;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Entity to represent a group of instances requested by user to be executed on UnaCloud infrastructure.
@@ -65,73 +65,73 @@ class Deployment {
 	 */
 	def updateState(){
 		for(image in images) {
-			for(VirtualMachineExecution vm in image.getActiveExecutions()){				
+			for(Execution vm in image.getActiveExecutions()){				
 				Date currentDate = new Date()
-				if(vm.status ==VirtualMachineExecutionStateEnum.QUEUED){
+				if(vm.status ==ExecutionStateEnum.QUEUED){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.CONFIGURING){
+				}else if(vm.status ==ExecutionStateEnum.CONFIGURING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Request timeout')
 					}					
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.DEPLOYING){
+				}else if(vm.status ==ExecutionStateEnum.DEPLOYING){
 					if(vm.stopTime==null){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
 					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}						
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.DEPLOYED){
+				}else if(vm.status ==ExecutionStateEnum.DEPLOYED){
 					if(vm.stopTime==null){
 						vm.putAt("stopTime", new Date())
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
 					}else if(vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.RECONNECTING){
+				}else if(vm.status ==ExecutionStateEnum.RECONNECTING){
 					if(vm.lastReport&&(currentDate.getTime()-vm.lastReport.getTime()<CalendarUtils.MINUTE*4)){//if last message was before 4 minutes
-						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)
+						vm.putAt("status", ExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Reconnecting on '+vm.getLastStateTime())
 					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)
+						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Connection lost')
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.REQUEST_COPY){
+				}else if(vm.status ==ExecutionStateEnum.REQUEST_COPY){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.DEPLOYED)						
+						vm.putAt("status", ExecutionStateEnum.DEPLOYED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
 								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
-								VirtualMachineImage.get(imageId).delete()
+								Image.get(imageId).delete()
 							}catch(Exception e){
 								e.printStackTrace()
 							}							
 						}
 						vm.putAt("message",'Copy image request failed')
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.COPYING){
+				}else if(vm.status ==ExecutionStateEnum.COPYING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
-						vm.putAt("status", VirtualMachineExecutionStateEnum.FAILED)						
+						vm.putAt("status", ExecutionStateEnum.FAILED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
 								Long imageId = Long.parseLong(vm.message.replace("Copy request to image ", ""))
-								VirtualMachineImage.get(imageId).putAt("state", VirtualMachineImageEnum.UNAVAILABLE)
+								Image.get(imageId).putAt("state", ImageEnum.UNAVAILABLE)
 							}catch(Exception e){
 								e.printStackTrace()
 							}							
 						}
 						vm.putAt("message",'Copy image failed')
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.FINISHING){
+				}else if(vm.status ==ExecutionStateEnum.FINISHING){
 					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
 						vm.finishExecution()
 					}
-				}else if(vm.status ==VirtualMachineExecutionStateEnum.FAILED){
+				}else if(vm.status ==ExecutionStateEnum.FAILED){
 					if(vm.stopTime!=null&&vm.stopTime.before(currentDate)){
 						vm.finishExecution()
 					}

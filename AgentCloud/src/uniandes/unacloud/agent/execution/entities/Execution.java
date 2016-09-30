@@ -13,7 +13,7 @@ import uniandes.unacloud.common.utils.Time;
  * @author Clouder
  *
  */
-public class VirtualMachineExecution implements Serializable{
+public class Execution implements Serializable{
 	
 	
 	private static final long serialVersionUID = -6555573326780712925L;
@@ -66,7 +66,7 @@ public class VirtualMachineExecution implements Serializable{
     /**
      * Class constructor
      */
-    public VirtualMachineExecution() {	}
+    public Execution() {	}
     
   
     /**
@@ -241,8 +241,8 @@ public class VirtualMachineExecution implements Serializable{
 	 * @param message message with VM data
 	 * @return VM object based on message
 	 */
-	public static VirtualMachineExecution getFromStartVirtualMachineMessage(VirtualMachineStartMessage message){
-		VirtualMachineExecution vme=new VirtualMachineExecution();
+	public static Execution getFromStartVirtualMachineMessage(VirtualMachineStartMessage message){
+		Execution vme=new Execution();
 		vme.setCores(message.getVmCores());
 		vme.setMemory(message.getVmMemory());
 		vme.setExecutionTime(message.getExecutionTime());

@@ -3,15 +3,15 @@ package uniandes.unacloud.agent.execution.configuration;
 import java.io.File;
 import java.util.Random;
 
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
-import uniandes.unacloud.agent.hypervisor.HypervisorOperationException;
+import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
  * Abstract configuration class for physical machines
  * @author Clouder
  *
  */
-public abstract class AbstractVirtualMachineConfigurator{
+public abstract class AbstractExecutionConfigurator{
 	
 	/**
 	 * Random object to calculate numbers
@@ -21,13 +21,13 @@ public abstract class AbstractVirtualMachineConfigurator{
 	/**
 	 * Execution instance 
 	 */
-	protected VirtualMachineExecution execution;
+	protected Execution execution;
 	
 	/**
 	 * sets VM property
 	 * @param execution Virtual machine to be configured
 	 */
-	public void setExecution(VirtualMachineExecution execution) {
+	public void setExecution(Execution execution) {
 		this.execution = execution;
 	}
 	/**
@@ -41,25 +41,25 @@ public abstract class AbstractVirtualMachineConfigurator{
 	
 	/**
 	 * Makes hostname configuration
-	 * @throws HypervisorOperationException
+	 * @throws PlatformOperationException
 	 */
-	public abstract void configureHostname() throws HypervisorOperationException;
+	public abstract void configureHostname() throws PlatformOperationException;
 	/**
 	 * Makes IP configuration
-	 * @throws HypervisorOperationException
+	 * @throws PlatformOperationException
 	 */
-	public abstract void configureIP() throws HypervisorOperationException;
+	public abstract void configureIP() throws PlatformOperationException;
     /**
      * Makes DHCP configuration
-     * @throws HypervisorOperationException
+     * @throws PlatformOperationException
      */
-	public abstract void configureDHCP() throws HypervisorOperationException;
+	public abstract void configureDHCP() throws PlatformOperationException;
     
 	/**
 	 * Configures host table
-	 * @throws HypervisorOperationException
+	 * @throws PlatformOperationException
 	 */
-	public abstract void configureHostTable() throws HypervisorOperationException;
+	public abstract void configureHostTable() throws PlatformOperationException;
     /**
      * validates if a VM should be started again
      * @return true if the VM should be started again, false in case not

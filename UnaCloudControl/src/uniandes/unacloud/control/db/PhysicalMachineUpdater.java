@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
@@ -52,7 +52,7 @@ public class PhysicalMachineUpdater {
 	 * @param con connection to database
 	 * @return true in case virtual execution could be updated, false in case not
 	 */
-	public static boolean updateVirtualExecution(Long id, String host, String message, VirtualMachineExecutionStateEnum status, Connection con){
+	public static boolean updateVirtualExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con){
 		try {
 			String query = "update virtual_machine_execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
 			PreparedStatement ps = con.prepareStatement(query);			
@@ -86,7 +86,7 @@ public class PhysicalMachineUpdater {
 			}
 			builder = builder.deleteCharAt( builder.length() -1 );
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.toString()+") AND (vm.status = \'"+VirtualMachineExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+VirtualMachineExecutionStateEnum.FINISHING.name()+"\')";
+			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.toString()+") AND (vm.status = \'"+ExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHING.name()+"\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for(Long idvme: ids){

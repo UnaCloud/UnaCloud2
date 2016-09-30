@@ -9,7 +9,7 @@ import uniandes.unacloud.agent.communication.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.communication.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.agent.hypervisor.HypervisorFactory;
+import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -86,7 +86,7 @@ public class Main {
     	//Init services
     	//register hypervisors
     	System.out.println("Register hypervisors");
-    	HypervisorFactory.registerHypervisors();
+    	PlatformFactory.registerHypervisors();
     	
     	//load executions in files
     	System.out.println("Load data");

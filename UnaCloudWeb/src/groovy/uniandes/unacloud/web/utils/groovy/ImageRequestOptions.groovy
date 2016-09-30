@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.utils.groovy
 
 import uniandes.unacloud.web.domain.HardwareProfile;
-import uniandes.unacloud.web.domain.VirtualMachineImage
+import uniandes.unacloud.web.domain.Image
 
 /**
  * Class to save temporary values to configure deploy
@@ -11,12 +11,12 @@ import uniandes.unacloud.web.domain.VirtualMachineImage
 class ImageRequestOptions {
 
 	HardwareProfile hp	int instances 
-	VirtualMachineImage image
+	Image image
 	String hostname
 	boolean high
 	int time
 	
-	public ImageRequestOptions(VirtualMachineImage image,HardwareProfile hp, int instances, String hostname, boolean high) {
+	public ImageRequestOptions(Image image,HardwareProfile hp, int instances, String hostname, boolean high) {
 		boolean throwEx = false
 		if(image!=null)this.image = image; else throwEx = true
 		if(hp!=null)this.hp = hp; else throwEx = true

@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.hypervisor;
+package uniandes.unacloud.agent.platform;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 

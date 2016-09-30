@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import uniandes.unacloud.share.enums.IPEnum;
 
@@ -13,7 +13,7 @@ import uniandes.unacloud.share.enums.IPEnum;
  * @author CesarF
  *
  */
-class VirtualMachineExecution {
+class Execution {
 	
 	//-----------------------------------------------------------------
 	// Properties
@@ -47,7 +47,7 @@ class VirtualMachineExecution {
 	/**
 	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
 	 */
-	VirtualMachineExecutionStateEnum status
+	ExecutionStateEnum status
 	
 	/**
 	 * Virtual Machine interface message
@@ -87,7 +87,7 @@ class VirtualMachineExecution {
 	 * @return formated remaining time
 	 */
 	def remainingTime(){
-		if(stopTime==null||status!=VirtualMachineExecutionStateEnum.DEPLOYED)return '--'
+		if(stopTime==null||status!=ExecutionStateEnum.DEPLOYED)return '--'
 		long millisTime=(stopTime.getTime()-System.currentTimeMillis())/1000
 		String s = ""+millisTime%60;
         String m = ""+((long)(millisTime/60))%60;
@@ -121,7 +121,7 @@ class VirtualMachineExecution {
 	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
 	def finishExecution(){
-		this.putAt("status", VirtualMachineExecutionStateEnum.FINISHED)
+		this.putAt("status", ExecutionStateEnum.FINISHED)
 		this.putAt("stopTime", new Date())
 		for(NetInterface netinterface in interfaces)
 			netinterface.ip.putAt("state",IPEnum.AVAILABLE)
@@ -162,6 +162,6 @@ class VirtualMachineExecution {
 	 * 
 	 */
 	def boolean showDetails(){
-		return status.equals(VirtualMachineExecutionStateEnum.DEPLOYED)||status.equals(VirtualMachineExecutionStateEnum.RECONNECTING)||status.equals(VirtualMachineExecutionStateEnum.FAILED)
+		return status.equals(ExecutionStateEnum.DEPLOYED)||status.equals(ExecutionStateEnum.RECONNECTING)||status.equals(ExecutionStateEnum.FAILED)
 	}
 }

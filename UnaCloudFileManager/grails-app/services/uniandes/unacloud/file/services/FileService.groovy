@@ -10,15 +10,15 @@ import org.springframework.context.ApplicationContextAware
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import uniandes.unacloud.share.db.RepositoryManager;
-import uniandes.unacloud.share.db.VirtualImageManager;
+import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.VirtualMachineImageEntity;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
-import uniandes.unacloud.file.db.VirtualMachineImageManager;
+import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity
-import uniandes.unacloud.file.db.entities.VirtualImageFileEntity;
+import uniandes.unacloud.file.db.entities.ImageFileEntity;
 import grails.transaction.Transactional
 
 /**
@@ -42,7 +42,7 @@ class FileService implements ApplicationContextAware {
 		def copy = null;
 		try{
 			Connection con = FileManager.getInstance().getDBConnection();
-			def image = VirtualMachineImageManager.getVirtualImageWithFile(token,con)
+			def image = ImageFileManager.getVirtualImageWithFile(token,con)
 			if(image){				
 				RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				if(image.isPublic()){
@@ -69,7 +69,7 @@ class FileService implements ApplicationContextAware {
 					sizeImage += it.getSize()
 				}
 				
-				VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con)
+				ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con)
 	
 			}
 			con.close();
@@ -88,7 +88,7 @@ class FileService implements ApplicationContextAware {
 	def updateFiles(files, String token, String mainExtension){
 		try{
 			Connection con = FileManager.getInstance().getDBConnection();
-			def image = VirtualMachineImageManager.getVirtualImageWithFile(token, con)
+			def image = ImageFileManager.getVirtualImageWithFile(token, con)
 			if(image){
 				println 'Main file: '+image.getMainFile()
 				if(image.getMainFile()!=null)new java.io.File(image.getMainFile()).getParentFile().deleteDir()
@@ -109,7 +109,7 @@ class FileService implements ApplicationContextAware {
 					}
 					sizeImage += it.getSize()
 				}
-				println 'Update: '+VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),true, con)
+				println 'Update: '+ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),true, con)
 				
 			}
 			con.close();

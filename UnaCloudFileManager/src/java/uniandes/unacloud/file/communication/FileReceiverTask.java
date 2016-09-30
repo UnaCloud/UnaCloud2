@@ -12,19 +12,18 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
-
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.db.DeploymentManager;
-import uniandes.unacloud.share.db.HypervisorManager;
-import uniandes.unacloud.share.entities.HypervisorEntity;
-import uniandes.unacloud.share.entities.VirtualMachineExecutionEntity;
+import uniandes.unacloud.share.db.PlatformManager;
+import uniandes.unacloud.share.entities.PlatformEntity;
+import uniandes.unacloud.share.entities.ExecutionEntity;
 import uniandes.unacloud.share.enums.IPEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
-import uniandes.unacloud.file.db.VirtualMachineImageManager;
+import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
-import uniandes.unacloud.file.db.entities.VirtualImageFileEntity;
+import uniandes.unacloud.file.db.entities.ImageFileEntity;
 
 /**
  * This class receives files from agent when user requests to save image in server.
@@ -46,7 +45,7 @@ public class FileReceiverTask implements Runnable{
 			Long execution = is.readLong();
 			String token= is.readUTF();
 			System.out.println("\tRequest " +execution+" - "+ token);
-			VirtualImageFileEntity image = VirtualMachineImageManager.getVirtualImageWithFile(token, con);
+			ImageFileEntity image = ImageFileManager.getVirtualImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
 			if (image!=null) {
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con);
@@ -58,13 +57,13 @@ public class FileReceiverTask implements Runnable{
 					final byte[] buffer = new byte[1024 * 100];
 					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
 					
-					List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);				
+					List<PlatformEntity>hypervisors = PlatformManager.getAll(con);				
 					
 					for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
 						boolean goodExtension = false;
 						String mainExtension = null;
 						System.out.println("\t\tFile: " + entry.getName());
-						for(HypervisorEntity hyperv : hypervisors)
+						for(PlatformEntity hyperv : hypervisors)
 							if(hyperv.validatesExtension(entry.getName())){		
 								goodExtension = true;
 								mainExtension = hyperv.getExtension();
@@ -112,7 +111,7 @@ public class FileReceiverTask implements Runnable{
 					
 					System.out.println("reception finished: "+newMainFile);
 					try {
-						VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, null, sizeImage, newMainFile, null, null), false, con);
+						ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, sizeImage, newMainFile, null, null), false, con);
 						message = "Image has been saved in server";
 						System.out.println("Status changed, process closed");
 					} catch (Exception e) {
@@ -122,13 +121,13 @@ public class FileReceiverTask implements Runnable{
 					
 				} catch (Exception e) {		
 				    e.printStackTrace();
-				    VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.UNAVAILABLE, null, null, null, null, null, null, null), false, con);
+				    ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.UNAVAILABLE, null, null, null, null, null, null, null), false, con);
 				    message = e.getMessage();
 				    for (File tmpFile : filesTemp.keySet()) {
 						tmpFile.delete();
 					}
 				}	
-				DeploymentManager.setVirtualMachineExecution(new VirtualMachineExecutionEntity(execution, 0, 0, null, new Date(), null, VirtualMachineExecutionStateEnum.FINISHED, null, message), con);
+				DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution, 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, message), con);
 				DeploymentManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
 			}
 		} catch (Exception e) {

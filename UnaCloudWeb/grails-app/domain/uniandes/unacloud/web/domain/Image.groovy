@@ -4,14 +4,14 @@ import java.text.DecimalFormat
 
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Entity to represent a virtual machine image which is represented by group of files to be executed by an hypervisor.
  * @author CesarF
  *
  */
-class VirtualMachineImage {
+class Image {
 	
 	//-----------------------------------------------------------------
 	// Properties
@@ -71,7 +71,7 @@ class VirtualMachineImage {
 	/**
 	 *Virtual machine state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
 	 */
-	VirtualMachineImageEnum state = VirtualMachineImageEnum.AVAILABLE;
+	ImageEnum state = ImageEnum.AVAILABLE;
 	
 	/**
 	 * Owner 
@@ -120,7 +120,7 @@ class VirtualMachineImage {
 	 * this method is used to avoid that image in cluster could not be deployed 
 	 */
 	def freeze(){
-		this.putAt("state", VirtualMachineImageEnum.IN_QUEUE);
+		this.putAt("state", ImageEnum.IN_QUEUE);
 		def clusteres = Cluster.where{images{id==this.id;}}.findAll();
 		for(cluster in clusteres){
 			cluster.putAt("state", ClusterEnum.FREEZE);

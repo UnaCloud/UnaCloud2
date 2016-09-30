@@ -4,26 +4,26 @@ import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse;
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
  * Responsible to configure virtual machine
  * @author clouder
  *
  */
-public final class VirtualMachineConfigurer extends Thread{
+public final class ExecutionConfigurer extends Thread{
 	/**
 	 * VM to be configured
 	 */
-	VirtualMachineExecution machineExecution;
+	Execution machineExecution;
 	
 	/**
 	 * Class constructor
 	 * @param machineExecution VM
 	 */
-	public VirtualMachineConfigurer(VirtualMachineExecution machineExecution) {
+	public ExecutionConfigurer(Execution machineExecution) {
 		this.machineExecution = machineExecution;
 	}
 	
@@ -50,7 +50,7 @@ public final class VirtualMachineConfigurer extends Thread{
 				machineExecution.setImage(image);
 				image.configureAndStart(machineExecution);
 			}catch(VirtualMachineExecutionException ex){
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), VirtualMachineExecutionStateEnum.FAILED,ex.getMessage());
+				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
