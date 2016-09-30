@@ -107,7 +107,7 @@ public class QueueMessageProcessor implements QueueReader{
 			final Long imageId =  messageId.getIdImage();
 			
 			ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.REMOVING_CACHE, null);
-			ImageManager.setVirtualMachine(image, con);
+			ImageManager.setImage(image, con);
 			try {				
 				List<PhysicalMachineEntity> machines=PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);	
 				if(machines.size()>0){
@@ -117,14 +117,14 @@ public class QueueMessageProcessor implements QueueReader{
 							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 									ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-									ImageManager.setVirtualMachine(image, con2);
+									ImageManager.setImage(image, con2);
 								}catch (Exception e) {e.printStackTrace();}
 							}
 							@Override
 							public void attendError(String message, Long id) {
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 									ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-									ImageManager.setVirtualMachine(image, con2);
+									ImageManager.setImage(image, con2);
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 								}catch (Exception e) {e.printStackTrace();}
@@ -133,13 +133,13 @@ public class QueueMessageProcessor implements QueueReader{
 					}	
 				}else{
 					image.setState(ImageEnum.AVAILABLE);
-					ImageManager.setVirtualMachine(image, con);
+					ImageManager.setImage(image, con);
 				}
 							
 			} catch (Exception e) {
 				e.printStackTrace();
 				image.setState(ImageEnum.AVAILABLE);
-				ImageManager.setVirtualMachine(image, con);
+				ImageManager.setImage(image, con);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -355,7 +355,7 @@ public class QueueMessageProcessor implements QueueReader{
 			
 			final ExecutionEntity execution = DeploymentManager.getExecution(executionId, ExecutionStateEnum.REQUEST_COPY, con);
 			if(execution!=null){
-				final ImageEntity image = ImageManager.getVirtualMachine(newImageId, ImageEnum.COPYING, con);
+				final ImageEntity image = ImageManager.getImage(newImageId, ImageEnum.COPYING, con);
 				if(image!=null){
 					VirtualMachineSaveImageMessage vmsim = new VirtualMachineSaveImageMessage();
 					vmsim.setTokenCom(image.getToken());
@@ -373,11 +373,11 @@ public class QueueMessageProcessor implements QueueReader{
 										DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.COPYING, null, null), con2);
 									}else{
 										DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, ((VirtualMachineSaveImageResponse)response).getMessage()), con2);
-										ImageManager.deleteVirtualMachineImage(image, con2);
+										ImageManager.deleteImage(image, con2);
 									}
 								}else{
 									DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
-									ImageManager.deleteVirtualMachineImage(image, con2);
+									ImageManager.deleteImage(image, con2);
 								}
 							}catch (Exception e) {e.printStackTrace();}
 						}
@@ -387,7 +387,7 @@ public class QueueMessageProcessor implements QueueReader{
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm,con2);
 								DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
-								ImageManager.deleteVirtualMachineImage(image, con2);
+								ImageManager.deleteImage(image, con2);
 							}catch (Exception e) {e.printStackTrace();}
 						}
 					}));

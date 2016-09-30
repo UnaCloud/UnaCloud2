@@ -96,6 +96,18 @@ class User {
 		}
 		return this.images.sort{it.name}
 	}
+
+	/**
+	 * Returns the list of unavailable images in this user: state = UNAVAILABLE
+	 * @return
+	 */
+	def getUnavailableImages(){
+		if(!this.images){
+			this.images = []
+			this.save()
+		}
+		return this.images.findAll{it.state==ImageEnum.UNAVAILABLE};
+	}
 	
 	/**
 	 * Returns the list of clusters owned by user sorted by name

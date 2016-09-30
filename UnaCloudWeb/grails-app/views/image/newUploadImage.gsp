@@ -41,10 +41,18 @@
 	                            	<input type="text" class="form-control" name="name" placeholder="Image Name">
 	                         	 </div>
 	                        	 <div class="form-group">
-		                             <label>Select</label>
+		                             <label>Select Operating System</label>
 		                             <select name= "osId" class="form-control">
 		                             	<g:each in="${oss}" status="i" var="os">
 						  					<option value="${os.id}">${os.name}</option>
+						  				</g:each>
+		                             </select>
+		                         </div>
+		                         <div class="form-group">
+		                             <label>Select Execution Platform</label>
+		                             <select name= "platId" class="form-control">
+		                             	<g:each in="${plats}" status="i" var="plat">
+						  					<option value="${plat.id}">${plat.name}</option>
 						  				</g:each>
 		                             </select>
 		                         </div>

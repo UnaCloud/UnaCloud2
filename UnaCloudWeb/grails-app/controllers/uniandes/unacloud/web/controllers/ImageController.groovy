@@ -5,6 +5,7 @@ import uniandes.unacloud.web.services.ImageService;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.domain.OperatingSystem;
+import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Image;
 import grails.converters.JSON
@@ -63,6 +64,7 @@ class ImageController {
 	 */
 	def list() {	
 		def user = User.get(session.user.id)
+		imageService.removeUnavailableImages(user)
 		[images: user.getOrderedImages()]
 	}
 	
@@ -71,7 +73,7 @@ class ImageController {
 	 * @return list of OS for user selection
 	 */
 	def newUploadImage(){
-		[oss: OperatingSystem.list()]
+		[oss: OperatingSystem.list(),plats:Platform.list()]
 	}
 	
 	/**
@@ -224,10 +226,10 @@ class ImageController {
 	def upload(){
 		def resp
 		if( params.name&&!params.name.empty&&params.protocol&&!params.protocol.empty&&
-			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId){	
+			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId&&params.platId){	
 			def user= User.get(session.user.id)			
 			try{
-				def token = imageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
+				def token = imageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.platId, params.user, params.passwd,user)
 				def url = serverVariableService.getUrlFileManager()
 				resp = [success:true,'token':token,'url':url+"/upload"];				
 			}

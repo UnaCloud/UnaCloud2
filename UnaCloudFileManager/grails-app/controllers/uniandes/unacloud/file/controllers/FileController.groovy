@@ -52,50 +52,34 @@ class FileController {
 	 *
 	 */
 	def upload(){
-		def resp
-		
-		println params.token
+		def resp		
 		if(params.token&&!params.token.empty){
 			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){				
 				def files = request.multiFileMap.files
 				boolean validate=true
-				String mainExtension = null
 				try{
-					Connection con = FileManager.getInstance().getDBConnection()
-					List<PlatformEntity>hypervisors = PlatformManager.getAll(con);
 					files.each {
 						if(validate){
 							if(it.isEmpty()){
 								resp = [success:false,'message':'File cannot be empty.'];
 								validate= false;
-							}
-							else{
-								boolean goodExtension = false;
-								def fileName=it.getOriginalFilename()
-								for(PlatformEntity hyperv in hypervisors)
-								if(hyperv.validatesExtension(fileName)){
-									goodExtension = true;
-									mainExtension = hyperv.extension
-									break;
-								}
-								if(!goodExtension){
-									resp = [success:false,'message':'Invalid file type.']
-									validate= false;
-								}																						
-							}							
+							}													
 						}					
 					}
-					con.close()
 				}catch(Exception e) {
 					validate=false;
 					resp = [success:false,'message':e.message]
 				}
 				if(validate){
 					try{
-						def createPublic = fileService.upload(files, params.token,mainExtension)
-						if(createPublic!=null){
+						def createPublic = fileService.upload(files, params.token)
+						if(createPublic == null){
+							resp = [success:false,'message':'Invalid file type.']
+						}
+						else if(createPublic == true){
 							resp = [success:true,'redirect':'list','cPublic':createPublic];
-						}else resp = [success:true,'redirect':'list'];
+						}else 
+							resp = [success:true,'redirect':'list'];
 					}
 					catch(Exception e) {
 						resp = [success:false,'message':e.message]

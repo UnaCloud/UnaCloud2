@@ -15,15 +15,15 @@ import uniandes.unacloud.share.enums.ImageEnum;
 public class ImageManager {
 	
 	/**
-	 * Returns a VirtualMachineImage entity requested by id and state
+	 * Returns an Image entity requested by id and state
 	 * @param id physical machine 
 	 * @param state of physical machine
 	 * @param con Database Connection
-	 * @return Virtual Machine Image, could return null
+	 * @return image, could return null
 	 */
-	public static ImageEntity getVirtualMachine(Long id, ImageEnum state,Connection con){
+	public static ImageEntity getImage(Long id, ImageEnum state,Connection con){
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM virtual_machine_image vm WHERE vm.state = ? and vm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM image vm WHERE vm.state = ? and vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			System.out.println(ps.toString());
@@ -40,15 +40,15 @@ public class ImageManager {
 	}
 
 	/**
-	 * Updates a virtual machine image entity on database.
+	 * Updates an image entity on database.
 	 * @param image to be modified
 	 * @param con Database Connection
 	 * @return true if image was updated, false in case not
 	 */
-	public static boolean setVirtualMachine(ImageEntity image,Connection con){
+	public static boolean setImage(ImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "update virtual_machine_image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
+			String query = "update image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
@@ -63,15 +63,15 @@ public class ImageManager {
 	}
 	
 	/**
-	 * Deletes a virtual machine image based in state and id
+	 * Deletes an image based in state and id
 	 * @param image to be deleted
 	 * @param con Database Connection
 	 * @return true in case entity was deleted, false in case not
 	 */
-	public static boolean deleteVirtualMachineImage(ImageEntity image,Connection con){
+	public static boolean deleteImage(ImageEntity image,Connection con){
 		if(image.getId()==null||image.getId()<1)return false;
 		try {
-			String query = "delete from virtual_machine_image where state = ? and id = ? and id > 0;";
+			String query = "delete from image where state = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());

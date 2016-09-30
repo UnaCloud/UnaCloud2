@@ -54,13 +54,13 @@ class ImageService {
 	 * @param user owner user
 	 * @return token to validate image 
 	 */
-	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, username, password,User user) {
+	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, platformId, username, password,User user) {
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		Repository repo = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(name+new Date().getTime())
 		def image= new Image(owner: user, repository:repo, name: name, lastUpdate:new Date(),
-			isPublic: isPublic, imageVersion: 0,accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId),
-			user: username, password: password, token:token,fixedDiskSize:0, state: ImageEnum.UNAVAILABLE)	
+			isPublic: isPublic,accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId), 
+			platform: Platform.get(platformId),user: username, password: password, token:token,fixedDiskSize:0, state: ImageEnum.UNAVAILABLE)	
 		image.save(failOnError: true)
 		return token;
     }
@@ -97,20 +97,26 @@ class ImageService {
 	
 	/**
 	 * Deletes the virtual machine image, virtual machine files and directory
+	 * if image have a main file creates a task to delete from repository, in another case deletes image
 	 * @param user owner user
 	 * @param repository image repository
 	 * @param image image to be removed
 	 * @return true in case image has been deleted, false in case not
-	 */
-	
+	 */	
 	def deleteImage(User user,Image image){		
 		def clusteres = Cluster.where{images{id==image.id;}}.findAll();
 		if(clusteres&&clusteres.size()>0){
 			return false;
 		}
 		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id:image.id]);
-		image.freeze()
-		QueueTaskerFile.deleteImage(image, user)		
+		if(image.mainFile){
+			image.freeze()
+			QueueTaskerFile.deleteImage(image, user)				
+		}else{
+			user.images.remove(image)
+			user.save()
+			image.delete()
+		}			
 		return true;
 	}
 	
@@ -171,9 +177,26 @@ class ImageService {
 	/**
 	 * Returns list of images which have linked 
 	 * @param plat
-	 * @return
+	 * @return void
 	 */
 	def getListMachinesByPlatform(Platform plat){
 		return Image.where{platform==plat}.findAll()
+	}
+	
+	/**
+	 * Searchs all unavailable images from user, remove images not loaded and changes to available those with current file
+	 * @param user
+	 * @return void
+	 */
+	def removeUnavailableImages(User user){		
+		for(Image im: user.getUnavailableImages())
+		if(!im.mainFile){
+			deleteImage(user, im)
+		}
+		else{
+			im.putAt("state", ImageEnum.AVAILABLE)
+			im.putAt("token", null)
+		}
+		user.save(failOnError:true)
 	}
 }

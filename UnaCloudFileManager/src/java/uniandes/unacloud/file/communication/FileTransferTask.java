@@ -33,7 +33,7 @@ public class FileTransferTask implements Runnable{
 			ZipOutputStream zos=new ZipOutputStream(os);
 			long imageId=ds.readLong();
 			System.out.println("\tWorking "+imageId);
-			ImageFileEntity image = ImageFileManager.getVirtualImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
+			ImageFileEntity image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
 			if(image!=null){
 				System.out.println(image+" - "+imageId+" - "+image.getState());
 				final byte[] buffer=new byte[1024*100];

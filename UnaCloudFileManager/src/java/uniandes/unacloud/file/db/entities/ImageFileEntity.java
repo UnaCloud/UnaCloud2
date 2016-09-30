@@ -1,5 +1,6 @@
 package uniandes.unacloud.file.db.entities;
 
+import uniandes.unacloud.share.entities.PlatformEntity;
 import uniandes.unacloud.share.entities.RepositoryEntity;
 import uniandes.unacloud.share.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
@@ -20,8 +21,9 @@ public class ImageFileEntity extends ImageEntity{
 	private String name;
 	private UserEntity owner;
 	private String configurer;
+	private PlatformEntity platform;
 	
-	public ImageFileEntity(Long id, ImageEnum state, String token, RepositoryEntity repository, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
+	public ImageFileEntity(Long id, ImageEnum state, String token, RepositoryEntity repository, PlatformEntity platform, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
 		
 		super(id, null, null, state, token);
 		this.repository = repository;
@@ -30,6 +32,7 @@ public class ImageFileEntity extends ImageEntity{
 		this.mainFile = mainFile;
 		this.name = name;
 		this.configurer = configurer;
+		this.platform = platform;
 	}
 
 	public String getName() {
@@ -94,5 +97,9 @@ public class ImageFileEntity extends ImageEntity{
 				+ ", isPublic=" + isPublic + ", fixDisk=" + fixDisk
 				+ ", mainFile=" + mainFile + ", name=" + name + ", owner="
 				+ owner + ", configurer=" + configurer + ", " +getId()+"  - "+getState()+ "]";
+	}
+	
+	public PlatformEntity getPlatform() {
+		return platform;
 	}
 }

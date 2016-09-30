@@ -20,7 +20,7 @@
              		<div id="label-message"></div>            		     
              		<div class="box box-primary">     	
              			<div class="box-header">
-             				<h5 class="box-title">Upload your image</h5> 							    			
+             				<h5 class="box-title">Edit your image</h5> 							    			
              			</div>		
 	                 	<!-- form start -->
 	                 	<form id="form-edit" action="${createLink(uri: '/services/image/edit/save', absolute: true)}" role="form">

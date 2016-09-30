@@ -61,17 +61,17 @@ class Image {
 	/**
 	 * Indicates how many times the image files had been edited
 	 */
-	int imageVersion
+	int imageVersion = 1
 	
 	/**
 	 * token to validate image message sent by client
 	 */	
-	String token
+	String token = null
 	
 	/**
 	 *Virtual machine state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
 	 */
-	ImageEnum state = ImageEnum.AVAILABLE;
+	ImageEnum state;
 	
 	/**
 	 * Owner 

@@ -45,7 +45,7 @@ public class FileReceiverTask implements Runnable{
 			Long execution = is.readLong();
 			String token= is.readUTF();
 			System.out.println("\tRequest " +execution+" - "+ token);
-			ImageFileEntity image = ImageFileManager.getVirtualImageWithFile(token, con);
+			ImageFileEntity image = ImageFileManager.getImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
 			if (image!=null) {
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con);
@@ -111,7 +111,7 @@ public class FileReceiverTask implements Runnable{
 					
 					System.out.println("reception finished: "+newMainFile);
 					try {
-						ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, sizeImage, newMainFile, null, null), false, con);
+						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, sizeImage, newMainFile, null, null), false, con, false);
 						message = "Image has been saved in server";
 						System.out.println("Status changed, process closed");
 					} catch (Exception e) {
@@ -121,7 +121,7 @@ public class FileReceiverTask implements Runnable{
 					
 				} catch (Exception e) {		
 				    e.printStackTrace();
-				    ImageFileManager.setVirtualMachineFile(new ImageFileEntity(image.getId(), ImageEnum.UNAVAILABLE, null, null, null, null, null, null, null), false, con);
+				    ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.UNAVAILABLE, null, null, null, null, null, null, null, null), false, con, false);
 				    message = e.getMessage();
 				    for (File tmpFile : filesTemp.keySet()) {
 						tmpFile.delete();

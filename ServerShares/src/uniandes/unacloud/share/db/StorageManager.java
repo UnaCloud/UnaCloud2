@@ -11,7 +11,7 @@ import uniandes.unacloud.share.entities.RepositoryEntity;
  * @author CesarF
  *
  */
-public class RepositoryManager {
+public class StorageManager {
 
 	
 	/**
