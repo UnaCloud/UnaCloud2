@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import uniandes.unacloud.share.entities.HypervisorEntity;
+import uniandes.unacloud.share.entities.PlatformEntity;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.services.FileService;
-import uniandes.unacloud.share.db.HypervisorManager;
+import uniandes.unacloud.share.db.PlatformManager;
 import grails.converters.JSON
 
 /**
@@ -62,7 +62,7 @@ class FileController {
 				String mainExtension = null
 				try{
 					Connection con = FileManager.getInstance().getDBConnection()
-					List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);
+					List<PlatformEntity>hypervisors = PlatformManager.getAll(con);
 					files.each {
 						if(validate){
 							if(it.isEmpty()){
@@ -72,7 +72,7 @@ class FileController {
 							else{
 								boolean goodExtension = false;
 								def fileName=it.getOriginalFilename()
-								for(HypervisorEntity hyperv in hypervisors)
+								for(PlatformEntity hyperv in hypervisors)
 								if(hyperv.validatesExtension(fileName)){
 									goodExtension = true;
 									mainExtension = hyperv.extension
@@ -123,7 +123,7 @@ class FileController {
 				String mainExtension = null
 				try{
 					Connection con = FileManager.getInstance().getDBConnection()
-					List<HypervisorEntity>hypervisors = HypervisorManager.getAllHypervisors(con);
+					List<PlatformEntity>platforms = PlatformManager.getAll(con);
 					files.each {
 						if(validate){
 							if(it.isEmpty()){
@@ -133,7 +133,7 @@ class FileController {
 							else{								
 								boolean goodExtension = false;
 								def fileName=it.getOriginalFilename()
-								for(HypervisorEntity hyperv in hypervisors)
+								for(PlatformEntity hyperv in platforms)
 								if(hyperv.validatesExtension(fileName)){		
 									goodExtension = true;
 									mainExtension = hyperv.extension
