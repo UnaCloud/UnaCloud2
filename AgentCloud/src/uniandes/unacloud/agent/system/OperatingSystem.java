@@ -112,6 +112,20 @@ public abstract class OperatingSystem {
     public abstract String getWhoAmI() throws UnsupportedCommandException;
     
     /**
+     * Returns command to get down priority in process
+     * @return command
+     * @param process name to set priority
+     */
+    public abstract String getSetPriorityCommand(String process) throws UnsupportedCommandException;
+    
+    /**
+     * Returns path of program data
+     * @return
+     * @throws UnsupportedCommandException
+     */
+    public abstract String getProgramDataPath() throws UnsupportedCommandException;
+    
+    /**
      * Responsible for obtaining the hostname
      * @return machine hostmname
      * @throws UnsupportedCommandException 
@@ -121,6 +135,12 @@ public abstract class OperatingSystem {
     	hostname=LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
     	return hostname;
     }
+    
+    /**
+     * Validates if agent is being executed by super user
+     * @return true in case agent is being executed by super user, false in case not
+     */
+    public abstract boolean isRunningBySuperUser() throws UnsupportedCommandException;
     
     /**
      * Responsible for returning the command to get hostname from host machine

@@ -2,8 +2,6 @@ package uniandes.unacloud.web.services
 
 import org.apache.commons.io.FileUtils
 
-import uniandes.unacloud.common.utils.Constants;
-
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.queue.QueueTaskerFile;
 import uniandes.unacloud.web.utils.java.Hasher;

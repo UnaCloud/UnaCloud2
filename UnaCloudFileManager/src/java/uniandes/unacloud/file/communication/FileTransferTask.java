@@ -14,8 +14,7 @@ import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.VirtualMachineImageManager;
 import uniandes.unacloud.file.db.entities.VirtualImageFileEntity;
-
-import uniandes.unacloud.common.utils.Constants;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * This class sends files to agent when an agent doesn't have image in its cache folder.
@@ -53,9 +52,9 @@ public class FileTransferTask implements Runnable{
 				//TODO improve this to manage hypervisors
 				PrintWriter pw=new PrintWriter(zos);
 				if(image.getMainFile().endsWith("vmx"))
-					pw.println(Constants.VM_WARE_WORKSTATION);
+					pw.println(UnaCloudConstants.VM_WARE_WORKSTATION);
 				else if(image.getMainFile().endsWith("vbox"))
-					pw.println(Constants.VIRTUAL_BOX);
+					pw.println(UnaCloudConstants.VIRTUAL_BOX);
 				pw.println(new File(image.getMainFile()).getName());
 				pw.println(image.getPassword());
 				pw.println(image.getUser());

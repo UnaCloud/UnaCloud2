@@ -38,7 +38,7 @@ public class WindowsOS extends OperatingSystem{
 
 	@Override
 	public String getUserName() throws UnsupportedCommandException {
-	  String userName = null;
+	    String userName = null;
         try {
             Process p = Runtime.getRuntime().exec(new String[]{"cmd.exe","/c","quser"});
             InputStream is = p.getInputStream();
@@ -88,6 +88,22 @@ public class WindowsOS extends OperatingSystem{
             }
         }
 		return UnaCloudConstants.SUCCESSFUL_OPERATION;
+	}
+
+	@Override
+	public String getSetPriorityCommand(String process) throws UnsupportedCommandException{		
+		return "wmic process where name=\""+process+"\" CALL setpriority 64";
+	}
+
+	@Override
+	public String getProgramDataPath() throws UnsupportedCommandException {		
+		return "C:\\ProgramData\\VMware\\hostd\\datastores.xml";
+	}
+
+	@Override
+	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
+		String user = getWhoAmI();
+		return user!=null&&!user.toLowerCase().contains("system");
 	}
 
 }

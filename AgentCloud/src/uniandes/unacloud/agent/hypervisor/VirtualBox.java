@@ -11,6 +11,7 @@ import java.util.List;
 
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -85,7 +86,11 @@ public class VirtualBox extends Hypervisor {
             throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
-        LocalProcessExecutor.executeCommandOutput("wmic","process","where","name=\"VBoxHeadless.exe\"","CALL","setpriority","64");
+        try {
+			LocalProcessExecutor.executeCommandOutput(OSFactory.getOS().getSetPriorityCommand("VBoxHeadless.exe"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
         sleep(1000);
     }
 
@@ -94,7 +99,7 @@ public class VirtualBox extends Hypervisor {
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getVirtualMachineName());
     		sleep(1000);
-    		LocalProcessExecutor.executeCommandOutput("wmic","process","where","name=\"VBoxSVC.exe\"","CALL","setpriority","64");
+    		LocalProcessExecutor.executeCommandOutput(OSFactory.getOS().getSetPriorityCommand("VBoxSVC.exe"));
     		sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();

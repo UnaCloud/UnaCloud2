@@ -60,10 +60,8 @@ public class Main {
     	{
     		//Validate if the user that is executing agent is system user    		
 			try {
-				String user;
-				user = OSFactory.getOS().getWhoAmI();
-				if(user!=null&&!user.toLowerCase().contains("system")){
-	        		System.out.println("You can't execute the agent as "+user);
+				if(OSFactory.getOS().isRunningBySuperUser()){
+	        		System.out.println("You can't execute the agent as "+OSFactory.getOS().getWhoAmI());
 	        		System.exit(0);
 	        		return;
 	        	}

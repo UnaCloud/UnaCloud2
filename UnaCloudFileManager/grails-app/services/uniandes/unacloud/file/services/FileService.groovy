@@ -7,7 +7,6 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import uniandes.unacloud.share.db.RepositoryManager;

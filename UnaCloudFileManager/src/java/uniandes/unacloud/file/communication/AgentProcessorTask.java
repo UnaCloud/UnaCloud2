@@ -33,6 +33,7 @@ public class AgentProcessorTask implements Runnable{
 				out.writeUTF(variable.getValue());
 				int respond = is.readInt();
 				if(respond==UnaCloudConstants.GIVE_ME_FILES){
+					System.out.println(ss.getInetAddress().getHostName()+" request agent");
 					AgentManager.copyAgentOnStream(out, con);
 				}				
 			}

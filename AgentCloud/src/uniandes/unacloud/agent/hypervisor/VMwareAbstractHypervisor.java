@@ -12,6 +12,7 @@ import java.util.List;
 
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.VirtualMachineExecution;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 
 /**
@@ -102,10 +103,13 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
             throw new HypervisorOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
     }
+    /**
+     * Corrects datastores file using datastores file in program data
+     */
     private void correctDataStores() {
         try {
             FileInputStream fis = new FileInputStream("./datastores.xml");
-            FileOutputStream fos = new FileOutputStream("C:\\ProgramData\\VMware\\hostd\\datastores.xml");
+            FileOutputStream fos = new FileOutputStream(OSFactory.getOS().getProgramDataPath());
             byte[] b = new byte[1024];
             for (int n; (n = fis.read(b)) != -1;) {
                 fos.write(b, 0, n);
@@ -124,7 +128,12 @@ public abstract class VMwareAbstractHypervisor extends Hypervisor{
 	@Override
 	public void unregisterVirtualMachine(ImageCopy image) {
 	}
+	/**
+	 * Returns type OS execution
+	 * @return
+	 */
 	public abstract String getType();
+	
 	@Override
 	public void cloneVirtualMachine(ImageCopy source, ImageCopy dest) {
 		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"clone",source.getMainFile().getAbsolutePath(),dest.getMainFile().getAbsolutePath(),"full","unacloudbase");

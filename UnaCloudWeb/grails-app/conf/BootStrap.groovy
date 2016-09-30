@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 
 
 import uniandes.unacloud.common.utils.ConfigurationReader
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import org.apache.commons.lang.RandomStringUtils;

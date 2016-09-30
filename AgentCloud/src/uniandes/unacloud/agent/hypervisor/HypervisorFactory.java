@@ -16,11 +16,13 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * @author CesarF
  */
 public class HypervisorFactory {
+	
     /**
      * All provide services must be statically accessed
      */
     private HypervisorFactory() {
     }
+    
     /**
      * Map that contains a relation between hypervisor names and hypervisor objects
      */
@@ -31,13 +33,14 @@ public class HypervisorFactory {
     	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
     	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
     	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
+    	//TODO add support to vmWarePlayer
+    	//map.put(VMwarePlayer.HYPERVISOR_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
+
     }
-  //TODO add support to vmWarePlayer
-	//map.put(VMwarePlayer.HYPERVISOR_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
-
-
+  
     /**
-     * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dynamically using java's reflection API. If there is an associated object, then a new instance is returned by using the method getInstance from Hypervisor abstract class.
+     * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dynamically using java's reflection API. If there is an associated object, 
+     * then a new instance is returned by using the method getInstance from Hypervisor abstract class.
      * @param hypervisorId The hypervisor id to be instantiated
      * @return A managed hypervisor for the given name
      */

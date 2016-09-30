@@ -1,6 +1,5 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**

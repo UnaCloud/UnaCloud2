@@ -50,4 +50,19 @@ public class MacOS extends OperatingSystem{
 	public String turnOnMachines(String[] message)throws UnsupportedCommandException {
 		throw new UnsupportedCommandException("Turn on", "Mac");
 	}
+
+	@Override
+	public String getSetPriorityCommand(String process)throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Priority", "Mac");
+	}
+	
+	@Override
+	public String getProgramDataPath() throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Data path for vmware", "Mac");
+	}
+
+	@Override
+	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Running by user", "Mac");
+	}
 }

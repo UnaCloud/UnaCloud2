@@ -42,7 +42,7 @@ class FileController {
 	 * @return
 	 */
 	def test(){
-		render 'I am running ;)'
+		render 'The Cloud is not the limit ;)'
 	}
 	
    /**
