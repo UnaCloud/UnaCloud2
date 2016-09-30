@@ -79,10 +79,14 @@ class PhysicalMachine {
 	/**
 	 * Laboratory to which the physical machine belongs
 	 */
-	Laboratory laboratory
-	
+	Laboratory laboratory	
 	static belongsTo =  [laboratory:Laboratory]
 	
+	
+	/**
+	 * List of execution platforms
+	 */
+	static hasMany = [platforms: Platform]
 		
 	static constraints = {
 		name unique:true

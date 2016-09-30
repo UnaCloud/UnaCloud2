@@ -83,10 +83,16 @@ class Image {
 	 */
 	Date lastUpdate
 	
+	/**
+	 * Platform where image could be executed
+	 */
+	Platform platform
+	
 	static constraints = {
     	mainFile (nullable: true)
 		token nullable:true
 		lastUpdate nullable:true
+		platform nullable: false
 	}
 	static mapping = {
 		operatingSystem(lazy:false)

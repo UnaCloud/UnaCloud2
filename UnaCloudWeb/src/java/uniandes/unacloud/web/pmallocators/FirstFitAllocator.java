@@ -14,7 +14,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class FirstFitAllocator extends VirtualMachineAllocator {
+public class FirstFitAllocator extends ExecutionAllocator {
 	
 	/**
 	 * Assigns all possible virtual machines for each physical machine based in available resources

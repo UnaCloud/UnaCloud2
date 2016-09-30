@@ -12,7 +12,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class SingletonAllocator extends VirtualMachineAllocator{
+public class SingletonAllocator extends ExecutionAllocator{
 
 	/**
 	 * Assigns only one virtual execution for each physical machine

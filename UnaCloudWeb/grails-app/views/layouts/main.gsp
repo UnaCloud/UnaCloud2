@@ -123,10 +123,10 @@
 	                                			Groups
 	                                	</a>
 	                                </li>
-	                                <li id="admin-hypervisor-tree">
-	                                	<a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}">
+	                                <li id="admin-platform-tree">
+	                                	<a href="${createLink(uri: '/admin/platform/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
-	                                			Hypervisors
+	                                			Platforms
 	                                	</a>
 	                                </li>
 	                                <li id="admin-os-tree">
@@ -145,7 +145,7 @@
 	                                <li id="admin-lab-tree">
 	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
-	                                			Repositories
+	                                			Storage
 	                                	</a>
 	                                </li>
 	                                <!--                               

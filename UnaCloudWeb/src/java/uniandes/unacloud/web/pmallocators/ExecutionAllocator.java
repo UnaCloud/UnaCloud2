@@ -13,11 +13,11 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Cloder
  *
  */
-public abstract class VirtualMachineAllocator{
+public abstract class ExecutionAllocator{
 	
 	private TreeMap<Long, Integer> ipsNeeded;
 	
-	public VirtualMachineAllocator() {
+	public ExecutionAllocator() {
 		ipsNeeded = new TreeMap<Long, Integer>();
 	}
 	

@@ -14,7 +14,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class SortingAllocator extends VirtualMachineAllocator {
+public class SortingAllocator extends ExecutionAllocator {
 	
 	/**
 	 * Class which implements Comparator

@@ -14,7 +14,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class RandomAllocator extends VirtualMachineAllocator {
+public class RandomAllocator extends ExecutionAllocator {
 
 	/**
 	 * Assigns a virtual machine execution to a physical machine based in random number.

@@ -99,7 +99,7 @@ class BootStrap {
 			
 		}			
 		if(Platform.count() == 0){
-			new Platform(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk').save()
+			new Platform(name: UnaCloudConstants.VIRTUAL_BOX,mainExtension:".vbox",filesExtensions:'.vdi,.vmdk',platformVersion: "4.3.4",).save()
 		}
 		//new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()

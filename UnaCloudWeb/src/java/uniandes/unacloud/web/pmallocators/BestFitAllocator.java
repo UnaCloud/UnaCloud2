@@ -15,7 +15,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class BestFitAllocator extends VirtualMachineAllocator {
+public class BestFitAllocator extends ExecutionAllocator {
 	
 	/**
 	 * Class which implements Comparator

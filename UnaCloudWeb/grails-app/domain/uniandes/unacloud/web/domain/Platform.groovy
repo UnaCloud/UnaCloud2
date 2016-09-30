@@ -1,8 +1,7 @@
 package uniandes.unacloud.web.domain
 
 /**
- * Entity to represent a Hypervisor Type 2 installed in physical machines.
- * This class is unused in this version of UnaCloud
+ * Entity to represent a Platform to run images and it is installed in physical machines.
  * @author CesarF
  *
  */
@@ -13,14 +12,14 @@ class Platform {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * hypervisor name
+	 * platform name
 	 */
 	String name
 	
 	/**
-	 * hypervisor version
+	 * platform version
 	 */
-	String hypervisorVersion
+	String platformVersion
 	
 	/**
 	 * extension from main file
@@ -28,7 +27,7 @@ class Platform {
 	String mainExtension
 	
 	/**
-	 * extension list of files for this hypervisor
+	 * extension list of files for this platform
 	 * string with commas
 	 * not include main
 	 */

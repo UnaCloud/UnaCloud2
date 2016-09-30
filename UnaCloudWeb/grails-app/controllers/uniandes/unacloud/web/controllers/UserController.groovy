@@ -145,10 +145,10 @@ class UserController {
 			def boxes  = []
 			boxes.add([name:'Users',quantity:User.count(),color:'aqua',url:'/admin/user/list',icon:'ion-person'])
 			boxes.add([name:'Groups',quantity:UserGroup.count(),color:'green',url:'/admin/group/list',icon:'ion-person-stalker'])
-			boxes.add([name:'Hypervisors',quantity:Platform.count(),color:'yellow',url:'/admin/hypervisor/list',icon:'ion-star'])
+			boxes.add([name:'Platforms',quantity:Platform.count(),color:'yellow',url:'/admin/platform/list',icon:'ion-star'])
 			boxes.add([name:'Operating Systems',quantity:OperatingSystem.count(),color:'blue',url:'/admin/os/list',icon:'ion-load-a'])			
 			boxes.add([name:'Hosts',quantity:PhysicalMachine.count(),color:'teal',url:'/admin/lab/list',icon:'ion-monitor'])
-			boxes.add([name:'Repositories',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
+			boxes.add([name:'Storage',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
 			[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments,boxes:boxes]
 		}else		
 		 	[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments]

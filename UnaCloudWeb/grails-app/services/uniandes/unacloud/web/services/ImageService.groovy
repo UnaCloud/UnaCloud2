@@ -9,6 +9,7 @@ import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.OperatingSystem;
+import uniandes.unacloud.web.domain.Platform
 import uniandes.unacloud.web.domain.Repository;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Image;
@@ -22,16 +23,11 @@ import grails.transaction.Transactional
  *
  */
 @Transactional
-class VirtualMachineImageService {
+class ImageService {
 
 	// Properties
 	//-----------------------------------------------------------------
-	
-	/**
-	 * System separator
-	 */
-	def separator =  java.io.File.separatorChar
-	
+		
 	/**
 	 * repository service
 	 */
@@ -170,5 +166,14 @@ class VirtualMachineImageService {
 		image.putAt("token",token)
 		image.putAt("state",ImageEnum.UNAVAILABLE)
 		return token
+	}
+	
+	/**
+	 * Returns list of images which have linked 
+	 * @param plat
+	 * @return
+	 */
+	def getListMachinesByPlatform(Platform plat){
+		return Image.where{platform==plat}.findAll()
 	}
 }

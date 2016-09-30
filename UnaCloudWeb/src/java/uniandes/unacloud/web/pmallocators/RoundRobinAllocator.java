@@ -14,7 +14,7 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class RoundRobinAllocator extends VirtualMachineAllocator {
+public class RoundRobinAllocator extends ExecutionAllocator {
 
 	/**
 	 * Assigns a virtual machine for each physical machine order by physical machine id

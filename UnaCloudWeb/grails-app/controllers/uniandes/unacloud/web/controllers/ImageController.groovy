@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.controllers
 
 import uniandes.unacloud.web.services.ServerVariableService;
-import uniandes.unacloud.web.services.VirtualMachineImageService;
+import uniandes.unacloud.web.services.ImageService;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.domain.OperatingSystem;
@@ -15,7 +15,7 @@ import grails.converters.JSON
  * @author CesarF
  *
  */
-class VirtualMachineImageController {
+class ImageController {
 
     //-----------------------------------------------------------------
 	// Properties
@@ -24,7 +24,7 @@ class VirtualMachineImageController {
 	/**
 	 * Representation of image services
 	 */
-	VirtualMachineImageService virtualMachineImageService
+	ImageService imageService
 	
 	/**
 	 * Representation of server variable service
@@ -78,7 +78,7 @@ class VirtualMachineImageController {
 	 * New Image from public one action
 	 */
 	def newFromPublic(){
-		[ publicImages: virtualMachineImageService.getAvailablePublicImages()]
+		[ publicImages: imageService.getAvailablePublicImages()]
 	}
 	
 	/**
@@ -89,7 +89,7 @@ class VirtualMachineImageController {
 		def user = User.get(session.user.id)
 		if(params.name&&!params.name.isEmpty()&&params.image){
 			try {
-				if(virtualMachineImageService.newPublic(params.name, params.image, user)){
+				if(imageService.newPublic(params.name, params.image, user)){
 					redirect(uri:"/services/image/list", absolute:true)
 				}
 				else{
@@ -118,7 +118,7 @@ class VirtualMachineImageController {
 			redirect(uri:"/services/image/list", absolute:true)
 		else {	
 			def user= User.get(session.user.id)
-			if(virtualMachineImageService.deleteImage(user,image)){
+			if(imageService.deleteImage(user,image)){
 				flash.message="Your image has been disabled, it will be deleted in a few time";
 				flash.type="info";
 			}else{
@@ -136,7 +136,7 @@ class VirtualMachineImageController {
 		Image image = Image.get(params.id);
 		if (image&&image.state==ImageEnum.AVAILABLE){	
 			if(image.owner.id==session.user.id){				
-				virtualMachineImageService.clearCache(image);
+				imageService.clearCache(image);
 				flash.message="Your request has been sent, image will be deleted from physical machines in a few time";
 				flash.type="info";
 			}
@@ -170,9 +170,9 @@ class VirtualMachineImageController {
 				boolean toPublic = params.isPublic!=null;
 				def res = null;
 				try{
-					virtualMachineImageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
+					imageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
 					if(image.isPublic!=toPublic){				
-						virtualMachineImageService.alterImagePrivacy(toPublic,image)
+						imageService.alterImagePrivacy(toPublic,image)
 						flash.message="Image files will be change its privacy, this will be take a few minutes";
 					}else flash.message="Your changes has been saved";				
 				    flash.type="success";
@@ -227,7 +227,7 @@ class VirtualMachineImageController {
 			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId){	
 			def user= User.get(session.user.id)			
 			try{
-				def token = virtualMachineImageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
+				def token = imageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.user, params.passwd,user)
 				def url = serverVariableService.getUrlFileManager()
 				resp = [success:true,'token':token,'url':url+"/upload"];				
 			}
@@ -250,7 +250,7 @@ class VirtualMachineImageController {
 		Image image= Image.get(params.id)
 		if (image!= null&&image.owner.id==session.user.id){	
 			try{
-				def token = virtualMachineImageService.updateFiles(image)
+				def token = imageService.updateFiles(image)
 				def url = serverVariableService.getUrlFileManager()
 				resp = [success:true,'token':token,'url':url+"/update"]
 			}

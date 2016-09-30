@@ -42,13 +42,13 @@ public enum AllocatorEnum {
 	/**
 	 * allocator class to execute algorithm
 	 */
-	VirtualMachineAllocator allocator;
+	ExecutionAllocator allocator;
 	/**
 	 * Name of allocator
 	 */
 	String name;
 	
-	private AllocatorEnum(VirtualMachineAllocator allocator, String name) {
+	private AllocatorEnum(ExecutionAllocator allocator, String name) {
 		this.allocator=allocator;
 		this.name=name;
 	}
@@ -56,7 +56,7 @@ public enum AllocatorEnum {
 	 * Returns allocator class to execute algorithm
 	 * @return allocator class 
 	 */
-	public VirtualMachineAllocator getAllocator() {
+	public ExecutionAllocator getAllocator() {
 		return allocator;
 	}
 	

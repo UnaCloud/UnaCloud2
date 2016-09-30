@@ -8,7 +8,7 @@ import uniandes.unacloud.web.domain.Execution;
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
 @TestFor(Execution)
-class VirtualMachineExecutionSpec extends Specification {
+class ExecutionSpec extends Specification {
 
     def setup() {
     }

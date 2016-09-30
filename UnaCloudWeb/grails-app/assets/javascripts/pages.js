@@ -22,13 +22,13 @@ $(document).on('ready',function(){
 
 	$(".delete_repo").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Repository')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Storage')	
 	});
 
 
-	$(".delete_hypervisor").click(function (event){
+	$(".delete_platform").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Hypervisor')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Platform')	
 	});
 
 	$(".delete_os").click(function (event){

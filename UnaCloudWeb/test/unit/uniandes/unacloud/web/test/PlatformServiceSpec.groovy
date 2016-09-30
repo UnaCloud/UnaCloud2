@@ -2,13 +2,13 @@ package uniandes.unacloud.web.test
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import uniandes.unacloud.web.services.VirtualMachineImageService;
+import uniandes.unacloud.web.services.PlatformService;
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-@TestFor(VirtualMachineImageService)
-class VirtualMachineImageServiceSpec extends Specification {
+@TestFor(PlatformService)
+class PlatformServiceSpec extends Specification {
 
     def setup() {
     }
