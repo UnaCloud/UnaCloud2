@@ -27,6 +27,11 @@ class Platform {
 	String mainExtension
 	
 	/**
+	 * Java class name in agent to represent platform
+	 */
+	String classPlatform
+	
+	/**
 	 * extension list of files for this platform
 	 * string with commas
 	 * not include main
@@ -35,6 +40,7 @@ class Platform {
 	
     static constraints = {
 		name nullable:false
+		classPlatform nullable:false
 		filesExtensions nullable:true
     }
 }

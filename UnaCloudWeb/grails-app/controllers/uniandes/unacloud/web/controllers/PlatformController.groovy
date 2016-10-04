@@ -84,9 +84,9 @@ class PlatformController {
 	 * @return
 	 */
 	def save(){
-		if(params.name&&params.vers&&params.ext){
+		if(params.name&&params.vers&&params.ext&&params.cls){
 			try{
-				platformService.create(params.name,params.vers,params.ext,params.files_ext)
+				platformService.create(params.name,params.vers,params.ext,params.files_ext, params.cls)
 				redirect(uri:"/admin/platform/list", absolute:true)
 			}catch(Exception e){
 				flash.message=e.message
@@ -115,11 +115,11 @@ class PlatformController {
 	 * Redirects to platform list when finished
 	 */
 	def saveEdit(){
-		if(params.name&&params.vers&&params.ext){
+		if(params.name&&params.vers&&params.ext&&params.cls){
 			try{
 				Platform platform = Platform.get(params.id)
 				if(Platform){
-					platformService.setValues(platform,params.name,params.vers,params.ext,params.files_ext)
+					platformService.setValues(platform,params.name,params.vers,params.ext,params.files_ext,params.cls)
 					flash.message="Platform values have been modified"
 					flash.type="success"
 				}	

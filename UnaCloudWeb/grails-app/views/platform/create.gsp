@@ -34,6 +34,10 @@
 	                            	<input type="text" class="form-control" name="vers" placeholder="Platform version">
 	                         	</div>
 	                         	<div class="form-group">
+	                            	<label>Class *</label>
+	                            	<input type="text" class="form-control" name="cls" placeholder="Platform class in agent">
+	                         	</div>
+	                         	<div class="form-group">
 	                            	<label>Main file extension *</label>
 	                            	<input type="text" class="form-control" name="ext" placeholder="Platform main file extension">
 	                         	</div>

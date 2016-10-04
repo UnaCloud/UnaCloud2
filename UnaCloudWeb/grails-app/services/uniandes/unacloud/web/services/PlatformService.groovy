@@ -22,8 +22,8 @@ class PlatformService {
 	 * @param platformVersion platform version
 	 */
 	
-	def create(name, platformVersion, ext,fileExts) {
-		new Platform(name:name, platformVersion: platformVersion, mainExtension: ext, filesExtensions: fileExts).save()
+	def create(name, platformVersion, ext,fileExts, cls) {
+		new Platform(name:name, platformVersion: platformVersion, mainExtension: ext, filesExtensions: fileExts, classPlatform: cls).save()
     }
 	
 	/**
@@ -32,11 +32,12 @@ class PlatformService {
 	 * @param name platform new name
 	 */
 	
-	def setValues(Platform platform, name, platformVersion, mainExt, filesExt){
+	def setValues(Platform platform, name, platformVersion, mainExt, filesExt, cls){
 		platform.putAt("name", name)
 		platform.putAt("platformVersion", platformVersion)
 		platform.putAt("mainExtension", mainExt)
 		platform.putAt("filesExtensions", filesExt)
+		platform.putAt("classPlatform", cls)
 	}
 	
 	/**

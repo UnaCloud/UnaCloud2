@@ -14,7 +14,6 @@ import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * This class sends files to agent when an agent doesn't have image in its cache folder.
@@ -30,32 +29,32 @@ public class FileTransferTask implements Runnable{
 	@Override
 	public void run() {		
 		try(Socket ss=s;DataInputStream ds=new DataInputStream(s.getInputStream());OutputStream os=s.getOutputStream();Connection con = FileManager.getInstance().getDBConnection();){			
+			
 			ZipOutputStream zos=new ZipOutputStream(os);
 			long imageId=ds.readLong();
-			System.out.println("\tWorking "+imageId);
+			System.out.println("\tWorking "+imageId);						
 			ImageFileEntity image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
+			
 			if(image!=null){
+				
 				System.out.println(image+" - "+imageId+" - "+image.getState());
 				final byte[] buffer=new byte[1024*100];
 				System.out.println("\t Sending files "+image.getMainFile());
+				
 				for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
-					System.out.println("\tprocessing: "+f.getName());
-					zos.putNextEntry(new ZipEntry(f.getName()));
 					
+					System.out.println("\tprocessing: "+f.getName());
+					zos.putNextEntry(new ZipEntry(f.getName()));					
 					try(FileInputStream fis=new FileInputStream(f)){
 						for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
 					}
 					zos.closeEntry();
 				}
+				
 				System.out.println("Files sent "+image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
-				//TODO improve this to manage platforms
 				PrintWriter pw=new PrintWriter(zos);
-				//pw.println(image.getPlatform())
-				if(image.getMainFile().endsWith("vmx"))
-					pw.println(UnaCloudConstants.VM_WARE_WORKSTATION);
-				else if(image.getMainFile().endsWith("vbox"))
-					pw.println(UnaCloudConstants.VIRTUAL_BOX);
+				pw.println(image.getPlatform().getConfigurer());
 				pw.println(new File(image.getMainFile()).getName());
 				pw.println(image.getPassword());
 				pw.println(image.getUser());

@@ -42,21 +42,25 @@ public class FileReceiverTask implements Runnable{
 		String newMainFile = null;
 		String message;
 		try(Socket ss=s; DataInputStream is = new DataInputStream(s.getInputStream());Connection con = FileManager.getInstance().getDBConnection();) {
+			
 			Long execution = is.readLong();
 			String token= is.readUTF();
 			System.out.println("\tRequest " +execution+" - "+ token);
 			ImageFileEntity image = ImageFileManager.getImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
+			
 			if (image!=null) {
+				
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con);
 				mainFile=image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator;//getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
 				System.out.println("save in path: "+mainFile);
 				TreeMap<File, String>filesTemp = new TreeMap<File, String>();
+				
 				try(ZipInputStream zis = new ZipInputStream(is)) {
+					
 					System.out.println("\tZip open");
 					final byte[] buffer = new byte[1024 * 100];
-					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
-					
+					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){					
 					List<PlatformEntity>platforms = PlatformManager.getAll(con);				
 					
 					for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
@@ -87,13 +91,15 @@ public class FileReceiverTask implements Runnable{
 					}
 					System.out.println("There are "+filesTemp.size()+", Delete old files");
 					Long sizeImage= 0l;
-					if(filesTemp.size()>0){						
+					
+					if(filesTemp.size()>0){			
+						
 						File dir = new File(mainFile);
 						System.out.println(dir+" "+dir.exists());
 						System.out.println("Creates: "+dir.mkdirs());
-						for(java.io.File f:dir.listFiles())if(f.isFile())f.delete();
-						
+						for(java.io.File f:dir.listFiles())if(f.isFile())f.delete();						
 						System.out.println("Save new files");
+						
 						for(File temp:filesTemp.descendingKeySet()){
 							File newFile = new File(mainFile, filesTemp.get(temp));
 							//newFile.createNewFile();

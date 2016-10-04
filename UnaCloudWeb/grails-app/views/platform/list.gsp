@@ -25,7 +25,8 @@
                           <thead>
                               <tr>
                                   <th>Name</th>
-                                  <th>Version</th>                                  
+                                  <th>Version</th>  
+                                  <th>Class</th>                                 
                                   <th>Executable</th>
                                   <th>File Extensions</th>
                                   <th>Actions</th>
@@ -36,6 +37,7 @@
                               <tr>
                                  <td>${platform.name}</td>
                                  <td>${platform.platformVersion}</td>
+                                 <td>${platform.classPlatform}</td>
                                  <td>${platform.mainExtension}</td>
                                  <td>${platform.filesExtensions}</td>
                                  <td class="column-center">                                  

@@ -13,18 +13,25 @@ public class PlatformEntity {
 	private String name;
 	private String extension;
 	private String otherExtensions;
+	private String configurer;
 	
 	
-	public PlatformEntity(Long id, String version, String name, String extension, String otherExt) {
+	public PlatformEntity(Long id, String version, String name, String extension, String otherExt, String configurer) {
 		super();
 		this.id = id;
 		this.version = version;
 		this.name = name;
 		this.extension = extension;
 		this.otherExtensions = otherExt;
+		this.configurer = configurer;
 	}
 
 
+	public String getConfigurer() {
+		return configurer;
+	}
+	
+	
 	public Long getId() {
 		return id;
 	}
