@@ -3,7 +3,7 @@ package uniandes.unacloud.common.enums;
 import uniandes.unacloud.common.utils.CalendarUtils;
 
 /**
- * Represents state of virtual machine executions
+ * Represents state of executions
  * @author CesarF
  *
  */
@@ -66,9 +66,9 @@ public enum ExecutionStateEnum {
 	}
 	
 	/**
-	 * Returns a virtual machine execution state searched by name
-	 * @param name of virtual machine execution
-	 * @return Virtual Machine execution state
+	 * Returns an execution state searched by name
+	 * @param name of execution
+	 * @return Execution state
 	 */
 	public static ExecutionStateEnum getEnum(String name){
 		if(QUEUED.name.equals(name)||QUEUED.name().equals(name))return QUEUED;

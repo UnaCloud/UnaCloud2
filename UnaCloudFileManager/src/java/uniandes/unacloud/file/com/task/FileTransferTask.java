@@ -1,4 +1,4 @@
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com.task;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -49,8 +49,9 @@ public class FileTransferTask implements Runnable{
 				}
 				System.out.println("Files sent "+image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
-				//TODO improve this to manage hypervisors
+				//TODO improve this to manage platforms
 				PrintWriter pw=new PrintWriter(zos);
+				//pw.println(image.getPlatform())
 				if(image.getMainFile().endsWith("vmx"))
 					pw.println(UnaCloudConstants.VM_WARE_WORKSTATION);
 				else if(image.getMainFile().endsWith("vbox"))

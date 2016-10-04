@@ -8,7 +8,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
+import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.entities.Execution;
@@ -18,16 +18,16 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 
 /**
- * Task to send a virtual machine execution files to server
+ * Task to send execution files to server
  * @author CesarF
  *
  */
-public class UploadImageVirtualMachineTask implements Runnable{
+public class UploadImageTask implements Runnable{
 
 	Execution machineExecution;
 	String secureToken;
 	
-	public UploadImageVirtualMachineTask(Execution machineExecution, String secureToken) {
+	public UploadImageTask(Execution machineExecution, String secureToken) {
 		this.machineExecution = machineExecution;
 		this.secureToken = secureToken;
 	}
@@ -84,17 +84,17 @@ public class UploadImageVirtualMachineTask implements Runnable{
 					}
 					System.out.println("Files sent");					
 					zos.flush();
-					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FINISHED,"Image has been copied to server");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FINISHED,"Image has been copied to server");
 					
 				} catch (Exception e) {
 					PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
-					throw new VirtualMachineExecutionException(UnaCloudConstants.ERROR_MESSAGE+" deleting images",e);
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
+					throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE+" deleting images",e);
 				}					
 				
 			}catch (Exception e) {	
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
-				throw new VirtualMachineExecutionException(UnaCloudConstants.ERROR_MESSAGE+" opening connection",e);
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,UnaCloudConstants.ERROR_MESSAGE+" copying images to server");
+				throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE+" opening connection",e);
 			}
 			
 			System.out.println("Delete Image "+machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());

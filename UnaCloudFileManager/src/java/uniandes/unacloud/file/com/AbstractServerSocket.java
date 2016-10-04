@@ -1,4 +1,4 @@
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com;
 
 import java.io.IOException;
 import java.net.ServerSocket;

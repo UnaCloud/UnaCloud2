@@ -20,7 +20,7 @@ class ClusterService {
     /**
 	 * Creates a new cluster with the given parameters
 	 * It validates that images owner is the same user that requires cluster
-	 * @param images Virtual machine images belonging to new cluster
+	 * @param images images belonging to new cluster
 	 * @param cluster empty new cluster
 	 * @param user cluster owner
 	 */

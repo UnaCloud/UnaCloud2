@@ -1,10 +1,10 @@
 package uniandes.unacloud.agent.exceptions;
 
 /**
- * Represent errors on virtual machine operations like configure, start, stop
+ * Represent errors on execution operations like configure, start, stop
  * @author Clouder
  */
-public class VirtualMachineExecutionException extends Exception{
+public class ExecutionException extends Exception{
 
     private static final long serialVersionUID = 1323530370930637999L;
     /**
@@ -12,7 +12,7 @@ public class VirtualMachineExecutionException extends Exception{
 	 * @param message
 	 * @param cause
 	 */
-	public VirtualMachineExecutionException(String message){
+	public ExecutionException(String message){
 		super(message);
         
     }
@@ -21,7 +21,7 @@ public class VirtualMachineExecutionException extends Exception{
 	 * @param message
 	 * @param cause
 	 */
-	public VirtualMachineExecutionException(String message,Exception cause){
+	public ExecutionException(String message,Exception cause){
 		super(message,cause);
     }
 

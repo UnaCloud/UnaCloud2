@@ -7,7 +7,7 @@ import uniandes.unacloud.control.communication.processor.VmMessageProcessor;
 
 
 /**
- * Receive message as reports about virtual machines states and put it in message processor to be executed in thread pool
+ * Receive message as reports about execution states and put it in message processor to be executed in thread pool
  * @author CesarF
  *
  */

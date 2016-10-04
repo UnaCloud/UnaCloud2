@@ -67,7 +67,7 @@ public class ImageEntity {
 
 	@Override
 	public String toString() {
-		return "VirtualMachineImageEntity [id=" + id + ", user=" + user
+		return "ImageEntity [id=" + id + ", user=" + user
 				+ ", password=" + password + ", state=" + state + ", token="
 				+ token + "]";
 	}

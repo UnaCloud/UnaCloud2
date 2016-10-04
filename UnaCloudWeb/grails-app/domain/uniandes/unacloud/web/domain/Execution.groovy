@@ -9,7 +9,7 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
- * Entity to represent a virtual machine in execution; an instance of a virtual machine which has been deployed by user on UnaCloud infrastructure.
+ * Entity to represent an execution; an instance which has been deployed by user on UnaCloud infrastructure.
  * @author CesarF
  *
  */
@@ -20,12 +20,12 @@ class Execution {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Virtual machine hostname
+	 * Execution hostname
 	 */
     String name
 	
 	/**
-	 * Virtual machine hardware profile assigned
+	 * Execution hardware profile assigned
 	 */
 	HardwareProfile hardwareProfile
 	
@@ -50,7 +50,7 @@ class Execution {
 	ExecutionStateEnum status
 	
 	/**
-	 * Virtual Machine interface message
+	 * Execution last message
 	 */
 	String message
 	
@@ -66,7 +66,7 @@ class Execution {
 	static belongsTo = [deployImage: DeployedImage]
 	
 	/**
-	 * Last report of virtual machine
+	 * Last report of execution
 	 */
 	Date lastReport
 	

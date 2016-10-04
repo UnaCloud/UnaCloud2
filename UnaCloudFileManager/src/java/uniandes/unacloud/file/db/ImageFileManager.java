@@ -13,7 +13,7 @@ import uniandes.unacloud.share.db.PlatformManager;
 import uniandes.unacloud.share.db.StorageManager;
 
 /**
- * Class used to execute query, update and delete processes in database for VirtualMachine entity. 
+ * Class used to execute query, update and delete processes in database for Image entity. 
  * added some queries for Repository and Platform entities
  * @author CesarF
  *
@@ -21,13 +21,13 @@ import uniandes.unacloud.share.db.StorageManager;
 public class ImageFileManager {
 	
 	/**
-	 * Returns a virtual machine image entity with information about file and repository
+	 * Returns an image entity with information about file and repository
 	 * @param id
 	 * @param state
 	 * @param withUser
 	 * @param withConfigurer
 	 * @param con Database Connection
-	 * @return virtual machine image
+	 * @return image
 	 */
 	//TODO improve query for repository, use hash map
 	public static ImageFileEntity getImageWithFile(Long id, ImageEnum state, boolean withUser, boolean withConfigurer, Connection con){
@@ -56,10 +56,10 @@ public class ImageFileManager {
 	}	
 	
 	/**
-	 * Returns a virtual machine image entity based in token 
+	 * Returns an image entity based in token 
 	 * @param token
 	 * @param con Database connection
-	 * @return Virtual machine image, could be null
+	 * @return image, could be null
 	 */
 	public static ImageFileEntity getImageWithFile(String token,Connection con){
 		try {
@@ -81,7 +81,7 @@ public class ImageFileManager {
 	}	
 	
 	/**
-	 * Updates a virtual machine image entity on database.
+	 * Updates an image entity on database.
 	 * @param image to be updates
 	 * @param update if version should be updated
 	 * @param con Database connection
@@ -125,7 +125,7 @@ public class ImageFileManager {
 	}
 	
 	/**
-	 * Returns a list of virtual machines belonged by user
+	 * Returns a list of images belonged by user
 	 * @param userId
 	 * @param con Database connection
 	 * @return

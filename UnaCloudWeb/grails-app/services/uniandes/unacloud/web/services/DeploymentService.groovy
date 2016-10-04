@@ -69,8 +69,7 @@ class DeploymentService {
 	//-----------------------------------------------------------------
 
     /**
-	 * Deploys a new cluster which virtual machines could be
-	 * heterogeneous for the same image  
+	 * Deploys a new cluster with heterogeneous executions for the same image  
 	 * @param cluster cluster to be deployed
 	 * @param user owner of the deployment
 	 * @param time execution time in millisecond
@@ -107,13 +106,13 @@ class DeploymentService {
 		Date stop = new java.util.Date(start.getTime()+time)
 		requests.eachWithIndex(){ request,i->
 			
-			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,virtualMachines:[])			
+			def depImage= new DeployedImage(image:request.image,highAvaliavility:request.high,executions:[])			
 			def executions = []
 			for(int j=0;j<request.instances;j++){				
-				def virtualExecution = new Execution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: start,stopTime:stop, interfaces:[])
-				executions.add(virtualExecution)
+				def execution = new Execution(deployImage: depImage,name: request.hostname,message: "Initializing",  hardwareProfile: request.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: start,stopTime:stop, interfaces:[])
+				executions.add(execution)
 			}
-			depImage.virtualMachines=executions
+			depImage.executions=executions
 			images.add(depImage)	
 				
 //			println 'Load Map with used machines '+pmDescriptions.entrySet().size()
@@ -124,8 +123,8 @@ class DeploymentService {
 			if(!depImage.highAvaliavility&&pms.size()==0) throw new Exception('Not enough physical machines available')
 			if(depImage.highAvaliavility&&pmsHigh.size()==0) throw new Exception('Not enough high availability physical machines available')
 			
-			physicalMachineAllocatorService.allocatePhysicalMachines(user,depImage.virtualMachines.sort(),depImage.highAvaliavility?pmsHigh:pms,depImage.highAvaliavility?pmDescriptionHigh:pmDescriptions)
-			ipAllocatorService.allocateIPAddresses(depImage.virtualMachines)
+			physicalMachineAllocatorService.allocatePhysicalMachines(user,depImage.executions.sort(),depImage.highAvaliavility?pmsHigh:pms,depImage.highAvaliavility?pmDescriptionHigh:pmDescriptions)
+			ipAllocatorService.allocateIPAddresses(depImage.executions)
 			
 		}	
 		
@@ -135,7 +134,7 @@ class DeploymentService {
 		for(DeployedImage image in images){
 			image.deployment = dep
 			image.save(failOnError: true,flush:true)
-			for(Execution execution in image.virtualMachines){
+			for(Execution execution in image.executions){
 				execution.deployImage = image
 				execution.saveExecution()
 			}
@@ -178,8 +177,8 @@ class DeploymentService {
 					
 		def executions = []
 		for(int j=0;j<requestOptions.instances;j++){
-			def virtualExecution = new Execution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
-			executions.add(virtualExecution)
+			def execution = new Execution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
+			executions.add(execution)
 		}
 		
 //		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
@@ -193,7 +192,7 @@ class DeploymentService {
 		for(Execution execution in executions){
 			execution.saveExecution()
 		}
-		image.virtualMachines.addAll(executions)
+		image.executions.addAll(executions)
 		image.save(failOnError:true,flush:true)
 		if(!Environment.isDevelopmentMode()){
 			QueueTaskerControl.addInstancesToDeploy(executions.sort(),user,image)
@@ -216,12 +215,12 @@ class DeploymentService {
 		return deployments
 	}
 	/**
-	 * Creates a task to stop virtual machines executions in list
+	 * Creates a task to stop executions in list
 	 * If state is FAILED changes to FINISHED else to FINISHING
 	 * @param executions
 	 * @param user that request stop executions
 	 */
-	def stopVirtualMachineExecutions(List<Execution> executions, User requester){
+	def stopExecutions(List<Execution> executions, User requester){
 		List<Execution> executionsToStop = new ArrayList<Execution>()
 		for(Execution vm : executions){
 			if(vm.status.equals(ExecutionStateEnum.FAILED)){				

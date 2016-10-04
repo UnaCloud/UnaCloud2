@@ -73,7 +73,7 @@ public class PlatformEntity {
 	}
 	
 	/**
-	 * Validates if a extension matches with extension list from hypervisor
+	 * Validates if a extension matches with extension list from platform
 	 * @param extension
 	 * @return true if extension is valid, false in case not
 	 */

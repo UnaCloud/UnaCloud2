@@ -11,7 +11,7 @@ import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Factory responsible for managing hypervisor classes and instances. This class provides methods to dynamically load hypervisor classes and instantiate them.
+ * Factory responsible for managing platform classes and instances. This class provides methods to dynamically load platform classes and instantiate them.
  * @author Clouder
  * @author CesarF
  */
@@ -24,38 +24,38 @@ public class PlatformFactory {
     }
     
     /**
-     * Map that contains a relation between hypervisor names and hypervisor objects
+     * Map that contains a relation between platform names and platform objects
      */
     private static Map<String,Platform> map = new HashMap<>();
     
-    public static void registerHypervisors(){
+    public static void registerplatforms(){
     	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
     	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
-    	if(vmRun!=null)map.put(VMwareWorkstation.HYPERVISOR_ID,new VMwareWorkstation(vmRun));
-    	if(vBox!=null)map.put(VirtualBox.HYPERVISOR_ID,new VirtualBox(vBox));
+    	if(vmRun!=null)map.put(VMwareWorkstation.PLATFORM_ID,new VMwareWorkstation(vmRun));
+    	if(vBox!=null)map.put(VirtualBox.PLATFORM_ID,new VirtualBox(vBox));
     	//TODO add support to vmWarePlayer
-    	//map.put(VMwarePlayer.HYPERVISOR_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
+    	//map.put(VMwarePlayer.platform_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
 
     }
   
     /**
-     * Uses the map to search for hypervisor instances, if there is not an entry for the given name then it is loaded dynamically using java's reflection API. If there is an associated object, 
-     * then a new instance is returned by using the method getInstance from Hypervisor abstract class.
-     * @param hypervisorId The hypervisor id to be instantiated
-     * @return A managed hypervisor for the given name
+     * Uses the map to search for platform instances, if there is not an entry for the given name then it is loaded dynamically using java's reflection API. If there is an associated object, 
+     * then a new instance is returned by using the method getInstance from platform abstract class.
+     * @param platformId The platform id to be instantiated
+     * @return A managed platform for the given name
      */
-    public static Platform getHypervisor(final String hypervisorId){
-    	return map.get(hypervisorId);
+    public static Platform getPlatform(final String platformId){
+    	return map.get(platformId);
     }
     
     /**
-     * Validates the list of executions in each hypervisor, returns the list of executions that are not running in any hypervisor
+     * Validates the list of executions in each platform, returns the list of executions that are not running in any platform
      * @return list of executions that are not running
      */
     public static List<Execution> validateExecutions(Collection<Execution> executions){
     	List<Execution> notRunningExecutions = new ArrayList<Execution>();
     	notRunningExecutions.addAll(executions);
-    	for(Platform hypervisor:map.values())notRunningExecutions=hypervisor.checkExecutions(notRunningExecutions);
+    	for(Platform platform:map.values())notRunningExecutions=platform.checkExecutions(notRunningExecutions);
     	return notRunningExecutions;
     }
 }

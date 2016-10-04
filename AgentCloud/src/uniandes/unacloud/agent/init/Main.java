@@ -84,9 +84,9 @@ public class Main {
 	    }
     	
     	//Init services
-    	//register hypervisors
-    	System.out.println("Register hypervisors");
-    	PlatformFactory.registerHypervisors();
+    	//register platforms
+    	System.out.println("Register platforms");
+    	PlatformFactory.registerplatforms();
     	
     	//load executions in files
     	System.out.println("Load data");

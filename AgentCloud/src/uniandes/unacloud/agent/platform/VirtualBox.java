@@ -17,57 +17,57 @@ import uniandes.unacloud.common.utils.LocalProcessExecutor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Implementation of hypervisor abstract class to give support for VirtualBox
- * hypervisor.
+ * Implementation of platform abstract class to give support for VirtualBox
+ * platform.
  */
 public class VirtualBox extends Platform {
-	public static final String HYPERVISOR_ID=UnaCloudConstants.VIRTUAL_BOX;
+	public static final String PLATFORM_ID=UnaCloudConstants.VIRTUAL_BOX;
     
 	/**
 	 * Class constructor
-	 * @param path Path to this hypervisor executable
+	 * @param path Path to this platform executable
 	 */
 	public VirtualBox(String path) {
 		super(path);
 	}
     
     /**
-     * Sends a stop command to the hypervisor
+     * Sends a stop command to the platform
      * @param image Image copy to be stopped 
      */
     @Override
-    public void stopVirtualMachine(ImageCopy image){
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getVirtualMachineName(), "poweroff");
+    public void stopExecution(ImageCopy image){
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getImageName(), "poweroff");
         sleep(2000);
     }
     
     /**
-     * Registers a virtual machine on the hypervisor
+     * Registers a virtual machine on the platform
      * @param image Image copy to be registered
      */
     @Override
-	public void registerVirtualMachine(ImageCopy image){
+	public void registerImage(ImageCopy image){
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getPath());
         sleep(15000);
     }
     
     /**
-     * Unregisters a virtual machine from the hypervisor
+     * Unregisters a virtual machine from the platform
      * @param image Image copy to be unregistered
      */
     @Override
-	public void unregisterVirtualMachine(ImageCopy image){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getVirtualMachineName());
+	public void unregisterImage(ImageCopy image){
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
         sleep(15000);
     }
     
     /**
-     * Sends a reset message to the hypervisor
+     * Sends a reset message to the platform
      * @param image Image to be restarted
      */
     @Override
-    public void restartVirtualMachine(ImageCopy image) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getVirtualMachineName(), "reset");
+    public void restartExecution(ImageCopy image) throws PlatformOperationException {
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getImageName(), "reset");
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -75,14 +75,14 @@ public class VirtualBox extends Platform {
     }
     
     /**
-     * Sends a start message to the hypervisor
+     * Sends a start message to the platform
      * @param image Image to be started
      */
     @Override
-	public void startVirtualMachine(ImageCopy image) throws PlatformOperationException {
+	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
         String h;
-        if((h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getVirtualMachineName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
+        if((h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
@@ -97,7 +97,7 @@ public class VirtualBox extends Platform {
 	private void setPriority(ImageCopy image) throws PlatformOperationException {
 		//To correct executions in Vbox 4.3 and forward
     	try {
-    		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getVirtualMachineName());
+    		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getImageName());
     		sleep(1000);
     		LocalProcessExecutor.executeCommandOutput(OSFactory.getOS().getSetPriorityCommand("VBoxSVC.exe"));
     		sleep(1000);
@@ -113,9 +113,9 @@ public class VirtualBox extends Platform {
      * @param image Copy to be modified
      */
     @Override
-    public void configureVirtualMachineHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
+    public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	if(cores!=0&&ram!=0){
-            LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getVirtualMachineName(),"--memory",""+ram,"--cpus",""+cores);
+            LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(),"--memory",""+ram,"--cpus",""+cores);
             sleep(20000);
         }
     }
@@ -127,9 +127,9 @@ public class VirtualBox extends Platform {
      * @param args command arguments 
      */
     @Override
-    public void executeCommandOnMachine(ImageCopy image,String command, String... args) throws PlatformOperationException {
+    public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
-        Collections.addAll(com, getExecutablePath(), "--nologo", "guestcontrol", image.getVirtualMachineName(), "execute", "--image", command, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword(), "--wait-exit", "--");
+        Collections.addAll(com, getExecutablePath(), "--nologo", "guestcontrol", image.getImageName(), "execute", "--image", command, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword(), "--wait-exit", "--");
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
@@ -144,8 +144,8 @@ public class VirtualBox extends Platform {
      * @param sourceFile file to be copied
      */
     @Override
-    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "guestcontrol", image.getVirtualMachineName(), "copyto", sourceFile.getAbsolutePath(), destinationRoute, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword());
+    public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "guestcontrol", image.getImageName(), "copyto", sourceFile.getAbsolutePath(), destinationRoute, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword());
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -158,8 +158,8 @@ public class VirtualBox extends Platform {
      * @param snapshotname 
      */
     @Override
-    public void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getVirtualMachineName(),"take",snapshotname);
+    public void takeExecutionSnapshot(ImageCopy image,String snapshotname){
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getImageName(),"take",snapshotname);
         sleep(20000);
     }
     
@@ -169,8 +169,8 @@ public class VirtualBox extends Platform {
      * @param snapshotname 
      */
     @Override
-    public void deleteVirtualMachineSnapshot(ImageCopy image,String snapshotname){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getVirtualMachineName(),"delete",snapshotname);
+    public void deleteExecutionSnapshot(ImageCopy image,String snapshotname){
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getImageName(),"delete",snapshotname);
         sleep(20000);
     }
     
@@ -179,9 +179,9 @@ public class VirtualBox extends Platform {
      * @param image copy to be modified
      */
     @Override
-    public void changeVirtualMachineMac(ImageCopy image) throws PlatformOperationException {
+    public void changeExecutionMac(ImageCopy image) throws PlatformOperationException {
     	NetworkInterface ninterface=AddressUtility.getDefaultNetworkInterface();
-    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getVirtualMachineName(),"--bridgeadapter1",ninterface.getDisplayName(),"--macaddress1","auto");
+    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(),"--bridgeadapter1",ninterface.getDisplayName(),"--macaddress1","auto");
         sleep(20000);
         
     }
@@ -192,8 +192,8 @@ public class VirtualBox extends Platform {
      * @param snapshotname snapshot to which image will be restored
      */
 	@Override
-	public void restoreVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getVirtualMachineName(), "restorecurrent");
+	public void restoreExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getImageName(), "restorecurrent");
         sleep(20000);
 	}
 	
@@ -203,14 +203,14 @@ public class VirtualBox extends Platform {
 	 * @param snapshotname 
 	 */
 	@Override
-	public boolean existsVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-		String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getVirtualMachineName(), "list");
+	public boolean existsExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
+		String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getImageName(), "list");
         sleep(20000);
         return h != null && !h.contains("does not");
 	}
 	
 	/**
-	 * Unregisters all VMs from hypervisor
+	 * Unregisters all VMs from platform
 	 */
 	public void unregisterAllVms(){
 		String[] h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms").split("\n|\r");
@@ -226,11 +226,11 @@ public class VirtualBox extends Platform {
 	 * @param dest empty destination copy
 	 */
 	@Override
-	public void cloneVirtualMachine(ImageCopy source, ImageCopy dest) {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"clonevm",source.getVirtualMachineName(),"--snapshot","unacloudbase","--name",dest.getVirtualMachineName(),"--basefolder",dest.getMainFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
+	public void cloneImage(ImageCopy source, ImageCopy dest) {
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"clonevm",source.getImageName(),"--snapshot","unacloudbase","--name",dest.getImageName(),"--basefolder",dest.getMainFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
 		sleep(20000);
-		takeVirtualMachineSnapshot(dest,"unacloudbase");
-        unregisterVirtualMachine(dest);
+		takeExecutionSnapshot(dest,"unacloudbase");
+        unregisterImage(dest);
 	}
 	
 	@Override
@@ -247,8 +247,8 @@ public class VirtualBox extends Platform {
 		}
 		for (Execution execution: executions) {
 			boolean isRunning = false;
-			for(String exeInHypervisor: list){
-				if(exeInHypervisor.contains(execution.getImage().getVirtualMachineName())){
+			for(String exeInplatform: list){
+				if(exeInplatform.contains(execution.getImage().getImageName())){
 					isRunning = true;
 					break;
 				}

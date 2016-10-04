@@ -11,7 +11,7 @@ import uniandes.unacloud.web.domain.Image;
 import grails.converters.JSON
 
 /**
- * This Controller contains actions to manage virtual machine image services: crud, and services to send messages to agents to copy or deletes images.
+ * This Controller contains actions to manage image services: crud, and services to send messages to agents to copy or deletes images.
  * This class render pages for user or process request in services to update entities, there is session verification before all actions
  * @author CesarF
  *
@@ -59,7 +59,7 @@ class ImageController {
 	}
 	
 	/**
-	 * Virtual machine image index action
+	 * Image index action
 	 * @return list of all images related to user
 	 */
 	def list() {	
@@ -197,7 +197,7 @@ class ImageController {
 	}
 		
 	/**
-	 * Render virtual image page, returns to list in case it does'nt exists
+	 * Render image page, returns to list in case it does'nt exists
 	 * @return id of the image to be edited.
 	 */	
 	def update(){

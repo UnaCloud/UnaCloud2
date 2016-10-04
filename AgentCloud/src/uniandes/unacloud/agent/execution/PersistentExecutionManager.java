@@ -15,8 +15,8 @@ import java.util.Timer;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.communication.send.VirtualMachineStateViewer;
-import uniandes.unacloud.agent.communication.upload.UploadImageVirtualMachineTask;
+import uniandes.unacloud.agent.communication.send.ExecutionStateViewer;
+import uniandes.unacloud.agent.communication.upload.UploadImageTask;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
@@ -24,27 +24,27 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
 import uniandes.unacloud.common.com.messages.InvalidOperationResponse;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineAddTimeMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineRestartMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageResponse;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse.VirtualMachineState;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionAddTimeMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionRestartMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionSaveImageMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionSaveImageResponse;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStartResponse.ExecutionState;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Responsible for managing virtual machine executions. This class is responsible to schedule virtual machine startups and
- * stops. The process is: given a virtual machine and a  time t, this class ensures that this virtual machine is going to be turn on for a time t
- * The virtual machine only is stopped when the time t is burnt-out or when the user sends a request to stop it. If this physical machine is turned off,
- * then the next time the physical machine starts the virtual machine will be powered on.<br/>
- * To schedule the virtual machine turn off we used a Timer that manage a collection of TimerTask objects, each timer task is responsible for
- * stopping one virtual machine
+ * Responsible for managing executions. This class is responsible to schedule execution startups and
+ * stops. The process is: given a execution and a time t, this class ensures that this execution is going to be turn on for a time t
+ * The execution only is stopped when the time t is burnt-out or when the user sends a request to stop it. If this physical machine is turned off,
+ * then the next time the physical machine starts the execution will be powered on.<br/>
+ * To schedule the execution turn off we used a Timer that manage a collection of TimerTask objects, each timer task is responsible for
+ * stopping one execution
  * @author Clouder
  */
 public class PersistentExecutionManager {
 
     /**
-     * The file that contains the powered virtual machines and its execution times
+     * The file that contains the powered executions and its execution times
      */
     private static final String executionsFile = "executions.txt";
     
@@ -59,12 +59,12 @@ public class PersistentExecutionManager {
     private static Timer timer = new Timer();
    
     /**
-     * Stops a virtual machine and removes it representing execution object
-     * @param virtualMachineExecutionId
+     * Stops an execution and removes it representing execution object
+     * @param executionId
      * @param checkTime 
      */
-    public static void removeExecution(long virtualMachineExecutionId,boolean checkTime) {
-    	Execution execution=executionList.remove(virtualMachineExecutionId);
+    public static void removeExecution(long executionId,boolean checkTime) {
+    	Execution execution=executionList.remove(executionId);
 		if(execution!=null&&(!checkTime||System.currentTimeMillis()>execution.getShutdownTime())){
 			execution.getImage().stopAndUnregister();
 		}
@@ -73,21 +73,21 @@ public class PersistentExecutionManager {
     
     /**
      * Stops execution
-     * @param virtualMachineExecutionId
+     * @param executionId
      */
-    public static void stopExecution(long virtualMachineExecutionId) {
-    	Execution execution=executionList.get(virtualMachineExecutionId);
+    public static void stopExecution(long executionId) {
+    	Execution execution=executionList.get(executionId);
 		if(execution!=null){
 			execution.getImage().stop();
 		}
     }
     
     /**
-     * Unregister execution from hypervisors
-     * @param virtualMachineExecutionId
+     * Unregister execution from platforms
+     * @param executionId
      */
-    public static void unregisterExecution(long virtualMachineExecutionId) {
-    	Execution execution=executionList.get(virtualMachineExecutionId);
+    public static void unregisterExecution(long executionId) {
+    	Execution execution=executionList.get(executionId);
 		if(execution!=null){
 			execution.getImage().unregister();
 		}
@@ -101,17 +101,18 @@ public class PersistentExecutionManager {
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
 		f.delete();
 	}
+	
     /**
-     * Restarts the given virtual machine
+     * Restarts the given execution
      * @return response to server
      */
-    public static UnaCloudAbstractResponse restartMachine(VirtualMachineRestartMessage restartMessage) {
-    	Execution execution=executionList.get(restartMessage.getVirtualMachineExecutionId());
+    public static UnaCloudAbstractResponse restartMachine(ExecutionRestartMessage restartMessage) {
+    	Execution execution=executionList.get(restartMessage.getExecutionId());
         try {
-        	execution.getImage().restartVirtualMachine();
+        	execution.getImage().restartExecution();
         } catch (PlatformOperationException ex) {
             try {
-				ServerMessageSender.reportVirtualMachineState(restartMessage.getVirtualMachineExecutionId(), ExecutionStateEnum.FAILED, ex.getMessage());
+				ServerMessageSender.reportExecutionState(restartMessage.getExecutionId(), ExecutionStateEnum.FAILED, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -121,7 +122,7 @@ public class PersistentExecutionManager {
     }
 
     /**
-     * Starts and configures a virtual machine. this method must be used by other methods to configure, start and schedule a virtual machine execution
+     * Starts and configures an execution. this method must be used by other methods to configure, start and schedule an execution
      * @param execution to be configured
      * @param started if execution should be started
      * @return result message
@@ -130,16 +131,16 @@ public class PersistentExecutionManager {
     	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	            if(!started)execution.getImage().startVirtualMachine();
+	            if(!started)execution.getImage().startExecution();
 	            executionList.put(execution.getId(),execution);
 	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
-	            ServerMessageSender.reportVirtualMachineState(execution.getId(),ExecutionStateEnum.DEPLOYING,"Starting virtual machine");
-	            if(new VirtualMachineStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
+	            ServerMessageSender.reportExecutionState(execution.getId(),ExecutionStateEnum.DEPLOYING,"Starting execution");
+	            if(new ExecutionStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
 	            	execution.getImage().setStatus(ImageStatus.LOCK);
 	        } catch (PlatformOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
-	        	ServerMessageSender.reportVirtualMachineState(execution.getId(), ExecutionStateEnum.FAILED, e.getMessage());
+	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.FAILED, e.getMessage());
 	            return ERROR_MESSAGE + e.getMessage();
 	        }
         } catch (Exception e) {
@@ -152,12 +153,12 @@ public class PersistentExecutionManager {
    
 
     /**
-     * Extends the time that the virtual machine must be up
+     * Extends the time that the execution must be up
      * @param timeMessage message with execution id and time to be modified
      * @return unacloud response
      */
-    public static UnaCloudAbstractResponse extendsVMTime(VirtualMachineAddTimeMessage timeMessage) {
-    	Execution execution=executionList.get(timeMessage.getVirtualMachineExecutionId());
+    public static UnaCloudAbstractResponse extendsVMTime(ExecutionAddTimeMessage timeMessage) {
+    	Execution execution=executionList.get(timeMessage.getExecutionId());
     	execution.setExecutionTime(timeMessage.getExecutionTime());
     	execution.setShutdownTime(System.currentTimeMillis()+timeMessage.getExecutionTime().toMillis());
     	timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
@@ -166,7 +167,7 @@ public class PersistentExecutionManager {
     }
     
     /**
-     * Saves the current state of virtual machine executions and virtual machine images on this node.  
+     * Saves the current state of executions and images on this node.  
      */
     private static void saveData(){
     	try(ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(executionsFile));){
@@ -212,7 +213,7 @@ public class PersistentExecutionManager {
     }
     
     /**
-     * Load data from file to map
+     * Loads data from file to map
      */
     @SuppressWarnings("unchecked")
 	private static void loadData(){
@@ -227,23 +228,24 @@ public class PersistentExecutionManager {
             }else saveData();
         } catch (Exception ex){}
     }
+    
     /**
      * Sends an image copied to server
      * @param message
      * @return unacloud response
      */
-    public static UnaCloudAbstractResponse sendImageCopy(VirtualMachineSaveImageMessage message){
+    public static UnaCloudAbstractResponse sendImageCopy(ExecutionSaveImageMessage message){
     	try {
-    		Execution execution=executionList.get(message.getVirtualMachineExecutionId());
-    		VirtualMachineSaveImageResponse response = new VirtualMachineSaveImageResponse();
+    		Execution execution=executionList.get(message.getExecutionId());
+    		ExecutionSaveImageResponse response = new ExecutionSaveImageResponse();
     		if(execution!=null&&execution.getImageId()==message.getImageId()){
     			System.out.println("Start copy service with token "+message.getTokenCom());
 				response.setMessage("Copying image");
-				response.setState(VirtualMachineState.COPYNG);
-				ExecutorService.executeBackgroundTask(new UploadImageVirtualMachineTask(execution,message.getTokenCom()));
+				response.setState(ExecutionState.COPYNG);
+				ExecutorService.executeBackgroundTask(new UploadImageTask(execution,message.getTokenCom()));
             }else{
 				response.setMessage(UnaCloudConstants.ERROR_MESSAGE+" Execution doesn't exist");
-				response.setState(VirtualMachineState.FAILED);
+				response.setState(ExecutionState.FAILED);
 			}
     		return response;
 		} catch (Exception e) {			

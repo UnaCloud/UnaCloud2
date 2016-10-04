@@ -7,14 +7,14 @@ package uniandes.unacloud.agent.platform;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Implementation of hypervisor abstract class to give support for
- * VMwareWorkstation hypervisor.
+ * Implementation of platform abstract class to give support for
+ * VMwareWorkstation platform.
  *
  * @author Clouder
  */
 
 public class VMwareWorkstation extends VMwareAbstractHypervisor{
-	public static final String HYPERVISOR_ID=UnaCloudConstants.VM_WARE_WORKSTATION;
+	public static final String PLATFORM_ID=UnaCloudConstants.VM_WARE_WORKSTATION;
 	public VMwareWorkstation(String path) {
 		super(path);
 	}

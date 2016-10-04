@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualNetInterfaceComponent;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStartMessage;
+import uniandes.unacloud.common.com.messages.exeo.ImageNetInterfaceComponent;
 import uniandes.unacloud.common.utils.Time;
 
 /**
- * Represents a virtual machine execution entity
+ * Represents an execution entity
  * @author Clouder
  *
  */
@@ -54,7 +54,7 @@ public class Execution implements Serializable{
     private long shutdownTime;
     
     /**
-     * Virtual machine image id
+     * image id
      */
     private long imageId;
     
@@ -237,18 +237,18 @@ public class Execution implements Serializable{
 	}
 	
 	/**
-	 * Returns a virtual machine based on a start message
+	 * Returns a execution based on a start message
 	 * @param message message with VM data
 	 * @return VM object based on message
 	 */
-	public static Execution getFromStartVirtualMachineMessage(VirtualMachineStartMessage message){
+	public static Execution getFromStartExecutionMessage(ExecutionStartMessage message){
 		Execution vme=new Execution();
 		vme.setCores(message.getVmCores());
 		vme.setMemory(message.getVmMemory());
 		vme.setExecutionTime(message.getExecutionTime());
 		vme.setHostname(message.getHostname());
-		vme.setId(message.getVirtualMachineExecutionId());
-		vme.setImageId(message.getVirtualMachineImageId());
+		vme.setId(message.getExecutionId());
+		vme.setImageId(message.getImageId());
 		vme.setInterfaces(getInterfacesFromMessage(message.getInterfaces()));
 		vme.setPersistent(message.isPersistent());
 		return vme;
@@ -259,9 +259,9 @@ public class Execution implements Serializable{
 	 * @param mInterfaces
 	 * @return list of net interfaces
 	 */
-	private static List<NetInterface> getInterfacesFromMessage( List<VirtualNetInterfaceComponent> mInterfaces){
+	private static List<NetInterface> getInterfacesFromMessage( List<ImageNetInterfaceComponent> mInterfaces){
 		List<NetInterface> interfaces = new ArrayList<NetInterface>();
-		for(VirtualNetInterfaceComponent comp: mInterfaces){
+		for(ImageNetInterfaceComponent comp: mInterfaces){
 			interfaces.add(new NetInterface(comp.name, comp.ip, comp.netMask));
 		}
 		return interfaces;

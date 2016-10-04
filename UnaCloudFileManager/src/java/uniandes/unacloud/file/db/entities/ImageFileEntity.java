@@ -6,7 +6,7 @@ import uniandes.unacloud.share.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
- * Class to represent a Virtual Image in database.
+ * Class to represent an Image in database.
  * This class manages additional information about file repository. 
  * Used to manage file 
  * @author CesarF

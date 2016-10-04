@@ -6,11 +6,11 @@ import uniandes.unacloud.common.com.UDPMessageEnum;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
- * Class to represent an UDP Message Type State Virtual Machine
+ * Class to represent an UDP Message Type State Execution
  * @author cdsbarrera
  *
  */
-public class UDPMessageStateVM extends UnaCloudMessageUDP{
+public class UDPMessageStateEXE extends UnaCloudMessageUDP{
 
 	
 	/**
@@ -21,7 +21,7 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	/**
 	 * Tag ID of Execution
 	 */
-	public static final String TAG_VIRTUALMACHINE_CODE = "virtualMachineCode";
+	public static final String TAG_EXECUTION_CODE = "execution_code";
 	
 	/**
 	 * Tag State of the Message
@@ -31,44 +31,44 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	/**
 	 * Tag Message of the Execution
 	 */
-	public static final String TAG_MESSAGE_EXECUTION = "message_execution";
+	public static final String TAG_EXECUTION_MESSAGE = "message_execution";
 	
 	
-	public UDPMessageStateVM(){
+	public UDPMessageStateEXE(){
 		
 	}
 	
-	public UDPMessageStateVM(String ip, int port, String host, long virtualMachineCode, ExecutionStateEnum state, String messageExecution){
-		super(ip, port, host, UDPMessageEnum.STATE_VM);
+	public UDPMessageStateEXE(String ip, int port, String host, long executionCode, ExecutionStateEnum state, String messageExecution){
+		super(ip, port, host, UDPMessageEnum.STATE_EXE);
 				
 		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TAG_VIRTUALMACHINE_CODE, virtualMachineCode);
+		tempMessage.put(TAG_EXECUTION_CODE, executionCode);
 		tempMessage.put(TAG_STATE, state.name());
-		tempMessage.put(TAG_MESSAGE_EXECUTION, messageExecution==null?"None":messageExecution);
+		tempMessage.put(TAG_EXECUTION_MESSAGE, messageExecution==null?"None":messageExecution);
 		this.setMessage(tempMessage);
 		
 	}
 	
-	public UDPMessageStateVM(UnaCloudMessageUDP message) {
+	public UDPMessageStateEXE(UnaCloudMessageUDP message) {
 		super(message.getIp(), message.getPort(), message.getHost(), message.getType());
 		this.setMessage(message.getMessage());		
 	}
 	
 	/**
-	 * Return state of the Message
-	 * @return VirtualMachineExecutionStateEnum State
+	 * Returns state of the Message
+	 * @return ExecutionStateEnum State
 	 */
 	public ExecutionStateEnum getState() {
 		return ExecutionStateEnum.getEnum(this.getMessage().getString(TAG_STATE));
 	}
 	
 	/**
-	 * Return Virtual Machine Code  in the message
-	 * @return long Virtual Machine Code
+	 * Returns Execution Code in message
+	 * @return long Execution Code
 	 */
-	public Long getVirtualMachineCode() {
+	public Long getExecutionCode() {
 		try {
-			return this.getMessage().getLong(TAG_VIRTUALMACHINE_CODE);
+			return this.getMessage().getLong(TAG_EXECUTION_CODE);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			return null;
@@ -76,12 +76,12 @@ public class UDPMessageStateVM extends UnaCloudMessageUDP{
 	}
 	
 	/**
-	 * Return Message of the Execution realized.
+	 * Returns Message of the Execution realized.
 	 * @return String Message
 	 */
-	public String getMessageExecution(){
+	public String getExecutionMessage(){
 		try{
-			return this.getMessage().getString(TAG_MESSAGE_EXECUTION);
+			return this.getMessage().getString(TAG_EXECUTION_MESSAGE);
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			return null;

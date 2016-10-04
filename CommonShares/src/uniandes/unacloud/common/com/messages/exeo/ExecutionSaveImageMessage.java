@@ -1,20 +1,20 @@
-package uniandes.unacloud.common.com.messages.vmo;
+package uniandes.unacloud.common.com.messages.exeo;
 
-import uniandes.unacloud.common.com.messages.VirtualMachineOperationMessage;
+import uniandes.unacloud.common.com.messages.ImageOperationMessage;
 
 /**
  * Represents message to send current execution to server
  * @author CesarF
  *
  */
-public class VirtualMachineSaveImageMessage extends VirtualMachineOperationMessage{
+public class ExecutionSaveImageMessage extends ImageOperationMessage{
 
 	private long imageId;
 	private String tokenCom;
 	
 	private static final long serialVersionUID = 3147489071041260127L;
 	
-	public VirtualMachineSaveImageMessage() {
+	public ExecutionSaveImageMessage() {
 		super(VM_SAVE_IMG);
 	}
 

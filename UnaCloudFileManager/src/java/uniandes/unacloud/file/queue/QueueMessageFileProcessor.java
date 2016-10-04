@@ -111,7 +111,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 	 * Creates a private image copy from a public one
 	 * @param message
 	 */
-	//TODO: remove hypervisor validation because it is not necessary, use main file in public image
+	//TODO: remove platform validation because it is not necessary, use main file in public image
 	private void createPrivateImage(QueueMessage message){
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override

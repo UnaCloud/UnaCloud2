@@ -7,7 +7,7 @@ import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
- * Entity to represent a virtual machine image which is represented by group of files to be executed by an hypervisor.
+ * Entity to represent an image which is represented by group of files to be executed by a platform.
  * @author CesarF
  *
  */
@@ -53,7 +53,7 @@ class Image {
 	String accessProtocol
 	
 	/**
-	 * Main file path (File that can be executed by hypervisor in order to
+	 * Main file path (File that can be executed by platform in order to
 	 * deploy the machine)
 	 */
 	String mainFile
@@ -69,7 +69,7 @@ class Image {
 	String token = null
 	
 	/**
-	 *Virtual machine state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
+	 *Image state (UNAVAILABLE,DISABLE,AVAILABLE,REMOVING_CACHE,COPYING,IN_QUEUE) 
 	 */
 	ImageEnum state;
 	

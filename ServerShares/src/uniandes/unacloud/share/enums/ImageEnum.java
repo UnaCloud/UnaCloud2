@@ -1,7 +1,7 @@
 package uniandes.unacloud.share.enums;
 
 /**
- * Represents states of a VirtualMachineImage
+ * Represents states of Image
  * @author CesarF
  *
  */
@@ -40,9 +40,9 @@ public enum ImageEnum {
 	}	
 	
 	/**
-	 * Returns a Virtual Machine Image state searched by name
+	 * Returns an Image state searched by name
 	 * @param name of state
-	 * @return Virtual Machine image state
+	 * @return Image state
 	 */
 	public static ImageEnum getEnum(String name){
 		if(UNAVAILABLE.name().equals(name))return UNAVAILABLE;

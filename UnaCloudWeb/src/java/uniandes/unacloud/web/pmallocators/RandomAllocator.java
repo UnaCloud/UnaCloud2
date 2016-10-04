@@ -10,31 +10,31 @@ import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Random allocator algorithms
- * Assigns a virtual machine execution to a physical machine based in random number.
+ * Assigns an execution to a physical machine based in random number.
  * @author Clouder
  *
  */
 public class RandomAllocator extends ExecutionAllocator {
 
 	/**
-	 * Assigns a virtual machine execution to a physical machine based in random number.
+	 * Assigns an execution to a physical machine based in random number.
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	protected void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException{
-		if(virtualMachineList.size()>2*physicalMachines.size()){
-		}else{
-			Collections.shuffle(virtualMachineList);
+	protected void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException{
+		//TODO ???
+		if(executionList.size()<=2*physicalMachines.size()){
+			Collections.shuffle(executionList);
 			
-			for(int e=0;e<virtualMachineList.size();e++){
-				Execution vm= virtualMachineList.get(e);
+			for(int e=0;e<executionList.size();e++){
+				Execution vm= executionList.get(e);
 				Collections.shuffle(physicalMachines);
 				for (Iterator iterator = physicalMachines.iterator(); iterator
 						.hasNext();) {
 					PhysicalMachine physicalMachine = (PhysicalMachine) iterator
 							.next();
 					PhysicalMachineAllocationDescription pmad= physicalMachineDescriptions.get(physicalMachine.getDatabaseId());
-					if (fitVMonPM(virtualMachineList.get(e), physicalMachine, pmad)){
+					if (fitEXonPM(executionList.get(e), physicalMachine, pmad)){
 						vm.setExecutionNode(physicalMachine);
 						if(pmad==null){
 							pmad=new PhysicalMachineAllocationDescription(physicalMachine.getDatabaseId(),0,0,0);
@@ -45,7 +45,7 @@ public class RandomAllocator extends ExecutionAllocator {
 					
 					}
 					if (vm.getExecutionNode()==null){
-						throw new AllocatorException("Cannot allocate all VMs on available insfrastructure");
+						throw new AllocatorException("Cannot allocate all Executions on available insfrastructure");
 					}
 				}
 				

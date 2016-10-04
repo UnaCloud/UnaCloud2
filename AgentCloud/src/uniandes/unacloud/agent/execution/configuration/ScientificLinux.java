@@ -7,13 +7,13 @@ import java.io.File;
 import java.io.PrintWriter;
 
 /**
- * Class responsible to implement methods to configure Scientific Linux virtual machines
+ * Class responsible to implement methods to configure Scientific Linux executions
  * @author Clouder
  */
 public class ScientificLinux extends AbstractExecutionConfigurator{
 
     /**
-     * Configures the IP address of the Scientific Linux managed virtual machine
+     * Configures the IP address of the Scientific Linux managed execution
      */
     public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
@@ -33,14 +33,14 @@ public class ScientificLinux extends AbstractExecutionConfigurator{
     	}catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnVirtualMachine("/etc/network/interfaces",out);
-    	execution.getImage().executeCommandOnMachine("/sbin/ifdown","eth0");
-    	execution.getImage().executeCommandOnMachine("/sbin/ifup","eth0");
+    	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
+    	execution.getImage().executeCommandOnExecution("/sbin/ifdown","eth0");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifup","eth0");
         out.delete();
     }
 
     /**
-     * Configures a DHCP client of the Scientific Linux managed virtual machine
+     * Configures a DHCP client of the Scientific Linux managed execution
      */
     @Override
     public void configureDHCP() {
@@ -56,8 +56,8 @@ public class ScientificLinux extends AbstractExecutionConfigurator{
         } catch (Exception e) {
             return;
         }
-		execution.getImage().copyFileOnVirtualMachine("/etc/sysconfig/network",out);
-		execution.getImage().executeCommandOnMachine("/bin/hostname",execution.getHostname());
+		execution.getImage().copyFileOnExecution("/etc/sysconfig/network",out);
+		execution.getImage().executeCommandOnExecution("/bin/hostname",execution.getHostname());
 	}
 
 	@Override

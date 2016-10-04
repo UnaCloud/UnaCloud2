@@ -7,7 +7,7 @@ import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 /**
- * Class responsible to implement methods to configure Debian virtual machines
+ * Class responsible to implement methods to configure Debian execution
  */
 public class Debian extends AbstractExecutionConfigurator{
 	@Override
@@ -18,12 +18,12 @@ public class Debian extends AbstractExecutionConfigurator{
         } catch (Exception e) {
             return;
         }
-		execution.getImage().copyFileOnVirtualMachine("/etc/hostname",out);
-		execution.getImage().executeCommandOnMachine("/bin/hostname",execution.getHostname());
+		execution.getImage().copyFileOnExecution("/etc/hostname",out);
+		execution.getImage().executeCommandOnExecution("/bin/hostname",execution.getHostname());
 		out.delete();
 	}
     /**
-     * Configures the IP address of the Debian managed virtual machine
+     * Configures the IP address of the Debian managed execution
      * @throws PlatformOperationException 
      */
     @Override
@@ -43,21 +43,21 @@ public class Debian extends AbstractExecutionConfigurator{
     	}catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnVirtualMachine("/etc/network/interfaces",out);
-    	execution.getImage().executeCommandOnMachine("/etc/init.d/networking","restart");
-    	execution.getImage().executeCommandOnMachine("/usr/bin/wget","www.google.com");
+    	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
+    	execution.getImage().executeCommandOnExecution("/etc/init.d/networking","restart");
+    	execution.getImage().executeCommandOnExecution("/usr/bin/wget","www.google.com");
         out.delete();
     }
 
     /**
-     * Configures a DHCP client of the Debian managed virtual machine
+     * Configures a DHCP client of the Debian managed execution
      */
     @Override
     public void configureDHCP() {        
     }
 
     /**
-     * Configure the host table of the Debian managed virtual machine
+     * Configure the host table of the Debian managed execution
      */
     @Override
     public void configureHostTable() {
@@ -65,7 +65,7 @@ public class Debian extends AbstractExecutionConfigurator{
     }
 	@Override
 	public boolean doPostConfigure(){
-		//hypervisor.stopVirtualMachine(execution.getImage());
+		//platform.stopVirtualMachine(execution.getImage());
 		return false;
 	}
 }

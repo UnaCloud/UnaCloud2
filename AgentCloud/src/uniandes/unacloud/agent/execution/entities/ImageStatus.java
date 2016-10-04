@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.execution.entities;
 
 /**
- * Status of virtual machine image
+ * Status of image
  * @author clouder
  *
  */

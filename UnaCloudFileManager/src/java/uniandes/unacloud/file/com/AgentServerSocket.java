@@ -1,6 +1,8 @@
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com;
 
 import java.net.Socket;
+
+import uniandes.unacloud.file.com.task.AgentProcessorTask;
 
 /**
  * Class used to process message from agents to manage agent files

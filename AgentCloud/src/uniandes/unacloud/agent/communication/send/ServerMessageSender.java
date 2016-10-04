@@ -15,15 +15,15 @@ public class ServerMessageSender {
 	//-----------------------------------------------------------------
 
     /**
-     * Sends to UnaCloud control server a message reporting the state of a virtual machine
-     * @param virtualMachineCode The string that contains the id of the virtual machine to be reported
-     * @param state The state of the reported virtual machine
-     * @param message The state message of the reported virtual machine
+     * Sends to UnaCloud control server a message reporting the state of one execution
+     * @param executionCode The string that contains the id of the execution to be reported
+     * @param state The state of the reported execution
+     * @param message The state message of the reported execution
      * @return If the message could be sent or not
      * @throws Exception 
      */
-    public static boolean reportVirtualMachineState(long virtualMachineCode,ExecutionStateEnum state,String message) throws Exception{    	
-    	return UDPCommunicator.getInstance().pushInfoVM(OSFactory.getOS().getHostname(), virtualMachineCode, state, message);
+    public static boolean reportExecutionState(long executionCode,ExecutionStateEnum state,String message) throws Exception{    	
+    	return UDPCommunicator.getInstance().pushInfoEXE(OSFactory.getOS().getHostname(), executionCode, state, message);
     }
     
     /**

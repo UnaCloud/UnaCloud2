@@ -7,7 +7,7 @@ import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
- * Entity to represent a cluster; a group of virtual machine images configured to be deployed together.
+ * Entity to represent a cluster; a group of images configured to be deployed together.
  * @author CesarF
  *
  */
@@ -23,7 +23,7 @@ class Cluster {
 	String name
 	
 	/**
-	 * List of virtual machine images in the cluster 
+	 * List of images in the cluster 
 	 */
 	static hasMany = [images: Image]
 	

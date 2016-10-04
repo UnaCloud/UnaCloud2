@@ -9,12 +9,12 @@ import uniandes.unacloud.agent.utils.AddressUtility;
  */
 public class Windows7 extends AbstractExecutionConfigurator{
 	/**
-	 * Check AbstractVirtualMachineConfigurator for more information
+	 * Check AbstractExecutionConfigurator for more information
 	 */
     @Override
     public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
-    	execution.getImage().executeCommandOnMachine("netsh.exe","interface","ip","set","address","name=Conexión de Área local","static",au.getIp(),au.getNetmask(),au.getGateway(),"1");
+    	execution.getImage().executeCommandOnExecution("netsh.exe","interface","ip","set","address","name=Conexión de Área local","static",au.getIp(),au.getNetmask(),au.getGateway(),"1");
     }
     @Override
     public void configureDHCP() {

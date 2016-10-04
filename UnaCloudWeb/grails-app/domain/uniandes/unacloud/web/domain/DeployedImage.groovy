@@ -18,7 +18,7 @@ class DeployedImage {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * representation of the virtual machine image
+	 * representation of the image
 	 */
 	Image image
 	
@@ -30,7 +30,7 @@ class DeployedImage {
 	/**
 	 * list of deployed nodes from the image
 	 */
-	static hasMany = [virtualMachines: Execution]
+	static hasMany = [executions: Execution]
 	
 	/**
 	 * Representation of deployed cluster 
@@ -38,7 +38,7 @@ class DeployedImage {
     static belongsTo = [deployment: Deployment]
 	
 	/**
-	 * When virtual machine image is deleted, deployment history don't be. Therefore we allow image as nullable.
+	 * When image is deleted, deployment history don't be. Therefore we allow image as nullable.
 	 */
 	static constraints = {
 		image nullable:true
@@ -53,7 +53,7 @@ class DeployedImage {
 	 * @return list of active executions
 	 */
 	def getActiveExecutions(){
-		return virtualMachines.findAll{it.status !=ExecutionStateEnum.FINISHED}.sort{it.id}
+		return executions.findAll{it.status !=ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class DeployedImage {
 	 * @return hardware profile from first execution
 	 */
 	def getDeployedHarwdProfile(){
-		return virtualMachines.first().getHardwareProfile()
+		return executions.first().getHardwareProfile()
 	}
 	
 	/**
@@ -69,8 +69,8 @@ class DeployedImage {
 	 * @return String with the host name
 	 */
 	def getDeployedHostname(){
-		def ip = virtualMachines.first().mainIp().ip.split('\\.')
-		return virtualMachines.first().getName().substring(0, virtualMachines.first().getName().length()-(ip[2].length()+ip[3].length()))
+		def ip = executions.first().mainIp().ip.split('\\.')
+		return executions.first().getName().substring(0, executions.first().getName().length()-(ip[2].length()+ip[3].length()))
 	}
 	
 	/**

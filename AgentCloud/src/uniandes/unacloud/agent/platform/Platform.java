@@ -11,13 +11,13 @@ import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
 
 /**
- * Abstract class to be implemented by each hypervisor. It must be only instantiated by the hypervisor factory
+ * Abstract class to be implemented by each platform. It must be only instantiated by the platform factory
  * @author Clouder
  */
 public abstract class Platform {
 
     /**
-     * Path to this hypervisor executable
+     * Path to this platform executable
      */
     private String executablePath;
     
@@ -34,60 +34,70 @@ public abstract class Platform {
      * @param image to be started
      * @throws PlatformOperationException
      */
-    public abstract void startVirtualMachine(ImageCopy image) throws PlatformOperationException;
-    
-    public abstract void configureVirtualMachineHardware(int cores,int ram,ImageCopy image) throws PlatformOperationException;
+    public abstract void startExecution(ImageCopy image) throws PlatformOperationException;
     
     /**
-     * turns off the managed virtual machine
+     * Configures hardware for Image
+     * @param cores
+     * @param ram
+     * @param image
+     * @throws PlatformOperationException
+     */
+    public abstract void configureExecutionHardware(int cores,int ram,ImageCopy image) throws PlatformOperationException;
+    
+    /**
+     * turns off the managed execution
      * @param image to be stopped
      */
-    public abstract void stopVirtualMachine(ImageCopy image);
+    public abstract void stopExecution(ImageCopy image);
 
     
     /**
-     * Restarts the managed virtual machine
-     * @param image  virtual machine will be restarted
-     * @throws PlatformOperationException If there is an error restating the virtual machine
+     * Restarts the managed execution
+     * @param image execution will be restarted
+     * @throws PlatformOperationException If there is an error restarting the execution
      */ 
-    public abstract void restartVirtualMachine(ImageCopy image) throws PlatformOperationException;
+    public abstract void restartExecution(ImageCopy image) throws PlatformOperationException;
 
    
     /**
-     * Executes a command on the managed virtual machine
+     * Executes a command on the managed execution
      * @param image where will be execute command
      * @param command to be executed
      * @param args
      * @throws PlatformOperationException
      */
-    public abstract void executeCommandOnMachine(ImageCopy image, String command,String...args) throws PlatformOperationException;
+    public abstract void executeCommandOnExecution(ImageCopy image, String command,String...args) throws PlatformOperationException;
 
-    public abstract void takeVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
+    public abstract void takeExecutionSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
 
-    public abstract void deleteVirtualMachineSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
+    public abstract void deleteExecutionSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException;
     
-    public abstract void restoreVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
+    public abstract void restoreExecutionSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
     
-    public abstract boolean existsVirtualMachineSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
+    public abstract boolean existsExecutionSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
    
     /**
-     * writes a file on the virtual machine file system
+     * writes a file on the execution file system
      * @param image where will be copied file
-     * @param destinationRoute the route on the virtual machine file system where the file is going to be written
+     * @param destinationRoute the route on the execution file system where the file is going to be written
      * @param sourceFile file that will be copied
      * @throws PlatformOperationException
      */
-    public abstract void copyFileOnVirtualMachine(ImageCopy image,String destinationRoute, File sourceFile) throws PlatformOperationException;
+    public abstract void copyFileOnExecution(ImageCopy image,String destinationRoute, File sourceFile) throws PlatformOperationException;
     
-    public abstract void changeVirtualMachineMac(ImageCopy image) throws PlatformOperationException;
+    public abstract void changeExecutionMac(ImageCopy image) throws PlatformOperationException;
     
-    public abstract void registerVirtualMachine(ImageCopy image);
-    public abstract void unregisterVirtualMachine(ImageCopy image);
-    public abstract void cloneVirtualMachine(ImageCopy source,ImageCopy dest);
+    public abstract void registerImage(ImageCopy image);
+    
+    public abstract void unregisterImage(ImageCopy image);
+    
+    public abstract void cloneImage(ImageCopy source,ImageCopy dest);
+    
     public void stopAndUnregister(ImageCopy image){
     	synchronized (image) {
-    		stopVirtualMachine(image);
-        	unregisterVirtualMachine(image);
+    		stopExecution(image);
+        	unregisterImage(image);
         	ImageCacheManager.freeLockedImageCopy(image);
 		}
     }
@@ -100,9 +110,9 @@ public abstract class Platform {
         }
     }
     /**
-     * Used to validate if a list of execution are running in hypervisor.
+     * Used to validate if a list of execution are running in platform.
      * @param executions
-     * @return List of execution that are not running in hypervisor
+     * @return List of execution that are not running in platform
      */
 	public abstract List<Execution> checkExecutions(Collection<Execution> executions);
 }

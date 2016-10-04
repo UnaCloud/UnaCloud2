@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
+import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigurator;
 import uniandes.unacloud.agent.platform.Platform;
@@ -50,10 +50,10 @@ public class ImageCopy implements Serializable{
 		this.mainFile = mainFile;
 	}
 	/**
-	 * Gets virtual machine name
+	 * Gets image name
 	 * @return
 	 */
-	public String getVirtualMachineName() {
+	public String getImageName() {
 		if(mainFile==null)return "null";
 		String h=mainFile.getName();
 		int l=h.lastIndexOf(".");
@@ -61,21 +61,21 @@ public class ImageCopy implements Serializable{
 		return h.substring(0,l);
 	}
 	/**
-	 * Gets virtual machine status
+	 * Gets image status
 	 * @return status
 	 */
 	public ImageStatus getStatus() {
 		return status;
 	}
 	/**
-	 * Update virtual machine status
+	 * Updates image status
 	 * @param status
 	 */
 	public void setStatus(ImageStatus status) {
 		this.status = status;
 	}
 	/**
-	 * Return image
+	 * Returns image
 	 * @return
 	 */
 	public Image getImage() {
@@ -83,7 +83,7 @@ public class ImageCopy implements Serializable{
 	}
 	
 	/**
-	 * Update images
+	 * Updates image
 	 * @param image
 	 */
 	public void setImage(Image image) {
@@ -95,34 +95,35 @@ public class ImageCopy implements Serializable{
 	 * @param machineExecution
 	 */	
 	public synchronized void configureAndStart(Execution machineExecution){
-		Platform hypervisor=PlatformFactory.getHypervisor(getImage().getHypervisorId());
+		Platform platform=PlatformFactory.getPlatform(getImage().getPlatformId());
 		try {
 			try {
-				if(hypervisor==null)throw new Exception("Hypervisor not found "+getImage().getHypervisorId());
+				if(platform==null)throw new Exception("platform not found "+getImage().getPlatformId());
 				if(status!=ImageStatus.STARTING)status=ImageStatus.STARTING;
-				Class<?> configuratorClass=Class.forName("virtualMachineManager.configuration."+getImage().getConfiguratorClass());
+				Class<?> configuratorClass=Class.forName("uniandes.unacloud.agent.execution.configuration."+getImage().getConfiguratorClass());
 				Object configuratorObject=configuratorClass.getConstructor().newInstance();
+				
 				if(configuratorObject instanceof AbstractExecutionConfigurator){
 					AbstractExecutionConfigurator configurator=(AbstractExecutionConfigurator)configuratorObject;
-					//configurator.setHypervisor(hypervisor);
+					//configurator.setplatform(platform);
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
-					hypervisor.registerVirtualMachine(this);
-	    			hypervisor.restoreVirtualMachineSnapshot(this,"unacloudbase");
-	        		hypervisor.configureVirtualMachineHardware(machineExecution.getCores(),machineExecution.getMemory(),this);
-	    			hypervisor.startVirtualMachine(this);
+					platform.registerImage(this);
+	    			platform.restoreExecutionSnapshot(this,"unacloudbase");
+	        		platform.configureExecutionHardware(machineExecution.getCores(),machineExecution.getMemory(),this);
+	    			platform.startExecution(this);
 	    			configurator.configureHostname();
 	    			configurator.configureIP();
 	    			System.out.println("image config "+new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());	    	       
 				}else {
-					ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Invalid virtual machine configurator.");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Invalid execution configurator.");
 					status=ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
 				status=ImageStatus.FREE;
 			}
 		} catch (Exception e) {
@@ -137,36 +138,36 @@ public class ImageCopy implements Serializable{
 	 * @return cloned image
 	 */
 	public synchronized ImageCopy cloneCopy(ImageCopy dest){
-		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
-		hypervisor.cloneVirtualMachine(this,dest);
+		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+		platform.cloneImage(this,dest);
 		return dest;
 	}
 	
 	/**
 	 * Makes initialization process in copy before starting
-	 * @throws VirtualMachineExecutionException
+	 * @throws ExecutionException
 	 */
-	public synchronized void init()throws VirtualMachineExecutionException{
-		Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-		if(hypervisor==null)throw new VirtualMachineExecutionException("Hypervisor doesn't exists on machine. Hypervisor was "+image.getHypervisorId());
-		hypervisor.registerVirtualMachine(this);
+	public synchronized void init()throws ExecutionException{
+		Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+		if(platform==null)throw new ExecutionException("Platform doesn't exists on machine. platform was "+image.getPlatformId());
+		platform.registerImage(this);
 		try {
-			hypervisor.changeVirtualMachineMac(this);
-			hypervisor.takeVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);
+			platform.changeExecutionMac(this);
+			platform.takeExecutionSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);
 		} catch (PlatformOperationException e) {
 			e.printStackTrace();
 		}
-		hypervisor.unregisterVirtualMachine(this);
+		platform.unregisterImage(this);
 	}
 	
 	/**
 	 * Delete the snapshot of this image to save it with current state and files
-	 * @throws VirtualMachineExecutionException
+	 * @throws ExecutionException
 	 * @throws PlatformOperationException 
 	 */
-	public synchronized void deleteSnapshot()throws VirtualMachineExecutionException, PlatformOperationException{
-		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
-		hypervisor.deleteVirtualMachineSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
+	public synchronized void deleteSnapshot()throws ExecutionException, PlatformOperationException{
+		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+		platform.deleteExecutionSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
 	}
 
 	
@@ -174,9 +175,9 @@ public class ImageCopy implements Serializable{
 	 * Starts copy
 	 * @throws PlatformOperationException
 	 */
-	public void startVirtualMachine()throws PlatformOperationException{
-		Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
-		hypervisor.startVirtualMachine(this);
+	public void startExecution()throws PlatformOperationException{
+		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+		platform.startExecution(this);
 	}
     
 	/**
@@ -185,9 +186,9 @@ public class ImageCopy implements Serializable{
 	 * @param args command arguments
 	 * @throws PlatformOperationException
 	 */
-    public void executeCommandOnMachine( String command,String...args) throws PlatformOperationException{
-    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-    	hypervisor.executeCommandOnMachine(this,command,args);
+    public void executeCommandOnExecution( String command,String...args) throws PlatformOperationException{
+    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	platform.executeCommandOnExecution(this,command,args);
     }
     
     /**
@@ -196,39 +197,39 @@ public class ImageCopy implements Serializable{
      * @param sourceFile original file
      * @throws PlatformOperationException
      */
-    public void copyFileOnVirtualMachine(String destinationRoute, File sourceFile) throws PlatformOperationException{
-    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-    	hypervisor.copyFileOnVirtualMachine(this,destinationRoute,sourceFile);
+    public void copyFileOnExecution(String destinationRoute, File sourceFile) throws PlatformOperationException{
+    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	platform.copyFileOnExecution(this,destinationRoute,sourceFile);
     }
     
     /**
      * Restarts this VM
      * @throws PlatformOperationException
      */
-    public void restartVirtualMachine() throws PlatformOperationException{
-    	Platform hypervisor=PlatformFactory.getHypervisor(this.getImage().getHypervisorId());
-		hypervisor.restartVirtualMachine(this);
+    public void restartExecution() throws PlatformOperationException{
+    	Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+		platform.restartExecution(this);
     }
     
     /**
      * Finalizes copy execution
      */
     public synchronized void stopAndUnregister(){
-    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-    	hypervisor.stopAndUnregister(this);
+    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	platform.stopAndUnregister(this);
     }
     /**
      * Finalizes copy execution without unregistering and freeing image
      */
     public synchronized void stop(){
-    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-    	hypervisor.stopVirtualMachine(this);
+    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	platform.stopExecution(this);
     }
     /**
      * Unregistering image copy
      */
     public synchronized void unregister(){
-    	Platform hypervisor=PlatformFactory.getHypervisor(image.getHypervisorId());
-    	hypervisor.unregisterVirtualMachine(this);
+    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	platform.unregisterImage(this);
     }
 }

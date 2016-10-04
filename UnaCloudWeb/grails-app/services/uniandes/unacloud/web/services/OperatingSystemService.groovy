@@ -35,7 +35,7 @@ class OperatingSystemService {
 	
 	def delete(OperatingSystem os){
 		if(PhysicalMachine.where{operatingSystem==os}.find()||Image.where{operatingSystem==os}.find())
-			throw new Exception("Operating System is being used by some Physical Machine or Virtual Machine")
+			throw new Exception("Operating System is being used by some Physical Machine or Execution")
 		os.delete()
 	}
 	

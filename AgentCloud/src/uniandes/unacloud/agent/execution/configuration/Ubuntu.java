@@ -7,12 +7,12 @@ import java.io.File;
 import java.io.PrintWriter;
 
 /**
- * Class responsible to implement methods to configure Ubuntu virtual machines
+ * Class responsible to implement methods to configure Ubuntu executions
  * @author Clouder
  */
 public class Ubuntu extends AbstractExecutionConfigurator{
     /**
-     * Configures the IP address of a Ubuntu managed virtual machine
+     * Configures the IP address of a Ubuntu managed execution
      */
     @Override
     public void configureIP() throws PlatformOperationException {
@@ -32,15 +32,15 @@ public class Ubuntu extends AbstractExecutionConfigurator{
     	}catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnVirtualMachine("/etc/network/interfaces",out);
-    	execution.getImage().executeCommandOnMachine("/bin/rm","/etc/udev/rules.d/*net.rules");
-    	execution.getImage().executeCommandOnMachine("/sbin/ifdown","eth0");
-    	execution.getImage().executeCommandOnMachine("/sbin/ifup","eth0");
+    	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
+    	execution.getImage().executeCommandOnExecution("/bin/rm","/etc/udev/rules.d/*net.rules");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifdown","eth0");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifup","eth0");
         out.delete();
     }
 
     /**
-     * Configures a DHCP client of the Ubuntu managed virtual machine
+     * Configures a DHCP client of the Ubuntu managed execution
      */
     @Override
     public void configureDHCP() {
@@ -54,8 +54,8 @@ public class Ubuntu extends AbstractExecutionConfigurator{
         } catch (Exception e) {
             return;
         }
-		execution.getImage().copyFileOnVirtualMachine("/etc/hostname",out);
-		execution.getImage().executeCommandOnMachine("/bin/hostname",execution.getHostname());
+		execution.getImage().copyFileOnExecution("/etc/hostname",out);
+		execution.getImage().executeCommandOnExecution("/bin/hostname",execution.getHostname());
 	}
 
 	@Override

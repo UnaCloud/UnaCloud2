@@ -4,4 +4,4 @@
  * @author CesarF
  *
  */
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com;

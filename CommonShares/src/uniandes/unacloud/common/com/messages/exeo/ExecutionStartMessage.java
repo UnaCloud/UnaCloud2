@@ -1,27 +1,27 @@
-package uniandes.unacloud.common.com.messages.vmo;
+package uniandes.unacloud.common.com.messages.exeo;
 
 import java.util.List;
 
-import uniandes.unacloud.common.com.messages.VirtualMachineOperationMessage;
+import uniandes.unacloud.common.com.messages.ImageOperationMessage;
 import uniandes.unacloud.common.utils.Time;
 
 /**
- * Represents message to start a virtual machine execution
+ * Represents message to start an execution
  * @author CesarF
  *
  */
-public class VirtualMachineStartMessage extends VirtualMachineOperationMessage implements Comparable<VirtualMachineStartMessage>{
+public class ExecutionStartMessage extends ImageOperationMessage implements Comparable<ExecutionStartMessage>{
 	private static final long serialVersionUID = -5116988985857543662L;
 	
-	long virtualMachineImageId;
+	long imageId;
 	int vmCores,vmMemory;
     Time executionTime;
     String snapshotRoute;
     boolean persistent;
     String hostname;
-    List<VirtualNetInterfaceComponent>interfaces;
+    List<ImageNetInterfaceComponent>interfaces;
     
-    public VirtualMachineStartMessage() {
+    public ExecutionStartMessage() {
 		super(VM_START);
 	}
 	public int getVmCores() {
@@ -40,8 +40,8 @@ public class VirtualMachineStartMessage extends VirtualMachineOperationMessage i
 		return snapshotRoute;
 	}
 	@Override
-	public int compareTo(VirtualMachineStartMessage o) {
-		return Long.compare(getVirtualMachineExecutionId(),o.getVirtualMachineExecutionId());
+	public int compareTo(ExecutionStartMessage o) {
+		return Long.compare(getExecutionId(),o.getExecutionId());
 	}
 	public void setExecutionTime(Time executionTime) {
 		this.executionTime = executionTime;
@@ -58,22 +58,22 @@ public class VirtualMachineStartMessage extends VirtualMachineOperationMessage i
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	public void setVirtualMachineImageId(long virtualMachineImageId) {
-		this.virtualMachineImageId = virtualMachineImageId;
+	public void setImageId(long imageId) {
+		this.imageId = imageId;
 	}
-	public long getVirtualMachineImageId() {
-		return virtualMachineImageId;
+	public long getImageId() {
+		return imageId;
 	}
 	@Override
 	public String toString() {
 		return super.toString()+" executionTime: "+executionTime;
 	}
 	
-	public List<VirtualNetInterfaceComponent> getInterfaces() {
+	public List<ImageNetInterfaceComponent> getInterfaces() {
 		return interfaces;
 	}
 	
-	public void setInterfaces(List<VirtualNetInterfaceComponent> interfaces) {
+	public void setInterfaces(List<ImageNetInterfaceComponent> interfaces) {
 		this.interfaces = interfaces;
 	}
 }

@@ -155,7 +155,7 @@ class DeploymentController {
 		if(executions.size()>0){
 			flash.message='Your request has been processed'
 			flash.type='info'
-			deploymentService.stopVirtualMachineExecutions(executions,user)
+			deploymentService.stopExecutions(executions,user)
 		}else flash.message='Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}

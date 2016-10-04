@@ -1,21 +1,21 @@
 package uniandes.unacloud.agent.execution.configuration;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
+import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStartResponse;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
- * Responsible to configure virtual machine
+ * Responsible to configure execution
  * @author clouder
  *
  */
 public final class ExecutionConfigurer extends Thread{
 	/**
-	 * VM to be configured
+	 * Executiion to be configured
 	 */
 	Execution machineExecution;
 	
@@ -31,10 +31,10 @@ public final class ExecutionConfigurer extends Thread{
 	 * Starts a new thread with configuration
 	 * @return response of start process
 	 */
-	public VirtualMachineStartResponse startProcess(){
-		VirtualMachineStartResponse resp=new VirtualMachineStartResponse();
-		resp.setState(VirtualMachineStartResponse.VirtualMachineState.STARTING);
-		resp.setMessage("Starting virtual machine...");
+	public ExecutionStartResponse startProcess(){
+		ExecutionStartResponse resp=new ExecutionStartResponse();
+		resp.setState(ExecutionStartResponse.ExecutionState.STARTING);
+		resp.setMessage("Starting execution...");
 		start();
 		return resp;
 	}
@@ -43,14 +43,14 @@ public final class ExecutionConfigurer extends Thread{
 	 */
 	@Override
 	public void run() {
-		System.out.println("startVirtualMachine");
+		System.out.println("startExecution");
 		try {
 			try{
 				ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
 				machineExecution.setImage(image);
 				image.configureAndStart(machineExecution);
-			}catch(VirtualMachineExecutionException ex){
-				ServerMessageSender.reportVirtualMachineState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
+			}catch(ExecutionException ex){
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

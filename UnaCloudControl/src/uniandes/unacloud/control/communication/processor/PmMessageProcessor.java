@@ -32,7 +32,7 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 					Long[] ids = message.getExecutions();
 					
 					if(PhysicalMachineUpdater.updatePhysicalMachine(message.getHost(), message.getHostUser(), message.getIp(), con)){
-						List<Long> idsToStop = PhysicalMachineUpdater.updateVirtualMachinesExecutions(ids, message.getHost(), con);
+						List<Long> idsToStop = PhysicalMachineUpdater.updateExecutions(ids, message.getHost(), con);
 						if(idsToStop!=null&&idsToStop.size()>0){
 							//Send stop machines message because executions has been reported as finished or failed to user
 							Long[] idsLong = new Long[idsToStop.size()];

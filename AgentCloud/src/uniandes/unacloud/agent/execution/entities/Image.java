@@ -21,7 +21,7 @@ public class Image implements Serializable{
 	private String username;
 	private String password;
 	private String configuratorClass;
-	private String hypervisorId;
+	private String platformId;
 	
 	/**
 	 * image copies in disk
@@ -51,11 +51,11 @@ public class Image implements Serializable{
 	public String getConfiguratorClass() {
 		return configuratorClass;
 	}
-	public String getHypervisorId() {
-		return hypervisorId;
+	public String getPlatformId() {
+		return platformId;
 	}
-	public void setHypervisorId(String hypervisorId) {
-		this.hypervisorId = hypervisorId;
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
 	}
 	public void setConfiguratorClass(String configuratorClass) {
 		this.configuratorClass = configuratorClass;

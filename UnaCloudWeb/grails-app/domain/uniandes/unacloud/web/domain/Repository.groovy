@@ -3,7 +3,7 @@ package uniandes.unacloud.web.domain
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Entity to represent a file system where virtual machine image files are located
+ * Entity to represent a file system where image files are located
  * @author CesarF
  *
  */

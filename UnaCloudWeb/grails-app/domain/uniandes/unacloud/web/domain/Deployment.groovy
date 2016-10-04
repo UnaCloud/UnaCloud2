@@ -169,7 +169,7 @@ class Deployment {
 	 */
 	def deleteDeploy(){
 		for(DeployedImage image: images){
-			image.virtualMachines.each{
+			image.executions.each{
 				def exec = it
 				ExecutionRequest.where{execution==exec}.list().each {
 					it.delete();

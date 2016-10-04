@@ -11,24 +11,24 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
-import uniandes.unacloud.agent.execution.task.StartVirtualMachineTask;
-import uniandes.unacloud.agent.execution.task.StopVirtualMachineTask;
+import uniandes.unacloud.agent.execution.task.StartExecutionTask;
+import uniandes.unacloud.agent.execution.task.StopExecutionTask;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.com.UnaCloudAbstractMessage;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
 import uniandes.unacloud.common.com.messages.AgentMessage;
 import uniandes.unacloud.common.com.messages.InvalidOperationResponse;
 import uniandes.unacloud.common.com.messages.PhysicalMachineOperationMessage;
-import uniandes.unacloud.common.com.messages.VirtualMachineOperationMessage;
+import uniandes.unacloud.common.com.messages.ImageOperationMessage;
 import uniandes.unacloud.common.com.messages.agent.ClearImageFromCacheMessage;
 import uniandes.unacloud.common.com.messages.agent.InformationResponse;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionAddTimeMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionRestartMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionSaveImageMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStartMessage;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStartResponse;
+import uniandes.unacloud.common.com.messages.exeo.ExecutionStopMessage;
 import uniandes.unacloud.common.com.messages.pmo.PhysicalMachineTurnOnMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineAddTimeMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineRestartMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineSaveImageMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartMessage;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStartResponse;
-import uniandes.unacloud.common.com.messages.vmo.VirtualMachineStopMessage;
 
 
 /**
@@ -68,8 +68,8 @@ public class ClouderServerAttentionThread implements Runnable {
         	UnaCloudAbstractMessage clouderServerRequest=(UnaCloudAbstractMessage)ois.readObject();
             System.out.println("message: "+clouderServerRequest);
             switch (clouderServerRequest.getMainOp()) {
-		        case UnaCloudAbstractMessage.VIRTUAL_MACHINE_OPERATION:
-		            oos.writeObject(attendVirtualMachineOperation(clouderServerRequest,ois,oos));
+		        case UnaCloudAbstractMessage.EXECUTION_OPERATION:
+		            oos.writeObject(attendExecutionOperation(clouderServerRequest,ois,oos));
 		            break;
 		        case UnaCloudAbstractMessage.PHYSICAL_MACHINE_OPERATION:
 		        	oos.writeObject(attendPhysicalMachineOperation(clouderServerRequest));
@@ -87,28 +87,28 @@ public class ClouderServerAttentionThread implements Runnable {
      }
 
     /**
-     * Method responsible for attending requests for operations over virtual machines
+     * Method responsible for attending requests for operations on executions
      * @param clouderServerRequestSplitted Server request
      */
-    private UnaCloudAbstractResponse attendVirtualMachineOperation(UnaCloudAbstractMessage message,ObjectInputStream ois,ObjectOutputStream pw) {
+    private UnaCloudAbstractResponse attendExecutionOperation(UnaCloudAbstractMessage message,ObjectInputStream ois,ObjectOutputStream pw) {
         switch (message.getSubOp()) {
-            case VirtualMachineOperationMessage.VM_START:
-            	VirtualMachineStartResponse resp=new VirtualMachineStartResponse();
-        		resp.setState(VirtualMachineStartResponse.VirtualMachineState.STARTING);
-        		resp.setMessage("Starting virtual machine...");
-        		ExecutorService.executeBackgroundTask(new StartVirtualMachineTask(Execution.getFromStartVirtualMachineMessage((VirtualMachineStartMessage)message)));
+            case ImageOperationMessage.VM_START:
+            	ExecutionStartResponse resp=new ExecutionStartResponse();
+        		resp.setState(ExecutionStartResponse.ExecutionState.STARTING);
+        		resp.setMessage("Starting execution...");
+        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage((ExecutionStartMessage)message)));
             	return resp;
-            case VirtualMachineOperationMessage.VM_STOP:
-            	ExecutorService.executeBackgroundTask(new StopVirtualMachineTask((VirtualMachineStopMessage)message));
+            case ImageOperationMessage.VM_STOP:
+            	ExecutorService.executeBackgroundTask(new StopExecutionTask((ExecutionStopMessage)message));
                 return null;
-            case VirtualMachineOperationMessage.VM_RESTART:
-                return PersistentExecutionManager.restartMachine((VirtualMachineRestartMessage)message);
-            case VirtualMachineOperationMessage.VM_TIME:
-                return PersistentExecutionManager.extendsVMTime((VirtualMachineAddTimeMessage)message);
-            case VirtualMachineOperationMessage.VM_SAVE_IMG:
-            	return PersistentExecutionManager.sendImageCopy((VirtualMachineSaveImageMessage)message);  
+            case ImageOperationMessage.VM_RESTART:
+                return PersistentExecutionManager.restartMachine((ExecutionRestartMessage)message);
+            case ImageOperationMessage.VM_TIME:
+                return PersistentExecutionManager.extendsVMTime((ExecutionAddTimeMessage)message);
+            case ImageOperationMessage.VM_SAVE_IMG:
+            	return PersistentExecutionManager.sendImageCopy((ExecutionSaveImageMessage)message);  
             default:
-                return new InvalidOperationResponse("Invalid virtual machine operation: "+message.getSubOp());
+                return new InvalidOperationResponse("Invalid execution operation: "+message.getSubOp());
         }
     }
     /**

@@ -1,4 +1,4 @@
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com.task;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -57,13 +57,13 @@ public class FileReceiverTask implements Runnable{
 					final byte[] buffer = new byte[1024 * 100];
 					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
 					
-					List<PlatformEntity>hypervisors = PlatformManager.getAll(con);				
+					List<PlatformEntity>platforms = PlatformManager.getAll(con);				
 					
 					for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
 						boolean goodExtension = false;
 						String mainExtension = null;
 						System.out.println("\t\tFile: " + entry.getName());
-						for(PlatformEntity hyperv : hypervisors)
+						for(PlatformEntity hyperv : platforms)
 							if(hyperv.validatesExtension(entry.getName())){		
 								goodExtension = true;
 								mainExtension = hyperv.getExtension();
@@ -127,7 +127,7 @@ public class FileReceiverTask implements Runnable{
 						tmpFile.delete();
 					}
 				}	
-				DeploymentManager.setVirtualMachineExecution(new ExecutionEntity(execution, 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, message), con);
+				DeploymentManager.setExecution(new ExecutionEntity(execution, 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, message), con);
 				DeploymentManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
 			}
 		} catch (Exception e) {

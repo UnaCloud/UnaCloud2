@@ -25,7 +25,7 @@ public abstract class AbstractExecutionConfigurator{
 	
 	/**
 	 * sets VM property
-	 * @param execution Virtual machine to be configured
+	 * @param execution execution to be configured
 	 */
 	public void setExecution(Execution execution) {
 		this.execution = execution;

@@ -3,13 +3,11 @@ package uniandes.unacloud.file;
 import uniandes.unacloud.share.queue.QueueMessageReceiver;
 import uniandes.unacloud.share.queue.QueueRabbitManager;
 import uniandes.unacloud.share.utils.EnvironmentManager;
-
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
 import uniandes.unacloud.share.db.DatabaseConnection;
 import uniandes.unacloud.share.manager.ProjectManager;
-import uniandes.unacloud.file.communication.AgentServerSocket;
-import uniandes.unacloud.file.communication.DataServerSocket;
+import uniandes.unacloud.file.com.AgentServerSocket;
+import uniandes.unacloud.file.com.DataServerSocket;
 import uniandes.unacloud.file.queue.QueueMessageFileProcessor;
 
 /**

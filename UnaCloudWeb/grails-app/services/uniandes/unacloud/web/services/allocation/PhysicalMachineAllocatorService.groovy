@@ -15,7 +15,7 @@ import uniandes.unacloud.web.pmallocators.PhysicalMachineAllocationDescription
 
 /**
  * This service is only for process.
- * Service used to determinate Physical Machine allocation for virtual executions.
+ * Service used to determinate Physical Machine allocation for executions.
  * This class should be a service to use hibernate connection.
  * @author CesarF
  *
@@ -44,8 +44,8 @@ class PhysicalMachineAllocatorService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Allocates the virtual machines' list in the given physical machines' list
-	 * @param vms list of virtual machines
+	 * Allocates the execution list in the given physical machines' list
+	 * @param vms list of executions
 	 * @param pms list of physical machines
 	 * @param pmdDescriptions map with descriptions of executions to be deployed
 	 */
@@ -73,7 +73,7 @@ class PhysicalMachineAllocatorService {
 		}
 		def sql = new Sql(dataSource)
 		
-		sql.eachRow('select execution_node_id,count(*) as vms,sum(ram) as ram,sum(cores) as cores from virtual_machine_execution join hardware_profile on virtual_machine_execution.hardware_profile_id= hardware_profile.id where status != \''+ExecutionStateEnum.FINISHED+'\' and execution_node_id in ('+listId+') group by execution_node_id'){ row ->
+		sql.eachRow('select execution_node_id,count(*) as vms,sum(ram) as ram,sum(cores) as cores from execution join hardware_profile on execution.hardware_profile_id= hardware_profile.id where status != \''+ExecutionStateEnum.FINISHED+'\' and execution_node_id in ('+listId+') group by execution_node_id'){ row ->
 			if(row.execution_node_id!=null)pmDescriptions.put(row.execution_node_id, new PhysicalMachineAllocationDescription(row.execution_node_id,row.cores.toInteger(),row.ram.toInteger(),row.vms.toInteger()));
 		}
 		return pmDescriptions;

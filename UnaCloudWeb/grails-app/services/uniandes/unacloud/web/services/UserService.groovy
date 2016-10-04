@@ -91,7 +91,7 @@ class UserService {
 	 */	
 	def deleteUser(User user, User admin) throws Exception{
 		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
-		if(user.getNotAvailableImages().size()>0)throw new Exception('It is necessary that all virtual machines have AVAILABLE state')
+		if(user.getNotAvailableImages().size()>0)throw new Exception('It is necessary that all images have AVAILABLE state')
 		user.deprecate()
 		userGroupService.removeUser(user);
 		if(user.images.size()>0){						

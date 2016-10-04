@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Responsible for changing the .vmx configuration file for executing a virtual machine fulfilling the user context
+ * Responsible for changing the .vmx configuration file for executing an execution fulfilling the user context
  */
 public class Context {
 

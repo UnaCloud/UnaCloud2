@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import uniandes.unacloud.agent.communication.download.DownloadImageVirtualMachineTask;
-import uniandes.unacloud.agent.exceptions.VirtualMachineExecutionException;
+import uniandes.unacloud.agent.communication.download.DownloadImageTask;
+import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
@@ -43,7 +43,7 @@ public class ImageCacheManager {
 	 * @param imageId image Id 
 	 * @return image available copy
 	 */
-	public static ImageCopy getFreeImageCopy(long imageId)throws VirtualMachineExecutionException{
+	public static ImageCopy getFreeImageCopy(long imageId)throws ExecutionException{
 		System.out.println("getFreeImageCopy "+imageId);
 		Image vmi=getImage(imageId);
 		ImageCopy source,dest;
@@ -52,13 +52,13 @@ public class ImageCacheManager {
 			if(vmi.getImageCopies().isEmpty()){
 				ImageCopy copy=new ImageCopy();
 				try{
-					DownloadImageVirtualMachineTask.dowloadImageCopy(vmi,copy,machineRepository);
+					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository);
 					saveImages();
-				}catch(VirtualMachineExecutionException ex){
+				}catch(ExecutionException ex){
 					throw ex;
 				}catch(Exception ex){
 					ex.printStackTrace();
-					throw new VirtualMachineExecutionException("Error downloading image",ex);
+					throw new ExecutionException("Error downloading image",ex);
 				}
 				System.out.println(" downloaded");
 				return copy;
@@ -132,10 +132,10 @@ public class ImageCacheManager {
 		try{			
 			try {				
 				for(Image image: imageList.values())
-					if(image.getHypervisorId().equals(VM_WARE_WORKSTATION))
+					if(image.getPlatformId().equals(VM_WARE_WORKSTATION))
 						for(ImageCopy copy: image.getImageCopies())
-							((VMwareWorkstation)PlatformFactory.getHypervisor(VM_WARE_WORKSTATION)).unregisterVirtualMachine(copy);
-				((VirtualBox)PlatformFactory.getHypervisor(VIRTUAL_BOX)).unregisterAllVms();
+							((VMwareWorkstation)PlatformFactory.getPlatform(VM_WARE_WORKSTATION)).unregisterImage(copy);
+				((VirtualBox)PlatformFactory.getPlatform(VIRTUAL_BOX)).unregisterAllVms();
 			} catch (Exception e) {
 			}					
 			for(File f:new File(machineRepository).listFiles())cleanDir(f);
@@ -158,8 +158,8 @@ public class ImageCacheManager {
 		if(vmi!=null){
 			try {
 				for(ImageCopy copy: vmi.getImageCopies()){
-					Platform hypervisor=PlatformFactory.getHypervisor(vmi.getHypervisorId());
-					hypervisor.unregisterVirtualMachine(copy);
+					Platform platform=PlatformFactory.getPlatform(vmi.getPlatformId());
+					platform.unregisterImage(copy);
 				}				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -202,7 +202,7 @@ public class ImageCacheManager {
 	}	
 
 	/**
-	 * Delete an image
+	 * Deletes an image
 	 * @param imageId
 	 */
 	public static void deleteImage(Long imageId){
@@ -215,7 +215,7 @@ public class ImageCacheManager {
 	}
 	
 	/**
-	 * Return the list of current images 
+	 * Returns the list of current images 
 	 * @return list of images
 	 */
 	public static List<Long> getCurrentImages(){

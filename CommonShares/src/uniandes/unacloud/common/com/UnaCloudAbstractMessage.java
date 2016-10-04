@@ -7,7 +7,7 @@ package uniandes.unacloud.common.com;
 import java.io.Serializable;
 
 import uniandes.unacloud.common.com.messages.PhysicalMachineOperationMessage;
-import uniandes.unacloud.common.com.messages.VirtualMachineOperationMessage;
+import uniandes.unacloud.common.com.messages.ImageOperationMessage;
 
 /**
  * Abstract class to be used by programs to send message to agents
@@ -16,7 +16,7 @@ import uniandes.unacloud.common.com.messages.VirtualMachineOperationMessage;
 public abstract class UnaCloudAbstractMessage implements Serializable{
     
 	private static final long serialVersionUID = 567714696423776118L;
-	public static final int VIRTUAL_MACHINE_OPERATION = 1;
+	public static final int EXECUTION_OPERATION = 1;
     public static final int PHYSICAL_MACHINE_OPERATION = 2;
     public static final int AGENT_OPERATION = 3;
     
@@ -46,7 +46,7 @@ public abstract class UnaCloudAbstractMessage implements Serializable{
         this.subOp = subOp;
     }
     /**
-     * Transform message to physical or virtual operation message
+     * Transform message to physical or execution message
      * @param message to be transformed
      * @return new message, in case another type return null
      */
@@ -54,8 +54,8 @@ public abstract class UnaCloudAbstractMessage implements Serializable{
     	switch(message.getMainOp()){
     		case PHYSICAL_MACHINE_OPERATION:
     			return PhysicalMachineOperationMessage.fromMessage(message);
-    		case VIRTUAL_MACHINE_OPERATION:
-    			return VirtualMachineOperationMessage.fromMessage(message);
+    		case EXECUTION_OPERATION:
+    			return ImageOperationMessage.fromMessage(message);
     	}
     	return null;
     }

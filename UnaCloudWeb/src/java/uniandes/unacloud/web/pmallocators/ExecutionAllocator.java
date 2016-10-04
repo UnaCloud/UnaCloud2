@@ -23,35 +23,35 @@ public abstract class ExecutionAllocator{
 	
 	/**
 	 * Start the allocation process
-	 * @param virtualMachineList
+	 * @param executionList
 	 * @param physicalMachines
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	public synchronized void startAllocation(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	public synchronized void startAllocation(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		ipsNeeded = new TreeMap<Long, Integer>();
-		allocateVirtualMachines(virtualMachineList, physicalMachines, physicalMachineDescriptions);
+		allocateExecutions(executionList, physicalMachines, physicalMachineDescriptions);
 	}
 
 	/**
-	 * Method to match physical machines with virtual machines execution.
-	 * @param virtualMachineList
+	 * Method to match physical machines with executions.
+	 * @param executionList
 	 * @param physicalMachines
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	protected abstract void allocateVirtualMachines(List<Execution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
+	protected abstract void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
 	
 	/**
 	 * validates if an execution fits with resources of a physical machine
 	 * @param vme
 	 * @param pm
 	 * @param pmad
-	 * @return true if there is enough resources in physical machine to assign virtual execution 
+	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
-	protected boolean fitVMonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
+	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
 		
-		System.out.println("Required: vm cores"+vme.getHardwareProfile().getCores()+"vm ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
+		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+"exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
 		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())
 			return isThereEnoughIps(pm);

@@ -11,7 +11,7 @@ import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
  * Class used to execute query, update and delete processes in database for Physical Machine Entity. 
- * Although this class execute query in virtual machine execution entities
+ * Also this class execute query in execution entities
  * @author CesarF
  *
  */
@@ -44,17 +44,17 @@ public class PhysicalMachineUpdater {
 	
 
 	/**
-	 * Updates status from of virtual Machine
-	 * @param id virtual machine 
+	 * Updates status from of execution
+	 * @param id execution 
 	 * @param host unique in net	
 	 * @param message description
 	 * @param status in agent
 	 * @param con connection to database
-	 * @return true in case virtual execution could be updated, false in case not
+	 * @return true in case execution could be updated, false in case not
 	 */
-	public static boolean updateVirtualExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con){
+	public static boolean updateExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con){
 		try {
-			String query = "update virtual_machine_execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
+			String query = "update execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, message);
 			ps.setString(2, status.name());
@@ -71,13 +71,13 @@ public class PhysicalMachineUpdater {
 	
 	
 	/**
-	 * Updates all virtual executions with id in array and host by name
-	 * @param ids virtual machine execution 
+	 * Updates all executions with id in array and host by name
+	 * @param ids executions 
 	 * @param host which reports
 	 * @param con Database connection
-	 * @return list of virtual machines execution which should be stopped in agents
+	 * @return list of executions which should be stopped in agents
 	 */
-	public static List<Long> updateVirtualMachinesExecutions(Long[]ids,String host, Connection con){
+	public static List<Long> updateExecutions(Long[]ids,String host, Connection con){
 		if(ids==null||ids.length==0)return null;
 		try {
 			StringBuilder builder = new StringBuilder();
@@ -86,7 +86,7 @@ public class PhysicalMachineUpdater {
 			}
 			builder = builder.deleteCharAt( builder.length() -1 );
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM virtual_machine_execution vm where vm.id in ("+builder.toString()+") AND (vm.status = \'"+ExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHING.name()+"\')";
+			String query = "SELECT vm.id FROM execution vm where vm.id in ("+builder.toString()+") AND (vm.status = \'"+ExecutionStateEnum.FAILED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHED.name()+"\' OR vm.status = \'"+ExecutionStateEnum.FINISHING.name()+"\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for(Long idvme: ids){
@@ -98,7 +98,7 @@ public class PhysicalMachineUpdater {
 			while(rs.next())idsToStop.add(rs.getLong(1));
 			try{rs.close();ps.close();}catch(Exception e){}
 			
-			String update = "update virtual_machine_execution vm set vm.last_report = CURRENT_TIMESTAMP where vm.id in ("+builder.toString()+") and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
+			String update = "update execution vm set vm.last_report = CURRENT_TIMESTAMP where vm.id in ("+builder.toString()+") and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
 			PreparedStatement ps2 = con.prepareStatement(update);
 			index = 1;
 			for(Long idvme: ids){

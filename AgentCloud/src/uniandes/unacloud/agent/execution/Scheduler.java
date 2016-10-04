@@ -3,7 +3,7 @@ package uniandes.unacloud.agent.execution;
 import java.util.TimerTask;
 
 /**
- * Responsible for un-deploying a virtual machine execution
+ * Responsible for un-deploying an execution
  *  @author Clouder
  */
 public class Scheduler extends TimerTask {
@@ -22,7 +22,7 @@ public class Scheduler extends TimerTask {
 	}
 
 	/**
-     * Responsible for un-deploying a virtual machine execution in an executionTime
+     * Responsible for un-deploying an execution in an executionTime
      */
     public void run(){
     	System.out.println("Schedule turning off  "+executionId);

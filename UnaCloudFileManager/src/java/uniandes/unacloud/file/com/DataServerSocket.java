@@ -1,9 +1,11 @@
-package uniandes.unacloud.file.communication;
+package uniandes.unacloud.file.com;
 
 import java.io.DataInputStream;
 import java.net.Socket;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.file.com.task.FileReceiverTask;
+import uniandes.unacloud.file.com.task.FileTransferTask;
 
 /**
  * Class used to receive messages to manage image files.

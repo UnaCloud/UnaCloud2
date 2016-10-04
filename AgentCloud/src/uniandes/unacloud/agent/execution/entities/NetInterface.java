@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.execution.entities;
 
 /**
- * Class to represent a net interface in virtual machine
+ * Class to represent a net interface in image execution
  * @author CesarF
  *
  */

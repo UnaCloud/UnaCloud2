@@ -17,7 +17,7 @@ import uniandes.unacloud.web.domain.Image;
 import grails.transaction.Transactional
 
 /**
- * This service contains all methods to manage User Virtual Machine Image: Crud methods, some methods send tasks in queue
+ * This service contains all methods to manage User Image: Crud methods, some methods send tasks in queue
  * This class connects with database using hibernate
  * @author CesarF
  *
@@ -96,7 +96,7 @@ class ImageService {
 	}
 	
 	/**
-	 * Deletes the virtual machine image, virtual machine files and directory
+	 * Deletes the image, image files and directory
 	 * if image have a main file creates a task to delete from repository, in another case deletes image
 	 * @param user owner user
 	 * @param repository image repository
@@ -184,7 +184,7 @@ class ImageService {
 	}
 	
 	/**
-	 * Searchs all unavailable images from user, remove images not loaded and changes to available those with current file
+	 * Searches all unavailable images from user, remove images not loaded and changes to available those with current file
 	 * @param user
 	 * @return void
 	 */
