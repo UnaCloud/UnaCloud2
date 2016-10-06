@@ -23,6 +23,23 @@ public class Image implements Serializable{
 	String password;
 	String configuratorClass;
 	String hypervisorId;
+        String natAddress;
+
+        /**
+         * Get Guest NAT interface address
+         * @return 
+         */
+        public String getNatAddress() {
+            return natAddress;
+        }
+
+        /**
+         * Set Guest NAT interface address
+         * @param natAddress 
+         */
+        public void setNatAddress(String natAddress) {
+            this.natAddress = natAddress;
+        }
 	
 	/**
 	 * image copies in disk

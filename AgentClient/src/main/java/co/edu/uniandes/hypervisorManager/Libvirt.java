@@ -3,14 +3,18 @@ package co.edu.uniandes.hypervisorManager;
 import co.edu.uniandes.virtualMachineManager.entities.ImageCopy;
 import co.edu.uniandes.virtualMachineManager.entities.VirtualMachineExecution;
 import com.losandes.utils.LocalProcessExecutor;
+import java.io.BufferedReader;
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.DomainSnapshot;
 import org.libvirt.LibvirtException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -64,7 +68,7 @@ public abstract class Libvirt extends Hypervisor {
      */
     public void connect() {
         try{
-            this.connection = new Connect(this.driver + ":///session");
+            this.connection = new Connect(this.driver + ":///system");
         }catch(LibvirtException le){
             System.err.println("Error: " + le.toString());
         }
@@ -156,10 +160,24 @@ public abstract class Libvirt extends Hypervisor {
     public void startVirtualMachine(ImageCopy image) throws HypervisorOperationException {
         
         try{
+            this.connect();
             Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
             virtualMachine.create();
+            
+            ServerSocket ssocket = new ServerSocket(1333);
+        
+            while(true){
+                Socket csocket = ssocket.accept();
+                BufferedReader in = new BufferedReader(new InputStreamReader(csocket.getInputStream()));
+                image.getImage().setNatAddress(in.readLine());
+                csocket.close();
+                break;
+            }
+            
         }catch(LibvirtException le){
             System.err.println("Error starting the Virtual Machine: " + le.toString());
+        }catch(IOException ioe){
+            System.err.println("Communication error with the Virtual Machine: " + ioe.toString());
         }
     }
 
@@ -199,9 +217,7 @@ public abstract class Libvirt extends Hypervisor {
     }
 
     @Override
-    public void executeCommandOnMachine(ImageCopy image, String command, String... args) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    abstract public void executeCommandOnMachine(ImageCopy image, String command, String... args) throws HypervisorOperationException;
 
     @Override
     public void takeVirtualMachineSnapshot(ImageCopy image, String snapshotname) throws HypervisorOperationException {
@@ -286,9 +302,7 @@ public abstract class Libvirt extends Hypervisor {
     }
 
     @Override
-    public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws HypervisorOperationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    abstract public void copyFileOnVirtualMachine(ImageCopy image, String destinationRoute, File sourceFile) throws HypervisorOperationException;
 
     @Override
     public void changeVirtualMachineMac(ImageCopy image) {
@@ -363,7 +377,7 @@ public abstract class Libvirt extends Hypervisor {
             confXML.getElementsByTagName("type").item(0).getAttributes().getNamedItem("machine").setTextContent("pc-i440fx-2.1");
             
             // Set new mac address
-            confXML.getElementsByTagName("mac").item(0).getAttributes().getNamedItem("address").setTextContent(this.genMACAddress());
+            // confXML.getElementsByTagName("mac").item(0).getAttributes().getNamedItem("address").setTextContent(this.genMACAddress());
             
             // Set disk
             int numNodes = confXML.getElementsByTagName("disk").getLength();
