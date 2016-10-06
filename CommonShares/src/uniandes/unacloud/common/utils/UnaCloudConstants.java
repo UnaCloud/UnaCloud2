@@ -80,8 +80,4 @@ public class UnaCloudConstants {
     public static final String DEFAULT_IMG_NAME = "unacloudbase";
     public static final String DOUBLE_QUOTE = "\"";
  
-    //UnaCloud Client VMware Workstation constants
-    public static final String VM_WARE_WORKSTATION="Workstation";
-    public static final String VM_WARE_PLAYER="Player";
-    public static final String VIRTUAL_BOX="VBox";
 }
