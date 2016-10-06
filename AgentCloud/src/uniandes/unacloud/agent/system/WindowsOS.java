@@ -104,6 +104,6 @@ public class WindowsOS extends OperatingSystem{
 	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
 		String user = getWhoAmI();
 		return user!=null&&!user.toLowerCase().contains("system");
-	}
+	}	
 
 }

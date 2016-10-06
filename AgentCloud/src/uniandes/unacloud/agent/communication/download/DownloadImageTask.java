@@ -14,6 +14,7 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
+import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -31,7 +32,7 @@ public class DownloadImageTask {
 	 * @throws Exception 
 	 */
 	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws Exception{
-		File root=new File(repository+"\\"+image.getId()+"\\base");
+		File root=new File(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);

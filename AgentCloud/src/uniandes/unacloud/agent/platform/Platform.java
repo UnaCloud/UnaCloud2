@@ -15,6 +15,11 @@ import uniandes.unacloud.agent.execution.entities.Execution;
  * @author Clouder
  */
 public abstract class Platform {
+	
+	/**
+	 * Represents unique code for platform
+	 */
+	protected String code;
 
     /**
      * Path to this platform executable
@@ -115,4 +120,13 @@ public abstract class Platform {
      * @return List of execution that are not running in platform
      */
 	public abstract List<Execution> checkExecutions(Collection<Execution> executions);
+	
+	/**
+	 * Returns code to recognize king of platform
+	 * @return code
+	 */
+	public String getCode() {
+		if(code == null)code = this.getClass().getSimpleName();
+		return code;
+	}
 }

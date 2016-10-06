@@ -175,7 +175,7 @@ public class ImageCopy implements Serializable{
 	 * Starts copy
 	 * @throws PlatformOperationException
 	 */
-	public void startExecution()throws PlatformOperationException{
+	public void startExecution()throws PlatformOperationException{ 
 		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
 		platform.startExecution(this);
 	}

@@ -16,7 +16,7 @@ import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 
 /**
- * Implementation of hypervisor abstract class to give support for
+ * Implementation of platform abstract class to give support for
  * VMware hypervisor.
  */
 
@@ -129,10 +129,10 @@ public abstract class VMwareAbstractHypervisor extends Platform{
 	public void unregisterImage(ImageCopy image) {
 	}
 	/**
-	 * Returns type OS execution
+	 * Returns type VMware execution
 	 * @return
 	 */
-	public abstract String getType();
+	protected abstract String getType();
 	
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {

@@ -4,7 +4,6 @@
  */
 package uniandes.unacloud.agent.platform;
 
-import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Implementation of platform abstract class to give support for
@@ -14,13 +13,12 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 
 public class VMwareWorkstation extends VMwareAbstractHypervisor{
-	public static final String PLATFORM_ID=UnaCloudConstants.VM_WARE_WORKSTATION;
 	public VMwareWorkstation(String path) {
 		super(path);
 	}
 	
 	@Override
-	public String getType() {
+	protected String getType() {
 		return "ws";
 	}
 }

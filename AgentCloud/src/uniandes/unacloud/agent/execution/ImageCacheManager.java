@@ -18,8 +18,7 @@ import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.platform.VMwareWorkstation;
-import uniandes.unacloud.agent.platform.VirtualBox;
+import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.RandomUtils;
@@ -75,8 +74,8 @@ public class ImageCacheManager {
 				dest=new ImageCopy();
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
-				File root=new File(machineRepository+"\\"+imageId+"\\"+vmName);
-				dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split("\\.")[1]));
+				File root=new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId+OperatingSystem.PATH_SEPARATOR+vmName);
+				dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split(OperatingSystem.PATH_SEPARATOR+".")[1]));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);
@@ -129,13 +128,11 @@ public class ImageCacheManager {
 		System.out.println("clearCache");
 		loadImages();
 		imageList.clear();
-		try{			
+		try{	
 			try {				
 				for(Image image: imageList.values())
-					if(image.getPlatformId().equals(VM_WARE_WORKSTATION))
-						for(ImageCopy copy: image.getImageCopies())
-							((VMwareWorkstation)PlatformFactory.getPlatform(VM_WARE_WORKSTATION)).unregisterImage(copy);
-				((VirtualBox)PlatformFactory.getPlatform(VIRTUAL_BOX)).unregisterAllVms();
+					for(ImageCopy copy: image.getImageCopies())
+						PlatformFactory.getPlatform(image.getPlatformId()).unregisterImage(copy);
 			} catch (Exception e) {
 			}					
 			for(File f:new File(machineRepository).listFiles())cleanDir(f);
@@ -164,8 +161,8 @@ public class ImageCacheManager {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			if(new File(machineRepository+"\\"+imageId).exists())
-				for(File root:new File(machineRepository+"\\"+imageId).listFiles())cleanDir(root);
+			if(new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).exists())
+				for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
 			imageList.remove(imageId);
 			saveImages();
 		}

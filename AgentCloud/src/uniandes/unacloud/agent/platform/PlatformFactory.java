@@ -31,8 +31,14 @@ public class PlatformFactory {
     public static void registerplatforms(){
     	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
     	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
-    	if(vmRun!=null)map.put(VMwareWorkstation.PLATFORM_ID,new VMwareWorkstation(vmRun));
-    	if(vBox!=null)map.put(VirtualBox.PLATFORM_ID,new VirtualBox(vBox));
+    	if(vmRun!=null){
+    		VMwareWorkstation vmwork = new VMwareWorkstation(vmRun);
+    		map.put(vmwork.getCode(),vmwork);
+    	}
+    	if(vBox!=null){
+    		VirtualBox vbox = new VirtualBox(vBox);
+    		map.put(vbox.getCode(),vbox);
+    	}
     	//TODO add support to vmWarePlayer
     	//map.put(VMwarePlayer.platform_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
 

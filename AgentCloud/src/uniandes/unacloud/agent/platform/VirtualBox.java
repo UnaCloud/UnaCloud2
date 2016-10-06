@@ -14,14 +14,12 @@ import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Implementation of platform abstract class to give support for VirtualBox
  * platform.
  */
 public class VirtualBox extends Platform {
-	public static final String PLATFORM_ID=UnaCloudConstants.VIRTUAL_BOX;
     
 	/**
 	 * Class constructor

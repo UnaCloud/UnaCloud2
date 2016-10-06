@@ -155,7 +155,7 @@ public abstract class OperatingSystem {
      * @throws UnsupportedCommandException
      */
 	public abstract String turnOnMachines(String[] message) throws UnsupportedCommandException;
-	
+		
 	 /**
      * Responsible for obtaining the operating system name
      * @return os name
