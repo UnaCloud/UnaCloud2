@@ -4,7 +4,7 @@ import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 
 import grails.transaction.Transactional
 
@@ -20,7 +20,7 @@ class ClusterService {
     /**
 	 * Creates a new cluster with the given parameters
 	 * It validates that images owner is the same user that requires cluster
-	 * @param images Virtual machine images belonging to new cluster
+	 * @param images images belonging to new cluster
 	 * @param cluster empty new cluster
 	 * @param user cluster owner
 	 */
@@ -29,16 +29,16 @@ class ClusterService {
 		Cluster cluster = new Cluster(name: clusterName, user:user);		
 		cluster.images=[]
 		if(images.getClass().equals(String)){
-			VirtualMachineImage image = VirtualMachineImage.get(images);
+			Image image = Image.get(images);
 			if(image.owner.id == user.id)
-				cluster.images.add(VirtualMachineImage.get(images))
+				cluster.images.add(Image.get(images))
 			else throw new Exception("Forbidden access to image")
 		}
 		else{
 			for(image in images){
-				VirtualMachineImage vImage = VirtualMachineImage.get(images);
+				Image vImage = Image.get(images);
 				if(vImage.owner.id == user.id)
-					cluster.images.add(VirtualMachineImage.get(image))
+					cluster.images.add(Image.get(image))
 				else throw new Exception("Forbidden access to image")
 			}
 		}

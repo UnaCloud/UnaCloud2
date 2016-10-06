@@ -12,9 +12,9 @@ public enum UDPMessageEnum {
 	 */
 	STATE_PM,
 	/**
-	 * Message to reports changes in Virtual Machines executions
+	 * Message to reports changes in Executions
 	 */
-	STATE_VM,
+	STATE_EXE,
 	/**
 	 * Message to add value to log database
 	 * unused
@@ -28,7 +28,7 @@ public enum UDPMessageEnum {
 	 */
 	public static UDPMessageEnum getType(String name){
 		if(STATE_PM.name().equals(name))return STATE_PM;
-		if(STATE_VM.name().equals(name))return STATE_VM;
+		if(STATE_EXE.name().equals(name))return STATE_EXE;
 		if(LOG_PM.name().equals(name))return LOG_PM;
 		return null;
 	}

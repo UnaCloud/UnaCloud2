@@ -6,16 +6,16 @@ import uniandes.unacloud.web.pmallocators.AllocatorEnum;
 import uniandes.unacloud.web.services.UserService;
 import uniandes.unacloud.share.enums.UserRestrictionEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.Deployment;
-import uniandes.unacloud.web.domain.Hypervisor;
+import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Repository;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.UserGroup;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 import uniandes.unacloud.web.utils.groovy.UserSession;
 
 /**
@@ -115,7 +115,7 @@ class UserController {
 		TreeMap<String, Integer> treeImages = new TreeMap<String, Integer>();
 		if(user.images.size()>0){
 			treeImages.put('ALL',user.images.size())
-			for(VirtualMachineImage image in user.images){
+			for(Image image in user.images){
 				if(treeImages.get(image.state.name)==null)treeImages.put(image.state.name,0)
 				treeImages.put(image.state.name,treeImages.get(image.state.name)+1)
 			}
@@ -145,10 +145,10 @@ class UserController {
 			def boxes  = []
 			boxes.add([name:'Users',quantity:User.count(),color:'aqua',url:'/admin/user/list',icon:'ion-person'])
 			boxes.add([name:'Groups',quantity:UserGroup.count(),color:'green',url:'/admin/group/list',icon:'ion-person-stalker'])
-			boxes.add([name:'Hypervisors',quantity:Hypervisor.count(),color:'yellow',url:'/admin/hypervisor/list',icon:'ion-star'])
+			boxes.add([name:'Platforms',quantity:Platform.count(),color:'yellow',url:'/admin/platform/list',icon:'ion-star'])
 			boxes.add([name:'Operating Systems',quantity:OperatingSystem.count(),color:'blue',url:'/admin/os/list',icon:'ion-load-a'])			
 			boxes.add([name:'Hosts',quantity:PhysicalMachine.count(),color:'teal',url:'/admin/lab/list',icon:'ion-monitor'])
-			boxes.add([name:'Repositories',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
+			boxes.add([name:'Storage',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
 			[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments,boxes:boxes]
 		}else		
 		 	[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments]

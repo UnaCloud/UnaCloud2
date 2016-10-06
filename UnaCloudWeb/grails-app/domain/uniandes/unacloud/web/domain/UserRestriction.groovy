@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain
 
 /**
- * Entity to represent a restriction for a group or user. Currently UnaCloud supports restrictions to deploy virtual machines: allocation algorithm, available laboratories and available hardware profiles. 
+ * Entity to represent a restriction for a group or user. Currently UnaCloud supports restrictions to deploy executions: allocation algorithm, available laboratories and available hardware profiles. 
  * @author CesarF
  *
  */

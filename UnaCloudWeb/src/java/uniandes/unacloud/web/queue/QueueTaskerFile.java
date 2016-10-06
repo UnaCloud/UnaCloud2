@@ -6,7 +6,7 @@ import uniandes.unacloud.share.queue.messages.MessageCreateCopyFromPublic;
 import uniandes.unacloud.share.queue.messages.MessageDeleteUser;
 import uniandes.unacloud.share.queue.messages.MessageIdOfImage;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Image;
 
 /**
  * Class used to put task in queue messaging service that will be read by File Manager project 
@@ -33,7 +33,7 @@ public class QueueTaskerFile {
 	 * @param image to copy
 	 * @param user image owner
 	 */
-	public static void createPublicCopy(VirtualMachineImage image, User user){
+	public static void createPublicCopy(Image image, User user){
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CREATE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -43,7 +43,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void createCopyFromPublic(VirtualMachineImage publicImage, VirtualMachineImage image, User user){
+	public static void createCopyFromPublic(Image publicImage, Image image, User user){
 		MessageCreateCopyFromPublic message = new MessageCreateCopyFromPublic(String.valueOf(user.getDatabaseId()), image.getDatabaseId(), publicImage.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -52,7 +52,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void deleteImage(VirtualMachineImage image, User user){
+	public static void deleteImage(Image image, User user){
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -62,7 +62,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void deletePublicImage(VirtualMachineImage image, User user){
+	public static void deletePublicImage(Image image, User user){
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}

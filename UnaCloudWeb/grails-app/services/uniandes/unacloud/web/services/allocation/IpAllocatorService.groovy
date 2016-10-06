@@ -1,18 +1,18 @@
 package uniandes.unacloud.web.services.allocation
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import grails.transaction.Transactional
 import uniandes.unacloud.web.domain.DeployedImage
 import uniandes.unacloud.web.domain.ExecutionIP
 import uniandes.unacloud.web.domain.NetInterface
-import uniandes.unacloud.web.domain.VirtualMachineExecution
+import uniandes.unacloud.web.domain.Execution
 import uniandes.unacloud.web.pmallocators.AllocatorException
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
  * This service is only for process.
- * Service used to determinate IP allocation for virtual executions.
+ * Service used to determinate IP allocation for executions.
  * This class should be a service to use hibernate connection.
  * @author CesarF
  *
@@ -25,17 +25,17 @@ class IpAllocatorService {
 	//-----------------------------------------------------------------
 	
 	/**
-	 * Allocates IP addresses to all virtual machines in parameters
-	 * @param list of virtual machines executions
+	 * Allocates IP addresses to all executions in parameters
+	 * @param list of executions
 	**/
 	//TODO manage net interfaces configuration	
-	def allocateIPAddresses(virtualExecutions){		
-		for(VirtualMachineExecution vme in virtualExecutions){
-			if(vme.status.equals(VirtualMachineExecutionStateEnum.QUEUED)){
+	def allocateIPAddresses(executions){		
+		for(Execution vme in executions){
+			if(vme.status.equals(ExecutionStateEnum.QUEUED)){
 				List <ExecutionIP> ips= vme.executionNode.laboratory.getAvailableIps()
 				for(ip in ips){
 					if(ip.state==IPEnum.AVAILABLE){
-						NetInterface netInterface = new NetInterface(name:'eth0',ip:ip,virtualExecution:vme)
+						NetInterface netInterface = new NetInterface(name:'eth0',ip:ip,execution:vme)
 						vme.interfaces.add(netInterface)
 						ip.putAt('state',IPEnum.RESERVED)
 						String[] subname= ip.ip.split("\\.")
@@ -44,8 +44,8 @@ class IpAllocatorService {
 					}
 				}
 				if (vme.interfaces.size()==0){ 
-					for(VirtualMachineExecution vm in virtualExecutions){
-						if(vme.status.equals(VirtualMachineExecutionStateEnum.QUEUED)){
+					for(Execution vm in executions){
+						if(vme.status.equals(ExecutionStateEnum.QUEUED)){
 							for(NetInterface net in vme.interfaces){
 								net.ip.putAt('state',IPEnum.AVAILABLE)
 							}

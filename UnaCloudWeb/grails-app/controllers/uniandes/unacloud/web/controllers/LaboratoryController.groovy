@@ -9,6 +9,7 @@ import uniandes.unacloud.web.domain.IPPool;
 import uniandes.unacloud.web.domain.Laboratory;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalMachine;
+import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.User;
 
 /**
@@ -206,7 +207,6 @@ class LaboratoryController {
 	 */
 	def ipDelete(){
 		def lab = Laboratory.get(params.id)
-		print lab
 		if(lab&&params.ip&&params.pool){
 			try{
 				laboratoryService.deleteIP(lab,params.ip)
@@ -332,7 +332,7 @@ class LaboratoryController {
 		if (!machine) 
 			redirect(uri:"/admin/lab/list", absolute:true)
 		else
-			[machine: machine, lab: lab, oss:OperatingSystem.list()]
+			[machine: machine, lab: lab, oss:OperatingSystem.list(), platforms: Platform.list()]
 		
 	}
 	
@@ -343,7 +343,7 @@ class LaboratoryController {
 	def createMachine() {
 		def lab = Laboratory.get(params.id)
 		if(lab){
-			[lab: lab,oss: OperatingSystem.list()]
+			[lab: lab, oss: OperatingSystem.list(), platforms: Platform.list()]
 		}else{
 			redirect(uri:"/admin/lab/list", absolute:true)
 		}		
@@ -356,10 +356,11 @@ class LaboratoryController {
 	def saveMachine(){
 		def lab = Laboratory.get(params.lab)
 		if(lab){
+			if(!params.plats)params.plats=[]
 			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
 				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
 					try{
-						laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab)
+						laboratoryService.addMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, lab, params.plats)
 						flash.message="Your Host has been added"
 						flash.type="success"
 					}catch(Exception e){
@@ -386,10 +387,11 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.lab)
 		def machine = PhysicalMachine.findWhere(id:Long.parseLong(params.host),laboratory:lab)
 		if(machine){
+			if(!params.plats)params.plats=[]
 			if(params.ip&&params.name&&params.ram&&params.pCores&&params.cores&&params.osId&&params.mac){
 				if(params.ram.isInteger()&&params.cores.isInteger()&&params.pCores.isInteger()){
 					try{
-						laboratoryService.editMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, machine)
+						laboratoryService.editMachine(params.ip, params.name, params.cores, params.pCores, params.ram, params.osId, params.mac, machine,params.plats)
 						flash.message="Your Host has been modified"
 						flash.type="success"						
 					}catch(Exception e){

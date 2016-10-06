@@ -18,7 +18,7 @@ class ExternalId {
 	/**
 	 * Image that is saved in provider with this id
 	 */
-	VirtualMachineImage image
+	Image image
 	
 	/**
 	 * In which provider is located

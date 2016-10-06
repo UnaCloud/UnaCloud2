@@ -13,11 +13,10 @@ import uniandes.unacloud.web.domain.Laboratory;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalIP;
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
-
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.web.domain.Execution;
+import uniandes.unacloud.web.domain.Platform;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.Ip4Validator
-
 import grails.transaction.Transactional
 
 /**
@@ -82,9 +81,17 @@ class LaboratoryService {
 	 * @param lab Laboratory
 	 */
 	
-	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab) {
+	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
 		def physicalMachine = new PhysicalMachine(name:name, cores:cores, pCores:pCores, ram: ram, highAvailability:(lab.highAvailability),
 			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip))
+		physicalMachine.platforms = []
+		if(plats.getClass().equals(String))
+			physicalMachine.platforms.add(Platform.get(plats))
+		else{
+			for(platId in plats){
+				physicalMachine.platforms.add(Platform.get(platId))
+			}
+		}
 		physicalMachine.save(failOnError:true)	
 	}
 	
@@ -100,7 +107,7 @@ class LaboratoryService {
 	 * @param host new name in network
 	 * @return
 	 */
-	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host){
+	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host, plats){
 		if(!host.ip.ip.equals(ip)){
 			host.ip.setIp(ip)
 		}
@@ -110,6 +117,15 @@ class LaboratoryService {
 		host.setpCores(Integer.parseInt(pCores))
 		host.setRam(Integer.parseInt(ram))
 		host.setOperatingSystem(OperatingSystem.get(osId))
+		Set platforms = []
+		if(plats.getClass().equals(String))
+			platforms.add(Platform.get(plats))
+		else{
+			for(platId in plats){
+				platforms.add(Platform.get(platId))
+			}
+		}
+		host.platforms = platforms
 		host.save(failOnError:true)
 	}
 	
@@ -211,12 +227,12 @@ class LaboratoryService {
 	def deleteHost(Laboratory lab, host){
 		PhysicalMachine hostMachine = PhysicalMachine.where{id==host&&laboratory==lab}.find()
 		if(hostMachine){
-			def executions = VirtualMachineExecution.where{
-				executionNode==hostMachine&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll()
-			if(VirtualMachineExecution.where{
-				executionNode==hostMachine&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll().size()>0) 
+			def executions = Execution.where{
+				executionNode==hostMachine&&status!=ExecutionStateEnum.FINISHED}.findAll()
+			if(Execution.where{
+				executionNode==hostMachine&&status!=ExecutionStateEnum.FINISHED}.findAll().size()>0) 
 				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
-			for(VirtualMachineExecution exe in executions)exe.putAt("executionNode", null)			
+			for(Execution exe in executions)exe.putAt("executionNode", null)			
 			hostMachine.delete()			
 		}
 	}
@@ -277,7 +293,7 @@ class LaboratoryService {
 	 */
 	private ArrayList<String> createRange(ipInit,ipEnd){
 		Ip4Validator validator = new Ip4Validator();
-		if(!validator.validate(ipInit)||!validator.validate(ipEnd)||!validator.validateRange(ipInit,ipEnd))throw new Exception("Ip range is not valid")
+		if(!validator.validate(ipInit)||!validator.validate(ipEnd)||!validator.validateRange(ipInit,ipEnd))throw new Exception("IP range is not valid")
 		String[] components = ipInit.split(".");
 		String[] components2 = ipEnd.split(".");
 		ArrayList<String> ips = new ArrayList<String>();

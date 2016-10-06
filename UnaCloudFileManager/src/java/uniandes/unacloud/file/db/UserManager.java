@@ -5,11 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
 import uniandes.unacloud.share.enums.UserRestrictionEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.file.db.entities.UserEntity;
-import uniandes.unacloud.share.db.RepositoryManager;
+import uniandes.unacloud.share.db.StorageManager;
 
 /**
  * Class used to execute query, update and delete processes in database for User Entity. 
@@ -62,7 +61,7 @@ public class UserManager {
 				repository = rs.getString(3);
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
-			user.setRepository(RepositoryManager.getRepositoryByName(repository==null?UnaCloudConstants.MAIN_REPOSITORY:repository,con));
+			user.setRepository(StorageManager.getRepositoryByName(repository==null?UnaCloudConstants.MAIN_REPOSITORY:repository,con));
 			
 			return user;
 		} catch (Exception e) {

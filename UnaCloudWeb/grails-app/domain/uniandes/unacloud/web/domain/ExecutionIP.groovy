@@ -4,7 +4,7 @@ import uniandes.unacloud.web.domain.IP;
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
- * Entity to represent an IP address that is used for a Virtual Machine
+ * Entity to represent an IP address that is used for an Execution
  * 
  * @author CesarF
  */

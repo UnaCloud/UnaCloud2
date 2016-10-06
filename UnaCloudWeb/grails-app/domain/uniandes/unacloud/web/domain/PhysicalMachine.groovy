@@ -1,9 +1,8 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.enums.VirtualMachineExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.web.domain.enums.MonitoringStatus;
 
 /**
  * Entity to represent a host machine located in a computer room o laboratory
@@ -72,7 +71,7 @@ class PhysicalMachine {
 	Date lastReport
 	
 	/**
-	 * Free space in data directory: current virtual machine directory
+	 * Free space in data directory: current image directory
 	 */
 	long dataSpace = 0;
 	
@@ -80,10 +79,14 @@ class PhysicalMachine {
 	/**
 	 * Laboratory to which the physical machine belongs
 	 */
-	Laboratory laboratory
-	
+	Laboratory laboratory	
 	static belongsTo =  [laboratory:Laboratory]
 	
+	
+	/**
+	 * List of execution platforms
+	 */
+	static hasMany = [platforms: Platform]
 		
 	static constraints = {
 		name unique:true
@@ -116,7 +119,7 @@ class PhysicalMachine {
 	 * @return an object with available resources in this host. Physical Cores, Cores, Ram, 
 	 */
 	def availableResources(){
-		def usedResources = VirtualMachineExecution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from VirtualMachineExecution as vme where vme.executionNode.id = :node_id and vme.status!=\'FINISHED\'',[node_id:this.id])		
+		def usedResources = Execution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\'FINISHED\'',[node_id:this.id])		
 		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
 	}
 	
@@ -125,7 +128,7 @@ class PhysicalMachine {
 	 * @return true in case there is at least one execution in machine, false in case not
 	 */
 	def withExecution(){
-		return VirtualMachineExecution.where {executionNode==this&&status!=VirtualMachineExecutionStateEnum.FINISHED}.findAll().size()>0
+		return Execution.where {executionNode==this&&status!=ExecutionStateEnum.FINISHED}.findAll().size()>0
 	}
 	
 }

@@ -5,7 +5,7 @@ import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.UserRestrictionService;
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.User;
@@ -135,7 +135,7 @@ class ClusterController {
 	def deployOptions(){
 		def cluster=Cluster.get(params.id);
 		if(cluster&&cluster.state==ClusterEnum.AVAILABLE){
-			def unavailable = cluster.images.findAll {it.state==VirtualMachineImageEnum.AVAILABLE}
+			def unavailable = cluster.images.findAll {it.state==ImageEnum.AVAILABLE}
 			if(unavailable.size()!=cluster.images.size()){
 				flash.message= "Some images in cluster are not available at this moment. Please, change cluster or remove images in cluster."
 				redirect(uri:"/services/cluster/list", absolute:true)

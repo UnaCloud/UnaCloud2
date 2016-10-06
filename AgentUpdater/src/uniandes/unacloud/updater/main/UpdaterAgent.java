@@ -26,9 +26,9 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class UpdaterAgent {
 
-    final static File versions = new File(UnaCloudConstants.VERSION_FILE);    
+    private final static File versions = new File(UnaCloudConstants.VERSION_FILE);    
 
-    static ConfigurationReader propReader;   
+    private static ConfigurationReader propReader;   
     
     public UpdaterAgent() throws IOException {
     	propReader = new ConfigurationReader(UnaCloudConstants.GLOBAL_FILE);

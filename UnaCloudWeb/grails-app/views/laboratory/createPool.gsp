@@ -27,7 +27,7 @@
 		       			<div class="box-body"> 	
 	                         <div class="form-group">  
                          		<h4>IP Pool</h4>
-                         		<p class="help-block">This IP range will be given to virtual machines.</p>
+                         		<p class="help-block">This IP range will be given to executions.</p>
                          		 <input value="${lab.id}" name="id" type="hidden">                        
 		                         <div class="form-group">
 		                             <label>

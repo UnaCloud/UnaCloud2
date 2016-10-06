@@ -7,7 +7,7 @@ import uniandes.unacloud.web.services.UserGroupService;
 import uniandes.unacloud.web.services.UserService;
 import uniandes.unacloud.share.enums.UserRestrictionEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.utils.groovy.UserSession;
 

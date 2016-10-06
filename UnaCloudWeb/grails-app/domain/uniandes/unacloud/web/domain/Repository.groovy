@@ -1,10 +1,9 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Entity to represent a file system where virtual machine image files are located
+ * Entity to represent a file system where image files are located
  * @author CesarF
  *
  */
@@ -32,7 +31,7 @@ class Repository {
 	/**
 	 * Images stored in this repository
 	 */
-	static hasMany = [images: VirtualMachineImage]
+	static hasMany = [images: Image]
 	
     static constraints = {
 		name unique:true

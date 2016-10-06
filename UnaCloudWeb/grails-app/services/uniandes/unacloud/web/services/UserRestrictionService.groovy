@@ -67,7 +67,7 @@ class UserRestrictionService {
     }
 	
 	/**
-	 * Returns the list of valid Laboratories to deploy virtual executions
+	 * Returns the list of valid Laboratories to deploy executions
 	 * @param user to request available labs
 	 * @return list of available labs for user
 	 */

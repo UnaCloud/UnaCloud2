@@ -1,7 +1,8 @@
 package uniandes.unacloud.common.utils;
 
 /**
- * unique class where is located all variables used among projects
+ * Responsible for providing the UnaCloud constant values
+ * @author Edgar Eduardo Rosales Rosero
  * @author CesarF
  *
  */
@@ -68,5 +69,15 @@ public class UnaCloudConstants {
 	public static final String GLOBAL_FILE = "global.properties";
 	public static final String LOCAL_FILE = "local.properties";
 	public static final String VERSION_FILE = "version.txt";
-
+	
+    //UnaCloud communication and operation constants
+    public static final String OK_MESSAGE = "Ok: ";
+    public static final String SUCCESSFUL_OPERATION = "Successful operation";
+    public static final String ERROR_MESSAGE = "Error: ";
+    public static final String UNSUCCESSFUL_OPERATION = "Unsuccessful operation";
+    public static final String TEMP_FILE = "temp";
+    public static final String FILE_EXTENSION = ".txt";
+    public static final String DEFAULT_IMG_NAME = "unacloudbase";
+    public static final String DOUBLE_QUOTE = "\"";
+ 
 }

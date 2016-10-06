@@ -68,6 +68,14 @@
 						  				</g:each>
 		                             </select>
 		                         </div>
+		                         <div class="form-group">
+		                             <label>Platforms</label>
+		                             <select name= "plats" multiple class="form-control">
+		                             	<g:each in="${platforms}" status="i" var="plat">
+						  					<option value="${plat.id}"<g:if test="${machine.platforms.contains(plat)}"> selected</g:if>>${plat.name}</option>                                 
+						  				</g:each>
+		                             </select>
+		                         </div>
 		                     </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
 		                         <g:submitButton name="button-submit" class="btn btn-success" value="Submit" />	

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
-import uniandes.unacloud.share.entities.VirtualMachineImageEntity;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.UserRestrictionEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
  * Entity to represent a User with access to UnaCloud.
@@ -59,7 +58,7 @@ class User {
 	/**
 	 * list of images, restrictions, clusters and deployments belonging to this user
 	 */
-	static hasMany = [images: VirtualMachineImage, restrictions: UserRestriction, userClusters: Cluster, deployments: Deployment]
+	static hasMany = [images: Image, restrictions: UserRestriction, userClusters: Cluster, deployments: Deployment]
 	
 	/**
 	 * State of user
@@ -97,6 +96,18 @@ class User {
 		}
 		return this.images.sort{it.name}
 	}
+
+	/**
+	 * Returns the list of unavailable images in this user: state = UNAVAILABLE
+	 * @return
+	 */
+	def getUnavailableImages(){
+		if(!this.images){
+			this.images = []
+			this.save()
+		}
+		return this.images.findAll{it.state==ImageEnum.UNAVAILABLE};
+	}
 	
 	/**
 	 * Returns the list of clusters owned by user sorted by name
@@ -121,7 +132,7 @@ class User {
 			this.images = []
 			this.save()
 		}
-		return this.images.findAll{it.state==VirtualMachineImageEnum.AVAILABLE}.sort{it.name}
+		return this.images.findAll{it.state==ImageEnum.AVAILABLE}.sort{it.name}
 	}
 	
 	/**
@@ -133,7 +144,7 @@ class User {
 			this.images = []
 			this.save()
 		}
-		return this.images.findAll{it.state!=VirtualMachineImageEnum.AVAILABLE}.sort{it.name}
+		return this.images.findAll{it.state!=ImageEnum.AVAILABLE}.sort{it.name}
 	}
 	
 	/**
@@ -186,7 +197,7 @@ class User {
 		for(Deployment deploy in deployments)
 			deploy.deleteDeploy()
 		deployments=[]
-		for(VirtualMachineImage image in images)image.putAt("state", VirtualMachineImageEnum.IN_QUEUE)		
+		for(Image image in images)image.putAt("state", ImageEnum.IN_QUEUE)		
 		this.save()
 	}
 	

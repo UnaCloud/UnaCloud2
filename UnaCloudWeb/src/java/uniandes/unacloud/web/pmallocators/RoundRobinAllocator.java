@@ -6,43 +6,43 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
+import uniandes.unacloud.web.domain.Execution;
 
 /**
  * Class to execute Round Robin allocator algorithms
- * Assigns a virtual machine for each physical machine order by physical machine id
+ * Assigns an execution for each physical machine order by physical machine id
  * @author Clouder
  *
  */
-public class RoundRobinAllocator extends VirtualMachineAllocator {
+public class RoundRobinAllocator extends ExecutionAllocator {
 
 	/**
-	 * Assigns a virtual machine for each physical machine order by physical machine id
+	 * Assigns an execution for each physical machine order by physical machine id
 	 */
 	@Override
-	protected void allocateVirtualMachines(List<VirtualMachineExecution> virtualMachineList,List<PhysicalMachine> physicalMachines,Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	protected void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {
 			public int compare(PhysicalMachine p1, PhysicalMachine p2) {
 				return Long.compare(p1.getDatabaseId(), p2.getDatabaseId());
 			}
 		});
-		ciclo1:for (int nextVm = 0, lastNextVm = 0; nextVm < virtualMachineList.size();) {
+		ciclo1:for (int nextVm = 0, lastNextVm = 0; nextVm < executionList.size();) {
 			for (PhysicalMachine pm : physicalMachines) {
-				if (nextVm >= virtualMachineList.size())break ciclo1;
+				if (nextVm >= executionList.size())break ciclo1;
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
-				VirtualMachineExecution nextVirtualMachine = virtualMachineList.get(nextVm);
-				if(fitVMonPM(nextVirtualMachine, pm, pmad)){
-					nextVirtualMachine.setExecutionNode(pm);
+				Execution nextExecution = executionList.get(nextVm);
+				if(fitEXonPM(nextExecution, pm, pmad)){
+					nextExecution.setExecutionNode(pm);
 					if(pmad==null){
 						pmad=new PhysicalMachineAllocationDescription(pm.getDatabaseId(),0,0,0);
 						physicalMachineDescriptions.put(pmad.getNodeId(),pmad);
 					}
-					pmad.addResources(nextVirtualMachine.getHardwareProfile().getCores(),nextVirtualMachine.getHardwareProfile().getRam(), 1);
+					pmad.addResources(nextExecution.getHardwareProfile().getCores(),nextExecution.getHardwareProfile().getRam(), 1);
 					nextVm++;
 				}
 			}
 			if (lastNextVm == nextVm) {
-				throw new AllocatorException("Cannot allocate all VMs on available insfrastructure");
+				throw new AllocatorException("Cannot allocate all Executions on available insfrastructure");
 			}
 			lastNextVm = nextVm;
 		}

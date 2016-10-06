@@ -7,19 +7,17 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
-import uniandes.unacloud.common.utils.Constants;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
-import uniandes.unacloud.share.db.RepositoryManager;
-import uniandes.unacloud.share.db.VirtualImageManager;
+import uniandes.unacloud.share.db.ImageManager;
+import uniandes.unacloud.share.db.StorageManager;
 import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.VirtualMachineImageEntity;
-import uniandes.unacloud.share.enums.VirtualMachineImageEnum;
+import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
-import uniandes.unacloud.file.db.VirtualMachineImageManager;
+import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity
-import uniandes.unacloud.file.db.entities.VirtualImageFileEntity;
+import uniandes.unacloud.file.db.entities.ImageFileEntity;
 import grails.transaction.Transactional
 
 /**
@@ -39,13 +37,19 @@ class FileService implements ApplicationContextAware {
 	 * @param token
 	 * @return boolean, true if image was copy to file repository or not.
 	 */
-    def upload(files, String token, String mainExtension){
-		def copy = null;
+    def upload(files, String token){
+		boolean copy = false;
 		try{
 			Connection con = FileManager.getInstance().getDBConnection();
-			def image = VirtualMachineImageManager.getVirtualImageWithFile(token,con)
-			if(image){				
-				RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+			def image = ImageFileManager.getImageWithFile(token,con)
+			if(image){
+				files.each {
+					def fileName=it.getOriginalFilename()
+					if(!image.getPlatform().validatesExtension(fileName)){
+						return null
+					}
+				}										
+				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				if(image.isPublic()){
 					File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
 					if (file.exists()){
@@ -64,13 +68,12 @@ class FileService implements ApplicationContextAware {
 						File newFile = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+fileName);
 						FileUtils.copyFile(file, newFile);
 					}
-					if (fileName.matches(".*"+mainExtension)){
+					if (fileName.matches(".*"+image.getPlatform().getExtension())){
 						image.setMainFile(image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator+fileName)
 					}
 					sizeImage += it.getSize()
-				}
-				
-				VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con)
+				}				
+				ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con, true)
 	
 			}
 			con.close();
@@ -89,11 +92,11 @@ class FileService implements ApplicationContextAware {
 	def updateFiles(files, String token, String mainExtension){
 		try{
 			Connection con = FileManager.getInstance().getDBConnection();
-			def image = VirtualMachineImageManager.getVirtualImageWithFile(token, con)
+			def image = ImageFileManager.getImageWithFile(token, con)
 			if(image){
 				println 'Main file: '+image.getMainFile()
 				if(image.getMainFile()!=null)new java.io.File(image.getMainFile()).getParentFile().deleteDir()
-				RepositoryEntity main = RepositoryManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				def sizeImage = 0;
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con)
 				files.each {
@@ -110,7 +113,7 @@ class FileService implements ApplicationContextAware {
 					}
 					sizeImage += it.getSize()
 				}
-				println 'Update: '+VirtualMachineImageManager.setVirtualMachineFile(new VirtualImageFileEntity(image.getId(), VirtualMachineImageEnum.AVAILABLE, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),true, con)
+				println 'Update: '+ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),true, con, true)
 				
 			}
 			con.close();

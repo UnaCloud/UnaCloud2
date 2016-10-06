@@ -15,8 +15,8 @@ import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.User;
-import uniandes.unacloud.web.domain.VirtualMachineExecution;
-import uniandes.unacloud.web.domain.VirtualMachineImage;
+import uniandes.unacloud.web.domain.Execution;
+import uniandes.unacloud.web.domain.Image;
 
 /**
  * Class used to put task in queue messaging service that will be read by Control project
@@ -43,7 +43,7 @@ public class QueueTaskerControl {
 	 * @param image that will be removed from cache
 	 * @param user who asks the task
 	 */
-	public static void clearCache(VirtualMachineImage image, User user){
+	public static void clearCache(Image image, User user){
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CLEAR_CACHE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}	
@@ -80,7 +80,7 @@ public class QueueTaskerControl {
 	 * Puts a task to stop deployments in array
 	 * @param deployments
 	 */
-	public static void stopExecutions(List<VirtualMachineExecution> executions, User user){
+	public static void stopExecutions(List<Execution> executions, User user){
 		Long[] idExecutions = new Long[executions.size()];
 		for (int i = 0; i < executions.size(); i++) {
 			idExecutions[i]=executions.get(i).getDatabaseId();
@@ -94,7 +94,7 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void addInstancesToDeploy(List<VirtualMachineExecution> executions, User user, DeployedImage image){
+	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image){
 		Long[] listIds = new Long[executions.size()];
 		for (int i = 0; i < executions.size(); i++) {
 			listIds[i]=executions.get(i).getDatabaseId();
@@ -109,7 +109,7 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void createCopyFromExecution(VirtualMachineExecution execution, VirtualMachineImage newImage, VirtualMachineImage pastImage, User user){
+	public static void createCopyFromExecution(Execution execution, Image newImage, Image pastImage, User user){
 		MessageCreateCopyFromExecution message = new MessageCreateCopyFromExecution(String.valueOf(user.getDatabaseId()), execution.getDatabaseId(), newImage.getDatabaseId(), pastImage.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}

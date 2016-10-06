@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain
 
 /**
- * Entity to represent a Network Interface to be configured in a Virtual Machine.
+ * Entity to represent a Network Interface to be configured in an execution.
  * Although this class is used currently system doesn't support more than one configured IP
  * @author CesarF
  *
@@ -23,9 +23,9 @@ class NetInterface {
 	String name
 	
 	/**
-	 * Virtual Execution where this interface is configured
+	 * Execution where this interface is configured
 	 */	
-	static belongsTo = [virtualExecution:VirtualMachineExecution]
+	static belongsTo = [execution:Execution]
 
     static constraints = {
     }

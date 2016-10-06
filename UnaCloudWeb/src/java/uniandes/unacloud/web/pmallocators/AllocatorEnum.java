@@ -7,11 +7,11 @@ package uniandes.unacloud.web.pmallocators;
  */
 public enum AllocatorEnum {
 	/**
-	 * Assigns a virtual machine execution to a physical machine based in random number.
+	 * Assigns an execution to a physical machine based in random number.
 	 */
 	RANDOM(new RandomAllocator(),"Random"),
 	/**
-	 * Assigns a virtual machine for each physical machine order by physical machine id
+	 * Assigns an for each physical machine order by physical machine id
 	 */
 	ROUND_ROBIN(new RoundRobinAllocator(),"Round Robin"),
 	/**
@@ -19,11 +19,11 @@ public enum AllocatorEnum {
 	 */
 	//GREEN(null,"Green"),
 	/**
-	 * Assigns all possible virtual machines for each physical machine based in available resources
+	 * Assigns all possible executions for each physical machine based in available resources
 	 */
 	FIRST_FIT(new FirstFitAllocator(),"First Fit"),
 	/**
-	 * Sorts physical machines based in available resources, then assigns all possible virtual machines for each physical machine in list
+	 * Sorts physical machines based in available resources, then assigns all possible executions for each physical machine in list
 	 */
 	FIRST_FIT_DECREASING(new FirstFitDecreasingAllocator(),"First Fit Decreasing"),
 	/**
@@ -35,20 +35,20 @@ public enum AllocatorEnum {
 	 */
 	SORTING(new SortingAllocator(),"Sorting"),
 	/**
-	 * Assigns only one virtual execution for each physical machine
+	 * Assigns only one execution for each physical machine
 	 */
 	SINGLETON( new SingletonAllocator(), "Singleton");
 	
 	/**
 	 * allocator class to execute algorithm
 	 */
-	VirtualMachineAllocator allocator;
+	ExecutionAllocator allocator;
 	/**
 	 * Name of allocator
 	 */
 	String name;
 	
-	private AllocatorEnum(VirtualMachineAllocator allocator, String name) {
+	private AllocatorEnum(ExecutionAllocator allocator, String name) {
 		this.allocator=allocator;
 		this.name=name;
 	}
@@ -56,7 +56,7 @@ public enum AllocatorEnum {
 	 * Returns allocator class to execute algorithm
 	 * @return allocator class 
 	 */
-	public VirtualMachineAllocator getAllocator() {
+	public ExecutionAllocator getAllocator() {
 		return allocator;
 	}
 	
