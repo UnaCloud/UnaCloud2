@@ -32,10 +32,8 @@ public class Debian extends AbstractVirtualMachineConfigurator{
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	File out=generateRandomFile();
     	try(PrintWriter pw = new LinuxPrintWriter(out)){
-    		pw.println("auto lo");
-            pw.println("iface lo inet loopback");
-            pw.println("auto eth0");
-            pw.println("iface eth0 inet static");
+            pw.println("auto eth1");
+            pw.println("iface eth1 inet static");
             pw.println("address " + au.getIp());
             pw.println("netmask " + au.getNetmask());
             pw.println("network " + au.getNetwork());
@@ -44,7 +42,7 @@ public class Debian extends AbstractVirtualMachineConfigurator{
     	}catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnVirtualMachine("/etc/network/interfaces",out);
+    	execution.getImage().copyFileOnVirtualMachine("/etc/network/interfaces.d/unacloud_interfaces",out);
     	execution.getImage().executeCommandOnMachine("/etc/init.d/networking","restart");
     	execution.getImage().executeCommandOnMachine("/usr/bin/wget","www.google.com");
         out.delete();
