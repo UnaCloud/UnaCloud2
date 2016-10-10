@@ -37,6 +37,11 @@ public class ImageCopy implements Serializable{
 	private transient ImageStatus status=ImageStatus.FREE;
 	
 	/**
+	 * Execution's ID
+	 */
+	private String executionID;
+	
+	/**
 	 * Get manin file
 	 */
 	public File getMainFile() {
@@ -88,6 +93,22 @@ public class ImageCopy implements Serializable{
 	 */
 	public void setImage(Image image) {
 		this.image = image;
+	}
+	
+	/**
+	 * Returns the execution ID
+	 * @return
+	 */
+	public String getExecutionID() {
+		return executionID;
+	}
+	
+	/**
+	 * Updates the execution ID
+	 * @param executionID
+	 */
+	public void setExecutionID(String executionID) {
+		this.executionID = executionID;
 	}
 	
 	/**
