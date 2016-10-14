@@ -6,11 +6,12 @@ import java.util.TreeMap;
 
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Execution;
+import uniandes.unacloud.web.domain.Platform;
 
 /**
  * Abstract class with main methods to allocate deployments. Validates enough resources in physical machine and enough IPs in lab
  * The purpose of this class is to be extended to code allocator algorithms 
- * @author Cloder
+ * @author Clouder and CesarF
  *
  */
 public abstract class ExecutionAllocator{
@@ -50,8 +51,9 @@ public abstract class ExecutionAllocator{
 	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
 	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
-		
-		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+"exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
+		System.out.println("Requires: "+vme.getDeployedImage().getImage().getPlatform().getName());
+		if(!isPlatformSupport(vme.getDeployedImage().getImage().getPlatform(), pm))return false;
+		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+" exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
 		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())
 			return isThereEnoughIps(pm);
@@ -72,5 +74,18 @@ public abstract class ExecutionAllocator{
 			return false;
 		else 
 			return true;
+	}
+	/**
+	 * Responsible to validate if a platform is supported in physical machine
+	 * @param platform
+	 * @param pm
+	 * @return true if platform is supported else false
+	 */
+	private boolean isPlatformSupport(Platform platform, PhysicalMachine pm){
+		for(Platform plat: pm.getPlatforms()){
+			if(plat.getDatabaseId()==platform.getDatabaseId())
+				return true;
+		}
+		return false;
 	}
 }

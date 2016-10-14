@@ -19,7 +19,9 @@
         <asset:javascript src="plugins/jquery/jquery_2_0_2.min.js"/>
         <!-- Bootstrap -->
         <asset:javascript src="plugins/bootstrap/bootstrap.min.js"/>    
-        <asset:javascript src="plugins/bootbox/bootbox.js"/>  
+        <asset:javascript src="plugins/bootbox/bootbox.js"/> 
+        <!-- animate -->
+        <asset:stylesheet src="animate.css"/> 
         <!-- Datatables -->
         <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
         <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>        

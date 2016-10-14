@@ -166,6 +166,30 @@ $(document).on('ready',function(){
 	$("#unacloudTable").dataTable();
 	$("#unacloudTable2").dataTable();
 	tableChecker();
+	
+	$(".btn-time-nxt").on("click",function(event){
+		event.preventDefault();
+		var goElement = $(this).data("element");
+		$(".time-title"+goElement).addClass("hidden")
+		$(".time-element"+goElement).removeClass("hidden").addClass("animated fadeIn")
+		$(".time-title"+(goElement-1)).removeClass("hidden")
+		$(".time-element"+(goElement-1)).addClass("hidden")
+		$("#time-icon"+goElement).removeClass("fa-circle-o").removeClass("bg-gray").addClass("fa-adjust").addClass("bg-blue")
+		$("#time-icon"+(goElement-1)).removeClass("fa-adjust").removeClass("bg-blue").addClass("fa-check").addClass("bg-green")
+	});	
+	$(".btn-time-bck").on("click",function(event){
+		event.preventDefault();
+		var goElement = $(this).data("element");
+		
+		$(".time-title"+goElement).addClass("hidden")
+		$(".time-element"+goElement).removeClass("hidden").addClass("animated fadeIn")
+		$(".time-title"+(goElement+1)).removeClass("hidden")
+		$(".time-element"+(goElement+1)).addClass("hidden")
+		
+		$("#time-icon"+goElement).removeClass("fa-check").removeClass("bg-green").addClass("fa-adjust").addClass("bg-blue")
+		$("#time-icon"+(goElement+1)).removeClass("fa-adjust").removeClass("bg-blue").addClass("fa-circle-o").addClass("bg-gray")
+	});	
+	
 });
 
 function tableChecker(){	

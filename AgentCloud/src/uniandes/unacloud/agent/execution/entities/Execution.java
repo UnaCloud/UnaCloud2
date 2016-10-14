@@ -19,7 +19,7 @@ public class Execution implements Serializable{
 	private static final long serialVersionUID = -6555573326780712925L;
 	
 	/**
-	 * execution id
+	 * Database execution id
 	 */	
 	private long id;
 	/**

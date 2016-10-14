@@ -82,18 +82,18 @@ class DeploymentService {
 		
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
-		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
+		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
 		requests.eachWithIndex(){ request,i->	
-			if(hwdProfilesAvoided.find{it.id==request.hp.id}==null) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
+			if(allowedHwdProfiles.find{it.id==request.hp.id}==null) throw new Exception('Hardware profile does not exist or You don\'t have permissions to use selected one')	
 		}
 				
-		def labsAvoided = userRestrictionService.getAvoidLabs(user)
-		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
+		def allowedLabs = userRestrictionService.getAllowedLabs(user)
+		if(allowedLabs.size()==0) throw new Exception('Not enough physical machines available')
 		
 		List<PhysicalMachine> pms = new ArrayList<>()
 		List<PhysicalMachine> pmsHigh = new ArrayList<>()		
 		
-		labsAvoided.each{
+		allowedLabs.each{
 			pms.addAll(it.getAvailableMachines(false))
 			pmsHigh.addAll(it.getAvailableMachines(true))
 		}		
@@ -160,15 +160,15 @@ class DeploymentService {
 		Date stop = new Date(start.getTime()+time)
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
-		def hwdProfilesAvoided = userRestrictionService.getAvoidHwdProfiles(user)
-		if(hwdProfilesAvoided.find{it.id==requestOptions.hp.id}==null)throw new Exception('You don\'t have permissions to use same hardware profile in deployment')		
+		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
+		if(allowedHwdProfiles.find{it.id==requestOptions.hp.id}==null)throw new Exception('You don\'t have permissions to use same hardware profile in deployment')		
 				
-		def labsAvoided = userRestrictionService.getAvoidLabs(user)
-		if(labsAvoided.size()==0) throw new Exception('Not enough physical machines available')
+		def allowedLabs = userRestrictionService.getAllowedLabs(user)
+		if(allowedLabs.size()==0) throw new Exception('Not enough physical machines available')
 		
 		List<PhysicalMachine> pms = new ArrayList<>()
 		
-		labsAvoided.each{
+		allowedLabs.each{
 			pms.addAll(it.getAvailableMachines(image.highAvaliavility))
 		}
 		if(pms.size()==0) throw new Exception('Not enough physical machines available')

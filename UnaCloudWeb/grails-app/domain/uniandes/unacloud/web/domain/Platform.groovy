@@ -43,4 +43,12 @@ class Platform {
 		classPlatform nullable:false
 		filesExtensions nullable:true
     }
+	
+	/**
+	 * Responsible for returning database id
+	 * @return database id
+	 */
+	def long getDatabaseId(){
+		return id;
+	}
 }

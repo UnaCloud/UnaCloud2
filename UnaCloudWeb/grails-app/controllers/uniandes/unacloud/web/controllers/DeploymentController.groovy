@@ -80,8 +80,8 @@ class DeploymentController {
 			//validates if user is owner to deploy cluster
 			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
 				//Validates if images are available in the platform
-				def unavailable = cluster.images.findAll{it.state==ImageEnum.AVAILABLE}
-				if(unavailable.size()!=cluster.images.size()){
+				def availables = cluster.images.findAll{it.state==ImageEnum.AVAILABLE}
+				if(availables.size()!=cluster.images.size()){
 					flash.message= "Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster."
 					redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)	
 					return
@@ -171,20 +171,20 @@ class DeploymentController {
 			def user= User.get(session.user.id)
 			if(image.deployment.user==user||user.isAdmin()){
 				
-				def hwdProfilesAvoided = []
-				hwdProfilesAvoided.add(image.getDeployedHarwdProfile())
-				def labsAvoided = userRestrictionService.getAvoidLabs(image.deployment.user)
+				def allowedHwdProfiles = []
+				allowedHwdProfiles.add(image.getDeployedHarwdProfile())
+				def allowedLabs = userRestrictionService.getAllowedLabs(image.deployment.user)
 				def quantitiesTree = new TreeMap<String, Integer>()
-				labsAvoided.each {
-					def results = laboratoryService.calculateDeploys(it,hwdProfilesAvoided, image.highAvaliavility)					
-					for(HardwareProfile hwd in hwdProfilesAvoided){
+				allowedLabs.each {
+					def results = laboratoryService.calculateDeploys(it,allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
+					for(HardwareProfile hwd in allowedHwdProfiles){
 						if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
 						else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
 					}
 				}
 				def quantities = []
 				def high = false;
-				for(HardwareProfile hwd in hwdProfilesAvoided){
+				for(HardwareProfile hwd in allowedHwdProfiles){
 					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
 				}
 				[quantities:quantities,image:image]

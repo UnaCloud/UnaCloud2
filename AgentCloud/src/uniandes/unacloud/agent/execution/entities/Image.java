@@ -14,7 +14,7 @@ public class Image implements Serializable{
 	private static final long serialVersionUID = -2386734224180305694L;
 	
 	/**
-	 * Id 
+	 * Database ID
 	 */
 	private long id;
 	
