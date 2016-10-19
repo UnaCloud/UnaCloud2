@@ -37,12 +37,12 @@ public class ImageCopy implements Serializable{
 	private transient ImageStatus status=ImageStatus.FREE;
 	
 	/**
-	 * Execution's ID
+	 * Holds the platform specific execution ID
 	 */
-	private String executionID;
+	private String platformExecutionID;
 	
 	/**
-	 * Get manin file
+	 * Get main file
 	 */
 	public File getMainFile() {
 		return mainFile;
@@ -96,19 +96,19 @@ public class ImageCopy implements Serializable{
 	}
 	
 	/**
-	 * Returns the execution ID
+	 * Returns the platform's execution ID
 	 * @return
 	 */
-	public String getExecutionID() {
-		return executionID;
+	public String getPlatformExecutionID() {
+		return platformExecutionID;
 	}
 	
 	/**
-	 * Updates the execution ID
+	 * Updates the platofrm's execution ID
 	 * @param executionID
 	 */
-	public void setExecutionID(String executionID) {
-		this.executionID = executionID;
+	public void setPlatformExecutionID(String executionID) {
+		this.platformExecutionID = executionID;
 	}
 	
 	/**
