@@ -58,7 +58,7 @@ public abstract class OperatingSystem {
          	public void run() {
          		try {
 					Thread.sleep(1000);
-					LocalProcessExecutor.executeCommand(getRestartCommand());
+					executeCommandOS(getRestartCommand());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,7 +83,7 @@ public abstract class OperatingSystem {
          	public void run() {
          		try {
 					Thread.sleep(1000);
-			    	LocalProcessExecutor.executeCommand(getLogOutCommand());   
+					executeCommandOS(getLogOutCommand());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -91,6 +91,27 @@ public abstract class OperatingSystem {
          }.start();
          return UnaCloudConstants.SUCCESSFUL_OPERATION;
     }
+    
+    /**
+     * Used by other methods in class to execute commands in this OS.
+     * @param command
+     * @return result in console
+     */
+    protected String executeCommandOS(String command){
+    	try {
+        	return LocalProcessExecutor.executeCommandOutput(command);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
+    
+    /**
+     * Responsible for setting priority for one process
+     * @param processName
+     */
+    public abstract void setPriorityProcess(String processName) throws UnsupportedCommandException;
+    
     
     /**
      * Responsible for returning the command to log out user from host machine
@@ -110,13 +131,6 @@ public abstract class OperatingSystem {
      * @return String current user name
      */
     public abstract String getWhoAmI() throws UnsupportedCommandException;
-    
-    /**
-     * Returns command to get down priority in process
-     * @return command
-     * @param process name to set priority
-     */
-    public abstract String getSetPriorityCommand(String process) throws UnsupportedCommandException;
     
     /**
      * Returns path of program data
