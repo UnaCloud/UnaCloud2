@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import uniandes.unacloud.web.domain.DeployedImage;
+import uniandes.unacloud.web.domain.Image;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Platform;
@@ -51,8 +53,8 @@ public abstract class ExecutionAllocator{
 	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
 	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
-		System.out.println("Requires: "+vme.getDeployedImage().getImage().getPlatform().getName());
-		if(!isPlatformSupport(vme.getDeployedImage().getImage().getPlatform(), pm))return false;
+		System.out.println("Requires: "+((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform().getName());
+		if(!isPlatformSupport(((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform(), pm))return false;
 		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+" exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
 		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())

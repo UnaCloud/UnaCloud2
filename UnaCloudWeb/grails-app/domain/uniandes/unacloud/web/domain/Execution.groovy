@@ -169,7 +169,7 @@ class Execution {
 	 * Responsible for returning deployedImage
 	 * @return deployed image
 	 */
-	def DeployedImage getDeployedImage(){
+	def getDeployedImage(){
 		return deployImage;
 	}
 }

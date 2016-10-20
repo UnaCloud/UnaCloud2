@@ -87,16 +87,16 @@ public class PlatformEntity {
 	 */
 	public boolean validatesExtension(String filename){
 		try {
-			if(extension.matches("*."+this.extension))return true;
+			if(filename.matches(".*."+this.extension))return true;
 			String regex = "";
 			int index = 0;
 			String[] extensions = otherExtensions.split(",");
 			for(String ext: extensions){
 				ext = ext.replace(".", "");
-				regex+="*."+ext+(index<extensions.length-1?"|":"");	
+				regex+=".*."+ext+(index<extensions.length-1?"|":"");	
 				index++;
 			}
-			if(extension.matches(regex))return true;
+			if(filename.matches(regex))return true;
 			return false;
 		} catch (Exception e) {
 			return false;
