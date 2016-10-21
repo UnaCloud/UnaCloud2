@@ -99,7 +99,7 @@ public abstract class Libvirt extends Hypervisor {
     		sleep(1000);
                 
                 // Set the lowest priority
-    		LocalProcessExecutor.executeCommandOutput("renice", "-n", "19", "-p", vmPID);
+    		LocalProcessExecutor.executeCommandOutput("sudo", "renice", "-n", "19", "-p", vmPID);
     		sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -163,6 +163,8 @@ public abstract class Libvirt extends Hypervisor {
             this.connect();
             Domain virtualMachine = this.connection.domainLookupByName(image.getVirtualMachineName());
             virtualMachine.create();
+            
+            setPriority(image);
             
             ServerSocket ssocket = new ServerSocket(1333);
         
