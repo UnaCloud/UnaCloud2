@@ -54,7 +54,7 @@ public class UnaCloudConstants {
 	public static final String DEFAULT_USER_PASSWORD = "DEFAULT_USER_PASSWORD";
 		
 	//Agent
-	public static final String AGENT_USER = "user"; // Pending to decide the definitive UnaCloud Agent User for Linux Systems
+	public static final String AGENT_USER = "unacloud"; // Pending to decide the definitive UnaCloud Agent User for Linux Systems
 	public static final String VMRUN_PATH = "VMRUN_PATH";
 	public static final String VBOX_PATH = "VBOX_PATH";
 	public static final String QEMU_KVM_PATH = "QEMU_KVM_PATH";
