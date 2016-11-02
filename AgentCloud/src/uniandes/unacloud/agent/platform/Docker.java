@@ -1,7 +1,11 @@
 package uniandes.unacloud.agent.platform;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +38,7 @@ public class Docker extends Platform {
      * Docker client that will communicate with the daemon. It is built from
      * the DOCKER_HOST environment variable
      */
-	private DockerClient client;
+	private DockerClient docker;
 	
 	/**
 	 * Class constructor
@@ -43,7 +47,7 @@ public class Docker extends Platform {
 	public Docker(String path) {
 		super(path); 
 		try {
-			client = DefaultDockerClient.fromEnv().build();
+			docker = DefaultDockerClient.fromEnv().build();
 		} catch (DockerCertificateException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +60,7 @@ public class Docker extends Platform {
     @Override
     public void stopExecution(ImageCopy image){
 		try {
-			client.stopContainer(image.getExecutionID(), Docker.STOP_GRACE_PERIOD_SECONDS);
+			docker.stopContainer(image.getPlatformExecutionID(), Docker.STOP_GRACE_PERIOD_SECONDS);
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -72,11 +76,24 @@ public class Docker extends Platform {
     	// TODO consider adding BuildParams
     	// TODO handle network/ports
     	try {
+    		// Loads any acompanying tar files that were created with the "docker save" command
+    		File[] images = image.getMainFile().getAbsoluteFile().getParentFile().listFiles(new FileFilter() {
+				@Override
+				public boolean accept(File pathname) {
+					return pathname.isFile() && pathname.getName().endsWith(".tar");
+				}
+			});
+    		
+    		for(File savedImage : images) {
+    			InputStream imagePayload = new BufferedInputStream(new FileInputStream(savedImage));
+    			docker.load(imagePayload);
+    		}
+    		
     		// Attemps to create image from Dockerfile, has no effect if daemon already has the image
-			client.build(image.getMainFile().toPath(), new DockerClient.BuildParam[]{});
+			docker.build(image.getMainFile().toPath(), new DockerClient.BuildParam[]{});
 
 			ContainerConfig contCfg = ContainerConfig.builder().image(image.getImageName()).build();
-			image.setExecutionID(client.createContainer(contCfg).id());
+			image.setPlatformExecutionID(docker.createContainer(contCfg).id());
 		} catch (DockerException | InterruptedException | IOException e) {
 			e.printStackTrace();
 		}
@@ -90,7 +107,7 @@ public class Docker extends Platform {
     @Override
 	public void unregisterImage(ImageCopy image){
         try {
-			client.removeContainer(image.getExecutionID());
+			docker.removeContainer(image.getPlatformExecutionID());
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -103,7 +120,7 @@ public class Docker extends Platform {
     @Override
     public void restartExecution(ImageCopy image) throws PlatformOperationException {
         try {
-			client.restartContainer(image.getExecutionID(), Docker.STOP_GRACE_PERIOD_SECONDS);
+			docker.restartContainer(image.getPlatformExecutionID(), Docker.STOP_GRACE_PERIOD_SECONDS);
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -116,7 +133,7 @@ public class Docker extends Platform {
     @Override
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		try {
-			client.startContainer(image.getExecutionID());
+			docker.startContainer(image.getPlatformExecutionID());
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -149,8 +166,8 @@ public class Docker extends Platform {
     	}
     	
     	try {
-			ExecCreation exec = client.execCreate(image.getExecutionID(), cmd);
-			client.execStart(exec.id(), ExecStartParameter.DETACH);
+			ExecCreation exec = docker.execCreate(image.getPlatformExecutionID(), cmd);
+			docker.execStart(exec.id(), ExecStartParameter.DETACH);
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -164,7 +181,7 @@ public class Docker extends Platform {
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
     	try {
-			client.copyToContainer(sourceFile.toPath(), image.getExecutionID(), destinationRoute);
+			docker.copyToContainer(sourceFile.toPath(), image.getPlatformExecutionID(), destinationRoute);
 		} catch (DockerException | InterruptedException | IOException e) {
 			e.printStackTrace();
 		}
@@ -225,9 +242,9 @@ public class Docker extends Platform {
 	 */
 	public void unregisterAllVms(){
 		try {
-			List<Container> containers = client.listContainers(ListContainersParam.allContainers());
+			List<Container> containers = docker.listContainers(ListContainersParam.allContainers());
 			for(Container c : containers) {
-				client.removeContainer(c.id());
+				docker.removeContainer(c.id());
 			}
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
@@ -250,7 +267,7 @@ public class Docker extends Platform {
 		List<Container> containers;
 		try {
 			// Returns only the running containers
-			containers = client.listContainers();
+			containers = docker.listContainers();
 		} catch (DockerException | InterruptedException e) {
 			e.printStackTrace();
 			return null;
@@ -260,7 +277,7 @@ public class Docker extends Platform {
 		
 		Outer: for(Execution execution : executions) {
 			for(Container c : containers) {
-				if(c.id().equals(execution.getId())) {
+				if(c.id().equals(execution.getImage().getPlatformExecutionID())) {
 					continue Outer;
 				}
 			}
