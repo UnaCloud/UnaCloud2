@@ -20,6 +20,9 @@ import uniandes.unacloud.common.utils.LocalProcessExecutor;
  * platform.
  */
 public class VirtualBox extends Platform {
+	
+	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
+	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
     
 	/**
 	 * Class constructor
@@ -85,7 +88,7 @@ public class VirtualBox extends Platform {
         }
         sleep(30000);
         try {
-			LocalProcessExecutor.executeCommandOutput(OSFactory.getOS().getSetPriorityCommand("VBoxHeadless.exe"));
+        	OSFactory.getOS().setPriorityProcess(HEADLESS_SERVICE_NAME);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -97,7 +100,7 @@ public class VirtualBox extends Platform {
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getImageName());
     		sleep(1000);
-    		LocalProcessExecutor.executeCommandOutput(OSFactory.getOS().getSetPriorityCommand("VBoxSVC.exe"));
+    		OSFactory.getOS().setPriorityProcess(VBOX_SERVICE_NAME);
     		sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();

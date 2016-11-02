@@ -43,12 +43,14 @@ class FileService implements ApplicationContextAware {
 			Connection con = FileManager.getInstance().getDBConnection();
 			def image = ImageFileManager.getImageWithFile(token,con)
 			if(image){
+				boolean isValid = true;
 				files.each {
-					def fileName=it.getOriginalFilename()
+					def fileName=it.getOriginalFilename().trim()
 					if(!image.getPlatform().validatesExtension(fileName)){
-						return null
+						isValid = false;
 					}
-				}										
+				}
+				if(!isValid)return null										
 				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				if(image.isPublic()){
 					File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
@@ -95,6 +97,12 @@ class FileService implements ApplicationContextAware {
 			def image = ImageFileManager.getImageWithFile(token, con)
 			if(image){
 				println 'Main file: '+image.getMainFile()
+				files.each {
+					def fileName=it.getOriginalFilename()
+					if(!image.getPlatform().validatesExtension(fileName)){
+						return null
+					}
+				}
 				if(image.getMainFile()!=null)new java.io.File(image.getMainFile()).getParentFile().deleteDir()
 				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 				def sizeImage = 0;
@@ -117,9 +125,11 @@ class FileService implements ApplicationContextAware {
 				
 			}
 			con.close();
+			return true;
 		}catch(Exception e){
 			e.printStackTrace()
-		}			
+		}		
+		return false;	
 	}
 	
 	/**

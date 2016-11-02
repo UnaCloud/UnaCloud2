@@ -33,8 +33,8 @@ public class ImageFileManager {
 	public static ImageFileEntity getImageWithFile(Long id, ImageEnum state, boolean withUser, boolean withConfigurer, Connection con){
 		try {
 			String query = null;
-			if(withConfigurer) query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, os.configurer"+(withUser?",vm.owner_id":"")+" FROM image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
-			else query ="SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name"+(withUser?",vm.owner_id":"")+" FROM image vm WHERE vm.state = ? and vm.id = ?;";
+			if(withConfigurer) query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id, os.configurer"+(withUser?",vm.owner_id":"")+" FROM image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
+			else query ="SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id"+(withUser?",vm.owner_id":"")+" FROM image vm WHERE vm.state = ? and vm.id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
@@ -42,10 +42,10 @@ public class ImageFileManager {
 			ResultSet rs = ps.executeQuery();
 			ImageFileEntity image = null;
 			if(rs.next()){
-				image = new ImageFileEntity(rs.getLong(1), state, rs.getString(6), StorageManager.getRepository(rs.getLong(5),con),PlatformManager.getPlatform(rs.getInt(9),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(9), withConfigurer?rs.getString(10):null);
+				image = new ImageFileEntity(rs.getLong(1), state, rs.getString(6), StorageManager.getRepository(rs.getLong(5),con),PlatformManager.getPlatform(rs.getInt(10),con), rs.getBoolean(3), rs.getLong(2), rs.getString(4), rs.getString(9), withConfigurer?rs.getString(11):null);
 				image.setUser(rs.getString(7));
 				image.setPassword(rs.getString(8));
-				if(withUser)image.setOwner(new UserEntity(withConfigurer?rs.getLong(11):rs.getLong(10),null,null));
+				if(withUser)image.setOwner(new UserEntity(withConfigurer?rs.getLong(12):rs.getLong(11),null,null));
 			}
 			try{rs.close();ps.close();}catch(Exception e){}
 			return image;
@@ -134,7 +134,7 @@ public class ImageFileManager {
 	public static List<ImageFileEntity> getAllImagesByUser(Long userId,Connection con){
 		try {
 			List<ImageFileEntity> list = new ArrayList<ImageFileEntity>();	
-			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name FROM image vm WHERE vm.owner_id = ?;";
+			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name, vm.platform_id FROM image vm WHERE vm.owner_id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, userId);
 			System.out.println(ps.toString());

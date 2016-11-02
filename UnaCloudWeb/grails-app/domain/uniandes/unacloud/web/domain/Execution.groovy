@@ -164,4 +164,12 @@ class Execution {
 	def boolean showDetails(){
 		return status.equals(ExecutionStateEnum.DEPLOYED)||status.equals(ExecutionStateEnum.RECONNECTING)||status.equals(ExecutionStateEnum.FAILED)
 	}
+	
+	/**
+	 * Responsible for returning deployedImage
+	 * @return deployed image
+	 */
+	def getDeployedImage(){
+		return deployImage;
+	}
 }

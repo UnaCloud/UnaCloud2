@@ -80,4 +80,12 @@ class DeployedImage {
 	def Long getDatabaseId(){
 		return id;
 	}
+	
+	/**
+	 * Returns image
+	 * @return image
+	 */
+	def Image getImage(){
+		return image
+	}
 }

@@ -19,6 +19,7 @@ public class LinuxOS extends OperatingSystem{
 	public static final String LINUX_RESTART_FILE_COMMAND = "restartLinux.sh ";
 	public static final String LINUX_LOGOUT_FILE_COMMAND = "logoutLinux.sh ";
 	public static final String LINUX_HOSTNAME_COMMAND = "hostname";
+	public static final String USER_FOR_OS = "root";
 
 	@Override
 	public String getTurnOffCommand() {		
@@ -87,11 +88,6 @@ public class LinuxOS extends OperatingSystem{
 	}
 
 	@Override
-	public String getSetPriorityCommand(String process) throws UnsupportedCommandException {
-		throw new UnsupportedCommandException("Priority", "Linux");
-	}
-
-	@Override
 	public String getProgramDataPath() throws UnsupportedCommandException {
 		throw new UnsupportedCommandException("Data path for vmware", "Linux");
 	}
@@ -99,7 +95,22 @@ public class LinuxOS extends OperatingSystem{
 	@Override
 	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
 		String user = getWhoAmI();
-		return user!=null&&!user.toLowerCase().contains("root");
+		return user!=null&&!user.toLowerCase().contains(USER_FOR_OS);
+	}
+
+	@Override
+	public void setPriorityProcess(String processName) {
+		try {
+			String [] h = executeCommandOS("ps -e -o pid,uname,comm,stat,pri | grep "+USER_FOR_OS+" | grep "+processName).split("\n|\r");
+			for(String line: h){
+				System.out.println(line);
+				String pid = line.split("\t")[0].trim();
+				executeCommandOS("renice 19 "+pid);
+			}			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 }

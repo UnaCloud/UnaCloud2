@@ -257,11 +257,12 @@ class LaboratoryService {
 	 * @param lab where will be calculated the available resources
 	 * @param hwProfiles profiles to calculate available deployments
 	 * @param highAvailability if high availability resources should be calculated
+	 * @param platform to filter resources
 	 */
-	def calculateDeploys(Laboratory lab, def hwProfiles, highAvailability){
+	def calculateDeploys(Laboratory lab, def hwProfiles, highAvailability, platform){
 		TreeMap<String, Integer> results = new TreeMap<String,Integer>();	
 		def availableIps = lab.getAvailableIps()
-		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == highAvailability?1:0}.each{			
+		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == highAvailability?1:0 && platform in it.platforms}.each{			
 			def pmId = it.id;
 			//How much resources in host are available in this moment			
 			def availableResources = it.availableResources()			

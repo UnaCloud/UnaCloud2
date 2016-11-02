@@ -21,6 +21,7 @@ public class PlatformEntity {
 		this.id = id;
 		this.version = version;
 		this.name = name;
+		if(extension.contains("."))extension = extension.replace(".", "");
 		this.extension = extension;
 		this.otherExtensions = otherExt;
 		this.configurer = configurer;
@@ -81,20 +82,21 @@ public class PlatformEntity {
 	
 	/**
 	 * Validates if a extension matches with extension list from platform
-	 * @param extension
+	 * @param filename name of file
 	 * @return true if extension is valid, false in case not
 	 */
-	public boolean validatesExtension(String extension){
+	public boolean validatesExtension(String filename){
 		try {
-			if(extension.matches(".*"+this.extension))return true;
+			if(filename.matches(".*."+this.extension))return true;
 			String regex = "";
 			int index = 0;
 			String[] extensions = otherExtensions.split(",");
 			for(String ext: extensions){
-				regex+=".*"+ext+(index<extensions.length-1?"|":"");	
+				ext = ext.replace(".", "");
+				regex+=".*."+ext+(index<extensions.length-1?"|":"");	
 				index++;
 			}
-			if(extension.matches(regex))return true;
+			if(filename.matches(regex))return true;
 			return false;
 		} catch (Exception e) {
 			return false;

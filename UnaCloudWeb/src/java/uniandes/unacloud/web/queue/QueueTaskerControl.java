@@ -99,7 +99,7 @@ public class QueueTaskerControl {
 		for (int i = 0; i < executions.size(); i++) {
 			listIds[i]=executions.get(i).getDatabaseId();
 		}
-		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), image.getImage().getDatabaseId(), listIds);
+		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), ((Image)image.getImage()).getDatabaseId(), listIds);
 		controlQueue.sendMessage(message);
 	}
 	

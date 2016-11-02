@@ -131,4 +131,12 @@ class PhysicalMachine {
 		return Execution.where {executionNode==this&&status!=ExecutionStateEnum.FINISHED}.findAll().size()>0
 	}
 	
+	/**
+	 * Responsible to return list of platform for physical machine
+	 * @return list of platforms
+	 */
+	def Collection<Platform> getPlatforms(){
+		return platforms;
+	}
+	
 }

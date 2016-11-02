@@ -54,7 +54,7 @@ class UserRestrictionService {
 	 * @param user to request hardware profiles
 	 * @return list of available hardware profile  for user
 	 */
-    def getAvoidHwdProfiles(User user) {
+    def getAllowedHwdProfiles(User user) {
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES)
 		if(!restriction){
 			def groups = user.getGroupsWithRestriction(UserRestrictionEnum.HARDWARE_PROFILE_AVAILABLES)
@@ -71,7 +71,7 @@ class UserRestrictionService {
 	 * @param user to request available labs
 	 * @return list of available labs for user
 	 */
-	def getAvoidLabs(User user){
+	def getAllowedLabs(User user){
 		UserRestriction restriction = user.getRestriction(UserRestrictionEnum.ALLOWED_LABS)
 		if(!restriction){
 			def groups = user.getGroupsWithRestriction(UserRestrictionEnum.ALLOWED_LABS)

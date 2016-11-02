@@ -91,11 +91,6 @@ public class WindowsOS extends OperatingSystem{
 	}
 
 	@Override
-	public String getSetPriorityCommand(String process) throws UnsupportedCommandException{		
-		return "wmic process where name=\""+process+"\" CALL setpriority 64";
-	}
-
-	@Override
 	public String getProgramDataPath() throws UnsupportedCommandException {		
 		return "C:\\ProgramData\\VMware\\hostd\\datastores.xml";
 	}
@@ -104,6 +99,15 @@ public class WindowsOS extends OperatingSystem{
 	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
 		String user = getWhoAmI();
 		return user!=null&&!user.toLowerCase().contains("system");
+	}
+
+	@Override
+	public void setPriorityProcess(String processName) {
+    	try {
+			executeCommandOS("wmic process where name=\""+processName+".exe\" CALL setpriority 64");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	    
 	}	
 
 }

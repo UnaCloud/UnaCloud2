@@ -141,4 +141,12 @@ class Image {
 	def Long getDatabaseId(){
 		return id;
 	}
+
+	/**
+	 * returns platform
+	 * @return platform
+	 */
+	def Platform getPlatform(){
+		return platform;
+	}
 }	

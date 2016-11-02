@@ -50,11 +50,6 @@ public class MacOS extends OperatingSystem{
 	public String turnOnMachines(String[] message)throws UnsupportedCommandException {
 		throw new UnsupportedCommandException("Turn on", "Mac");
 	}
-
-	@Override
-	public String getSetPriorityCommand(String process)throws UnsupportedCommandException {
-		throw new UnsupportedCommandException("Priority", "Mac");
-	}
 	
 	@Override
 	public String getProgramDataPath() throws UnsupportedCommandException {
@@ -64,5 +59,10 @@ public class MacOS extends OperatingSystem{
 	@Override
 	public boolean isRunningBySuperUser() throws UnsupportedCommandException {
 		throw new UnsupportedCommandException("Running by user", "Mac");
+	}
+
+	@Override
+	public void setPriorityProcess(String processName) throws UnsupportedCommandException{
+		throw new UnsupportedCommandException("Set priority to process","Mac");		
 	}
 }
