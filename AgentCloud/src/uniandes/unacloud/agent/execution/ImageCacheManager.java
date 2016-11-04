@@ -22,7 +22,6 @@ import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.RandomUtils;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
 /**
@@ -33,7 +32,7 @@ import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 public class ImageCacheManager {
 	
 	
-	private static String machineRepository=VariableManager.getInstance().getLocal().getSetStringValue(VM_REPO_PATH,"E:\\GRID\\");
+	private static String machineRepository=VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
 	private static File imageListFile=new File("imageList");
 	private static Map<Long,Image> imageList=null;
 	
@@ -75,7 +74,10 @@ public class ImageCacheManager {
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
 				File root=new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId+OperatingSystem.PATH_SEPARATOR+vmName);
-				dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split(OperatingSystem.PATH_SEPARATOR+".")[1]));
+				if(source.getMainFile().getName().contains("."))
+					dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split(OperatingSystem.PATH_SEPARATOR+".")[1]));
+				else
+					dest.setMainFile(new File(root,vmName));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);
@@ -140,7 +142,7 @@ public class ImageCacheManager {
 			ex.printStackTrace();
 		}
 		saveImages();
-		return UnaCloudConstants.SUCCESSFUL_OPERATION;
+		return SUCCESSFUL_OPERATION;
 	}
 	
 	
@@ -166,7 +168,7 @@ public class ImageCacheManager {
 			imageList.remove(imageId);
 			saveImages();
 		}
-		return UnaCloudConstants.SUCCESSFUL_OPERATION;
+		return SUCCESSFUL_OPERATION;
 	}
 	
 	/**
