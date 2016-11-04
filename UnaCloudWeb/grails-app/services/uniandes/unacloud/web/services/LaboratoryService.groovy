@@ -83,8 +83,7 @@ class LaboratoryService {
 	
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
 		def physicalMachine = new PhysicalMachine(name:name, cores:cores, pCores:pCores, ram: ram, highAvailability:(lab.highAvailability),
-			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip))
-		physicalMachine.platforms = []
+			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip), platforms: [])
 		if(plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
 		else{

@@ -140,9 +140,9 @@ class DeploymentService {
 			}
 		}
 		
-		if(!Environment.isDevelopmentMode()){				
+		//if(!Environment.isDevelopmentMode()){				
 			QueueTaskerControl.deployCluster(dep,user)
-		}		
+		//}		
 		
 		return dep
 	}

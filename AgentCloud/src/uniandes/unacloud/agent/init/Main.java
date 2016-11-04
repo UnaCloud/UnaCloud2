@@ -29,15 +29,10 @@ public class Main {
      * @param args String array
      * @throws Exception 
      */
-    public static void main(String[] args){      	
-    	
+    public static void main(String[] args){      
+    
         int mainCase = 0;
-        //Validates data path  
-    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
-    	if(dataPath==null||dataPath.isEmpty()){
-    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
-    		System.exit(0);
-    	}
+       
         try {
     		//Create agent log file
         	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
@@ -55,6 +50,13 @@ public class Main {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+        System.out.println("Start configuration");
+        //Validates data path  
+    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
+    	if(dataPath==null||dataPath.isEmpty()){
+    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
+    		System.exit(0);
+    	}
       
       //Start log     	
     	{

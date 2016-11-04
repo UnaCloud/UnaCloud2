@@ -91,7 +91,7 @@ class FileService implements ApplicationContextAware {
 	 * @param token to query image
 	 */
 	
-	def updateFiles(files, String token, String mainExtension){
+	def updateFiles(files, String token){
 		try{
 			Connection con = FileManager.getInstance().getDBConnection();
 			def image = ImageFileManager.getImageWithFile(token, con)
@@ -116,7 +116,7 @@ class FileService implements ApplicationContextAware {
 						File newFile = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator+filename);
 						FileUtils.copyFile(file, newFile);
 					}
-					if (filename.matches(".*"+mainExtension)){
+					if (filename.matches(".*"+image.getPlatform().getExtension())){
 						image.setMainFile(image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator+filename)
 					}
 					sizeImage += it.getSize()

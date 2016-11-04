@@ -90,7 +90,8 @@ public class Docker extends Platform {
     		}
     		
     		// Attemps to create image from Dockerfile, has no effect if daemon already has the image
-			docker.build(image.getMainFile().toPath(), new DockerClient.BuildParam[]{});
+    		System.out.println("\t\t"+image.getMainFile().toPath().getParent());
+			docker.build(image.getMainFile().toPath().getParent(), new DockerClient.BuildParam[]{});
 
 			ContainerConfig contCfg = ContainerConfig.builder().image(image.getImageName()).build();
 			image.setPlatformExecutionID(docker.createContainer(contCfg).id());

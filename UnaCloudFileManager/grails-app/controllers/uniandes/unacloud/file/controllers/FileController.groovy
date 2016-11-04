@@ -104,7 +104,6 @@ class FileController {
 				def files = request.multiFileMap.files
 				println 'valid files'
 				boolean validate=true
-				String mainExtension = null
 				try{
 					files.each {
 						if(validate){
@@ -120,7 +119,7 @@ class FileController {
 					resp = [success:false,'message':e.message]
 				}
 				if(validate){
-					def update = fileService.updateFiles(files,params.token,mainExtension)
+					def update = fileService.updateFiles(files,params.token)
 					if(update == null){
 						resp = [success:false,'message':'Invalid file type.']
 					}else 
