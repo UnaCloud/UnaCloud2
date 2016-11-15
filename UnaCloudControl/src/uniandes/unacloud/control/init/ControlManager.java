@@ -85,7 +85,7 @@ public class ControlManager extends ProjectManager{
 	 */
 	@Override
 	protected void startQueueService() throws Exception {
-		System.out.println("Start queue service");
+		System.out.println("Start queue service "+reader.getStringVariable(UnaCloudConstants.QUEUE_IP));
 		QueueRabbitManager rabbitManager = new QueueRabbitManager(reader.getStringVariable(UnaCloudConstants.QUEUE_USER),
 				reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), reader.getStringVariable(UnaCloudConstants.QUEUE_IP), 
 				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), UnaCloudConstants.QUEUE_CONTROL);

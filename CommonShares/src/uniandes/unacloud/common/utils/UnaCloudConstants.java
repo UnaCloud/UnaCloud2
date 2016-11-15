@@ -57,6 +57,7 @@ public class UnaCloudConstants {
 	//Agent
 	public static final String VMRUN_PATH = "VMRUN_PATH";
 	public static final String VBOX_PATH = "VBOX_PATH";
+	public static final String DOCKER_PATH = "DOCKER_PATH";
 	public static final String VM_REPO_PATH = "VM_REPO_PATH";
 	public static final String REGISTERED = "REGISTERED";
 	public static final String DATA_PATH = "DATA_PATH";

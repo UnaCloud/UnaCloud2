@@ -1,5 +1,6 @@
 package uniandes.unacloud.web.pmallocators;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -54,7 +55,7 @@ public abstract class ExecutionAllocator{
 	 */
 	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
 		System.out.println("Requires: "+((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform().getName());
-		if(!isPlatformSupport(((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform(), pm))return false;
+		if(!isSupportedPlatform(((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform(), pm))return false;
 		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+" exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
 		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())
@@ -83,8 +84,8 @@ public abstract class ExecutionAllocator{
 	 * @param pm
 	 * @return true if platform is supported else false
 	 */
-	private boolean isPlatformSupport(Platform platform, PhysicalMachine pm){
-		for(Platform plat: pm.getPlatforms()){
+	private boolean isSupportedPlatform(Platform platform, PhysicalMachine pm){
+		for(Platform plat: pm.getAllPlatforms()){
 			if(plat.getDatabaseId()==platform.getDatabaseId())
 				return true;
 		}

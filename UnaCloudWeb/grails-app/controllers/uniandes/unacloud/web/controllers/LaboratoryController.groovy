@@ -364,6 +364,7 @@ class LaboratoryController {
 						flash.message="Your Host has been added"
 						flash.type="success"
 					}catch(Exception e){
+					    e.printStackTrace();
 						flash.message=e.message
 					}
 					redirect(uri:"/admin/lab/"+lab.id, absolute:true)

@@ -135,7 +135,7 @@ class PhysicalMachine {
 	 * Responsible to return list of platform for physical machine
 	 * @return list of platforms
 	 */
-	def Collection<Platform> getPlatforms(){
+	public Collection<Platform> getAllPlatforms(){
 		return platforms;
 	}
 	

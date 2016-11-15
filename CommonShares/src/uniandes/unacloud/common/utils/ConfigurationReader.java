@@ -32,11 +32,13 @@ public class ConfigurationReader {
 	 */
 	public ConfigurationReader(String filename, String[] variables) throws IOException{
 		this.fileName = filename;
+		
 		Properties prop = new Properties();
 		InputStream inputStream = new FileInputStream(filename);
 		prop.load(inputStream);
 		for(String value:variables){
 			String data = prop.getProperty(value);
+			
 			if(data!=null)
 				values.put(value, data);
 		}
@@ -141,7 +143,10 @@ public class ConfigurationReader {
 	 */
 	public String getSetStringValue(String nameVariable, String variableToSet){
 		String val = values.get(nameVariable);
-		if(val==null)values.put(nameVariable, variableToSet);
-		return variableToSet;
+		if(val==null){
+			values.put(nameVariable, variableToSet);
+			val = variableToSet;
+		}
+		return val;
 	}
 }
