@@ -19,6 +19,7 @@ import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ExecCreation;
+import com.spotify.docker.client.messages.HostConfig;
 
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
@@ -91,9 +92,13 @@ public class Docker extends Platform {
     		
     		// Attemps to create image from Dockerfile, has no effect if daemon already has the image
     		System.out.println("\t\t"+image.getMainFile().toPath().getParent());
-			docker.build(image.getMainFile().toPath().getParent(), new DockerClient.BuildParam[]{});
-
-			ContainerConfig contCfg = ContainerConfig.builder().image(image.getImageName()).build();
+			String imageID = docker.build(image.getMainFile().toPath().getParent(), new DockerClient.BuildParam[]{});
+			
+			// Publish all exposed ports to host
+			HostConfig hostCfg = HostConfig.builder().publishAllPorts(true).build();
+			
+			// Set the image id and host configs
+			ContainerConfig contCfg = ContainerConfig.builder().image(imageID).hostConfig(hostCfg).build();
 			image.setPlatformExecutionID(docker.createContainer(contCfg).id());
 		} catch (DockerException | InterruptedException | IOException e) {
 			e.printStackTrace();
@@ -149,7 +154,8 @@ public class Docker extends Platform {
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	// TODO implement
-    	throw new UnsupportedOperationException();
+    	System.out.println("TODO Docker:configureExecutionHardware");
+    	//throw new UnsupportedOperationException();
     }
     
     /**
@@ -160,10 +166,12 @@ public class Docker extends Platform {
      */
     @Override
     public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
+    	System.out.println("DockerExecute: " + command);
     	String[] cmd = new String[args.length + 1];
     	cmd[0] = command;
     	for(int i = 1; i < cmd.length; i++) {
-    		cmd[i] = args[i];
+    		System.out.println("DockerExecute-arg"+(i-1)+": " + args[i-1]);
+    		cmd[i] = args[i-1];
     	}
     	
     	try {
@@ -182,6 +190,8 @@ public class Docker extends Platform {
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
     	try {
+    		//TODO Create dir
+    		System.out.println("DockerCopyFile: File path= '"+sourceFile.getAbsolutePath()+"' destination= '"+destinationRoute+"'");
 			docker.copyToContainer(sourceFile.toPath(), image.getPlatformExecutionID(), destinationRoute);
 		} catch (DockerException | InterruptedException | IOException e) {
 			e.printStackTrace();
@@ -195,7 +205,8 @@ public class Docker extends Platform {
      */
     @Override
     public void takeExecutionSnapshot(ImageCopy image,String snapshotname){
-        throw new UnsupportedOperationException();
+    	System.out.println("TODO Docker:takeExecutionSnapshot");
+    	//throw new UnsupportedOperationException();
     }
     
     /**
@@ -205,7 +216,8 @@ public class Docker extends Platform {
      */
     @Override
     public void deleteExecutionSnapshot(ImageCopy image,String snapshotname){
-    	throw new UnsupportedOperationException();
+    	System.out.println("TODO Docker:deleteExecutionSnapshot");
+    	//throw new UnsupportedOperationException();
     }
     
     /**
@@ -215,7 +227,8 @@ public class Docker extends Platform {
     @Override
     public void changeExecutionMac(ImageCopy image) throws PlatformOperationException {
     	// TODO implement
-    	throw new UnsupportedOperationException();
+    	System.out.println("TODO Docker:changeExecutionMac");
+    	//throw new UnsupportedOperationException();
     }
 
     /**
@@ -225,7 +238,8 @@ public class Docker extends Platform {
      */
 	@Override
 	public void restoreExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-		throw new UnsupportedOperationException();
+		System.out.println("TODO Docker:restoreExecutionSnapshot");
+		//throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -235,7 +249,9 @@ public class Docker extends Platform {
 	 */
 	@Override
 	public boolean existsExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-		throw new UnsupportedOperationException();
+		System.out.println("TODO Docker:existsExecutionSnapshot");
+		//throw new UnsupportedOperationException();
+		return false;
 	}
 	
 	/**
@@ -260,7 +276,8 @@ public class Docker extends Platform {
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
 		// TODO implement
-		throw new UnsupportedOperationException();
+		System.out.println("TODO Docker:cloneImage");
+		//throw new UnsupportedOperationException();
 	}
 	
 	@Override
