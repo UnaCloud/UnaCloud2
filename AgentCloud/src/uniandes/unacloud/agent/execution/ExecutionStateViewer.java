@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.communication.send;
+package uniandes.unacloud.agent.execution;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,7 +9,8 @@ import java.util.logging.Logger;
 
 
 
-import uniandes.unacloud.agent.execution.PersistentExecutionManager;
+
+import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
