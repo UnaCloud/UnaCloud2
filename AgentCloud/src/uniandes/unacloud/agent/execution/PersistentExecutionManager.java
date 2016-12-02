@@ -15,7 +15,6 @@ import java.util.Timer;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.communication.send.ExecutionStateViewer;
 import uniandes.unacloud.agent.communication.upload.UploadImageTask;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;

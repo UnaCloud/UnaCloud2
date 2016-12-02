@@ -196,8 +196,9 @@ class LaboratoryService {
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
 		if(ipPool&&ipPool.getUsedIpsQuantity()==0){
+			for(ExecutionIP ip : ipPool.ips)deleteIP(lab, ip)
 			ipPool.delete()
-		}else throw new Exception('Some Ips in IP Pool are being used') 
+		}else throw new Exception('Some Ips in IP Pool are being used')
 	}
 	
 	/**
