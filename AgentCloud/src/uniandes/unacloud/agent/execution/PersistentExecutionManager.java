@@ -19,6 +19,7 @@ import uniandes.unacloud.agent.communication.upload.UploadImageTask;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
+import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
@@ -134,8 +135,17 @@ public class PersistentExecutionManager {
 	            executionList.put(execution.getId(),execution);
 	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
 	            ServerMessageSender.reportExecutionState(execution.getId(),ExecutionStateEnum.DEPLOYING,"Starting execution");
-	            if(new ExecutionStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
+	            
+	            Platform execPlat = PlatformFactory.getPlatform(execution.getImage().getImage().getPlatformId());
+	            long executionID = execution.getId();
+	            
+	            if(execPlat.checkExecutionStarted(execution)) {
 	            	execution.getImage().setStatus(ImageStatus.LOCK);
+	            	ServerMessageSender.reportExecutionState(executionID,ExecutionStateEnum.DEPLOYED,"Execution is running");
+	            } else {
+	            	PersistentExecutionManager.removeExecution(executionID,false);
+	                ServerMessageSender.reportExecutionState(executionID,ExecutionStateEnum.FAILED,"Platform could not verify execution's start.");
+	            }
 	        } catch (PlatformOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();

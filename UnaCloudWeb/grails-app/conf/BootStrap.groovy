@@ -73,6 +73,7 @@ class BootStrap {
 			new OperatingSystem(name:'Ubuntu 10',configurer:'Ubuntu').save();
 			new OperatingSystem(name:'Ubuntu 11',configurer:'Ubuntu').save();
 			new OperatingSystem(name:'Scientific Linux',configurer:'ScientificLinux').save();
+			new OperatingSystem(name:'Docker-Blank',configurer:'DockerBlank').save();
 		}
 
 		if(ServerVariable.count() ==0){

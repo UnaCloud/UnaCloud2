@@ -97,7 +97,7 @@ grails.hibernate.osiv.readonly = false
 //cors.url.pattern = ['/upload/*', '/update/*','/file/*']
 ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG)
 String path = reader.getStringVariable("WEB_SERVER_URL")
-cors.headers = ['Access-Control-Allow-Origin': path.substring(0,path.lastIndexOf("/"))]
+//cors.headers = ['Access-Control-Allow-Origin': path.substring(0,path.lastIndexOf("/"))]
 
 environments {
     development {

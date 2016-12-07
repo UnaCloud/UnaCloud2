@@ -40,6 +40,10 @@ public class PlatformFactory {
     		VirtualBox vbox = new VirtualBox(vBox);
     		map.put(vbox.getCode(),vbox);
     	}
+    	if(docker!=null){
+    		Docker platform = new Docker(docker);
+    		map.put(platform.getCode(), platform);
+    	}
     	
     	//TODO add support to vmWarePlayer
     	//map.put(VMwarePlayer.platform_ID,new VMwarePlayer(VariableManager.local.getsetStringValue("VMRUN_PATH","C:\\Program Files (x86)\\VMware\\VMware VIX\\vmrun.exe")));
