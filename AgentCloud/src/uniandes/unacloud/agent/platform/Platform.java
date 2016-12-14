@@ -151,10 +151,11 @@ public abstract class Platform {
      */
     private boolean pingVerification(String vmIP){
         try {
-            Process p = Runtime.getRuntime().exec("ping " + vmIP + " -n 2");
+        	// TODO: make ping cross-platform
+            Process p = Runtime.getRuntime().exec("ping -c 2 " + vmIP);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             for(String h;(h=br.readLine())!=null;){
-                if(h.contains("TTL")){
+                if(h.toUpperCase().contains("TTL")){
                     p.destroy();
                     br.close();
                     return true;

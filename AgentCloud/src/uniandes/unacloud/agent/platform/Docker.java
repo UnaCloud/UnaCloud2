@@ -93,7 +93,7 @@ public class Docker extends Platform {
 			}
 
 			// Attemps to create image from Dockerfile, has no effect if daemon already has the image
-			String imageID = docker.build(image.getMainFile().toPath().getParent(), null, image.getMainFile().getAbsolutePath(), 
+			String imageID = docker.build(image.getMainFile().toPath().getParent(), null, image.getMainFile().getName(), 
 					new ProgressHandler() {
 				@Override
 				public void progress(ProgressMessage arg0) throws DockerException {

@@ -74,10 +74,7 @@ public class ImageCacheManager {
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
 				File root=new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId+OperatingSystem.PATH_SEPARATOR+vmName);
-				if(source.getMainFile().getName().contains("."))
-					dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split(OperatingSystem.PATH_SEPARATOR+".")[1]));
-				else
-					dest.setMainFile(new File(root,vmName));
+				dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split("\\.")[1]));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);

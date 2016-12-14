@@ -20,7 +20,6 @@ public class DockerBlank extends AbstractExecutionConfigurator{
     }
 	@Override
 	public void configureHostname() throws PlatformOperationException {
-		execution.getImage().executeCommandOnExecution("hostname", execution.getHostname());
 	}
 	@Override
 	public void configureHostTable() throws PlatformOperationException {

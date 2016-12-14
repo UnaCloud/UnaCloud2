@@ -22,13 +22,14 @@ public class Ubuntu extends AbstractExecutionConfigurator{
     	try(PrintWriter pw = new LinuxPrintWriter(out)){
     		pw.println("auto lo");
             pw.println("iface lo inet loopback");
+            pw.println();
             pw.println("auto eth0");
             pw.println("iface eth0 inet static");
             pw.println("address " + au.getIp());
             pw.println("netmask " + au.getNetmask());
-            pw.println("network " + au.getNetwork());
-            pw.println("broadcast " + au.getBroadcast());
-            pw.println("gateway " + au.getGateway());
+            pw.println("gateway " + au.getGateway() /* TODO: fix bad assumptions on gateway au.getGateway()*/);
+            // TODO: verify that DNS info is needed and add DNS info to AddressUtility
+            //pw.println("dns-nameservers " + "157.253.79.100");
     	}catch (Exception e) {
 			return;
 		}
