@@ -65,4 +65,14 @@ public class MacOS extends OperatingSystem{
 	public void setPriorityProcess(String processName) throws UnsupportedCommandException{
 		throw new UnsupportedCommandException("Set priority to process","Mac");		
 	}
+
+	@Override
+	public String getJavaCommand() throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Java Command","Mac");		
+	}
+
+	@Override
+	public String getPingCommand(String ipAddress)throws UnsupportedCommandException {
+		throw new UnsupportedCommandException("Ping Command","Mac");		
+	}
 }

@@ -108,6 +108,16 @@ public class WindowsOS extends OperatingSystem{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	    
+	}
+
+	@Override
+	public String getJavaCommand() throws UnsupportedCommandException {		
+		return "javaw";
+	}
+
+	@Override
+	public String getPingCommand(String ipAddress)throws UnsupportedCommandException {		
+		return "ping " + ipAddress + " -n 2";
 	}	
 
 }

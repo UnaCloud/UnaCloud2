@@ -210,8 +210,9 @@ class LaboratoryService {
 	 * @param ipInit first ip 
 	 * @param ipEnd last ip
 	 */
-	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd){
+	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd) throws Exception{
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
+		if(ips.size()==0)throw new Exception("IP range invalid")
 		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()
 		for(String ipFind: ips){
 			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()

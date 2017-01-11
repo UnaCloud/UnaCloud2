@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import uniandes.unacloud.agent.communication.receive.ClouderClientAttention;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -24,7 +25,7 @@ public class AgentManager {
 	public static String updateAgent(){
 		ClouderClientAttention.close();
         try {
-			Runtime.getRuntime().exec(new String[]{"javaw","-jar",UnaCloudConstants.UPDATER_JAR,UnaCloudConstants.DELAY+""});
+			Runtime.getRuntime().exec(new String[]{OSFactory.getOS().getJavaCommand(),"-jar",UnaCloudConstants.UPDATER_JAR,UnaCloudConstants.DELAY+""});
         } catch (Exception e) {
         }
         new Thread(){

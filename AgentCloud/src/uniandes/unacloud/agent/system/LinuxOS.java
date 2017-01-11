@@ -113,4 +113,14 @@ public class LinuxOS extends OperatingSystem{
 		}		
 	}
 
+	@Override
+	public String getJavaCommand() throws UnsupportedCommandException {	
+		return "java";
+	}
+
+	@Override
+	public String getPingCommand(String ipAddress)throws UnsupportedCommandException {		
+		return "ping -c 2 " + ipAddress;
+	}
+
 }

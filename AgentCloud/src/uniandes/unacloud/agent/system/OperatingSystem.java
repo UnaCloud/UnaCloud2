@@ -170,6 +170,21 @@ public abstract class OperatingSystem {
      */
 	public abstract String turnOnMachines(String[] message) throws UnsupportedCommandException;
 		
+	/**
+	 * Responsible for returning Java command in Operating system
+	 * @return Java command 
+	 * @throws UnsupportedCommandException
+	 */
+	public abstract String getJavaCommand() throws UnsupportedCommandException;
+	
+	/**
+	 * Responsible for returning ping command with IP address parameter appended 
+	 * @param ipAddress to create command
+	 * @return ping command
+	 * @throws UnsupportedCommandException
+	 */
+	public abstract String getPingCommand(String ipAddress) throws UnsupportedCommandException;
+	
 	 /**
      * Responsible for obtaining the operating system name
      * @return os name
@@ -300,5 +315,7 @@ public abstract class OperatingSystem {
 	public boolean isSparc64(){
 		return (operatingArchitecture.indexOf("sparc64") >= 0);
 	}
+	
+	
 }
 

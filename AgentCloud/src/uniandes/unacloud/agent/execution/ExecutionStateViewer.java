@@ -10,7 +10,9 @@ import java.util.logging.Logger;
 
 
 
+
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
+import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
@@ -65,10 +67,10 @@ public class ExecutionStateViewer {
      */
     private boolean pingVerification(String vmIP){
         try {
-            Process p = Runtime.getRuntime().exec("ping " + vmIP + " -n 2");
+            Process p = Runtime.getRuntime().exec(OSFactory.getOS().getPingCommand(vmIP));
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             for(String h;(h=br.readLine())!=null;){
-                if(h.contains("TTL")){
+                if(h.toUpperCase().contains("TTL")){
                     p.destroy();
                     br.close();
                     return true;
