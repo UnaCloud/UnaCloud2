@@ -31,6 +31,22 @@
 	                             	<label>Image Name</label>
 	                            	<input type="text" class="form-control" name="name" placeholder="Image Name" value="${image.name }">
 	                         	 </div>
+	                         	  <div class="form-group">
+		                             <label>Select Operating System</label>
+		                             <select name= "osId" class="form-control">
+		                             	<g:each in="${oss}" status="i" var="os">
+		                             		<option value="${os.id}"<g:if test="${os == image.operatingSystem}">selected</g:if>>${os.name}</option>
+						  				</g:each>
+		                             </select>
+		                         </div>
+		                         <div class="form-group">
+		                             <label>Select Execution Platform</label>
+		                             <select name= "platId" class="form-control">
+		                             	<g:each in="${plats}" status="i" var="plat">
+						  					<option value="${plat.id}"<g:if test="${plat == image.platform}">selected</g:if>>${plat.name}</option>
+						  				</g:each>
+		                             </select>
+		                         </div>
 		                         <div class="form-group">
 		                             <label>User</label>
 		                             <input type="text" class="form-control" name="user" placeholder="Username" value="${image.user }">
@@ -44,7 +60,7 @@
 		                         </div>
 		                     </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
-		                         <button type="submit" id="button-submit" class="btn btn-success" style="cursor:pointer">Submit</button>		                         
+		                         <button type="submit" id="button-submit-edit" class="btn btn-success" style="cursor:pointer">Submit</button>		                         
 		           			 	 <a class="btn btn-danger" href="${createLink(uri: '/services/image/list', absolute: true)}" >Cancel</a>	
 		                     </div>
 	                	 </form>
@@ -52,5 +68,4 @@
              </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->     
-    <script>$(document).ready(function(){editImage();});</script>
 </body>

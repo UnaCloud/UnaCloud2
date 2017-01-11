@@ -86,5 +86,4 @@
              </div><!-- /.box -->            
         </div>     	
 	</section><!-- /.content -->  
-	<script type="text/javascript">mask();</script>   
 </body>

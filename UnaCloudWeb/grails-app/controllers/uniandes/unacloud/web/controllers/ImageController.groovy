@@ -11,8 +11,8 @@ import uniandes.unacloud.web.domain.Image;
 import grails.converters.JSON
 
 /**
- * This Controller contains actions to manage image services: crud, and services to send messages to agents to copy or deletes images.
- * This class render pages for user or process request in services to update entities, there is session verification before all actions
+ * This Controller contains actions to manage image services: crud and services to send messages to agents to copy or deletes images.
+ * This class render pages to user or process requests to update entities, there is session verification before all actions
  * @author CesarF
  *
  */
@@ -153,7 +153,7 @@ class ImageController {
 		Image image = Image.get(params.id);
 		if (image&&image.state==ImageEnum.AVAILABLE){
 			if(image.owner.id==session.user.id){	
-				[image: image]
+				[image: image,oss: OperatingSystem.list(),plats:Platform.list()]
 			}else{
 				flash.message="You are not authorized to edit that image";
 				redirect(uri:"/services/image/list", absolute:true)
@@ -166,16 +166,17 @@ class ImageController {
 	 * Saves image information changes. Redirects to index when finished
 	 */	
 	def saveEdit(){
+		
 		def image = Image.get(params.id)
 		if (image&&image.state==ImageEnum.AVAILABLE){
 			if(image.owner.id==session.user.id){
 				boolean toPublic = params.isPublic!=null;
 				def res = null;
 				try{
-					imageService.setValues(image,params.name,params.user,(params.password?params.password:image.password))
+					imageService.setValues(image,params.name,params.user,(params.password?params.password:image.password),params.osId,params.platId)
 					if(image.isPublic!=toPublic){				
 						imageService.alterImagePrivacy(toPublic,image)
-						flash.message="Image files will be change its privacy, this will be take a few minutes";
+						flash.message="Image files will change its privacy, this will take a few minutes";
 					}else flash.message="Your changes has been saved";				
 				    flash.type="success";
 					redirect(uri:"/services/image/list/", absolute:true)

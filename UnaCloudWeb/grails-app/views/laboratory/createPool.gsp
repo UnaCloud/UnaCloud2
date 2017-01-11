@@ -84,5 +84,4 @@
     		</div>			
     	</div>   	
 	</section>
-	<script type="text/javascript">mask();</script>
 </body>

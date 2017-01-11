@@ -74,7 +74,7 @@ $(document).on('ready',function(){
 		event.preventDefault();
 		var href = $(this).attr("href");
 		var form = $('#form_machines');
-		submitConfirm(form, href, 'All selected host machines will erased their cache. Do you want to continue?');
+		submitConfirm(form, href, 'All selected host machines will erase their cache. Do you want to continue?');
 	});
 	
 	$(".update-agents").click(function (event){	
@@ -166,6 +166,9 @@ $(document).on('ready',function(){
 	$("#unacloudTable").dataTable();
 	$("#unacloudTable2").dataTable();
 	tableChecker();
+	
+	editImage();
+	mask();
 	
 	$(".btn-time-nxt").on("click",function(event){
 		event.preventDefault();
@@ -330,7 +333,7 @@ function uploadForm(form){
 
 function editImage(){
 	var pub = $("#check_public").is(':checked')
-	$('#button-submit').click(function (event){	
+	$('#button-submit-edit').click(function (event){	
 		event.preventDefault();
 		cleanLabel('#label-message');
 		var form = document.getElementById("form-edit");

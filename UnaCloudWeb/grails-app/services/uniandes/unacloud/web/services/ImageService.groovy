@@ -135,10 +135,14 @@ class ImageService {
 	 * @param name new image name
 	 * @param user new belonging user
 	 * @param password new image password
+	 * @param operatingSystemId new operating system
+	 * @param platformId new platform
 	 */
 	
-	def setValues(Image image, name, user, password){
+	def setValues(Image image, name, user, password, operatingSystemId, platformId){
 		if(image.name!=name&&image.owner.existImage(name))throw new Exception('Currently you have an image with the same name.')
+		image.putAt("operatingSystem", OperatingSystem.get(operatingSystemId))
+		image.putAt("platform", Platform.get(platformId))
 		image.putAt("name", name)
 		image.putAt("user", user)
 		image.putAt("password", password)

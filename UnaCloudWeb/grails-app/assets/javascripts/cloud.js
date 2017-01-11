@@ -1,3 +1,7 @@
+$(document).on('ready',function(){
+	activator();
+}
+
 function activator(){
 	var path = window.location.protocol+'//'+window.location.host+window.location.pathname;
 	var current = $('a[href="'+path+'"]');
