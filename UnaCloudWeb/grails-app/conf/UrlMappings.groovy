@@ -1,6 +1,6 @@
 class UrlMappings {
 	
-	static excludes = ["/virtualMachineImage/update"]
+	//static excludes = ["/Image/update"]
 	static mappings = {
 		
 		"/"(controller:"user", action:"index")
@@ -19,18 +19,18 @@ class UrlMappings {
 		"/user/profile/change/save"(controller:'user',action:'savePassword')
 		
 		/** services - my images**/
-		"/services/image/list"(controller:'VirtualMachineImage',action:"list")
-		"/services/image/new"(controller:"VirtualMachineImage",action:"newUploadImage")
-		"/services/image/upload"(controller:"VirtualMachineImage",action:"upload")
-		"/services/image/edit/$id"(controller:'VirtualMachineImage',action:"edit")
-		"/services/image/delete/$id"(controller:'VirtualMachineImage',action:"delete")
-		"/services/image/clear/$id"(controller:'VirtualMachineImage',action:"clearFromCache")
-		"/services/image/public"(controller:'VirtualMachineImage',action:'newFromPublic')
-		"/services/image/public/copy"(controller:'VirtualMachineImage',action:'copyPublic')
-		"/services/image/edit/save"(controller:'VirtualMachineImage',action:'saveEdit')
-		"/services/image/external/$id"(controller:'VirtualMachineImage',action:'external')
-		"/services/image/update/$id"(controller:'VirtualMachineImage',action:'update')
-		"/services/image/update/save"(controller:'VirtualMachineImage',action:'updateFiles')
+		"/services/image/list"(controller:'Image',action:"list")
+		"/services/image/new"(controller:"Image",action:"newUploadImage")
+		"/services/image/upload"(controller:"Image",action:"upload")
+		"/services/image/edit/$id"(controller:'Image',action:"edit")
+		"/services/image/delete/$id"(controller:'Image',action:"delete")
+		"/services/image/clear/$id"(controller:'Image',action:"clearFromCache")
+		"/services/image/public"(controller:'Image',action:'newFromPublic')
+		"/services/image/public/copy"(controller:'Image',action:'copyPublic')
+		"/services/image/edit/save"(controller:'Image',action:'saveEdit')
+		"/services/image/external/$id"(controller:'Image',action:'external')
+		"/services/image/update/$id"(controller:'Image',action:'update')
+		"/services/image/update/save"(controller:'Image',action:'updateFiles')
 		
 		/** services - my clusters**/
 		"/services/cluster/list"(controller:'Cluster',action:"list")
@@ -68,13 +68,13 @@ class UrlMappings {
 		"/admin/group/restrictions/$id"(controller:'userGroup',action:"config")
 		"/admin/group/restrictions/set"(controller:'userGroup',action:"setRestrictions")
 		
-		/** admin - hypervisors**/
-		"/admin/hypervisor/list"(controller:'hypervisor',action:"list")
-		"/admin/hypervisor/new"(controller:'hypervisor',action:"create")
-		"/admin/hypervisor/save"(controller:'hypervisor',action:"save")
-		"/admin/hypervisor/delete/$id"(controller:'hypervisor',action:"delete")
-		"/admin/hypervisor/edit/$id"(controller:'hypervisor',action:"edit")
-		"/admin/hypervisor/edit/save"(controller:'hypervisor',action:"saveEdit")
+		/** admin - platforms**/
+		"/admin/platform/list"(controller:'platform',action:"list")
+		"/admin/platform/new"(controller:'platform',action:"create")
+		"/admin/platform/save"(controller:'platform',action:"save")
+		"/admin/platform/delete/$id"(controller:'platform',action:"delete")
+		"/admin/platform/edit/$id"(controller:'platform',action:"edit")
+		"/admin/platform/edit/save"(controller:'platform',action:"saveEdit")
 		
 		/** admin - Operating system**/
 		"/admin/os/list"(controller:'operatingSystem',action:"list")

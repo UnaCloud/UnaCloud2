@@ -1,7 +1,7 @@
 import java.io.FileInputStream;
-import unacloud.share.utils.EnvironmentManager;
-import com.losandes.utils.ConfigurationReader
-import com.losandes.utils.UnaCloudConstants;
+import uniandes.unacloud.share.utils.EnvironmentManager;
+import uniandes.unacloud.common.utils.ConfigurationReader
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 dataSource {
     pooled = true

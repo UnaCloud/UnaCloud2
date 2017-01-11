@@ -19,7 +19,9 @@
         <asset:javascript src="plugins/jquery/jquery_2_0_2.min.js"/>
         <!-- Bootstrap -->
         <asset:javascript src="plugins/bootstrap/bootstrap.min.js"/>    
-        <asset:javascript src="plugins/bootbox/bootbox.js"/>  
+        <asset:javascript src="plugins/bootbox/bootbox.js"/> 
+        <!-- animate -->
+        <asset:stylesheet src="animate.css"/> 
         <!-- Datatables -->
         <asset:javascript src="plugins/datatables/jquery.dataTables.js"/>    
         <asset:javascript src="plugins/datatables/dataTables.bootstrap.js"/>        
@@ -77,7 +79,7 @@
                 </div>
             </nav>
         </header>
-        <div class="wrapper row-offcanvas row-offcanvas-left">
+        <div  class="wrapper row-offcanvas row-offcanvas-left" >
             <!-- Left side column. contains the logo and sidebar -->
             <aside class="left-side sidebar-offcanvas">                
                 <!-- sidebar: style can be found in sidebar.less -->
@@ -123,10 +125,10 @@
 	                                			Groups
 	                                	</a>
 	                                </li>
-	                                <li id="admin-hypervisor-tree">
-	                                	<a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}">
+	                                <li id="admin-platform-tree">
+	                                	<a href="${createLink(uri: '/admin/platform/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
-	                                			Hypervisors
+	                                			Platforms
 	                                	</a>
 	                                </li>
 	                                <li id="admin-os-tree">
@@ -145,7 +147,7 @@
 	                                <li id="admin-lab-tree">
 	                                	<a href="${createLink(uri: '/admin/repository/list', absolute: true)}">
 	                                		<i class="fa fa-angle-double-right"></i>
-	                                			Repositories
+	                                			Storage
 	                                	</a>
 	                                </li>
 	                                <!--                               
@@ -190,6 +192,5 @@
     	</footer>
 		<asset:javascript src="main.js"/>
 		<asset:javascript src="cloud.js"/>   		
-		<script>$(document).on('ready',activator())</script>
     </body>
 </html>

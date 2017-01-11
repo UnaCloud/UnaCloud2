@@ -22,13 +22,13 @@ $(document).on('ready',function(){
 
 	$(".delete_repo").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Repository')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Storage')	
 	});
 
 
-	$(".delete_hypervisor").click(function (event){
+	$(".delete_platform").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Hypervisor')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Platform')	
 	});
 
 	$(".delete_os").click(function (event){
@@ -74,7 +74,7 @@ $(document).on('ready',function(){
 		event.preventDefault();
 		var href = $(this).attr("href");
 		var form = $('#form_machines');
-		submitConfirm(form, href, 'All selected host machines will erased their cache. Do you want to continue?');
+		submitConfirm(form, href, 'All selected host machines will erase their cache. Do you want to continue?');
 	});
 	
 	$(".update-agents").click(function (event){	
@@ -166,6 +166,33 @@ $(document).on('ready',function(){
 	$("#unacloudTable").dataTable();
 	$("#unacloudTable2").dataTable();
 	tableChecker();
+	
+	editImage();
+	mask();
+	
+	$(".btn-time-nxt").on("click",function(event){
+		event.preventDefault();
+		var goElement = $(this).data("element");
+		$(".time-title"+goElement).addClass("hidden")
+		$(".time-element"+goElement).removeClass("hidden").addClass("animated fadeIn")
+		$(".time-title"+(goElement-1)).removeClass("hidden")
+		$(".time-element"+(goElement-1)).addClass("hidden")
+		$("#time-icon"+goElement).removeClass("fa-circle-o").removeClass("bg-gray").addClass("fa-adjust").addClass("bg-blue")
+		$("#time-icon"+(goElement-1)).removeClass("fa-adjust").removeClass("bg-blue").addClass("fa-check").addClass("bg-green")
+	});	
+	$(".btn-time-bck").on("click",function(event){
+		event.preventDefault();
+		var goElement = $(this).data("element");
+		
+		$(".time-title"+goElement).addClass("hidden")
+		$(".time-element"+goElement).removeClass("hidden").addClass("animated fadeIn")
+		$(".time-title"+(goElement+1)).removeClass("hidden")
+		$(".time-element"+(goElement+1)).addClass("hidden")
+		
+		$("#time-icon"+goElement).removeClass("fa-check").removeClass("bg-green").addClass("fa-adjust").addClass("bg-blue")
+		$("#time-icon"+(goElement+1)).removeClass("fa-adjust").removeClass("bg-blue").addClass("fa-circle-o").addClass("bg-gray")
+	});	
+	
 });
 
 function tableChecker(){	
@@ -306,7 +333,7 @@ function uploadForm(form){
 
 function editImage(){
 	var pub = $("#check_public").is(':checked')
-	$('#button-submit').click(function (event){	
+	$('#button-submit-edit').click(function (event){	
 		event.preventDefault();
 		cleanLabel('#label-message');
 		var form = document.getElementById("form-edit");
