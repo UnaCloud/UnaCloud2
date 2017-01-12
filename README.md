@@ -4,6 +4,8 @@ UnaCloud is a project developed by the research group COMIT (Comunicaciones y Te
 
 UnaCloud is able to execute single instances and/or clusters of virtual machines. Its execution is mostly supported by off-the-shelf, volatile, non-dedicated, distributed, and heterogeneous computing resources (such as desktops) that belong to a variety of administrative domains on a university campus.
 
+UnaCloud is a Client-Server application which can be used currently in desktops with Windows or Linux (Debian, Ubuntu) operating systems. 
+
 ##Features
 UnaCloud uses virtualization as a strategy to enable on-demand deployments of customized execution environments. These environments can meet complex software and hardware requirements from several research projects. UnaCloud uses type-2 hypervisors to isolate the end-user environment from another one based on, and dedicated to, harvesting idle computing resources.
 
@@ -19,7 +21,7 @@ Number of machines	| 1 to 5 virtual or physical machines to deploy components
 CPU	| 2 Cores Machine
 Memory | 4GB
 Free Disk	| 1 GB for UnaCloud Server and at least 80 GB hard disk for Virtual Machines
-OS	| Windows Server 2003, Windows 7, Ubuntu 14, Debian (6,7,8)
+OS	| UnaCloud server has been mainly tested in Ubuntu Server (10 to 14) and Debian (6 to 6)
 Supporting Features | Java JDK SE 7
 
 ####UnaCloud Agents
@@ -28,8 +30,8 @@ Specifications | Content
 CPU	| 2 Cores Machine
 Memory | At least 200 MB of free RAM.
 Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for Virtual Machines.
-OS	| Windows XP, 7 or 8
-Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors:  VMware Workstation 6 or better (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or 4.3</li></ul>
+OS	| UnaCloud Agent has been tested mainly in Windows: XP, 7, 8 or 10. and Linux: Debian (6 to 8) and Ubuntu (10 to 14)
+Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or 4.3</li></ul>
 
 ##Download
 The project can be downloaded from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=recursos:descargas). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
@@ -71,7 +73,7 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ###Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (12 or better) or Debian (6 or better), don't forget to check system requeriments.
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments.
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
@@ -202,10 +204,10 @@ VBOX_PATH=C\:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe
 ```
 
 Finally, when the configuration process is finished, you must add the ClientUpdater.jar file as a boot script, following these steps:
-* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bat file.
-```
-startUnacloud.bat
 
+####Windows
+* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bat file, i.e startUnacloud.bat.
+```
 cd C:\UnaCloud\
 
 java –jar ClientUpdater.jar 1
@@ -215,6 +217,18 @@ java –jar ClientUpdater.jar 1
 * Click Startup and then Add
 * Insert the path of your .bat file on script name.
 * Click ok and then ok. The next time that you restart the machine, it will start with UnaCloud Agent.
+
+####Linux
+* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bash file, i.e startUnacloud.bash.
+```
+#!/bin/sh
+cd /etc/UnaCloud/
+
+java –jar ClientUpdater.jar 1
+```
+* Change priviligies on script only for root
+* Configure startup execution for script through rc.local file or /etc/init folder. This configuration depends of your operating system version, please check official manual.
+* Check again if your Java is installed correctly using "java -version" command.
 
 ##Documentation
 Unfortunately we only have detailed documentation in spanish, we hope to offer this documentation in english very soon. You can find it in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=inicio)
