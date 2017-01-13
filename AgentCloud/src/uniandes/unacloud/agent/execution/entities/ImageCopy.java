@@ -6,11 +6,11 @@ import java.util.Date;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigurator;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 

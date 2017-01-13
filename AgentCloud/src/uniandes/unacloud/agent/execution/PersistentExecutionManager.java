@@ -16,11 +16,11 @@ import java.util.TreeMap;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.communication.upload.UploadImageTask;
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.execution.task.ExecutorService;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
 import uniandes.unacloud.common.com.messages.InvalidOperationResponse;
 import uniandes.unacloud.common.com.messages.exeo.ExecutionAddTimeMessage;

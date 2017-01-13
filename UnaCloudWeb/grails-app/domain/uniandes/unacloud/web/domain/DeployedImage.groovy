@@ -23,7 +23,7 @@ class DeployedImage {
 	Image image
 	
 	/**
-	 * it tells if the image is set to be deployed in high availability machines
+	 * Represents if image is configured to deploy in high availability machines
 	 */
 	boolean highAvaliavility
 	

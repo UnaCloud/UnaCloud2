@@ -49,7 +49,7 @@ class Deployment {
 	
 	/**
 	 * Stop time is not defined possibly
-	 * cluster could be deleted but deployment history don't
+	 * cluster could be deleted but deployment history not
 	 */
 	static constraints = {	
 		stopTime nullable:true 

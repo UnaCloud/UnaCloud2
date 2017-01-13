@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform;
+package uniandes.unacloud.agent.exceptions;
 
 /**
  * Exception to be used by platforms to notify platform operations errors.
@@ -11,7 +11,7 @@ public class PlatformOperationException extends Exception{
      * Creates a new exception based in message
      * @param message
      */
-	protected PlatformOperationException(String message) {
+	public PlatformOperationException(String message) {
         super(message);
     }
 }

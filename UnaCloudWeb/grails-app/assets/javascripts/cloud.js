@@ -1,6 +1,4 @@
-$(document).on('ready',function(){
-	activator();
-}
+activator();
 
 function activator(){
 	var path = window.location.protocol+'//'+window.location.host+window.location.pathname;
