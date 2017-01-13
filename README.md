@@ -78,14 +78,15 @@ This kind of installation is very fast and does not use distributed components. 
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
 * Update config.properties file. Check pre-configuration section.
-* Set environment variable PATH_CONFIG pointed to config.properties file path.
+* Set environment variable PATH_CONFIG pointed to config.properties file path or set it in third line in install.sh script file.
 * Execute file install.sh
 ```
 bash install.sh
 ```
 * The script will install in machine:
-	* Apache Tomcat 7
-	* UnaCloud web UI
+	* Java Oracle 7
+	* Apache Tomcat 8
+	* UnaCloud server components
 	* MySQL Database
 	* RabbitMQ
 * Access in your browser to url http://IP:port/UnaCloud
@@ -104,19 +105,14 @@ vagrant up
 ```
 vagrant ssh
 ```
-* Update config.properties file. Check pre-configuration section.
-* Create environment variable PATH_CONFIG pointed to config.properties file path.
-* Execute file install.sh
-```
-bash install.sh
-```
-* Vagrant will install will create machine with:
-	* Apache Tomcat 7
-	* UnaCloud web UI
+* Vagrant will configure machine with:
+	* Java Oracle 7
+	* Apache Tomcat 8
+	* UnaCloud Server components
 	* MySQL Database
 	* RabbitMQ
-* Access in your browser to url http://IP:port/UnaCloud
-* Log in with user defined in config.properties file.
+* Access in your browser to url http://localhost:10028/UnaCloud
+* Log in with user admin and change password in profile segment
 
 
 ###Manual Installation
