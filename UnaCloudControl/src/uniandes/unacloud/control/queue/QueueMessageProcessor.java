@@ -156,7 +156,8 @@ public class QueueMessageProcessor implements QueueReader{
 			TaskEnum task = messageTask.getTask();
 			Long[] ids = messageTask.getIdMachines();
 			
-			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
+			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);
+			System.out.println("Sending message to "+machines.size());
 			for (int i = 0; i < machines.size() ; i+=messagesByThread) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
