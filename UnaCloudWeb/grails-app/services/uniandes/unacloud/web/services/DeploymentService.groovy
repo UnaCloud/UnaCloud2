@@ -250,7 +250,9 @@ class DeploymentService {
 		String token = Hasher.hashSha256(newName+new Date().getTime())
 		Image image = new Image(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,
 			user:execution.deployImage.image.user,password:execution.deployImage.image.password,operatingSystem:execution.deployImage.image.operatingSystem,
-			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:ImageEnum.COPYING,owner:user,repository:repository,token:token)
+			accessProtocol:execution.deployImage.image.accessProtocol,imageVersion:1,state:ImageEnum.COPYING,owner:user,repository:repository,token:token,lastUpdate:new Date(),
+			platform: execution.deployImage.image.platform);
+
 		image.save(failOnError:true,flush:true)
 		execution.putAt("status", ExecutionStateEnum.REQUEST_COPY)
 		execution.putAt("message", 'Copy request to image '+image.id)
