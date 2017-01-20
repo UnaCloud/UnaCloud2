@@ -230,7 +230,7 @@ public class QueueMessageProcessor implements QueueReader{
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con2);
+									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error "+message), con2);
 								}catch (Exception e) {e.printStackTrace();}
 							}
 						}));
@@ -337,7 +337,7 @@ public class QueueMessageProcessor implements QueueReader{
 						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null,"Communication error"), con2);
+							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null,"Communication error "+message), con2);
 						}catch (Exception e) {e.printStackTrace();}
 					}
 				}));
@@ -390,7 +390,7 @@ public class QueueMessageProcessor implements QueueReader{
 							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm,con2);
-								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image "+message), con2);
 								ImageManager.deleteImage(image, con2);
 							}catch (Exception e) {e.printStackTrace();}
 						}
