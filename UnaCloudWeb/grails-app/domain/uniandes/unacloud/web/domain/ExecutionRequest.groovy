@@ -25,6 +25,11 @@ class ExecutionRequest {
 	Date requestTime
 	
 	/**
+	 * Status message
+	 */
+	String message
+	
+	/**
 	 * Execution which belongs this request
 	 */
 	static belongsTo=  [execution:Execution]
@@ -35,5 +40,6 @@ class ExecutionRequest {
     static constraints = {
 		status nullable:false
 		requestTime nullable: false
+		message nullable:true
     }
 }

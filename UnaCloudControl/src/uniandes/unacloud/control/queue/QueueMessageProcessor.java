@@ -277,19 +277,23 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, text), con2);
-							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
-						}catch (Exception e) {e.printStackTrace();}
+						if(!execution.getState().equals(ExecutionStateEnum.FAILED)){
+							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, text), con2);
+								DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+							}catch (Exception e) {e.printStackTrace();}
+						}
 					}
 					@Override
 					public void attendError(String message, Long id) {
-						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FINISHED, null, "Connection lost to agent, execution will be removed when it reconnects"), con2);
-							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
-						}catch (Exception e) {e.printStackTrace();}
+						if(!execution.getState().equals(ExecutionStateEnum.FAILED)){
+							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
+								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FINISHED, null, "Connection lost with agent, execution will be removed when it reconnects"), con2);
+								DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+							}catch (Exception e) {e.printStackTrace();}
+						}
 					}
 				}));
 			}
