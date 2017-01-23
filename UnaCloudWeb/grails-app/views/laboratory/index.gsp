@@ -22,7 +22,7 @@
                   <div class="row">
                   <g:if test="${labs.size()<=0}">
                   	  <div class="col-lg-12">
-	                  <p class="help-block">You do not have a laboratory configured</p>
+	                  <p class="help-block">You do not have laboratories</p>
 	                  </div>
                   </g:if>
                   <g:else>

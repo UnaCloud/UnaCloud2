@@ -11,6 +11,10 @@ html, body {
 }
 .center_login{
 	min-height: 100%;
+	display: table;
+    vertical-align: middle;
+    width: 100%;
+    text-align: center;
 }
 
 .wrapper {	
@@ -22,7 +26,7 @@ html, body {
 	background-color: #fff;
 	max-width:450px;
 	height: 350px;
-	margin: 15% auto 10% auto;
+	margin: 0 auto 0 auto;
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
     -ms-border-radius: 15px;
@@ -105,6 +109,9 @@ html, body {
 
 .main{
 	padding:30px;
+	display: table-cell;
+    vertical-align: middle;
+    min-height: 100%;
 }
 
 

@@ -1,4 +1,4 @@
-<%@page import="unacloud.share.enums.PhysicalMachineStateEnum"%>
+<%@page import="uniandes.unacloud.share.enums.PhysicalMachineStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -63,6 +63,7 @@
 				                                  <th>IP</th>
 				                                  <th>State</th>
 				                                  <th>Activity</th>
+				                                  <th>Platforms</th>
 				                                  <th>Actions</th>
 				                              </tr>
 				                          </thead>
@@ -92,6 +93,11 @@
 										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user" data-toggle="tooltip"></i></g:if> 
 										      		<g:if test="${machine.withExecution()}"><i class="fa fa-laptop text-green" title="With executions" data-toggle="tooltip"></i></g:if>   
 										      	  </td>
+										      	  <td class="platform-list">
+										      	 	<g:each in="${machine.platforms}"  var="platform">
+										      	 		<span class="label label-primary">${platform.name}</span>
+										      	 	</g:each>					                               
+				                                  </td>
 											      <td class="column-center"> 
 					                               	  <div class="btn-group">
 						                                  <a title="Delete" class="delete_machines btn btn-default" data-id="${machine.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>

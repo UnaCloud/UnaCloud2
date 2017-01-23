@@ -4,12 +4,14 @@ UnaCloud is a project developed by the research group COMIT (Comunicaciones y Te
 
 UnaCloud is able to execute single instances and/or clusters of virtual machines. Its execution is mostly supported by off-the-shelf, volatile, non-dedicated, distributed, and heterogeneous computing resources (such as desktops) that belong to a variety of administrative domains on a university campus.
 
+UnaCloud is a Client-Server application which can be used currently in desktops with Windows or Linux (Debian, Ubuntu) operating systems. 
+
 ##Features
 UnaCloud uses virtualization as a strategy to enable on-demand deployments of customized execution environments. These environments can meet complex software and hardware requirements from several research projects. UnaCloud uses type-2 hypervisors to isolate the end-user environment from another one based on, and dedicated to, harvesting idle computing resources.
 
-In addition, UnaCloud executes virtual machines as independent idle-priority processes that run in background. This strategy allows the operating system to assign CPU time slices to higher-priority processes (e.g. foreground normal- priority processes executed by end-users). Both deployment strategies, virtualization and idle- priority execution, enable harvesting idle computing resources opportunistically, that is, virtual machines execute when an end-user is using the desktop or when it is fully idle (e.g. at night or during weekends when the computer laboratories are closed to the public).
+In addition, UnaCloud executes instances as independent idle-priority processes that run in background. This strategy allows the operating system to assign CPU time slices to higher-priority processes (e.g. foreground normal- priority processes executed by end-users). Both deployment strategies, virtualization and idle- priority execution, enable harvesting idle computing resources opportunistically, that is, execution instances are executed when an end-user is using the desktop or when it is fully idle (e.g. at night or during weekends when the computer laboratories are closed to the public).
 
-It is important to clarify that instead of volunteering their desktops, end-users in UnaCloud are unaware of the opportunistic use of machines available in computer laboratories. Indeed, UnaCloud is always ready to stealthily execute virtual machines on demand. As a result, the design specifications of UnaCloud strongly consider slowdown, since it is executed on laboratories that are mainly used by university students working on their daily activities. The proposed solution was implemented and tested through the deployment of an opportunistic IaaS model, showing high efficiency in supporting academic and scientific projects.
+It is important to clarify that instead of volunteering their desktops, end-users in UnaCloud are unaware of the opportunistic use of machines available in computer laboratories. Indeed, UnaCloud is always ready to stealthily execute instances on demand. As a result, the design specifications of UnaCloud strongly consider slowdown, since it is executed on laboratories that are mainly used by university students working on their daily activities. The proposed solution was implemented and tested through the deployment of an opportunistic IaaS model, showing high efficiency in supporting academic and scientific projects.
 
 ##Requeriments
 ####UnaCloud Server
@@ -18,8 +20,8 @@ Specifications | Content
 Number of machines	| 1 to 5 virtual or physical machines to deploy components
 CPU	| 2 Cores Machine
 Memory | 4GB
-Free Disk	| 1 GB for UnaCloud Server and at least 80 GB hard disk for Virtual Machines
-OS	| Windows Server 2003, Windows 7, Ubuntu 14, Debian (6,7,8)
+Free Disk	| 1 GB for UnaCloud Server and at least 80 GB hard disk for image files
+OS	| UnaCloud server has been mainly tested in Ubuntu Server (10 to 14) and Debian (6 to 8)
 Supporting Features | Java JDK SE 7
 
 ####UnaCloud Agents
@@ -27,19 +29,20 @@ Specifications | Content
 ------------ | -------------
 CPU	| 2 Cores Machine
 Memory | At least 200 MB of free RAM.
-Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for Virtual Machines.
-OS	| Windows XP, 7 or 8
-Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following hypervisors:  VMware Workstation 6 or better (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or 4.3</li></ul>
+Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for image files.
+OS	| UnaCloud Agent has been tested mainly in Windows: XP, 7, 8 or 10. and Linux: Debian (6 to 8) and Ubuntu (10 to 14)
+Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2.14 or 4.3</li></ul>
 
 ##Download
 The project can be downloaded from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=recursos:descargas). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
 
 ##Pre-Configuration
-After downloading project, modify configuration file config.properties (for all Installation options).
+After downloading project, modify configuration file config.properties (for all installation options).
+Note: Vagrant Installation Option configuration file has default values currently, we recommend at least to change passwords in file.
 
 Set following properties:
 
-*	MAIN_REPOSITORY: Server storage path for virtual machines files.
+*	MAIN_REPOSITORY: Server storage path for image files.
 *	DEFAULT_USER_PASSWORD: default password for admin user, it should be updated after first login.
 *	QUEUE_IP: RabbitMQ application IP address. In case of Script-based or Vagrant Installation, use local address.
 *	QUEUE_PORT: RabbitMQ access port, by default is 5672.
@@ -54,7 +57,7 @@ Set following properties:
 *	AGENT_VERSION: initial version for agent.
 *	CONTROL_SERVER_IP: CloudControl application IP address. In case of Script-based or Vagrant Installation, use local address.
 *	CONTROL_MANAGE_PM_PORT: CloudControl application port to receive control messages from agents. We recommend port range 10025 to 10035.
-*	CONTROL_MANAGE_VM_PORT: CloudControl application port to receive control messages from agents with information about virtual machine executions. We recommend port range 10025 to 10035.
+*	CONTROL_MANAGE_VM_PORT: CloudControl application port to receive control messages from agents with information about execution instance. We recommend port range 10025 to 10035.
 *	AGENT_PORT: Agent port to receive messages from CloudControl application. We recommend port range 10025 to 10035.
 *	WEB_FILE_SERVER_URL: FileManager web application url. This url is composed by IP address, port and application name (FileManager). In case of Script-based or Vagrant Installation, use local address followed by port 8080 and application name FileManager: ip:8080/FileManager. Don't forget protocol.
 *	FILE_SERVER_PORT: FileManager application port to receive requests from agents to send files. We recommend port range 10025 to 10035.
@@ -71,19 +74,20 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ###Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (12 or better) or Debian (6 or better), don't forget to check system requeriments.
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments.
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
 * Update config.properties file. Check pre-configuration section.
-* Set environment variable PATH_CONFIG pointed to config.properties file path.
+* Set environment variable PATH_CONFIG pointed to config.properties file path or set it in third line in install.sh script file.
 * Execute file install.sh
 ```
 bash install.sh
 ```
 * The script will install in machine:
-	* Apache Tomcat 7
-	* UnaCloud web UI
+	* Java Oracle 7
+	* Apache Tomcat 8
+	* UnaCloud server components
 	* MySQL Database
 	* RabbitMQ
 * Access in your browser to url http://IP:port/UnaCloud
@@ -102,26 +106,21 @@ vagrant up
 ```
 vagrant ssh
 ```
-* Update config.properties file. Check pre-configuration section.
-* Create environment variable PATH_CONFIG pointed to config.properties file path.
-* Execute file install.sh
-```
-bash install.sh
-```
-* Vagrant will install will create machine with:
-	* Apache Tomcat 7
-	* UnaCloud web UI
+* Vagrant will configure machine with:
+	* Java Oracle 7
+	* Apache Tomcat 8
+	* UnaCloud Server components
 	* MySQL Database
 	* RabbitMQ
-* Access in your browser to url http://IP:port/UnaCloud
-* Log in with user defined in config.properties file.
+* Access in your browser to url http://localhost:10028/UnaCloud
+* Log in with user admin and change password in profile segment
 
 
 ###Manual Installation
 This kind of installation package is designed to be distribuited and requires between 1 and 5 fives machines. You can allocate server components in different execution nodes or in the same one.
 
 ####Node for MySQL server
-* Install MySQL server
+* Install and configure MySQL server
 * Validate communication with MySQL port.
 * Set database port in config.properties file.
 * Create a database.
@@ -132,6 +131,7 @@ This kind of installation package is designed to be distribuited and requires be
 * Install RabbitMQ
 * Configure user with read and write queues privileges.
 * Validate communication with RabbitMQ port.
+* Configure RabbitMQ service to run in startup machine process
 * Set RabbitMQ port and user credentials in config.properties file.
 
 ####Node for CloudControl application
@@ -153,7 +153,7 @@ java –jar CloudControl.jar
 * Allow communication by TCP in two different ports of your preference.
 * Allow communication by HTTP in configured port for Tomcat.
 * Allocate file FileManager.war in webapps Tomcat folder.
-* Create a folder which works as repository for virtual machine files. 
+* Create a folder which works as repository for image files. 
 * Set ports, repository path, and URL in config.properties file.
 * Allocate config.properties file in path of your preference.
 * Set an environment variable PATH_CONFIG pointing to configuration file.
@@ -173,6 +173,8 @@ java –jar CloudControl.jar
 * Access in your browser to url http://IP:port/UnaCloud
 * Configure Tomcat to run when machine starts.
 * Log in with user "Admin" and default password setted in config.properties file.
+
+Note: It is necessary that all nodes have same datetime configured. We recommend use a NTP server in your local net for this purpose.
 
 ##Configuration
 ###Agent
@@ -202,10 +204,10 @@ VBOX_PATH=C\:\\Program Files\\Oracle\\VirtualBox\\VBoxManage.exe
 ```
 
 Finally, when the configuration process is finished, you must add the ClientUpdater.jar file as a boot script, following these steps:
-* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bat file.
-```
-startUnacloud.bat
 
+####Windows
+* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bat file, i.e startUnacloud.bat.
+```
 cd C:\UnaCloud\
 
 java –jar ClientUpdater.jar 1
@@ -215,6 +217,18 @@ java –jar ClientUpdater.jar 1
 * Click Startup and then Add
 * Insert the path of your .bat file on script name.
 * Click ok and then ok. The next time that you restart the machine, it will start with UnaCloud Agent.
+
+####Linux
+* Create a text file that includes following commands in order to change the path and execute the client updater jar. Save it as a .bash file, i.e startUnacloud.bash.
+```
+#!/bin/sh
+cd /etc/UnaCloud/
+
+java –jar ClientUpdater.jar 1
+```
+* Change priviligies on script only for root user
+* Configure startup execution for script through rc.local file or /etc/init folder. This configuration depends of your operating system version, please check official manual.
+* Check again if your Java is installed correctly using "java -version" command.
 
 ##Documentation
 Unfortunately we only have detailed documentation in spanish, we hope to offer this documentation in english very soon. You can find it in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=inicio)

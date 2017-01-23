@@ -46,7 +46,7 @@
 	                         <hr>
 	                         <div class="form-group">  
                          		<h4>IP Pool</h4>
-                         		<p class="help-block">This IP range will be given to virtual machines (you can add others IP Pools in edit lab section).</p>
+                         		<p class="help-block">This IP range will be given to executions (you can add others IP Pools in edit lab section).</p>
                          		                         
 		                         <div class="form-group">
 		                             <label>
@@ -103,5 +103,4 @@
     		</div>			
     	</div>   	
 	</section>
-	<script type="text/javascript">mask();</script>
 </body>
