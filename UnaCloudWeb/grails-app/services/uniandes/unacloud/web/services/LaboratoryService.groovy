@@ -170,6 +170,7 @@ class LaboratoryService {
 	 */
 	def deleteIP(Laboratory lab, ip){
 		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
+		if(executionIp.ipPool.ips.size()==1)throw new Exception("IP range must have one IP address at least")
 		if(executionIp && (executionIp.state == IPEnum.AVAILABLE||executionIp.state == IPEnum.DISABLED)){	
 			executionIp.delete()
 		}
@@ -199,7 +200,7 @@ class LaboratoryService {
 		if(ipPool&&ipPool.getUsedIpsQuantity()==0){
 			for(ExecutionIP ip : ipPool.ips)deleteIP(lab, ip)
 			ipPool.delete()
-		}else throw new Exception('Some Ips in IP Pool are being used')
+		}else throw new Exception('Some IP addresses in IP Pool are being used')
 	}
 	
 	/**
