@@ -30,7 +30,7 @@ public class MessageDeployCluster extends QueueMessage{
 	
 	/**
 	 * Return the ID of Deployment
-	 * @return
+	 * @return deployment id
 	 */
 	public Long getIdDeployment() {
 		JSONObject temp = this.getMessageContent();

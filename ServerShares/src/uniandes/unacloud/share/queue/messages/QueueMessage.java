@@ -62,7 +62,7 @@ public class QueueMessage {
 	
 	/**
 	 * Read the String and set the variables in JSON Format
-	 * @param ToParse String of Message
+	 * @param toParse String of Message
 	 */
 	public void setMessage(String toParse){
 		JSONObject json;

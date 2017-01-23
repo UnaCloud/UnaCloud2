@@ -1,7 +1,8 @@
-com.losandes.enums
-com.losandes.utils
-communication
-communication.messages
-communication.messages.ao
-communication.messages.pmo
-communication.messages.vmo
+uniandes.unacloud.common.com
+uniandes.unacloud.common.com.messages
+uniandes.unacloud.common.com.messages.agent
+uniandes.unacloud.common.com.messages.exeo
+uniandes.unacloud.common.com.messages.pmo
+uniandes.unacloud.common.com.messages.udp
+uniandes.unacloud.common.enums
+uniandes.unacloud.common.utils

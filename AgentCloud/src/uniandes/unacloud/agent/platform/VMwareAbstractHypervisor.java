@@ -131,7 +131,7 @@ public abstract class VMwareAbstractHypervisor extends Platform{
 	}
 	/**
 	 * Returns type VMware execution
-	 * @return
+	 * @return type of hypervisor
 	 */
 	protected abstract String getType();
 	

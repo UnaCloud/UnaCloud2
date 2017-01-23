@@ -10,7 +10,6 @@ public class ExecutionException extends Exception{
     /**
 	 * Constructor method, creates a new Exception base in message
 	 * @param message
-	 * @param cause
 	 */
 	public ExecutionException(String message){
 		super(message);

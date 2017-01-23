@@ -56,7 +56,7 @@ public class ImageCopy implements Serializable{
 	}
 	/**
 	 * Gets image name
-	 * @return
+	 * @return image name
 	 */
 	public String getImageName() {
 		if(mainFile==null)return "null";
@@ -81,7 +81,7 @@ public class ImageCopy implements Serializable{
 	}
 	/**
 	 * Returns image
-	 * @return
+	 * @return image entity
 	 */
 	public Image getImage() {
 		return image;
@@ -97,14 +97,14 @@ public class ImageCopy implements Serializable{
 	
 	/**
 	 * Returns the platform's execution ID
-	 * @return
+	 * @return platform ID which executes this image copy
 	 */
 	public String getPlatformExecutionID() {
 		return platformExecutionID;
 	}
 	
 	/**
-	 * Updates the platofrm's execution ID
+	 * Updates the platform's execution ID
 	 * @param executionID
 	 */
 	public void setPlatformExecutionID(String executionID) {

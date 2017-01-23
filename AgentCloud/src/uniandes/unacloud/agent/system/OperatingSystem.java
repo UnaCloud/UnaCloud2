@@ -44,7 +44,7 @@ public abstract class OperatingSystem {
 
     /**
      * Responsible for returning the command to turn off host machine
-     * @return
+     * @return command to turn off host, it depends of operating system
      */
 	public abstract String getTurnOffCommand() throws UnsupportedCommandException;
 		
@@ -69,7 +69,7 @@ public abstract class OperatingSystem {
         
     /**
      * Responsible for returning the command to restart host machine
-     * @return
+     * @return command to restart host, it depends of operating system
      */
 	public abstract String getRestartCommand() throws UnsupportedCommandException;
 
@@ -115,7 +115,7 @@ public abstract class OperatingSystem {
     
     /**
      * Responsible for returning the command to log out user from host machine
-     * @return
+     * @return command to log out host, it depends of operating system
      * @throws UnsupportedCommandException 
      */
 	public abstract String getLogOutCommand() throws UnsupportedCommandException;
@@ -134,7 +134,7 @@ public abstract class OperatingSystem {
     
     /**
      * Returns path of program data
-     * @return
+     * @return path where it is located datastores file for VMWare hypervisor
      * @throws UnsupportedCommandException
      */
     public abstract String getProgramDataPath() throws UnsupportedCommandException;

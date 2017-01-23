@@ -28,8 +28,8 @@ public class MessageIdOfImage extends QueueMessage{
 	}
 	
 	/**
-	 * Return the Number
-	 * @return
+	 * Returns image id
+	 * @return Image id
 	 */
 	public Long getIdImage() {
 		JSONObject temp = this.getMessageContent();
