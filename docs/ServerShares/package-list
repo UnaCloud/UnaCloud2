@@ -1,7 +1,8 @@
-unacloud.share.communication
-unacloud.share.db
-unacloud.share.entities
-unacloud.share.enums
-unacloud.share.manager
-unacloud.share.queue
-unacloud.share.utils
+uniandes.unacloud.share.communication
+uniandes.unacloud.share.db
+uniandes.unacloud.share.entities
+uniandes.unacloud.share.enums
+uniandes.unacloud.share.manager
+uniandes.unacloud.share.queue
+uniandes.unacloud.share.queue.messages
+uniandes.unacloud.share.utils

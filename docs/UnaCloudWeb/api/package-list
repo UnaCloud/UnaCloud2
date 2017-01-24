@@ -1,3 +1,3 @@
-unacloud.pmallocators
-unacloud.task.queue
-unacloud.utils
+uniandes.unacloud.web.pmallocators
+uniandes.unacloud.web.queue
+uniandes.unacloud.web.utils.java

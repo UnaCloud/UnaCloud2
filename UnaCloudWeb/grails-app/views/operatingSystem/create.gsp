@@ -20,7 +20,7 @@
              		<div id="label-message"></div>               		     
              		<div class="box box-primary">     	
              			<div class="box-header">
-             				<h5 class="box-title">Create a new hypervisor</h5> 							    			
+             				<h5 class="box-title">Create a new operating system</h5> 							    			
              			</div>		
 	                 	<!-- form start -->
 	                 	<form id="form-new" action="${createLink(uri: '/admin/os/save', absolute: true)}" role="form">

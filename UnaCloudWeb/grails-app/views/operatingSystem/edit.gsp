@@ -9,7 +9,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="${createLink(uri: '/', absolute: true)}"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}"><i class="fa fa-desktop"></i> Hypervisors</a></li>
+            <li><a href="${createLink(uri: '/admin/os/list', absolute: true)}"><i class="fa fa-desktop"></i> Operating Systems</a></li>
             <li class="active">Edit Operating System</li>
         </ol>
     </section>    
@@ -37,7 +37,7 @@
 	                         </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
 		                        <g:submitButton name="button-submit" class="btn btn-success" value="Submit" />	
-		                        <a class="btn btn-danger" href="${createLink(uri: '/admin/hypervisor/list', absolute: true)}" >Cancel</a>	
+		                        <a class="btn btn-danger" href="${createLink(uri: '/admin/os/list', absolute: true)}" >Cancel</a>	
 		                    	
 		                     </div>
 	                	 </form>

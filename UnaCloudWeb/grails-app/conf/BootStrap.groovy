@@ -2,40 +2,40 @@
 import java.io.FileInputStream;
 
 
-import com.losandes.utils.ConfigurationReader
-import com.losandes.utils.Constants;
-import com.losandes.utils.UnaCloudConstants;
+
+import uniandes.unacloud.common.utils.ConfigurationReader
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.internal.runners.statements.FailOnTimeout;
 
-import unacloud.share.queue.QueueRabbitManager;
-import unacloud.share.utils.EnvironmentManager;
-import unacloud.ExternalCloudProvider;
-import unacloud.UserGroup
-import unacloud.UserGroupService
-import unacloud.HardwareProfile;
-import unacloud.Hypervisor;
-import unacloud.IP
-import unacloud.IPPool;
-import unacloud.Laboratory;
-import unacloud.OperatingSystem;
-import unacloud.PhysicalMachine;
-import unacloud.ServerVariable
-import unacloud.User
-import unacloud.Repository
-import unacloud.UserService
-import unacloud.enums.ExternalCloudTypeEnum;
-import unacloud.enums.NetworkQualityEnum;
-import unacloud.share.enums.PhysicalMachineStateEnum;
-import unacloud.share.enums.ServerVariableProgramEnum;
-import unacloud.share.enums.ServerVariableTypeEnum;
-import unacloud.init.DatabaseService
-import unacloud.task.queue.QueueTaskerControl;
-import unacloud.task.queue.QueueTaskerFile;
-import unacloud.utils.Hasher;
-import unacloud.pmallocators.AllocatorEnum;
+import uniandes.unacloud.share.queue.QueueRabbitManager;
+import uniandes.unacloud.share.utils.EnvironmentManager;
+import uniandes.unacloud.web.domain.ExternalCloudProvider;
+import uniandes.unacloud.web.domain.UserGroup
+import uniandes.unacloud.web.services.UserGroupService
+import uniandes.unacloud.web.domain.HardwareProfile;
+import uniandes.unacloud.web.domain.Platform;
+import uniandes.unacloud.web.domain.IP
+import uniandes.unacloud.web.domain.IPPool;
+import uniandes.unacloud.web.domain.Laboratory;
+import uniandes.unacloud.web.domain.OperatingSystem;
+import uniandes.unacloud.web.domain.PhysicalMachine;
+import uniandes.unacloud.web.domain.ServerVariable
+import uniandes.unacloud.web.domain.User
+import uniandes.unacloud.web.domain.Repository
+import uniandes.unacloud.web.services.UserService
+import uniandes.unacloud.web.domain.enums.ExternalCloudTypeEnum;
+import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
+import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
+import uniandes.unacloud.share.enums.ServerVariableProgramEnum;
+import uniandes.unacloud.share.enums.ServerVariableTypeEnum;
+import uniandes.unacloud.web.queue.QueueTaskerControl;
+import uniandes.unacloud.web.queue.QueueTaskerFile;
+import uniandes.unacloud.web.utils.java.Hasher;
+import uniandes.unacloud.web.pmallocators.AllocatorEnum;
+import uniandes.unacloud.web.services.init.DatabaseService;
 
 /**
  * Start APP
@@ -98,8 +98,8 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT,serverVariableType: ServerVariableTypeEnum.INT,variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT),program:ServerVariableProgramEnum.FILE_MANAGER,serverOnly:false).save()
 			
 		}			
-		if(Hypervisor.count() == 0){
-			new Hypervisor(name: Constants.VIRTUAL_BOX, hypervisorVersion: "4.3.4",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk').save()
+		if(Platform.count() == 0){
+			new Platform(name: "VirtualBox",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk',platformVersion: "4.3.4",classPlatform:"VirtualBox").save()
 		}
 		//new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
