@@ -80,7 +80,7 @@ class ImageService {
 			def image= new Image(state: ImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
 				owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),isPublic: false, imageVersion: 0,
 				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 
-				password:  publicImage.password)
+				password:  publicImage.password, platform:  publicImage.platform)
 			image.save(failOnError:true)
 			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)			
 			return true
