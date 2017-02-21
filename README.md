@@ -85,11 +85,12 @@ This kind of installation is very fast and does not use distributed components. 
 bash install.sh
 ```
 * The script will install in machine:
-	* Java Oracle 7
+	* Java 7
 	* Apache Tomcat 8
 	* UnaCloud server components
 	* MySQL Database
 	* RabbitMQ
+* Execute file start.sh
 * Access in your browser to url http://IP:port/UnaCloud
 * Log in with user defined in config.properties file.
 
@@ -107,7 +108,7 @@ vagrant up
 vagrant ssh
 ```
 * Vagrant will configure machine with:
-	* Java Oracle 7
+	* Java 7
 	* Apache Tomcat 8
 	* UnaCloud Server components
 	* MySQL Database
