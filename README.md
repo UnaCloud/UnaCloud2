@@ -38,7 +38,7 @@ The project can be downloaded from [UnaCloud Wiki](https://sistemasproyectos.uni
 
 ##Pre-Configuration
 After downloading project, modify configuration file config.properties (for all installation options).
-Note: Vagrant Installation Option configuration file has default values currently, we recommend at least to change passwords in file.
+Note: Vagrant Installation Option configuration file has default values currently, we recommend at least to change passwords in file and IP address in WEB_FILE_SERVER_URL, CONTROL_SERVER_IP y FILE_SERVER_IP variables by IP address host.
 
 Set following properties:
 
@@ -53,15 +53,15 @@ Set following properties:
 *	DB_IP: MySQL server IP address. In case of Script-based or Vagrant Installation, use local address.
 *	DB_PORT: MySQL server access port, by default is 3306. 
 *	DB_NAME: production database name. 
-*	WEB_SERVER_URL: Web server url. This url is composed by IP address, port and application name (UnaCloud). In case of Script-based or Vagrant Installation, use local address followed by port 8080 and application name UnaCloud: ip:8080/UnaCloud. Don't forget protocol.
+*	WEB_SERVER_URL: Web server url. This url is composed by IP address, port and application name (UnaCloud). In case of Script-based installation use local address followed by port 8080 and application name UnaCloud: ip:8080/UnaCloud, don't forget protocol. In case vagrant application replace by Host IP address follow port 10030: ip:10030/UnaCloud, don't forget protocol.
 *	AGENT_VERSION: initial version for agent.
-*	CONTROL_SERVER_IP: CloudControl application IP address. In case of Script-based or Vagrant Installation, use local address.
+*	CONTROL_SERVER_IP: CloudControl application IP address. In case of Script-based or Vagrant Installation, use host IP address.
 *	CONTROL_MANAGE_PM_PORT: CloudControl application port to receive control messages from agents. We recommend port range 10025 to 10035.
 *	CONTROL_MANAGE_VM_PORT: CloudControl application port to receive control messages from agents with information about execution instance. We recommend port range 10025 to 10035.
 *	AGENT_PORT: Agent port to receive messages from CloudControl application. We recommend port range 10025 to 10035.
-*	WEB_FILE_SERVER_URL: FileManager web application url. This url is composed by IP address, port and application name (FileManager). In case of Script-based or Vagrant Installation, use local address followed by port 8080 and application name FileManager: ip:8080/FileManager. Don't forget protocol.
+*	WEB_FILE_SERVER_URL: FileManager web application url. This url is composed by IP address, port and application name (FileManager). In case of Script-based installation use local address followed by port 8080 and application name FileManager: ip:8080/FileManager, don't forget protocol. In case vagrant application replace by Host IP address follow port 10030: ip:10030/FileManager, don't forget protocol.
 *	FILE_SERVER_PORT: FileManager application port to receive requests from agents to send files. We recommend port range 10025 to 10035.
-*	FILE_SERVER_IP: FileManager application IP address. In case of Script-based or Vagrant Installation, use local address.
+*	FILE_SERVER_IP: FileManager application IP address. In case of Script-based or Vagrant Installation, use host IP address.
 *	VERSION_MANAGER_PORT: FileManager application port to receive messages from AgentUpdater application to manage update agent process. We recommend port range 10025 to 10035.
 *	dev_url: this variable is used only in development environment, leave default value. 
 *	dev_username: this variable is used only in development environment, leave default value. 
@@ -74,12 +74,12 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ###Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments.
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
 * Update config.properties file. Check pre-configuration section.
-* Set environment variable PATH_CONFIG pointed to config.properties file path or set it in third line in install.sh script file.
+* Set environment variable PATH_CONFIG pointed to config.properties file path and set it in third line in install.sh script file.
 * Execute file install.sh
 ```
 bash install.sh
@@ -99,6 +99,7 @@ This kind of installation is very fast, does not use distributed components and 
 * Install Vagrant from https://www.vagrantup.com/
 * Install VirtualBox 4.3 or better.
 * Unzip package in path of your preference.
+* Replace IP address in fields WEB_SERVER_URL, WEB_FILE_SERVER_URL, CONTROL_SERVER_IP and FILE_SERVER_IP by your host IP address
 * Execute in terminal vagrantfile located in folder using command:
 ```
 vagrant up
@@ -113,7 +114,7 @@ vagrant ssh
 	* UnaCloud Server components
 	* MySQL Database
 	* RabbitMQ
-* Access in your browser to url http://localhost:10028/UnaCloud
+* Access in your browser to url http://IP:10030/UnaCloud
 * Log in with user admin and change password in profile segment
 
 
