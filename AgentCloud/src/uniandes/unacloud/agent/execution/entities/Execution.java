@@ -71,7 +71,7 @@ public class Execution implements Serializable{
   
     /**
      * Gets execution ID
-     * @return
+     * @return execution id
      */
 	public long getId() {
 		return id;
@@ -87,7 +87,7 @@ public class Execution implements Serializable{
 	
 	/**
 	 * Gets cores quantity
-	 * @return
+	 * @return number of required cores for execution
 	 */
 	public int getCores() {
 		return cores;
@@ -101,8 +101,8 @@ public class Execution implements Serializable{
 	}
 	
 	/**
-	 * Gets execution memory en MB
-	 * @return
+	 * Gets execution memory in MB
+	 * @return RAM requires for execution
 	 */
 	public int getMemory() {
 		return memory;
@@ -118,7 +118,7 @@ public class Execution implements Serializable{
 	
 	/**
 	 * Gets execution time
-	 * @return
+	 * @return time for execution
 	 */
 	public Time getExecutionTime() {
 		return executionTime;
@@ -134,7 +134,7 @@ public class Execution implements Serializable{
 
 	/**
 	 * Gets net interface list
-	 * @return
+	 * @return list of net interfaces for execution
 	 */
 	public List<NetInterface> getInterfaces() {
 		return interfaces;
@@ -214,7 +214,7 @@ public class Execution implements Serializable{
 	
 	/**
 	 * Gets image id
-	 * @return
+	 * @return image id
 	 */
 	public long getImageId() {
 		return imageId;

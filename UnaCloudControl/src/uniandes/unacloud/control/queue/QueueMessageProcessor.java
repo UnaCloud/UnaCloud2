@@ -156,7 +156,8 @@ public class QueueMessageProcessor implements QueueReader{
 			TaskEnum task = messageTask.getTask();
 			Long[] ids = messageTask.getIdMachines();
 			
-			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);			
+			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);
+			System.out.println("Sending message to "+machines.size());
 			for (int i = 0; i < machines.size() ; i+=messagesByThread) {
 				UnaCloudAbstractMessage absMessage = task.equals(TaskEnum.CACHE)?
 						new ClearVMCacheMessage():task.equals(TaskEnum.STOP)?
@@ -229,7 +230,7 @@ public class QueueMessageProcessor implements QueueReader{
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con2);
+									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error "+message), con2);
 								}catch (Exception e) {e.printStackTrace();}
 							}
 						}));
@@ -276,19 +277,23 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm, new AbstractResponseProcessor() {			
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, text), con2);
-							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
-						}catch (Exception e) {e.printStackTrace();}
+						if(!execution.getState().equals(ExecutionStateEnum.FAILED)){
+							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, text), con2);
+								DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+							}catch (Exception e) {e.printStackTrace();}
+						}
 					}
 					@Override
 					public void attendError(String message, Long id) {
-						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FINISHED, null, "Connection lost to agent, execution will be removed when it reconnects"), con2);
-							DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
-						}catch (Exception e) {e.printStackTrace();}
+						if(!execution.getState().equals(ExecutionStateEnum.FAILED)){
+							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
+								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FINISHED, null, "Connection lost with agent, execution will be removed when it reconnects"), con2);
+								DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+							}catch (Exception e) {e.printStackTrace();}
+						}
 					}
 				}));
 			}
@@ -336,7 +341,7 @@ public class QueueMessageProcessor implements QueueReader{
 						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null,"Communication error"), con2);
+							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null,"Communication error "+message), con2);
 						}catch (Exception e) {e.printStackTrace();}
 					}
 				}));
@@ -389,7 +394,7 @@ public class QueueMessageProcessor implements QueueReader{
 							try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
 								PhysicalMachineManager.setPhysicalMachine(pm,con2);
-								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image"), con2);
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image "+message), con2);
 								ImageManager.deleteImage(image, con2);
 							}catch (Exception e) {e.printStackTrace();}
 						}

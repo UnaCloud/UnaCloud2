@@ -3,8 +3,8 @@ package uniandes.unacloud.agent.execution.configuration;
 import java.io.File;
 import java.util.Random;
 
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
  * Abstract configuration class for physical machines

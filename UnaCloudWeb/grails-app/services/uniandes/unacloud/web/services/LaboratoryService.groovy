@@ -10,6 +10,7 @@ import uniandes.unacloud.web.domain.ExecutionIP;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.IPPool;
 import uniandes.unacloud.web.domain.Laboratory;
+import uniandes.unacloud.web.domain.NetInterface;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalIP;
 import uniandes.unacloud.web.domain.PhysicalMachine;
@@ -62,6 +63,7 @@ class LaboratoryService {
 	
 	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd){
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
+		if(ips.size()==0)throw new Exception("IP range invalid")
 		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability,networkQuality: netConfig, ipPools:[],physicalMachines:[]).save();
 		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
 		for(String ipFind: ips){
@@ -169,7 +171,9 @@ class LaboratoryService {
 	 */
 	def deleteIP(Laboratory lab, ip){
 		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
+		if(executionIp.ipPool.ips.size()==1)throw new Exception("IP range must have one IP address at least")
 		if(executionIp && (executionIp.state == IPEnum.AVAILABLE||executionIp.state == IPEnum.DISABLED)){	
+			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id",[id:executionIp.id]);
 			executionIp.delete()
 		}
 	}
@@ -196,9 +200,9 @@ class LaboratoryService {
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
 		if(ipPool&&ipPool.getUsedIpsQuantity()==0){
-			for(ExecutionIP ip : ipPool.ips)deleteIP(lab, ip)
+			for(ExecutionIP ip : ipPool.ips)deleteIP(lab, ip.id)
 			ipPool.delete()
-		}else throw new Exception('Some Ips in IP Pool are being used')
+		}else throw new Exception('Some IP addresses in IP Pool are being used')
 	}
 	
 	/**

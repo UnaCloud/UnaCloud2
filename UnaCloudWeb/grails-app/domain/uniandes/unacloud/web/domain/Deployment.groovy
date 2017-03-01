@@ -49,7 +49,7 @@ class Deployment {
 	
 	/**
 	 * Stop time is not defined possibly
-	 * cluster could be deleted but deployment history don't
+	 * cluster could be deleted but deployment history not
 	 */
 	static constraints = {	
 		stopTime nullable:true 
@@ -68,12 +68,12 @@ class Deployment {
 			for(Execution vm in image.getActiveExecutions()){				
 				Date currentDate = new Date()
 				if(vm.status ==ExecutionStateEnum.QUEUED){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}
 				}else if(vm.status ==ExecutionStateEnum.CONFIGURING){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Request timeout')
 					}					
@@ -81,7 +81,7 @@ class Deployment {
 					if(vm.stopTime==null){
 						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Deploying error')
-					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					}else if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Task failed')
 					}						
@@ -94,15 +94,15 @@ class Deployment {
 						vm.finishExecution()
 					}
 				}else if(vm.status ==ExecutionStateEnum.RECONNECTING){
-					if(vm.lastReport&&(currentDate.getTime()-vm.lastReport.getTime()<CalendarUtils.MINUTE*4)){//if last message was before 4 minutes
+					if(vm.lastReport&&((currentDate.getTime()-vm.lastReport.getTime())<CalendarUtils.MINUTE*4)){//if last message was before 4 minutes
 						vm.putAt("status", ExecutionStateEnum.DEPLOYED)
 						vm.putAt("message",'Reconnecting on '+vm.getLastStateTime())
-					}else if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					}else if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.FAILED)
 						vm.putAt("message",'Connection lost')
 					}
 				}else if(vm.status ==ExecutionStateEnum.REQUEST_COPY){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.DEPLOYED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
@@ -112,10 +112,10 @@ class Deployment {
 								e.printStackTrace()
 							}							
 						}
-						vm.putAt("message",'Copy image request failed')
+						vm.putAt("message",'Image copy request failed')
 					}
 				}else if(vm.status ==ExecutionStateEnum.COPYING){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.putAt("status", ExecutionStateEnum.FAILED)						
 						if(vm.message.contains("Copy request to image ")){
 							try{
@@ -125,10 +125,10 @@ class Deployment {
 								e.printStackTrace()
 							}							
 						}
-						vm.putAt("message",'Copy image failed')
+						vm.putAt("message",'Image copy request failed')
 					}
 				}else if(vm.status ==ExecutionStateEnum.FINISHING){
-					if(currentDate.getTime()-vm.getLastStateTime().getTime()>vm.status.getTime()){
+					if((currentDate.getTime()-vm.getLastStateTime().getTime())>vm.status.getTime()){
 						vm.finishExecution()
 					}
 				}else if(vm.status ==ExecutionStateEnum.FAILED){

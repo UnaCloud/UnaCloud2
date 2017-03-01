@@ -28,5 +28,6 @@ class NetInterface {
 	static belongsTo = [execution:Execution]
 
     static constraints = {
+		ip nullable: true
     }
 }

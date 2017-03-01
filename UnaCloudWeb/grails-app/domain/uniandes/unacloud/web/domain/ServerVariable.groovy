@@ -34,8 +34,7 @@ class ServerVariable {
 	
 	/**
 	 * Program that used variable 
-	 */
-	
+	 */	
 	ServerVariableProgramEnum program;
 	
 	/**

@@ -6,11 +6,11 @@ import java.util.Date;
 
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigurator;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.platform.PlatformOperationException;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -56,7 +56,7 @@ public class ImageCopy implements Serializable{
 	}
 	/**
 	 * Gets image name
-	 * @return
+	 * @return image name
 	 */
 	public String getImageName() {
 		if(mainFile==null)return "null";
@@ -81,7 +81,7 @@ public class ImageCopy implements Serializable{
 	}
 	/**
 	 * Returns image
-	 * @return
+	 * @return image entity
 	 */
 	public Image getImage() {
 		return image;
@@ -97,14 +97,14 @@ public class ImageCopy implements Serializable{
 	
 	/**
 	 * Returns the platform's execution ID
-	 * @return
+	 * @return platform ID which executes this image copy
 	 */
 	public String getPlatformExecutionID() {
 		return platformExecutionID;
 	}
 	
 	/**
-	 * Updates the platofrm's execution ID
+	 * Updates the platform's execution ID
 	 * @param executionID
 	 */
 	public void setPlatformExecutionID(String executionID) {

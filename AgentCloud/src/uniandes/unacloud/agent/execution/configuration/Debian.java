@@ -3,7 +3,7 @@ package uniandes.unacloud.agent.execution.configuration;
 import java.io.File;
 import java.io.PrintWriter;
 
-import uniandes.unacloud.agent.platform.PlatformOperationException;
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 /**

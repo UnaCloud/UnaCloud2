@@ -7,7 +7,7 @@ package uniandes.unacloud.web.domain.enums;
  */
 public enum ClusterEnum {
 	/**
-	 * Some images are not availables
+	 * Some images are not available
 	 */
 	UNAVAILABLE("UNAVAILABLE"),
 	/**

@@ -31,10 +31,12 @@ public class MessageSender extends Thread{
 	
 	@Override
 	public void run() {
+		System.out.println("Thread for "+machines.size());
 		for(PhysicalMachineEntity pm: machines){
+			Socket s = null;
 			try{
 				System.out.println("Sending message to "+pm.getIp()+":"+ControlManager.getInstance().getPort());
-				Socket s=new Socket(pm.getIp(),ControlManager.getInstance().getPort());
+				s = new Socket(pm.getIp(),ControlManager.getInstance().getPort());
 				//s.setSoTimeout(15000);
 				ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
 				ObjectInputStream ois=new ObjectInputStream(s.getInputStream());
@@ -43,13 +45,18 @@ public class MessageSender extends Thread{
 				try {
 					processor.attendResponse((UnaCloudAbstractResponse) ois.readObject(),pm.getId());
 				} catch (Exception e) {
+					System.out.println("Error in machine response; "+pm.getIp());	
 					e.printStackTrace();
+					processor.attendError(e.getMessage(),pm.getId());
 				}				
 				s.close();
 			}catch(Exception e){
 				e.printStackTrace();
 				System.out.println("Error connectiong to "+pm.getIp());		
 				processor.attendError(e.getMessage(),pm.getId());
+				try {
+					if(s!=null)s.close();
+				} catch (Exception e2) {}
 			}
 			try{
 				Thread.sleep(500);

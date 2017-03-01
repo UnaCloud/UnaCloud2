@@ -1,6 +1,6 @@
 package uniandes.unacloud.agent.execution.configuration;
 
-import uniandes.unacloud.agent.platform.PlatformOperationException;
+import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.utils.AddressUtility;
 
 import java.io.File;

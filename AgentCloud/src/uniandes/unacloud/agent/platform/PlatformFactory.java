@@ -31,7 +31,6 @@ public class PlatformFactory {
     public static void registerplatforms(){
     	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
     	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
-    	String docker=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DOCKER_PATH);
     	if(vmRun!=null){
     		VMwareWorkstation vmwork = new VMwareWorkstation(vmRun);
     		map.put(vmwork.getCode(),vmwork);

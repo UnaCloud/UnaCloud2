@@ -27,7 +27,7 @@ public class UDPCommunicator {
 	
 	/**
 	 * Responsible to return instance from this class
-	 * @return
+	 * @return singleton instance 
 	 */
 	public static UDPCommunicator getInstance(){
 		if(instance == null)instance = new UDPCommunicator();
@@ -43,7 +43,9 @@ public class UDPCommunicator {
 	
 	/**
 	 * Push info by UDP protocol to server port for physical machine reports
-	 * @param params
+	 * @param hostName : current hostname
+	 * @param userName : name of current user on machine
+	 * @param executions : list of ids from current executions
 	 * @return true if message was sent, false in case not
 	 * @throws Exception 
 	 */
@@ -56,7 +58,10 @@ public class UDPCommunicator {
 	
 	/**
 	 * Push info by UDP protocol to server port for executions reports
-	 * @param params
+	 * @param hostName : current hostname
+	 * @param executionCode : execution code in server
+	 * @param state : last state for execution
+	 * @param messageExecution : Short message with description about state
 	 * @return Starts and configures an execution. This method must be used by other methods to configure, start and schedule an execution
 	 * @throws Exception 
 	 */
@@ -69,7 +74,6 @@ public class UDPCommunicator {
 	
 	/**
 	 * Push Info by UDP Protocol to server port for Log in Physical Machines
-	 * @param type UDPMessageEnum
 	 * @param hostName Sender
 	 * @param component
 	 * @param logMessage

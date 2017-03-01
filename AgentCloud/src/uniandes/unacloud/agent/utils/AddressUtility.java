@@ -87,7 +87,7 @@ public class AddressUtility {
 
     /**
      * Gets network 
-     * @return
+     * @return address for network
      */
     public String getNetwork() {
         return network;
