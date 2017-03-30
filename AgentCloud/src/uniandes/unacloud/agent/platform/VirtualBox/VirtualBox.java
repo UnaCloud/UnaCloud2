@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform;
+package uniandes.unacloud.agent.platform.VirtualBox;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
@@ -12,6 +12,7 @@ import java.util.List;
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
@@ -24,6 +25,11 @@ public class VirtualBox extends Platform {
 	
 	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
 	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
+	
+	/**
+	 * Version of virtualbox. depending of version some api commands are deprecated
+	 */
+	private VBoxVersion version;
     
 	/**
 	 * Class constructor
@@ -131,7 +137,7 @@ public class VirtualBox extends Platform {
     @Override
     public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
-        Collections.addAll(com, getExecutablePath(), "--nologo", "guestcontrol", image.getImageName(), "execute", "--image", command, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword(), "--wait-exit", "--");
+        Collections.addAll(com, version.createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
@@ -147,8 +153,8 @@ public class VirtualBox extends Platform {
      */
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "guestcontrol", image.getImageName(), "copyto", sourceFile.getAbsolutePath(), destinationRoute, "--username", image.getImage().getUsername(), "--password", image.getImage().getPassword());
-        if (h.contains(ERROR_MESSAGE)) {
+       	String h = LocalProcessExecutor.executeCommandOutput(version.createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
+    	if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(10000);

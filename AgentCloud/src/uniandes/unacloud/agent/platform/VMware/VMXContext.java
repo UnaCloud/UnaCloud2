@@ -1,10 +1,10 @@
-package uniandes.unacloud.agent.platform;
+package uniandes.unacloud.agent.platform.VMware;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.DOUBLE_QUOTE;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.OK_MESSAGE;
-import static uniandes.unacloud.agent.platform.VMwareAbstractHypervisor.VMW_VMX_CPU;
-import static uniandes.unacloud.agent.platform.VMwareAbstractHypervisor.VMW_VMX_MEMORY;
+import static uniandes.unacloud.agent.platform.VMware.VMwareAbstractHypervisor.VMW_VMX_CPU;
+import static uniandes.unacloud.agent.platform.VMware.VMwareAbstractHypervisor.VMW_VMX_MEMORY;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Responsible for changing the .vmx configuration file for executing an execution fulfilling the user context
  */
-public class Context {
+public class VMXContext {
 
     public File vmxFile;
 
@@ -25,7 +25,7 @@ public class Context {
      * Constructor method
      * @param vmxPath
      */
-    public Context(String vmxPath) {
+    public VMXContext(String vmxPath) {
         if (vmxPath != null) {
             vmxFile = new File(vmxPath.replace("\"",""));
         }

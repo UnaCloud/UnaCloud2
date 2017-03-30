@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform;
+package uniandes.unacloud.agent.platform.VMware;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
@@ -13,6 +13,7 @@ import java.util.List;
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 
@@ -89,7 +90,7 @@ public abstract class VMwareAbstractHypervisor extends Platform{
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	if(cores!=0&&ram!=0){
-            new Context(image.getMainFile().getPath()).changeVMXFileContext(cores,ram);
+            new VMXContext(image.getMainFile().getPath()).changeVMXFileContext(cores,ram);
        }
     }
     @Override

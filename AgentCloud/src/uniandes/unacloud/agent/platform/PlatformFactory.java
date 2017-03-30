@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.platform.VMware.VMwareWorkstation;
+import uniandes.unacloud.agent.platform.VirtualBox.VirtualBox;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
