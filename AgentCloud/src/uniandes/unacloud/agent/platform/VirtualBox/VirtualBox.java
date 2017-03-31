@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
+import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.platform.Platform;
@@ -21,32 +22,27 @@ import uniandes.unacloud.common.utils.LocalProcessExecutor;
  * Implementation of platform abstract class to give support for VirtualBox
  * platform.
  */
-public abstract class VirtualBox extends Platform {
+public class VirtualBox extends Platform {
 	
 	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
 	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
 	
-    private String version;
+	/**
+	 * API version
+	 */
+    private VBoxAPIVersion version;
     
     
 	/**
 	 * Class constructor
 	 * @param path Path to this platform executable
+	 * @throws UnsupportedPlatformException 
 	 */
-	public VirtualBox(String path, String version) {		
+	public VirtualBox(String path) throws UnsupportedPlatformException {		
 		super(path);
-		this.version = version;
+		version = getInstalledVirtualBoxVersion();
 	}
-    
-	/**
-	 * Returns virtualbox version
-	 * @return version
-	 */
-	public String getVersion(){
-		return version;
-	}
-	
-	
+   	
     /**
      * Sends a stop command to the platform
      * @param image Image copy to be stopped 
@@ -114,9 +110,9 @@ public abstract class VirtualBox extends Platform {
 		//To correct executions in Vbox 4.3 and forward
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getImageName());
-    		sleep(1000);
+    		sleep(5000);
     		OSFactory.getOS().setPriorityProcess(VBOX_SERVICE_NAME);
-    		sleep(1000);
+    		sleep(5000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -145,7 +141,7 @@ public abstract class VirtualBox extends Platform {
     @Override
     public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
-        Collections.addAll(com, createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
+        Collections.addAll(com, version.createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
@@ -161,7 +157,7 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
-       	String h = LocalProcessExecutor.executeCommandOutput(createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
+       	String h = LocalProcessExecutor.executeCommandOutput(version.createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
     	if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -274,26 +270,20 @@ public abstract class VirtualBox extends Platform {
 		return executionsToDelete;
 	}
 	
-	/**
-	 * Method to create command to be executed in guest machine
-	 * @param path: VBoxManage path
-	 * @param imageName: image name
-	 * @param command: command to be executed in guest
-	 * @param username: username in virtual machine
-	 * @param password: password for username
-	 * @return Array with all command elements
-	 */
-	public abstract String[] createExecutionCommand(String path, String imageName, String command, String username, String password);
 	
 	/**
-	 * Mathod to create command to copy files in guest machine
-	 * @param path: VBoxManage path
-	 * @param imageName: image name
-	 * @param sourcePath: file path to be copied in guest
-	 * @param guestPath: file path to be replaced in guest
-	 * @param username: username in virtual machine
-	 * @param password: password for username
-	 * @return Array with all command elements
+	 * Returns the current virtualbox version installed in host
+	 * @param path for vboxmanage application
+	 * @return VirtualBox current installed version
+	 * @throws UnsupportedPlatformException in case virtualbox version is not supported
 	 */
-	public abstract String[] createCopyToCommand(String path, String imageName, String sourcePath, String guestPath, String username, String password);
+	public VBoxAPIVersion getInstalledVirtualBoxVersion() throws UnsupportedPlatformException
+	{
+		String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "--version");
+		if(h.startsWith(VBox5.VERSION+"."))
+			return new VBox5();
+		if(h.startsWith(VBox43.VERSION+"."))
+			return new VBox43();		
+		throw new UnsupportedPlatformException("VBox: "+getExecutablePath());
+	}
 }
