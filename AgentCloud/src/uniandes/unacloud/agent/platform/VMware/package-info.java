@@ -1,5 +1,5 @@
 /**
- * In this package are located all classes to manage platforms processes to configure and execute images
+ * In this package are located all classes to manage VmWare platforms
  * @author CesarF
  * @author Clouder
  *
