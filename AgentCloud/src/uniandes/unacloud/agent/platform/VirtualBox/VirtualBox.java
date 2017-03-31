@@ -21,24 +21,32 @@ import uniandes.unacloud.common.utils.LocalProcessExecutor;
  * Implementation of platform abstract class to give support for VirtualBox
  * platform.
  */
-public class VirtualBox extends Platform {
+public abstract class VirtualBox extends Platform {
 	
 	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
 	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
 	
-	/**
-	 * Version of virtualbox. depending of version some api commands are deprecated
-	 */
-	private VBoxVersion version;
+    private String version;
+    
     
 	/**
 	 * Class constructor
 	 * @param path Path to this platform executable
 	 */
-	public VirtualBox(String path) {
+	public VirtualBox(String path, String version) {		
 		super(path);
+		this.version = version;
 	}
     
+	/**
+	 * Returns virtualbox version
+	 * @return version
+	 */
+	public String getVersion(){
+		return version;
+	}
+	
+	
     /**
      * Sends a stop command to the platform
      * @param image Image copy to be stopped 
@@ -137,7 +145,7 @@ public class VirtualBox extends Platform {
     @Override
     public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
-        Collections.addAll(com, version.createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
+        Collections.addAll(com, createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
         if (h.contains(ERROR_MESSAGE)) {
@@ -153,7 +161,7 @@ public class VirtualBox extends Platform {
      */
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
-       	String h = LocalProcessExecutor.executeCommandOutput(version.createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
+       	String h = LocalProcessExecutor.executeCommandOutput(createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
     	if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -265,4 +273,27 @@ public class VirtualBox extends Platform {
 		}
 		return executionsToDelete;
 	}
+	
+	/**
+	 * Method to create command to be executed in guest machine
+	 * @param path: VBoxManage path
+	 * @param imageName: image name
+	 * @param command: command to be executed in guest
+	 * @param username: username in virtual machine
+	 * @param password: password for username
+	 * @return Array with all command elements
+	 */
+	public abstract String[] createExecutionCommand(String path, String imageName, String command, String username, String password);
+	
+	/**
+	 * Mathod to create command to copy files in guest machine
+	 * @param path: VBoxManage path
+	 * @param imageName: image name
+	 * @param sourcePath: file path to be copied in guest
+	 * @param guestPath: file path to be replaced in guest
+	 * @param username: username in virtual machine
+	 * @param password: password for username
+	 * @return Array with all command elements
+	 */
+	public abstract String[] createCopyToCommand(String path, String imageName, String sourcePath, String guestPath, String username, String password);
 }

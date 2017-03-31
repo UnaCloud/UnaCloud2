@@ -1,6 +1,12 @@
 package uniandes.unacloud.agent.platform.VirtualBox;
 
-public class VBox43 implements VBoxVersion{
+public class VBox43 extends VirtualBox{
+	
+	public static final String VERSION = "4.3";
+	
+	public VBox43(String path) {
+		super(path, VERSION);
+	}
 
 	@Override
 	public String[] createExecutionCommand(String path, String imageName,String command, String username, String password) {
