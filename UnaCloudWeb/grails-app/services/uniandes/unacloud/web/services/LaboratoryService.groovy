@@ -64,6 +64,7 @@ class LaboratoryService {
 	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd){
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
 		if(ips.size()==0)throw new Exception("IP range invalid")
+		//TODO save lab after validate each IP
 		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability,networkQuality: netConfig, ipPools:[],physicalMachines:[]).save();
 		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
 		for(String ipFind: ips){
