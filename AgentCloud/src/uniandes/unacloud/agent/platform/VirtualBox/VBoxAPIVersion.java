@@ -1,5 +1,10 @@
 package uniandes.unacloud.agent.platform.VirtualBox;
 
+/**
+ * Represents virtualbox version api
+ * @author Cesar
+ *
+ */
 public abstract class VBoxAPIVersion {
 	
 	/**

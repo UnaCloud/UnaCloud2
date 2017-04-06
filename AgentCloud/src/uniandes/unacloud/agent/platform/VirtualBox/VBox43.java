@@ -1,5 +1,10 @@
 package uniandes.unacloud.agent.platform.VirtualBox;
 
+/**
+ * Represents VirtualBox version API 4.3
+ * @author Cesar
+ *
+ */
 public class VBox43 extends VBoxAPIVersion{
 	
 	public static final String VERSION = "4.3";

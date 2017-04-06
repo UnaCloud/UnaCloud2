@@ -1,5 +1,10 @@
 package uniandes.unacloud.agent.platform.VirtualBox;
 
+/**
+ * Represents VirtualBox version API 5.*
+ * @author Cesar
+ *
+ */
 public class VBox5 extends VBoxAPIVersion{
 
 	public static final String VERSION = "5";
@@ -7,7 +12,7 @@ public class VBox5 extends VBoxAPIVersion{
 
 	@Override
 	public String[] createExecutionCommand(String path, String imageName,String command, String username, String password) {		
-		return new String[]{path, "--nologo","guestcontrol", imageName, "--username", username, "--password", password, "run", "--exe", command, "--wait-stdout", "--"};
+		return new String[]{path, "--nologo","guestcontrol", imageName, "--username", username, "--password", password, "run", "--exe", command, "--wait-stdout", "--wait-stderr", "--", "-l"};
 	}
 
 	@Override
