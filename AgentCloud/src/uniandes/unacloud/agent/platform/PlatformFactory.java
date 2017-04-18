@@ -9,6 +9,7 @@ import java.util.Map;
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.platform.VMware.VMwareWorkstation;
+import uniandes.unacloud.agent.platform.VirtualBox.VBoxFactory;
 import uniandes.unacloud.agent.platform.VirtualBox.VirtualBox;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -41,7 +42,7 @@ public class PlatformFactory {
     	if(vBox!=null){
     		VirtualBox vbox;
 			try {
-				vbox = new VirtualBox(vBox) ;
+				vbox = VBoxFactory.getInstalledVirtualBoxPlatform(vBox);
 				map.put(vbox.getCode(),vbox);
 			} catch (UnsupportedPlatformException e) {
 				e.printStackTrace();

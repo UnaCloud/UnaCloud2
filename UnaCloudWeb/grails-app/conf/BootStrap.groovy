@@ -99,7 +99,8 @@ class BootStrap {
 			
 		}			
 		if(Platform.count() == 0){
-			new Platform(name: "VirtualBox",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk',platformVersion: "4.3.4",classPlatform:"VirtualBox").save()
+			new Platform(name: "VirtualBox 5",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk',platformVersion: "5.0",classPlatform:"VBox5").save()
+			new Platform(name: "VirtualBox 4.3",mainExtension:".vbox",filesExtensions:'.vdi,.vmdk',platformVersion: "4.3.4",classPlatform:"VBox43").save()
 		}
 		//new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
