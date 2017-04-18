@@ -82,7 +82,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 						if(!image.isPublic()){
 							RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
 							File file = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName());
-							System.out.println("Change to public "+image.getMainFile());
+							System.out.println("Changes to public "+image.getMainFile());
 							boolean change = false;
 							if(!file.exists()){
 								File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
@@ -182,11 +182,11 @@ public class QueueMessageFileProcessor implements QueueReader{
 							if(file!=null){
 								File dir = file.getParentFile();
 								for(File f: dir.listFiles())
-									System.out.println("Delete file: "+f.getAbsolutePath()+" "+f.delete());
-								System.out.println("Delete file: "+dir.getAbsolutePath()+" "+dir.delete());
+									System.out.println("Deletes file: "+f.getAbsolutePath()+" "+f.delete());
+								System.out.println("Deletes file: "+dir.getAbsolutePath()+" "+dir.delete());
 							}
 						} catch (Exception e) {
-							System.err.println("No delete original image files "+image.getMainFile());
+							System.err.println("original image files can't be deleted "+image.getMainFile());
 						}
 						try {
 							if(image.isPublic()){
@@ -195,7 +195,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 								if(folder.exists())System.out.println("Delete file: "+folder.getAbsolutePath()+" "+folder.delete());	
 							}
 						} catch (Exception e) {
-							System.err.println("No delete public copy files "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+							System.err.println("public copy files can't be deleted "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 						}					
 						ImageManager.deleteImage(new ImageEntity(image.getId(), null, null, ImageEnum.IN_QUEUE, null),con);
 					}
@@ -228,9 +228,14 @@ public class QueueMessageFileProcessor implements QueueReader{
 							if(image!=null){
 								try {
 									File file = new File(image.getMainFile());
-									if(file!=null)System.out.println("Delete file: "+file.getParentFile().getAbsolutePath()+" "+file.getParentFile().delete());
+									if(file!=null){
+										File dir = file.getParentFile();
+										for(File f: dir.listFiles())
+											System.out.println("Deletes file: "+f.getAbsolutePath()+" "+f.delete());
+										System.out.println("Deletes file: "+dir.getAbsolutePath()+" "+dir.delete());
+									}									
 								} catch (Exception e) {
-									System.err.println("No delete original image files "+image.getMainFile());
+									System.err.println("original image files can't be deleted "+image.getMainFile());
 								}
 								try {
 									if(image.isPublic()){
@@ -239,7 +244,7 @@ public class QueueMessageFileProcessor implements QueueReader{
 										if(folder.exists())System.out.println("Delete folder: "+folder.getAbsolutePath()+" "+folder.delete());	
 									}
 								} catch (Exception e) {
-									System.err.println("No delete public copy files "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
+									System.err.println("public copy files can't be deleted  "+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);
 								}					
 								ImageManager.deleteImage(new ImageEntity(image.getId(), null, null, ImageEnum.IN_QUEUE, null),con);
 							}
@@ -273,7 +278,11 @@ public class QueueMessageFileProcessor implements QueueReader{
 							RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY,con);
 							File folder = new File(main.getRoot()+UnaCloudConstants.TEMPLATE_PATH+File.separator+image.getName()+File.separator);						
 							if(folder.exists())
+							{
+								for(File f: folder.listFiles())
+									System.out.println("Deletes file: "+f.getAbsolutePath()+" "+f.delete());
 								System.out.println("Deletes folder: "+folder.getAbsolutePath()+" "+folder.delete());
+							}								
 						}
 						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, false, null, null, null,null),false,con, false);
 					}
