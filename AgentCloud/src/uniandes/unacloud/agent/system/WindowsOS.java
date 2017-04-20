@@ -16,23 +16,23 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class WindowsOS extends OperatingSystem{
 	
-	public static final String WINDOWS_TURN_OFF_COMMAND = "c:\\windows\\system32\\shutdown.exe -s -t 60";
-    public static final String WINDOWS_RESTART_COMMAND = "c:\\windows\\system32\\shutdown.exe -r -t 30";
-    public static final String WINDOWS_LOGOUT_COMMAND = "c:\\windows\\system32\\shutdown.exe -l -f";
+	public static final String[] WINDOWS_TURN_OFF_COMMAND = new String[]{"c:\\windows\\system32\\shutdown.exe", "-s", "-t", "60"};
+    public static final String[] WINDOWS_RESTART_COMMAND = new String[]{"c:\\windows\\system32\\shutdown.exe", "-r", "-t", "30"};
+    public static final String[] WINDOWS_LOGOUT_COMMAND = new String[]{"c:\\windows\\system32\\shutdown.exe", "-l", "-f"};
     public static final String WINDOWS_HOSTNAME_COMMAND = "hostname";
 
 	@Override
-	public String getTurnOffCommand() {		
+	public String[] getTurnOffCommand() {		
 		return WINDOWS_TURN_OFF_COMMAND;
 	}
 
 	@Override
-	public String getRestartCommand() {		
+	public String[] getRestartCommand() {		
 		return WINDOWS_RESTART_COMMAND;
 	}
 
 	@Override
-	public String getLogOutCommand() {		
+	public String[] getLogOutCommand() {		
 		return WINDOWS_LOGOUT_COMMAND;
 	}
 
@@ -104,7 +104,7 @@ public class WindowsOS extends OperatingSystem{
 	@Override
 	public void setPriorityProcess(String processName) {
     	try {
-			executeCommandOS("wmic process where name=\""+processName+".exe\" CALL setpriority 64");
+			executeCommandOS(new String[]{"wmic","process","where","name=\""+processName+".exe\"","CALL","setpriority","64"});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	    

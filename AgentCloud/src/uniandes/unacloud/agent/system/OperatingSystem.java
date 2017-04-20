@@ -46,7 +46,7 @@ public abstract class OperatingSystem {
      * Responsible for returning the command to turn off host machine
      * @return command to turn off host, it depends of operating system
      */
-	public abstract String getTurnOffCommand() throws UnsupportedCommandException;
+	public abstract String[] getTurnOffCommand() throws UnsupportedCommandException;
 		
 
     /**
@@ -71,7 +71,7 @@ public abstract class OperatingSystem {
      * Responsible for returning the command to restart host machine
      * @return command to restart host, it depends of operating system
      */
-	public abstract String getRestartCommand() throws UnsupportedCommandException;
+	public abstract String[] getRestartCommand() throws UnsupportedCommandException;
 
     /**
      * Responsible for logout the local operating system
@@ -97,7 +97,7 @@ public abstract class OperatingSystem {
      * @param command
      * @return result in console
      */
-    protected String executeCommandOS(String command){
+    protected String executeCommandOS(String[] command){
     	try {
         	return LocalProcessExecutor.executeCommandOutput(command);
 		} catch (Exception e) {
@@ -118,7 +118,7 @@ public abstract class OperatingSystem {
      * @return command to log out host, it depends of operating system
      * @throws UnsupportedCommandException 
      */
-	public abstract String getLogOutCommand() throws UnsupportedCommandException;
+	public abstract String[] getLogOutCommand() throws UnsupportedCommandException;
 	
     /**
      * Returns user username currently logged in machine
