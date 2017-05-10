@@ -123,6 +123,7 @@ public class LocalProcessExecutor {
 		return false;
 	}
     /**
+     * Execute command kill process
      * Only valid for Windows operating system
      * @param process
      */
