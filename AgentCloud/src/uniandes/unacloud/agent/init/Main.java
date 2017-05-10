@@ -33,9 +33,15 @@ public class Main {
     
         int mainCase = 0;
        
+        String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
+    	if(dataPath==null||dataPath.isEmpty()){
+    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
+    		System.exit(0);
+    	}
         try {
     		//Create agent log file
-        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"logClient.txt",true),true){
+        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_log_out.txt",true),true){
+        	
         		@Override
         		public void println(String x) {
         			super.println(new Date()+" "+x);
@@ -45,25 +51,31 @@ public class Main {
         			super.println(new Date()+" "+x);
         		}
         	};
+        	PrintStream psError=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_log_err.txt",true),true){
+            	@Override
+        		public void println(String x) {
+        			super.println(new Date()+" "+x);
+        		}
+        		@Override
+        		public void println(Object x) {
+        			super.println(new Date()+" "+x);
+        		}
+        	};
 			System.setOut(ps);
-			System.setErr(ps);
+			System.setErr(psError);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
         System.out.println("Start configuration");
         //Validates data path  
-    	String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
-    	if(dataPath==null||dataPath.isEmpty()){
-    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
-    		System.exit(0);
-    	}
+    	
       
       //Start log     	
     	{
     		//Validate if the user that is executing agent is system user    		
 			try {
 				if(OSFactory.getOS().isRunningBySuperUser()){
-	        		System.out.println("You can't execute the agent as "+OSFactory.getOS().getWhoAmI());
+					System.err.println("You can't execute the agent as "+OSFactory.getOS().getWhoAmI());
 	        		System.exit(0);
 	        		return;
 	        	}

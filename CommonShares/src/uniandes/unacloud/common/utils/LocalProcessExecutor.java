@@ -98,6 +98,7 @@ public class LocalProcessExecutor {
     }
     /**
      * Validates if process is running
+     * Only valid for Windows operating system
      * @param process
      * @return true if is running, false in case not
      */
@@ -122,7 +123,7 @@ public class LocalProcessExecutor {
 		return false;
 	}
     /**
-     * Execute command kill process, only valid in windows systems.
+     * Only valid for Windows operating system
      * @param process
      */
     public static void killProcess(String process){
