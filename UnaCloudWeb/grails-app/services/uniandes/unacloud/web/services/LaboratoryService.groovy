@@ -171,10 +171,12 @@ class LaboratoryService {
 	 * @param ip to be removed
 	 */
 	def deleteIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
+		ExecutionIP executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
 		if(executionIp.ipPool.ips.size()==1)throw new Exception("IP range must have one IP address at least")
 		if(executionIp && (executionIp.state == IPEnum.AVAILABLE||executionIp.state == IPEnum.DISABLED)){	
 			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id",[id:executionIp.id]);
+			IPPool pool = executionIp.ipPool
+			pool.removeFromIps(executionIp)
 			executionIp.delete()
 		}
 	}
