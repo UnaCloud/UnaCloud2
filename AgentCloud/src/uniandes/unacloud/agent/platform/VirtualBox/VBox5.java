@@ -20,6 +20,7 @@ public class VBox5 extends VirtualBox{
 
 	@Override
 	public String[] createCopyToCommand(String path, String imageName,String sourcePath, String guestPath, String username,String password) {		
+		guestPath = guestPath.replaceAll("/", "//");
 		return new String[]{path, "--nologo", "guestcontrol", imageName, "--username", username, "--password", password, "copyto", "--target-directory", guestPath, sourcePath};
 	}
 

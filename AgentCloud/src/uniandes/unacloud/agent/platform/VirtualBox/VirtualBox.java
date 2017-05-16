@@ -103,9 +103,9 @@ public abstract class VirtualBox extends Platform {
 		//To correct executions in Vbox 4.3 and forward
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getImageName());
-    		sleep(5000);
+    		sleep(1000);
     		OSFactory.getOS().setPriorityProcess(VBOX_SERVICE_NAME);
-    		sleep(5000);
+    		sleep(1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -121,7 +121,7 @@ public class ImageCacheManager {
 	 */
 	public static void cleanDir(File f){
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
-		f.delete();
+		System.out.println("\t\t"+f+": "+f.delete());
 	}
 	
 	/**
@@ -164,12 +164,14 @@ public class ImageCacheManager {
 				}				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			if(new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).exists())
-				for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
+			}			
 			imageList.remove(imageId);
 			saveImages();
 		}
+		File folder = new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId);
+		System.out.println("\tDelete: "+folder);
+		if(folder.exists())
+			for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
 		return SUCCESSFUL_OPERATION;
 	}
 	
