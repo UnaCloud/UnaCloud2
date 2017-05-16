@@ -153,7 +153,7 @@ public class QueueMessageProcessor implements QueueReader{
 	private void sendTaskToAgents(MessageTaskMachines messageTask){
 		try(Connection con = ControlManager.getInstance().getDBConnection();) {	
 			
-			TaskEnum task = messageTask.getTask();
+			final TaskEnum task = messageTask.getTask();
 			Long[] ids = messageTask.getIdMachines();
 			
 			List<PhysicalMachineEntity> machines=PhysicalMachineManager.getPhysicalMachineList(ids,PhysicalMachineStateEnum.PROCESSING, con);
@@ -167,7 +167,7 @@ public class QueueMessageProcessor implements QueueReader{
 					@Override
 					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
 						try(Connection con2 = ControlManager.getInstance().getDBConnection()){
-							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.ON);
+							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, task.equals(TaskEnum.STOP)?PhysicalMachineStateEnum.OFF:PhysicalMachineStateEnum.ON);
 							PhysicalMachineManager.setPhysicalMachine(pm, con2);
 						}catch (Exception e) {e.printStackTrace();}
 					}

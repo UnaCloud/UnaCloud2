@@ -40,7 +40,7 @@ public class Main {
     	}
         try {
     		//Create agent log file
-        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_log_out.txt",true),true){
+        	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_out.log",true),true){
         	
         		@Override
         		public void println(String x) {
@@ -51,7 +51,7 @@ public class Main {
         			super.println(new Date()+" "+x);
         		}
         	};
-        	PrintStream psError=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_log_err.txt",true),true){
+        	PrintStream psError=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_err.log",true),true){
             	@Override
         		public void println(String x) {
         			super.println(new Date()+" "+x);
