@@ -32,12 +32,14 @@ public class Main {
     public static void main(String[] args){      
     
         int mainCase = 0;
-       
+        //Validates data path 
         String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
     	if(dataPath==null||dataPath.isEmpty()){
     		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
     		System.exit(0);
     	}
+
+        //Start log    
         try {
     		//Create agent log file
         	PrintStream ps=new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH)+"unacloud_out.log",true),true){
@@ -66,11 +68,8 @@ public class Main {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-        System.out.println("Start configuration");
-        //Validates data path  
-    	
-      
-      //Start log     	
+        System.out.println("Start configuration");         	
+       	
     	{
     		//Validate if the user that is executing agent is system user    		
 			try {
