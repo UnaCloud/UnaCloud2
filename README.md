@@ -36,7 +36,7 @@ It is important to clarify that instead of volunteering their desktops, end-user
 | Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>
 
 ## Download
-The project can be downloaded from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=recursos:descargas). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
+The project can be downloaded from this repository in scripts/Install_packages folder or from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
 
 ## Pre-Configuration
 After downloading project, modify configuration file config.properties (for all installation options).
