@@ -22,19 +22,19 @@ public class LinuxOS extends OperatingSystem{
 	public static final String USER_FOR_OS = "root";
 
 	@Override
-	public String getTurnOffCommand() {		
-		return "sh " + BIN + PATH_SEPARATOR + LINUX_TURN_OFF_FILE_COMMAND;
+	public String[] getTurnOffCommand() {		
+		return new String[]{"sh", BIN + PATH_SEPARATOR + LINUX_TURN_OFF_FILE_COMMAND};
 	}
 
 	@Override
-	public String getRestartCommand() {		
-		return "sh " + BIN + PATH_SEPARATOR + LINUX_RESTART_FILE_COMMAND;
+	public String[] getRestartCommand() {		
+		return new String[]{"sh", BIN + PATH_SEPARATOR + LINUX_RESTART_FILE_COMMAND};
 	}
 
 	@Override
-	public String getLogOutCommand() {
+	public String[] getLogOutCommand() {
 		try {
-			return "sh " + BIN + PATH_SEPARATOR + LINUX_LOGOUT_FILE_COMMAND + getUserName();
+			return new String[]{"sh", BIN + PATH_SEPARATOR + LINUX_LOGOUT_FILE_COMMAND,getUserName()};
 		} catch (UnsupportedCommandException e) {			
 			e.printStackTrace();
 			return null;
@@ -101,13 +101,29 @@ public class LinuxOS extends OperatingSystem{
 	@Override
 	public void setPriorityProcess(String processName) {
 		try {
-			String [] h = executeCommandOS("ps -e -o pid,uname,comm,stat,pri | grep "+USER_FOR_OS+" | grep "+processName).split("\n|\r");
-			for(String line: h){
-				System.out.println(line);
-				String pid = line.split("\t")[0].trim();
-				executeCommandOS("renice 19 "+pid);
-			}			
-			
+//			String [] result = executeCommandOS(new String[]{"ps", "-e", "-o", "pid uname comm stat pri"}).split("\n|\r");
+//			boolean found = false;
+//			for (int i = 0; i < result.length && found == false; i++) {
+//				if(result[i].split("\t").length>2){
+//					String user = result[i].split("\t")[1].trim();
+//					String process = result[i].split("\t")[2].trim();
+//					if(user.equals(USER_FOR_OS)&&process.equals(processName))
+//					{
+//						String pid = result[i].split("\t")[0].trim();						
+//						executeCommandOS(new String[]{"renice", "-n", "19", "-p",pid});
+//						found = true;
+//					}
+//				}				
+//			}		
+			String [] result = executeCommandOS(new String[]{"pgrep", "-x", processName, "-u",USER_FOR_OS }).split("\n|\r");
+			for(String line: result){
+				if(line!=null&&!line.isEmpty())
+				{
+					System.out.println(line);
+					String pid = line.split("\t")[0].trim();
+					executeCommandOS(new String[]{"renice", "-n", "19", "-p",pid});
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		

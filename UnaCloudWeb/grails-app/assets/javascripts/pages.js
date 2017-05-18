@@ -314,7 +314,7 @@ function uploadForm(form){
         		if((jsonResponse.cPublic&&jsonResponse.cPublic==true)||jsonResponse.cPublic==undefined){
         			window.location.href = jsonResponse.redirect;
         		}else{
-        			showClose('Failed saving as a public image!','There is another public image with the same name. Your image was saved as a private image', function(){
+        			showClose('Error saving as a public image!','There is another public image with the same name. Your image was saved as a private one', function(){
 		        		window.location.href = jsonResponse.redirect;
    				    });
         		}

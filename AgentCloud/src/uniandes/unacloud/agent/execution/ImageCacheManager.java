@@ -74,8 +74,10 @@ public class ImageCacheManager {
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
 				File root=new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId+OperatingSystem.PATH_SEPARATOR+vmName);
-				if(source.getMainFile().getName().contains("."))
-					dest.setMainFile(new File(root,vmName+"."+source.getMainFile().getName().split(OperatingSystem.PATH_SEPARATOR+".")[1]));
+				if(source.getMainFile().getName().contains(".")){
+					String[] fileParts = source.getMainFile().getName().split("\\.");
+					dest.setMainFile(new File(root,vmName+"."+fileParts[fileParts.length-1]));
+				}
 				else
 					dest.setMainFile(new File(root,vmName));
 				dest.setStatus(ImageStatus.LOCK);
@@ -119,7 +121,7 @@ public class ImageCacheManager {
 	 */
 	public static void cleanDir(File f){
 		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
-		f.delete();
+		System.out.println("\t\t"+f+": "+f.delete());
 	}
 	
 	/**
@@ -162,12 +164,14 @@ public class ImageCacheManager {
 				}				
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			if(new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).exists())
-				for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
+			}			
 			imageList.remove(imageId);
 			saveImages();
 		}
+		File folder = new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId);
+		System.out.println("\tDelete: "+folder);
+		if(folder.exists())
+			for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
 		return SUCCESSFUL_OPERATION;
 	}
 	

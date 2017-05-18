@@ -56,6 +56,13 @@ class DatabaseService {
 			sql.execute ('CREATE EVENT if not exists update_vms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_vm')
 		}catch(Exception e){println e.message}
 			//sql.execute 'update physical_machine set state = \'OFF\', with_user=0;'	
+		try{
+			/*
+			 * Events are run by the scheduler, which is not started by default. Using SHOW PROCESSLIST is possible to check whether it is started. If not, run the command
+			 * http://stackoverflow.com/questions/16767923/mysql-event-not-working
+			 */
+			sql.execute ('SET GLOBAL event_scheduler = ON')
+		}catch(Exception e){println e.message}
 		sql.close();		
 	}
 
