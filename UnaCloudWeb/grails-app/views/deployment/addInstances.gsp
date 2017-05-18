@@ -21,16 +21,8 @@
 			    	 <ul class="timeline">						
 					   	<li>
 					        <!-- timeline icon -->
-					        <g:if test="${ind == 0}">
-							     <i id="time-icon${ind}" class="fa fa-adjust bg-blue"></i>
-							</g:if>
-							<g:else>
-							     <i id="time-icon${ind}" class="fa fa-circle-o bg-gray"></i>
-							</g:else>
-					        <div class="timeline-item time-title${ind} <g:if test="${ind == 0}"> hidden </g:if>">					
-					            <h3 class="timeline-header"><a >${image.image.platform.name}</a></h3>		
-					        </div>
-					        <div class="timeline-item time-element${ind} <g:if test="${ind != 0}">hidden</g:if>">					
+							<i id="time-icon" class="fa fa-adjust bg-blue"></i>
+					        <div class="timeline-item time-element">					
 					            <h3 class="timeline-header"><a >${image.image.platform.name}</a></h3>					
 					            <div class="timeline-body">
 					                <div class="col-xs-12">
@@ -41,6 +33,7 @@
 							             		</div>      	
 							    				<div class="box-body">
 							    					<p class="help-block"><strong>MAXIMUN INSTANCES</strong> to deploy.</p>
+							    					<g:if test="${image.highAvaliavility!=true}"><label>Opportunistic</label></g:if><g:else>High Availability</g:else>
 							    					<div>
 							    					<g:each in="${quantities}" var="val">
 								    					<div class="box-info <g:if test="${val.quantity>0}"> bg-green</g:if>">
@@ -54,7 +47,7 @@
 							    	 	<div class="col-lg-7 col-sm-6 col-xs-12">		    	 					     		 
 							    	 		<div class="box box-solid">				    	 
 						            			<div class="box-header">
-						            				<h5 class="box-title">${image.image.name}</h5><br>   	           								    			
+						            				<h5 class="box-title">Image: ${image.image.name}</h5> 	           								    			
 						            			</div>	
 						            			            					
 						                 		<!-- form start -->

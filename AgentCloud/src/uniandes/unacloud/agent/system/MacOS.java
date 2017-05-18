@@ -17,17 +17,17 @@ public class MacOS extends OperatingSystem{
 	public static final String MAC_HOSTNAME_COMMAND = "hostname";
     
 	@Override
-	public String getTurnOffCommand() {		
-		return "sh " + BIN + PATH_SEPARATOR + MAC_TURN_OFF_FILE_COMMAND;
+	public String[] getTurnOffCommand() {		
+		return new String[]{"sh",BIN + PATH_SEPARATOR + MAC_TURN_OFF_FILE_COMMAND};
 	}
 
 	@Override
-	public String getRestartCommand() {
-		return "sh " + BIN + PATH_SEPARATOR + MAC_RESTART_FILE_COMMAND;
+	public String[] getRestartCommand() {
+		return new String[]{"sh", BIN + PATH_SEPARATOR + MAC_RESTART_FILE_COMMAND};
 	}
 
 	@Override
-	public String getLogOutCommand() throws UnsupportedCommandException {		
+	public String[] getLogOutCommand() throws UnsupportedCommandException {		
 		throw new UnsupportedCommandException("log out", "Mac");
 	}
 

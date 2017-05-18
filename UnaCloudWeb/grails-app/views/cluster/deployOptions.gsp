@@ -88,7 +88,7 @@
 								                		<label>Hostname</label>
 								                    	<input type="text" class="form-control" name="host_${image.id}" placeholder="Name of hosts">
 								                    </div> 	                    
-								                    <g:if test="${high}">
+								                    <g:if test="${platform.high}">
 								                    <div class="form-group">
 														<label>High Availability</label>
 														<input type="checkbox" name="highAvailability_${image.id.toString()}">

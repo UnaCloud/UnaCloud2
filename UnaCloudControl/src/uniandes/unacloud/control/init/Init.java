@@ -20,7 +20,7 @@ public class Init {
 		try {
 			try {
 	    		//Create agent log file
-	        	PrintStream ps=new PrintStream(new FileOutputStream("log_control.txt",true),true){
+	        	PrintStream ps=new PrintStream(new FileOutputStream("unacloud_control_out.log",true),true){
 	        		@Override
 	        		public void println(String x) {
 	        			super.println(new Date()+" "+x);
@@ -30,8 +30,18 @@ public class Init {
 	        			super.println(new Date()+" "+x);
 	        		}
 	        	};
+	        	PrintStream psError=new PrintStream(new FileOutputStream("unacloud_control_err.log",true),true){
+	            	@Override
+	        		public void println(String x) {
+	        			super.println(new Date()+" "+x);
+	        		}
+	        		@Override
+	        		public void println(Object x) {
+	        			super.println(new Date()+" "+x);
+	        		}
+	        	};
 				System.setOut(ps);
-				System.setErr(ps);
+				System.setErr(psError);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

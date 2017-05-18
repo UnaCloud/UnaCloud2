@@ -64,6 +64,7 @@ class LaboratoryService {
 	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd){
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
 		if(ips.size()==0)throw new Exception("IP range invalid")
+		//TODO save lab after validate each IP
 		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability,networkQuality: netConfig, ipPools:[],physicalMachines:[]).save();
 		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
 		for(String ipFind: ips){
@@ -170,10 +171,12 @@ class LaboratoryService {
 	 * @param ip to be removed
 	 */
 	def deleteIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
+		ExecutionIP executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
 		if(executionIp.ipPool.ips.size()==1)throw new Exception("IP range must have one IP address at least")
 		if(executionIp && (executionIp.state == IPEnum.AVAILABLE||executionIp.state == IPEnum.DISABLED)){	
 			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id",[id:executionIp.id]);
+			IPPool pool = executionIp.ipPool
+			pool.removeFromIps(executionIp)
 			executionIp.delete()
 		}
 	}
@@ -264,10 +267,10 @@ class LaboratoryService {
 	 * @param highAvailability if high availability resources should be calculated
 	 * @param platform to filter resources
 	 */
-	def calculateDeploys(Laboratory lab, def hwProfiles, highAvailability, platform){
+	def calculateDeploys(Laboratory lab, def hwProfiles, boolean highAvailability, platform){
 		TreeMap<String, Integer> results = new TreeMap<String,Integer>();	
-		def availableIps = lab.getAvailableIps()
-		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == highAvailability?1:0 && platform in it.platforms}.each{			
+		def availableIps = lab.getAvailableIps()		
+		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.platforms.find{it.id == platform.id}!=null && it.highAvailability == highAvailability?1:0}.each{	
 			def pmId = it.id;
 			//How much resources in host are available in this moment			
 			def availableResources = it.availableResources()			

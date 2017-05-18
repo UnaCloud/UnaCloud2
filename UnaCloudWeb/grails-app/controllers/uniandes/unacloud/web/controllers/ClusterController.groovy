@@ -182,7 +182,8 @@ class ClusterController {
 					if(quantitiesAvailableTree.get(hwd.name)>0&&!high)high = true
 					quantitiesAvailable.add(['name':hwd.name,'quantity':quantitiesAvailableTree.get(hwd.name)?quantitiesAvailableTree.get(hwd.name):0])
 				}
-				resourcesByPlatform.add([name:plat.name,quantities:quantities,quantitiesAvailable:quantitiesAvailable,images:cluster.images.findAll{it.platform.id == plat.id},high:high])
+				def res = [name:plat.name,quantities:quantities,quantitiesAvailable:quantitiesAvailable,images:cluster.images.findAll{it.platform.id == plat.id},high:high]
+				resourcesByPlatform.add(res)
 			}
 			[resources:resourcesByPlatform,hardwareProfiles: HardwareProfile.list(),clusterid:cluster.id]
 		}else{
