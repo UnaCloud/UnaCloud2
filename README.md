@@ -236,12 +236,12 @@ java –jar ClientUpdater.jar 1
 * Check again if your Java is installed correctly using "java -version" command.
 
 ## Documentation
-Unfortunately we only have detailed documentation in spanish, we hope to offer this documentation in english very soon. You can find it in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=inicio)
+Unfortunately we only have detailed documentation in spanish, we hope to offer this documentation in english very soon. You can find it in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/)
 
 Code documentation? please check docs folder in github project.
 
 ## Using UnaCloud
-You can follow our user manual located in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/~unacloud/dokuwiki/doku.php?id=inicio)
+You can follow our user manual located in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/)
 
 ## Research
 UnaCloud is based on research publications, that were made by members of investigation group COMMIT from Universidad de los Andes, which develop, analyze and expose the features of implementation, in order to improve UnaCloud service.
