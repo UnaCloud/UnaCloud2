@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.communication.download.DownloadImageTask;
+import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
@@ -21,6 +22,7 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
@@ -32,48 +34,49 @@ import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 public class ImageCacheManager {
 	
 	
-	private static String machineRepository=VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
-	private static File imageListFile=new File("imageList");
-	private static Map<Long,Image> imageList=null;
+	private static String machineRepository = VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
+	private static File imageListFile = new File("imageList");
+	private static Map<Long,Image> imageList = null;
 	
 	/**
 	 * Returns a free copy of the image
 	 * @param imageId image Id 
 	 * @return image available copy
 	 */
-	public static ImageCopy getFreeImageCopy(long imageId)throws ExecutionException{
+	public static ImageCopy getFreeImageCopy(long imageId)throws ExecutionException {
 		System.out.println("getFreeImageCopy "+imageId);
-		Image vmi=getImage(imageId);
+		Image vmi = getImage(imageId);
 		ImageCopy source,dest;
-		synchronized (vmi){
+		synchronized (vmi) {
 			System.out.println("has "+vmi.getImageCopies().size()+" copies");
-			if(vmi.getImageCopies().isEmpty()){
-				ImageCopy copy=new ImageCopy();
-				try{
+			if(vmi.getImageCopies().isEmpty()) {				
+				ImageCopy copy = new ImageCopy();
+				try {
+					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.DOWNLOADING,"Start downloading");
 					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository);
 					saveImages();
-				}catch(ExecutionException ex){
+				} catch(ExecutionException ex) {
 					throw ex;
-				}catch(Exception ex){
+				} catch(Exception ex){
 					ex.printStackTrace();
 					throw new ExecutionException("Error downloading image",ex);
 				}
 				System.out.println(" downloaded");
 				return copy;
-			}else{
-				for(ImageCopy copy:vmi.getImageCopies()){
-					if(copy.getStatus()==ImageStatus.FREE){
+			}else {
+				for(ImageCopy copy : vmi.getImageCopies()) {
+					if(copy.getStatus() == ImageStatus.FREE) {
 						copy.setStatus(ImageStatus.LOCK);
 						System.out.println(" Using free");
 						return copy;
 					}
 				}
-				source=vmi.getImageCopies().get(0);
-				final String vmName="v"+RandomUtils.generateRandomString(9);
-				dest=new ImageCopy();
+				source = vmi.getImageCopies().get(0);
+				final String vmName = "v"+RandomUtils.generateRandomString(9);
+				dest = new ImageCopy();
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
-				File root=new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId+OperatingSystem.PATH_SEPARATOR+vmName);
+				File root = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId + OperatingSystem.PATH_SEPARATOR + vmName);
 				if(source.getMainFile().getName().contains(".")){
 					String[] fileParts = source.getMainFile().getName().split("\\.");
 					dest.setMainFile(new File(root,vmName+"."+fileParts[fileParts.length-1]));
@@ -83,6 +86,11 @@ public class ImageCacheManager {
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);
+			}
+			try {
+				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.CONFIGURING,"Start configuring");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		System.out.println(" clonning");
@@ -95,9 +103,9 @@ public class ImageCacheManager {
 	 */
 	private synchronized static Image getImage(long imageId){
 		loadImages();
-		Image vmi=imageList.get(imageId);
-		if(vmi==null){
-			vmi=new Image();
+		Image vmi = imageList.get(imageId);
+		if(vmi == null){
+			vmi = new Image();
 			vmi.setId(imageId);
 			imageList.put(imageId,vmi);
 			saveImages();
@@ -120,7 +128,7 @@ public class ImageCacheManager {
 	 * @param f file or directory to be deleted
 	 */
 	public static void cleanDir(File f){
-		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
+		if(f.isDirectory())for(File r : f.listFiles())cleanDir(r);
 		System.out.println("\t\t"+f+": "+f.delete());
 	}
 	
@@ -134,12 +142,13 @@ public class ImageCacheManager {
 		imageList.clear();
 		try{	
 			try {				
-				for(Image image: imageList.values())
-					for(ImageCopy copy: image.getImageCopies())
+				for(Image image : imageList.values())
+					for(ImageCopy copy : image.getImageCopies())
 						PlatformFactory.getPlatform(image.getPlatformId()).unregisterImage(copy);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}					
-			for(File f:new File(machineRepository).listFiles())cleanDir(f);
+			for(File f : new File(machineRepository).listFiles())cleanDir(f);
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
@@ -153,13 +162,13 @@ public class ImageCacheManager {
 	 * @return response
 	 */
 	public static synchronized String clearImageFromCache(Long imageId){
-		System.out.println("clearCache for machine "+imageId);
+		System.out.println("clearCache for machine " + imageId);
 		loadImages();
-		Image vmi=imageList.get(imageId);		
-		if(vmi!=null){
+		Image vmi = imageList.get(imageId);		
+		if(vmi != null){
 			try {
-				for(ImageCopy copy: vmi.getImageCopies()){
-					Platform platform=PlatformFactory.getPlatform(vmi.getPlatformId());
+				for(ImageCopy copy : vmi.getImageCopies()){
+					Platform platform = PlatformFactory.getPlatform(vmi.getPlatformId());
 					platform.unregisterImage(copy);
 				}				
 			} catch (Exception e) {
@@ -168,10 +177,10 @@ public class ImageCacheManager {
 			imageList.remove(imageId);
 			saveImages();
 		}
-		File folder = new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId);
-		System.out.println("\tDelete: "+folder);
+		File folder = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId);
+		System.out.println("\tDelete: " + folder);
 		if(folder.exists())
-			for(File root:new File(machineRepository+OperatingSystem.PATH_SEPARATOR+imageId).listFiles())cleanDir(root);
+			for(File root : new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId).listFiles())cleanDir(root);
 		return SUCCESSFUL_OPERATION;
 	}
 	
@@ -179,7 +188,7 @@ public class ImageCacheManager {
 	 * Saves the images data in a file
 	 */
 	private static synchronized void saveImages(){
-		try(ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(imageListFile))){
+		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(imageListFile))){
 			oos.writeObject(imageList);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -191,11 +200,11 @@ public class ImageCacheManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private static void loadImages(){
-		if(imageList==null){
-			imageList=new TreeMap<>();
-			try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(imageListFile))){
-				imageList=(Map<Long,Image>)ois.readObject();
-				for(Image im:imageList.values())for(ImageCopy copy:im.getImageCopies()){
+		if(imageList == null){
+			imageList = new TreeMap<>();
+			try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(imageListFile))){
+				imageList = (Map<Long,Image>)ois.readObject();
+				for(Image im : imageList.values())for(ImageCopy copy : im.getImageCopies()){
 					copy.setStatus(ImageStatus.FREE);
 				}
 			} catch (Exception e) {
@@ -210,8 +219,8 @@ public class ImageCacheManager {
 	 */
 	public static void deleteImage(Long imageId){
 		loadImages();
-		Image vmi=imageList.get(imageId);
-		if(vmi!=null){
+		Image vmi = imageList.get(imageId);
+		if(vmi != null){
 			imageList.remove(imageId);
 			saveImages();
 		}

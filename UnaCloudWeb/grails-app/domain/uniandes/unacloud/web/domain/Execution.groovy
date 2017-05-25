@@ -1,11 +1,11 @@
 package uniandes.unacloud.web.domain
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
@@ -70,12 +70,18 @@ class Execution {
 	 */
 	Date lastReport
 	
+	/**
+	 * Last update in graph state
+	 */
+	Date lastUpdate = new Date();
+	
 	
 	static constraints = {
 		executionNode nullable: true
 		stopTime nullable: true 
 		startTime nullable:true
 		lastReport nullable:true
+		lastUpdate nullable:true
 	}
 	
 	//-----------------------------------------------------------------
@@ -135,19 +141,7 @@ class Execution {
 	def mainIp(){
 		return interfaces.getAt(0).ip
 	}
-	
-	/**
- 	 * Returns time of last state from node
-	 * @return last date reported in state machine graph
-	 */
-	def Date getLastStateTime(){
-		def exe = this
-		//def requestExec = ExecutionRequest.findAll("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[max:1, sort:'requestTime', order: "asc"])
-		def requestExec = ExecutionRequest.list(fetch: [execution: exe,status:exe.status],max:1, sort:'requestTime', order: "desc")		
-		if(requestExec&&requestExec.size()>0)return requestExec.get(0).requestTime
-		else new Date();
-	}
-	
+		
 	/**
 	 * Returns database id
 	 * @return Long id
@@ -171,5 +165,14 @@ class Execution {
 	 */
 	def getDeployedImage(){
 		return deployImage;
+	}
+	
+	/**
+	 * Validates if current state time is above of a certain date given as parameter
+	 * @param date to compare
+	 * @return true in case current state time is above of a certain date, false otherwise
+	 */
+	def isAboveStateTime(Date date){
+		return date.getTime() - lastUpdate.getTime() > status.getTime();
 	}
 }

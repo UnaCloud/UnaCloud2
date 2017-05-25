@@ -65,7 +65,14 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private ExecutorService threadPool;
 	
-	public QueueMessageProcessor(int threads, int messages) {
+	/**
+	 * Creates message processor based in a quantity of threads and messages processed by thread
+	 * @param threads to run in processor threads > 0
+	 * @param messages by thread messages > 0 
+	 * @throws Exception in case threads or messages have no valid values
+	 */
+	public QueueMessageProcessor(int threads, int messages) throws Exception {
+		if(threads <= 0 || messages <= 0) throw new Exception("parameters not valid");
 		threadPool=Executors.newFixedThreadPool(threads);
 		this.messagesByThread = messages;
 	}
@@ -222,7 +229,7 @@ public class QueueMessageProcessor implements QueueReader{
 								try(Connection con2 = ControlManager.getInstance().getDBConnection()){
 									Date stopTime = new Date();
 									stopTime.setTime(stopTime.getTime()+execution.getTime());
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, ExecutionStateEnum.CONFIGURING, null, "Initializing"), con2);
+									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, null, null, "Sent message"), con2);
 								}catch (Exception e) {e.printStackTrace();}
 							}
 							@Override
