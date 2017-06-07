@@ -108,12 +108,26 @@ public class Main {
     	System.out.println("Start reporter");
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
+        
+        try {
+    		Runtime.getRuntime().exec(new String[]{OSFactory.getOS().getJavaCommand(),"-jar","torrent.jar"});            
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        try {
+    		Runtime.getRuntime().exec(new String[]{"break",">","E:\\Monitoreo\\log.txt"});            
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
         try {
 			ClouderClientAttention.getInstance().start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
+        
+       
     }
 }
 
