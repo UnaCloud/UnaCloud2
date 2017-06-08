@@ -37,7 +37,7 @@ class LaboratoryService {
 	 * Returns the lab name list
 	 * @return lab name list
 	 */
-	def getLabsNames(){
+	def getLabsNames() {
 		return Laboratory.executeQuery("select name from Laboratory")
 	}
 	
@@ -47,7 +47,7 @@ class LaboratoryService {
 	 * @return list of Hardware Profiles
 	 */
 	def getLabsByName(String[] names){
-		if(names==null)return Laboratory.all
+		if (names == null) return Laboratory.all
 		return Laboratory.where{name in names && enable == true}.findAll()
 	}
 	
@@ -61,15 +61,14 @@ class LaboratoryService {
 	 * @param netMask laboratory network's mask
 	 */
 	
-	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd){
-		ArrayList<String> ips = createRange(ipInit,ipEnd)
-		if(ips.size()==0)throw new Exception("IP range invalid")
+	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd) {
+		ArrayList<String> ips = createRange(ipInit, ipEnd)
+		if (ips.size() == 0) throw new Exception("IP range invalid")
 		//TODO save lab after validate each IP
-		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability,networkQuality: netConfig, ipPools:[],physicalMachines:[]).save();
-		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
-		for(String ipFind: ips){
-			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()
-		}
+		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability, networkQuality: netConfig, ipPools:[], physicalMachines:[]).save();
+		def ipPool = new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
+		for(String ipFind: ips)
+			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()		
 	}
 	
 	/**
@@ -86,13 +85,12 @@ class LaboratoryService {
 	
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
 		def physicalMachine = new PhysicalMachine(name:name, cores:cores, pCores:pCores, ram: ram, highAvailability:(lab.highAvailability),
-			mac:mac, state: PhysicalMachineStateEnum.OFF,operatingSystem: OperatingSystem.get(osId),laboratory:lab, ip:new PhysicalIP(ip:ip), platforms: [])
-		if(plats.getClass().equals(String))
+			mac:mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory:lab, ip:new PhysicalIP(ip:ip), platforms: [])
+		if (plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
-		else{
-			for(platId in plats){
-				physicalMachine.platforms.add(Platform.get(platId))
-			}
+		else {
+			for (platId in plats)
+				physicalMachine.platforms.add(Platform.get(platId))			
 		}
 		physicalMachine.save(failOnError:true)	
 	}
@@ -109,10 +107,9 @@ class LaboratoryService {
 	 * @param host new name in network
 	 * @return
 	 */
-	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host, plats){
-		if(!host.ip.ip.equals(ip)){
+	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host, plats) {
+		if (!host.ip.ip.equals(ip)) 
 			host.ip.setIp(ip)
-		}
 		host.setName(name)
 		host.setMac(mac)
 		host.setCores(Integer.parseInt(cores))
@@ -120,13 +117,12 @@ class LaboratoryService {
 		host.setRam(Integer.parseInt(ram))
 		host.setOperatingSystem(OperatingSystem.get(osId))
 		Set platforms = []
-		if(plats.getClass().equals(String))
+		if (plats.getClass().equals(String))
 			platforms.add(Platform.get(plats))
-		else{
-			for(platId in plats){
-				platforms.add(Platform.get(platId))
-			}
-		}
+		else 
+			for (platId in plats) 
+				platforms.add(Platform.get(platId))			
+		
 		host.platforms = platforms
 		host.save(failOnError:true)
 	}
@@ -135,8 +131,8 @@ class LaboratoryService {
 	 * Changes the status of a laboratory
 	 * @param lab laboratory to be edited
 	 */
-	def setStatus(Laboratory lab){
-		if(lab.enable)lab.putAt("enable", false)
+	def setStatus(Laboratory lab) {
+		if (lab.enable) lab.putAt("enable", false)
 		else lab.putAt("enable", true)		
 	}
 	
@@ -144,8 +140,8 @@ class LaboratoryService {
 	 * Deletes a laboratory, validates that lab does not have machines
 	 * @param lab laboratory to be deleted
 	 */
-	def delete(Laboratory lab){
-		if(lab.physicalMachines.size()>0)throw new Exception("Laboratory is not empty, you must delete all physical machines in lab first.")
+	def delete(Laboratory lab) {
+		if (lab.physicalMachines.size() > 0) throw new Exception("Laboratory is not empty, you must delete all physical machines in lab first.")
 		lab.delete()
 	}
 	/**
@@ -155,11 +151,11 @@ class LaboratoryService {
 	 * @param netConfig Network configuration
 	 * @param highAvailability if lab is high availability
 	 */
-	def setValues(Laboratory lab, String name, NetworkQualityEnum netConfig, highAvailability){
+	def setValues(Laboratory lab, String name, NetworkQualityEnum netConfig, highAvailability) {
 		lab.putAt("name", name)
 		lab.putAt("networkQuality", netConfig)
-		if(lab.highAvailability!=highAvailability){
-			for(PhysicalMachine machine in lab.physicalMachines)
+		if (lab.highAvailability!=highAvailability) {
+			for (PhysicalMachine machine in lab.physicalMachines)
 				machine.putAt("highAvailability", highAvailability)
 			lab.putAt("highAvailability", highAvailability)
 		}		
@@ -170,11 +166,11 @@ class LaboratoryService {
 	 * @param lab laboratory to be modified
 	 * @param ip to be removed
 	 */
-	def deleteIP(Laboratory lab, ip){
-		ExecutionIP executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
-		if(executionIp.ipPool.ips.size()==1)throw new Exception("IP range must have one IP address at least")
-		if(executionIp && (executionIp.state == IPEnum.AVAILABLE||executionIp.state == IPEnum.DISABLED)){	
-			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id",[id:executionIp.id]);
+	def deleteIP(Laboratory lab, ip) {
+		ExecutionIP executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		if (executionIp.ipPool.ips.size() == 1) throw new Exception("IP range must have one IP address at least")
+		if (executionIp && (executionIp.state == IPEnum.AVAILABLE || executionIp.state == IPEnum.DISABLED)) {	
+			NetInterface.executeUpdate("update NetInterface net set net.ip = null where net.ip.id = :id",[id:executionIp.id]);
 			IPPool pool = executionIp.ipPool
 			pool.removeFromIps(executionIp)
 			executionIp.delete()
@@ -186,11 +182,11 @@ class LaboratoryService {
 	 * @param lab laboratory allows IP
 	 * @param ip IP to be modified
 	 */
-	def setStatusIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id==Long.parseLong(ip)&&ipPool in lab.ipPools}.find()
-		if(executionIp && (executionIp.state.equals(IPEnum.AVAILABLE)||executionIp.state.equals(IPEnum.DISABLED))){
-			if(executionIp.state == IPEnum.AVAILABLE)executionIp.putAt("state", IPEnum.DISABLED)
-			else if(executionIp.state != IPEnum.AVAILABLE)executionIp.putAt("state", IPEnum.AVAILABLE)
+	def setStatusIP(Laboratory lab, ip) {
+		def executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		if (executionIp && (executionIp.state.equals(IPEnum.AVAILABLE) || executionIp.state.equals(IPEnum.DISABLED))) {
+			if (executionIp.state == IPEnum.AVAILABLE) executionIp.putAt("state", IPEnum.DISABLED)
+			else if (executionIp.state != IPEnum.AVAILABLE) executionIp.putAt("state", IPEnum.AVAILABLE)
 		}
 	}
 	
@@ -200,12 +196,14 @@ class LaboratoryService {
 	 * @param lab where is assigned ips
 	 * @param pool of ip to be deleted 
 	 */
-	def deletePool(Laboratory lab, pool){
+	def deletePool(Laboratory lab, pool) {
 		def ipPool = IPPool.get(pool)
-		if(ipPool&&ipPool.getUsedIpsQuantity()==0){
-			for(ExecutionIP ip : ipPool.ips)deleteIP(lab, ip.id)
+		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
+			for (ExecutionIP ip : ipPool.ips)
+				deleteIP(lab, ip.id)
 			ipPool.delete()
-		}else throw new Exception('Some IP addresses in IP Pool are being used')
+		}
+		else throw new Exception('Some IP addresses in IP Pool are being used')
 	}
 	
 	/**
@@ -217,13 +215,12 @@ class LaboratoryService {
 	 * @param ipInit first ip 
 	 * @param ipEnd last ip
 	 */
-	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd) throws Exception{
+	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd) throws Exception {
 		ArrayList<String> ips = createRange(ipInit,ipEnd)
-		if(ips.size()==0)throw new Exception("IP range invalid")
-		def ipPool=new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()
-		for(String ipFind: ips){
-			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()
-		}
+		if (ips.size() == 0) throw new Exception("IP range invalid")
+		def ipPool = new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()
+		for (String ipFind: ips) 
+			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()		
 	}
 	
 	/**
@@ -232,15 +229,16 @@ class LaboratoryService {
 	 * @param lab laboratory where is located the host
 	 * @param host to be deleted
 	 */
-	def deleteHost(Laboratory lab, host){
-		PhysicalMachine hostMachine = PhysicalMachine.where{id==host&&laboratory==lab}.find()
-		if(hostMachine){			
-			if(Execution.where{
-				executionNode==hostMachine&&status!=ExecutionStateEnum.FINISHED}.findAll().size()>0) 
+	def deleteHost(Laboratory lab, host) {
+		PhysicalMachine hostMachine = PhysicalMachine.where{id == host && laboratory == lab}.find()
+		if (hostMachine) {			
+			if (Execution.where {
+					executionNode == hostMachine && status != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
 				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
-			def executions = Execution.where{
-					executionNode==hostMachine&&status==ExecutionStateEnum.FINISHED}.findAll()
-			for(Execution exe in executions)exe.putAt("executionNode", null)			
+			def executions = Execution.where {
+					executionNode == hostMachine && status == ExecutionStateEnum.FINISHED}.findAll()
+			for (Execution exe in executions) 
+				exe.putAt("executionNode", null)			
 			hostMachine.delete()			
 		}
 	}
@@ -250,10 +248,10 @@ class LaboratoryService {
 	 * Sends task for queue if it is valid
 	 * @param machines
 	 */
-	def createRequestTasktoMachines(machines, task, user){
-		if(task==null||machines.size()==0)throw new Exception("Invalid values");
+	def createRequestTasktoMachines(machines, task, user) {
+		if (task == null || machines.size() == 0) throw new Exception("Invalid values");
 		List<PhysicalMachine> machineList = new ArrayList<PhysicalMachine>();
-		for(PhysicalMachine pm: machines){
+		for (PhysicalMachine pm: machines) {
 			pm.putAt("state", PhysicalMachineStateEnum.PROCESSING)
 			machineList.add(pm);
 		}
@@ -267,28 +265,28 @@ class LaboratoryService {
 	 * @param highAvailability if high availability resources should be calculated
 	 * @param platform to filter resources
 	 */
-	def calculateDeploys(Laboratory lab, def hwProfiles, boolean highAvailability, platform){
+	def calculateDeploys(Laboratory lab, def hwProfiles, boolean highAvailability, platform) {
 		TreeMap<String, Integer> results = new TreeMap<String,Integer>();	
 		def availableIps = lab.getAvailableIps()		
-		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.platforms.find{it.id == platform.id}!=null && it.highAvailability == highAvailability?1:0}.each{	
+		lab.physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.platforms.find{it.id == platform.id} != null && it.highAvailability == highAvailability? 1 : 0}.each {	
 			def pmId = it.id;
 			//How much resources in host are available in this moment			
 			def availableResources = it.availableResources()			
-			for(HardwareProfile hwd in hwProfiles){
-				def quantityRam = Math.floor(availableResources.ram/hwd.ram)
-				def quantityCores = Math.floor(availableResources.cores/hwd.cores)
-				def quantity = (quantityRam>quantityCores?quantityCores:quantityRam)
-				def finalQuantity = quantity>availableResources.vms?availableResources.vms:quantity
-				if(finalQuantity<0)finalQuantity = 0				
-				if(results.get(hwd.name)==null)					
+			for (HardwareProfile hwd in hwProfiles) {
+				def quantityRam = Math.floor(availableResources.ram / hwd.ram)
+				def quantityCores = Math.floor(availableResources.cores / hwd.cores)
+				def quantity = (quantityRam > quantityCores ? quantityCores:quantityRam)
+				def finalQuantity = quantity > availableResources.vms ? availableResources.vms : quantity
+				if (finalQuantity < 0) finalQuantity = 0				
+				if (results.get(hwd.name) == null)					
 					results.put(hwd.name, finalQuantity)
 				else
-					results.put(hwd.name,results.get(hwd.name)+finalQuantity);
+					results.put(hwd.name, results.get(hwd.name) + finalQuantity);
 			}			
 		}
-		for(HardwareProfile hwd in hwProfiles){
-			if(results.get(hwd.name)==null)results.put(hwd.name, 0);
-			if(availableIps.size()<results.get(hwd.name))results.put(hwd.name, availableIps.size());
+		for (HardwareProfile hwd in hwProfiles) {
+			if (results.get(hwd.name) == null) results.put(hwd.name, 0);
+			if (availableIps.size() < results.get(hwd.name)) results.put(hwd.name, availableIps.size());
 		}
 		
 		return results
@@ -300,14 +298,15 @@ class LaboratoryService {
 	 * @param ipEnd last ip
 	 * @return list of valid ip in range
 	 */
-	private ArrayList<String> createRange(ipInit,ipEnd){
+	private ArrayList<String> createRange(ipInit,ipEnd) {
 		Ip4Validator validator = new Ip4Validator();
-		if(!validator.validate(ipInit)||!validator.validate(ipEnd)||!validator.validateRange(ipInit,ipEnd))throw new Exception("IP range is not valid")
+		if (!validator.validate(ipInit) || !validator.validate(ipEnd) || !validator.validateRange(ipInit,ipEnd)) 
+			throw new Exception("IP range is not valid")
 		String[] components = ipInit.split(".");
 		String[] components2 = ipEnd.split(".");
 		ArrayList<String> ips = new ArrayList<String>();
 		String ip = ipInit;
-		while(validator.inRange(ipInit, ipEnd, ip)){
+		while (validator.inRange(ipInit, ipEnd, ip)) {
 			ips.add(ip);
 			long ipnumber = validator.transformIp(ip)+1;
 			int b1 = (ipnumber >> 24) & 0xff;

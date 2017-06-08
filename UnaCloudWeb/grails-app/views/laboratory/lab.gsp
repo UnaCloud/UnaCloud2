@@ -53,7 +53,8 @@
 					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
 					                                   	 	<a title="Clean host cache" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-eraser" ></i></a>
 					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-level-up"></i></a>
-															
+															<a title="Request Version" class="version-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/version/', absolute: true)}" data-toggle="tooltip">Request Version<i class="glyphicon glyphicon-save"></i></a>
+					                                        <a title="Request free disk space" class="disk-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/size/', absolute: true)}" data-toggle="tooltip">Request disk size<i class="glyphicon glyphicon-floppy-save"></i></a>
 														</div>		  	
 												  	</td>
 											  </tr>
@@ -99,7 +100,7 @@
 				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>>
 				                                  		<g:else> "text-success" </g:else>>
 				                                  		${machine.getUsedPercentage()} %
-				                                  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="T:${machine.dataSpace} - F:${machine.freeSpace}"></i>
+				                                  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="T: ${machine.getTotalDiskSize()} - F: ${machine.getAvailableDisk()}"></i>
 				                                  	</small>
 				                                  </td>
 				                                  <td class = "column-center">	

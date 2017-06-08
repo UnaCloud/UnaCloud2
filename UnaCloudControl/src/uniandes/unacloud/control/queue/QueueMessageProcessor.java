@@ -183,8 +183,8 @@ public class QueueMessageProcessor implements QueueReader{
 							if (task.equals(TaskEnum.STOP) || task.equals(TaskEnum.UPDATE)) pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
 							else if (task.equals(TaskEnum.DATA_SPACE)) pm = new PhysicalMachineEntity(id, null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON);
 							else if (task.equals(TaskEnum.VERSION)) pm = new PhysicalMachineEntity(id, null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON);
-							if (pm != null)
-								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+							else pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.ON);
+							PhysicalMachineManager.setPhysicalMachine(pm, con2);
 						} catch (Exception e) {e.printStackTrace();}
 					}
 					@Override

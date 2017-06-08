@@ -30,7 +30,7 @@ public enum TaskEnum {
 	/**
 	 * Message to clear cache from agents
 	 */	
-	DATA_SPACE("space");	
+	DATA_SPACE("size");	
 	
 	/**
 	 * Name of task

@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain
 
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
+import uniandes.unacloud.common.utils.ByteUtils;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
@@ -163,6 +163,22 @@ class PhysicalMachine {
 	 */
 	def getCurrentAgentVersion() {
 		return agentVersion == null ? "N/A" : agentVersion;
+	}
+	
+	/**
+	 * Returns the total disk size in physical machine
+	 * @return total size disk
+	 */
+	def getTotalDiskSize () {
+		return ByteUtils.conversionUnitBytes(dataSpace);
+	}
+	
+	/**
+	 * Returns the available disk size in physical machine
+	 * @return available size disk
+	 */
+	def getAvailableDisk () {
+		return ByteUtils.conversionUnitBytes(freeSpace);
 	}
 	
 }

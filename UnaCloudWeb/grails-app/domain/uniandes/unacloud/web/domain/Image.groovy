@@ -3,6 +3,7 @@ package uniandes.unacloud.web.domain
 import java.text.DecimalFormat
 
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
+import uniandes.unacloud.common.utils.ByteUtils;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
@@ -107,18 +108,7 @@ class Image {
 	 * @return String size of machines: GB, MB, LB depends of files size
 	 */
 	def String getSize(){
-		DecimalFormat df = new DecimalFormat("#.00");
-		long diskSize = fixedDiskSize/1024;
-		if(diskSize>1){
-			if(diskSize/1024>1){				
-				diskSize = diskSize/1024
-				if(diskSize/1024>1)
-				return  df.format(diskSize/1024)+" GB"
-				else return  df.format(diskSize)+" MB"
-			}				
-			else return  df.format(diskSize)+" KB"		
-		}
-		else return df.format(fixedDiskSize)+" Bytes"
+		return ByteUtils.conversionUnitBytes(fixedDiskSize)
 	}
 	
 	/**
