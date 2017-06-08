@@ -62,6 +62,8 @@
 				                                  <th>Host Name</th>
 				                                  <th>IP</th>
 				                                  <th>State</th>
+				                                  <th>Version</th>
+				                                  <th>Data Space</th>
 				                                  <th>Activity</th>
 				                                  <th>Platforms</th>
 				                                  <th>Actions</th>
@@ -76,25 +78,34 @@
 										      	  <td><small>${machine.name} </small></td>
 				                                  <td><small>${machine.ip.ip}</small></td>
 				                                  <td>
-					                                <g:if test="${machine.state.equals(PhysicalMachineStateEnum.ON) }">
-											   			<span class="label label-success">${machine.state.toString()}</span>
+					                                <g:if test = "${machine.state.equals(PhysicalMachineStateEnum.ON) }">
+											   			<span class = "label label-success"> ${machine.state.toString()}</span>
 											   		</g:if>
-											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.DISABLED) }">
-											   			<span class="label label-default">${machine.state.toString()}</span>
+											   		<g:if test = "${machine.state.equals(PhysicalMachineStateEnum.DISABLED) }">
+											   			<span class = "label label-default"> ${machine.state.toString()}</span>
 											   		</g:if>
-											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.OFF) }">
-											   			<span class="label label-danger">${machine.state.toString()}</span>
+											   		<g:if test = "${machine.state.equals(PhysicalMachineStateEnum.OFF) }">
+											   			<span class = "label label-danger"> ${machine.state.toString()}</span>
 											   		</g:if>
-											   		<g:if test="${machine.state.equals(PhysicalMachineStateEnum.PROCESSING) }">
-											   			<span class="label label-warning">${machine.state.toString()}</span>
+											   		<g:if test = "${machine.state.equals(PhysicalMachineStateEnum.PROCESSING) }">
+											   			<span class="label label-warning"> ${machine.state.toString()}</span>
 											   		</g:if>
 				                                  </td>
-				                                  <td class="column-center">	
-										      		<g:if test="${machine.withUser}"><i class="fa fa-user text-green" title="With user" data-toggle="tooltip"></i></g:if> 
-										      		<g:if test="${machine.withExecution()}"><i class="fa fa-laptop text-green" title="With executions" data-toggle="tooltip"></i></g:if>   
+				                                  <td><small>${machine.agentVersion}</small></td>
+				                                  <td>
+				                                  	<small class = 
+				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
+				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>>
+				                                  		<g:else> "text-success" </g:else>>
+				                                  		${machine.freeSpace}
+				                                  	</small>
+				                                  </td>
+				                                  <td class = "column-center">	
+										      		<g:if test = "${machine.withUser}"><i class = "fa fa-user text-green" title = "With user" data-toggle="tooltip"></i></g:if> 
+										      		<g:if test = "${machine.withExecution()}"><i class = "fa fa-laptop text-green" title = "With executions" data-toggle="tooltip"></i></g:if>   
 										      	  </td>
-										      	  <td class="platform-list">
-										      	 	<g:each in="${machine.platforms}"  var="platform">
+										      	  <td class = "platform-list">
+										      	 	<g:each in = "${machine.platforms}"  var = "platform">
 										      	 		<span class="label label-primary">${platform.name}</span>
 										      	 	</g:each>					                               
 				                                  </td>

@@ -71,9 +71,19 @@ class PhysicalMachine {
 	Date lastReport
 	
 	/**
-	 * Free space in data directory: current image directory
+	 * Total space in bytes in data directory: current image directory
 	 */
 	long dataSpace = 0;
+	
+	/**
+	 * Used space in bytes in data directory: current image directory
+	 */
+	long freeSpace = 0;
+	
+	/**
+	 * Current agent version
+	 */
+	String agentVersion;
 	
 	
 	/**
@@ -102,7 +112,7 @@ class PhysicalMachine {
 	 * Gets database object id
 	 * @return database id
 	 */
-	def long getDatabaseId(){
+	def long getDatabaseId() {
 		return id;
 	}
 	
@@ -110,7 +120,7 @@ class PhysicalMachine {
 	 * Gets laboratory 
 	 * @return laboratory where this Physical Machine belongs
 	 */
-	def Laboratory getLaboratory(){
+	def Laboratory getLaboratory() {
 		return laboratory;
 	}
 	
@@ -118,16 +128,16 @@ class PhysicalMachine {
 	 * Calculates the available resources in physical machine querying current resources used by executions
 	 * @return an object with available resources in this host. Physical Cores, Cores, Ram, 
 	 */
-	def availableResources(){
-		def usedResources = Execution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\'FINISHED\'',[node_id:this.id])		
-		return [vms:usedResources[0][0]!=null?pCores-usedResources[0][0]:pCores,ram:usedResources[0][1]!=null?ram-usedResources[0][1]:ram,cores:usedResources[0][2]!=null?cores-usedResources[0][2]:cores]
+	def availableResources() {
+		def usedResources = Execution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\''+ExecutionStateEnum.FINISHED+"\'",[node_id:this.id])		
+		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]:pCores, ram:usedResources[0][1] != null ? ram-usedResources[0][1] : ram,cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
 	}
 	
 	/**
 	 * Validates if physical machine has executions
 	 * @return true in case there is at least one execution in machine, false in case not
 	 */
-	def withExecution(){
+	def withExecution() {
 		return Execution.where {executionNode==this&&status!=ExecutionStateEnum.FINISHED}.findAll().size()>0
 	}
 	
@@ -137,6 +147,14 @@ class PhysicalMachine {
 	 */
 	public Collection<Platform> getAllPlatforms(){
 		return platforms;
+	}
+	
+	/**
+	 * Calculates used percentage disk in physical machine
+	 * @return
+	 */
+	def getUsedPercentage() {
+		return dataSpace == 0 ? 0 : (dataSpace - freeSpace) * 100 / dataSpace;
 	}
 	
 }

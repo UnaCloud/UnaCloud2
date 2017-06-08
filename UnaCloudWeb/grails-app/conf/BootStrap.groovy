@@ -110,14 +110,14 @@ class BootStrap {
 			repo.save(failOnError:true)
 		}
 
-//		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
-//			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_CONTROL);		
-//		QueueTaskerControl.setQueueConnection(queueControl)		
-//		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
-//			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_FILE);		
-//		QueueTaskerFile.setQueueConnection(queueFile)
-//		
-//		databaseService.initDatabase()
+		QueueRabbitManager queueControl = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
+			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_CONTROL);		
+		QueueTaskerControl.setQueueConnection(queueControl)		
+		QueueRabbitManager queueFile = new QueueRabbitManager(ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable,ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
+			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable,Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),UnaCloudConstants.QUEUE_FILE);		
+		QueueTaskerFile.setQueueConnection(queueFile)
+		
+		databaseService.initDatabase()
 	}
 	def destroy = {
 	}

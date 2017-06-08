@@ -52,7 +52,24 @@ public class UDPCommunicator {
 	public boolean pushInfoPM(String hostName, String userName, Long[] executions) throws Exception{
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
-		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, executions);		
+		UDPMessageStatePM message = new UDPMessageStatePM (serverIP, serverPort, hostName, userName, executions);		
+		return sender.sendMessage(message);
+	}
+	
+	/**
+	 * Push info with extra information by UDP protocol to server port for physical machine reports 
+	 * @param hostName : current hostname
+	 * @param userName : name of current user on machine
+	 * @param version : current agent version
+	 * @param freeSpace : current free space in data path
+	 * @param dataSpace : current total space in data path
+	 * @return true if message was sent, false in case not
+	 * @throws Exception 
+	 */
+	public boolean pushInfoPM(String hostName, String userName, Long freeSpace, Long dataSpace, String version) throws Exception{
+		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
+		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
+		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, freeSpace, dataSpace, version);		
 		return sender.sendMessage(message);
 	}
 	

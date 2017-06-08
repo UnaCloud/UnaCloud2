@@ -24,8 +24,8 @@ public class PhysicalMachineStateReporter extends Thread{
 	 * Returns singleton instance
 	 * @return instance
 	 */
-	public static synchronized PhysicalMachineStateReporter getInstance(){
-		if(instance==null)instance=new PhysicalMachineStateReporter();
+	public static synchronized PhysicalMachineStateReporter getInstance() {
+		if (instance == null)instance = new PhysicalMachineStateReporter();
 		return instance;
 	}
     /**
@@ -41,23 +41,23 @@ public class PhysicalMachineStateReporter extends Thread{
     @Override
     public void run() {
        System.out.println("Start PhysicalMachineStateReporter");
-       while(true){
-           try{
-        	   List<Long> ids = PersistentExecutionManager.returnIdsExecutions();
-        	   Long[] array = new Long[ids.size()];
-        	   for (int i = 0; i < ids.size(); i++) {
-				array[i] = ids.get(i);
-        	   }
-        	   ServerMessageSender.reportPhyisicalMachine(array);
-           }catch(Exception sce){
-        	   sce.printStackTrace();
-           }
-           try{
+       while(true) {
+    	   try {
                sleep(REPORT_DELAY);
-           }catch(Exception e){
+           } catch(Exception e) {
         	   e.printStackTrace();
         	   break;
            }
+           try {
+        	   List<Long> ids = PersistentExecutionManager.returnIdsExecutions();
+        	   Long[] array = new Long[ids.size()];
+        	   for (int i = 0; i < ids.size(); i++) {
+        		   array[i] = ids.get(i);
+        	   }
+        	   ServerMessageSender.reportPhyisicalMachine(array);
+           } catch(Exception sce) {
+        	   sce.printStackTrace();
+           }          
        }
     }
 }

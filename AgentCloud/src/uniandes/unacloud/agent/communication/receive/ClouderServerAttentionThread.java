@@ -128,6 +128,8 @@ public class ClouderServerAttentionThread implements Runnable {
                 return new InformationResponse(ImageCacheManager.clearCache());                
             case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
                 return new InformationResponse(ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId()));
+            case AgentMessage.GET_DATA_SPACE:
+            	return new InformationResponse(AgentManager.getFreeDataSpace()+"");
         }
         return  new InformationResponse("Invalid operation");
     }

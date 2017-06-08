@@ -8,6 +8,7 @@ import java.util.Date;
 import uniandes.unacloud.agent.communication.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.communication.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
+import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OSFactory;
@@ -114,6 +115,7 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
+        AgentManager.sendStatusMessage();
     }
 }
 

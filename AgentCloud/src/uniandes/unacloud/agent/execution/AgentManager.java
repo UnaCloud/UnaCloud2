@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import uniandes.unacloud.agent.communication.receive.ClouderClientAttention;
+import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
+import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -28,7 +30,7 @@ public class AgentManager {
 			Runtime.getRuntime().exec(new String[]{OSFactory.getOS().getJavaCommand(),"-jar",UnaCloudConstants.UPDATER_JAR,UnaCloudConstants.DELAY+""});
         } catch (Exception e) {
         }
-        new Thread(){
+        new Thread() {
         	public void run() {
         		try {
         			Thread.sleep(1000);
@@ -47,7 +49,7 @@ public class AgentManager {
 	 */
 	public static String stopAgent(){
 	     ClouderClientAttention.close();
-         new Thread(){
+         new Thread() {
          	public void run() {
          		try {
 						Thread.sleep(1000);
@@ -77,6 +79,35 @@ public class AgentManager {
 	        }
 		}
 		return agentVersion;
+	}
+	
+	/**
+	 * Sends a not scheduled message to server with extra information about physical machine state
+	 */
+	public static void sendStatusMessage() {
+		try {     	       	   
+     	   ServerMessageSender.reportPhyisicalMachine(getFreeDataSpace(), getTotalDataSpace(), getVersion());
+        } catch(Exception sce) {
+     	   sce.printStackTrace();
+        }
+	}
+
+	/**
+	 * Returns free space in Data path
+	 * @return
+	 */
+	public static long getFreeDataSpace() {
+		String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
+		return new File(dataPath).getFreeSpace();
+	}
+	
+	/**
+	 * Returns total space in Data path
+	 * @return
+	 */
+	public static long getTotalDataSpace() {
+		String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
+		return new File(dataPath).getTotalSpace();
 	}
 
 }
