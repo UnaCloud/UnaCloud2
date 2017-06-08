@@ -151,10 +151,18 @@ class PhysicalMachine {
 	
 	/**
 	 * Calculates used percentage disk in physical machine
-	 * @return
+	 * @return percentage of used disk
 	 */
 	def getUsedPercentage() {
-		return dataSpace == 0 ? 0 : (dataSpace - freeSpace) * 100 / dataSpace;
+		return dataSpace == 0 ? 100 : (dataSpace - freeSpace) * 100 / dataSpace;
+	}
+		
+	/**
+	 * Returns current agent version
+	 * @return agent version
+	 */
+	def getCurrentAgentVersion() {
+		return agentVersion == null ? "N/A" : agentVersion;
 	}
 	
 }

@@ -41,7 +41,7 @@
                      <div class="tab-content">
                          <div class="tab-pane active" id="tab_host">
                             <form method="post" id="form_machines">
-	                         	<p class="help-block">Host which from this Lab.</p>	                        		
+	                         	<p class="help-block">Lab host list.</p>	                        		
 	                            <div class="box-body table-responsive">
 				                      <table id="unacloudTable" class="table table-bordered table-striped">
 				                          <thead>
@@ -53,6 +53,7 @@
 					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
 					                                   	 	<a title="Clean host cache" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-eraser" ></i></a>
 					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-level-up"></i></a>
+															
 														</div>		  	
 												  	</td>
 											  </tr>
@@ -91,13 +92,14 @@
 											   			<span class="label label-warning"> ${machine.state.toString()}</span>
 											   		</g:if>
 				                                  </td>
-				                                  <td><small>${machine.agentVersion}</small></td>
+				                                  <td><small>${machine.getCurrentAgentVersion()}</small></td>
 				                                  <td>
 				                                  	<small class = 
 				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
 				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>>
 				                                  		<g:else> "text-success" </g:else>>
-				                                  		${machine.freeSpace}
+				                                  		${machine.getUsedPercentage()} %
+				                                  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="T:${machine.dataSpace} - F:${machine.freeSpace}"></i>
 				                                  	</small>
 				                                  </td>
 				                                  <td class = "column-center">	

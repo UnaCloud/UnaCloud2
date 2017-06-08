@@ -86,11 +86,23 @@ public class AgentManager {
 	 */
 	public static void sendStatusMessage() {
 		try {     	       	   
+     	   ServerMessageSender.reportPhyisicalMachine(getFreeDataSpace(), getTotalDataSpace(), null);
+        } catch(Exception sce) {
+     	   sce.printStackTrace();
+        }
+	}
+	
+	/**
+	 * Sends initial message to server with extra information about physical machine state
+	 */
+	public static void sendInitialMessage() {
+		try {     	       	   
      	   ServerMessageSender.reportPhyisicalMachine(getFreeDataSpace(), getTotalDataSpace(), getVersion());
         } catch(Exception sce) {
      	   sce.printStackTrace();
         }
 	}
+
 
 	/**
 	 * Returns free space in Data path

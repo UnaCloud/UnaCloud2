@@ -86,7 +86,7 @@ public class UDPMessageStatePM extends UnaCloudMessageUDP{
 		super(ip, port, host, UDPMessageEnum.STATE_PM);
 
 		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TAG_VERSION, version);
+		if (version != null) tempMessage.put(TAG_VERSION, version);
 		tempMessage.put(TAG_HOST_USER,hostUser);
 		tempMessage.put(TAG_DATA_SPACE,dataSpace);
 		tempMessage.put(TAG_FREE_SPACE,freeSpace);
