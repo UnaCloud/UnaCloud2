@@ -64,7 +64,6 @@
 				                                  <th>Host Name</th>
 				                                  <th>IP</th>
 				                                  <th>State</th>
-				                                  <th>Version</th>
 				                                  <th>Data Space</th>
 				                                  <th>Activity</th>
 				                                  <th>Platforms</th>
@@ -77,7 +76,7 @@
 				                              	  <td class="column-center">	
 										      		<input type="checkbox" name="machine_${machine.id}" class="all"/>  
 										      	  </td>
-										      	  <td><small>${machine.name} </small></td>
+										      	  <td><small>${machine.name} <span class = "label label-success"> V ${machine.getCurrentAgentVersion()}</span></small></td>
 				                                  <td><small>${machine.ip.ip}</small></td>
 				                                  <td>
 					                                <g:if test = "${machine.state.equals(PhysicalMachineStateEnum.ON) }">
@@ -93,7 +92,6 @@
 											   			<span class="label label-warning"> ${machine.state.toString()}</span>
 											   		</g:if>
 				                                  </td>
-				                                  <td><small>${machine.getCurrentAgentVersion()}</small></td>
 				                                  <td>
 				                                  	<small class = 
 				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
