@@ -30,16 +30,15 @@ public class ConfigurationReader {
 	 * @param variables
 	 * @throws IOException in case file doesn't exists or can't be read
 	 */
-	public ConfigurationReader(String filename, String[] variables) throws IOException{
+	public ConfigurationReader(String filename, String[] variables) throws IOException {
 		this.fileName = filename;
 		
 		Properties prop = new Properties();
 		InputStream inputStream = new FileInputStream(filename);
 		prop.load(inputStream);
-		for(String value:variables){
-			String data = prop.getProperty(value);
-			
-			if(data!=null)
+		for (String value : variables) {
+			String data = prop.getProperty(value);			
+			if (data != null)
 				values.put(value, data);
 		}
 		inputStream.close();
@@ -55,14 +54,14 @@ public class ConfigurationReader {
 		this.fileName = filename;
 		{
 			File f = new File(filename);
-			if(!f.exists())return;
+			if (!f.exists()) return;
 		}
 		Properties prop = new Properties();
 		InputStream inputStream = new FileInputStream(filename);
 		prop.load(inputStream);
-		for(String key:prop.stringPropertyNames()){
+		for (String key:prop.stringPropertyNames()) {
 			String data = prop.getProperty(key);
-			if(data!=null)
+			if (data != null)
 				values.put(key, data);
 		}
 		inputStream.close();
@@ -71,10 +70,10 @@ public class ConfigurationReader {
 	 * Saves values in tree map to a properties file
 	 * @throws IOException 
 	 */
-	public void saveConfiguration() throws IOException{
+	public void saveConfiguration() throws IOException { 
 		Properties prop = new Properties();
 		OutputStream out = new FileOutputStream(this.fileName);
-		for(String key: values.keySet()){
+		for (String key : values.keySet()) {
 			prop.setProperty(key, values.get(key));
 		}
 		prop.store(out, null);
@@ -84,7 +83,7 @@ public class ConfigurationReader {
 	 * @param nameVariable
 	 * @return variable as String value
 	 */
-	public String getStringVariable(String nameVariable){
+	public String getStringVariable(String nameVariable) {
 		return values.get(nameVariable);
 	}
 	
@@ -94,7 +93,7 @@ public class ConfigurationReader {
 	 * @return variable as Integer value
 	 * @throws Exception in case variable is not int
 	 */
-	public Integer getIntegerVariable(String nameVariable) throws Exception{
+	public Integer getIntegerVariable(String nameVariable) throws Exception {
 		return Integer.parseInt(values.get(nameVariable));
 	}
 	
@@ -104,7 +103,7 @@ public class ConfigurationReader {
 	 * @return variable as Long value
 	 * @throws Exception in case variable is not long
 	 */
-	public Long getLongVariable(String nameVariable) throws Exception{
+	public Long getLongVariable(String nameVariable) throws Exception {
 		return Long.parseLong(values.get(nameVariable));
 	}
 	
@@ -113,7 +112,7 @@ public class ConfigurationReader {
 	 * @param key
 	 * @param variable
 	 */
-	public void setStringVariable(String key, String variable){
+	public void setStringVariable(String key, String variable) {
 		values.put(key, variable);
 	}
 	
@@ -122,8 +121,8 @@ public class ConfigurationReader {
 	 * @param key
 	 * @param variable
 	 */
-	public void setLongVariable(String key, Long variable){
-		values.put(key, variable+"");
+	public void setLongVariable(String key, Long variable) {
+		values.put(key, variable + "");
 	}
 
 	/**
@@ -131,8 +130,8 @@ public class ConfigurationReader {
 	 * @param key
 	 * @param variable
 	 */
-	public void setIntegerVariable(String key, Integer variable){
-		values.put(key, variable+"");
+	public void setIntegerVariable(String key, Integer variable) {
+		values.put(key, variable + "");
 	}
 	
 	/**
@@ -141,9 +140,9 @@ public class ConfigurationReader {
 	 * @param variableToSet variable to be save 
 	 * @return variable in tree
 	 */
-	public String getSetStringValue(String nameVariable, String variableToSet){
+	public String getSetStringValue(String nameVariable, String variableToSet) {
 		String val = values.get(nameVariable);
-		if(val==null){
+		if (val == null) {
 			values.put(nameVariable, variableToSet);
 			val = variableToSet;
 		}

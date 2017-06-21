@@ -26,10 +26,10 @@ public enum UDPMessageEnum {
 	 * @param name of type
 	 * @return type of message
 	 */
-	public static UDPMessageEnum getType(String name){
-		if(STATE_PM.name().equals(name))return STATE_PM;
-		if(STATE_EXE.name().equals(name))return STATE_EXE;
-		if(LOG_PM.name().equals(name))return LOG_PM;
+	public static UDPMessageEnum getType(String name) {
+		if (STATE_PM.name().equals(name)) return STATE_PM;
+		if (STATE_EXE.name().equals(name)) return STATE_EXE;
+		if (LOG_PM.name().equals(name)) return LOG_PM;
 		return null;
 	}
 

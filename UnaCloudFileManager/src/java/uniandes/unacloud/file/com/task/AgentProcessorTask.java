@@ -27,17 +27,17 @@ public class AgentProcessorTask implements Runnable{
 
 	@Override
 	public void run() {
-		try(Socket ss=socket; DataOutputStream out=new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream());Connection con = FileManager.getInstance().getDBConnection();) {
-			if(is.readInt()==UnaCloudConstants.REQUEST_AGENT_VERSION){
+		try (Socket ss = socket; DataOutputStream out = new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream()); Connection con = FileManager.getInstance().getDBConnection();) {
+			if (is.readInt() == UnaCloudConstants.REQUEST_AGENT_VERSION) {
 				ServerVariableEntity variable = ServerVariableManager.getVariable(con, UnaCloudConstants.AGENT_VERSION);
 				out.writeUTF(variable.getValue());
 				int respond = is.readInt();
-				if(respond==UnaCloudConstants.GIVE_ME_FILES){
-					System.out.println(ss.getInetAddress().getHostName()+" request agent");
+				if (respond == UnaCloudConstants.GIVE_ME_FILES) {
+					System.out.println(ss.getInetAddress().getHostName() + " request agent");
 					AgentManager.copyAgentOnStream(out, con);
 				}				
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

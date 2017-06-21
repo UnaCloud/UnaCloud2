@@ -3,7 +3,7 @@ package uniandes.unacloud.agent.system;
 import java.io.File;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedCommandException;
-import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**

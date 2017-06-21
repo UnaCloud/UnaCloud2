@@ -26,10 +26,11 @@ public abstract class UnaCloudAbstractMessage implements Serializable{
     private int mainOp;
     private int subOp;
 
-    public UnaCloudAbstractMessage(int mainOp, int subOp){
+    public UnaCloudAbstractMessage(int mainOp, int subOp) {
         this.mainOp = mainOp;
         this.subOp = subOp;
     }
+    
     public int getMainOp() {
         return mainOp;
     }
@@ -50,7 +51,7 @@ public abstract class UnaCloudAbstractMessage implements Serializable{
      * @param message to be transformed
      * @return new message, in case another type return null
      */
-    public static UnaCloudAbstractMessage fromMessage(UnaCloudAbstractMessage message){
+    public static UnaCloudAbstractMessage fromMessage(UnaCloudAbstractMessage message) {
     	switch(message.getMainOp()){
     		case PHYSICAL_MACHINE_OPERATION:
     			return PhysicalMachineOperationMessage.fromMessage(message);

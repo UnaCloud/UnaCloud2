@@ -16,7 +16,7 @@ import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
-import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * Implementation of platform abstract class to give support for VirtualBox
@@ -87,7 +87,7 @@ public abstract class VirtualBox extends Platform {
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
         String h;
-        if((h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
+        if ((h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);
@@ -102,7 +102,7 @@ public abstract class VirtualBox extends Platform {
 	private void setPriority(ImageCopy image) throws PlatformOperationException {
 		//To correct executions in Vbox 4.3 and forward
     	try {
-    		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"showvminfo",image.getImageName());
+    		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName());
     		sleep(1000);
     		OSFactory.getOS().setPriorityProcess(VBOX_SERVICE_NAME);
     		sleep(1000);
@@ -119,8 +119,8 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
-    	if(cores!=0&&ram!=0){
-            LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(),"--memory",""+ram,"--cpus",""+cores);
+    	if (cores != 0 && ram != 0) {
+            LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--memory", ""+ram, "--cpus", ""+cores);
             sleep(20000);
         }
     }
@@ -163,8 +163,8 @@ public abstract class VirtualBox extends Platform {
      * @param snapshotname 
      */
     @Override
-    public void takeExecutionSnapshot(ImageCopy image,String snapshotname){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getImageName(),"take",snapshotname);
+    public void takeExecutionSnapshot(ImageCopy image,String snapshotname) {
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getImageName(), "take", snapshotname);
         sleep(20000);
     }
     
@@ -174,8 +174,8 @@ public abstract class VirtualBox extends Platform {
      * @param snapshotname 
      */
     @Override
-    public void deleteExecutionSnapshot(ImageCopy image,String snapshotname){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"snapshot",image.getImageName(),"delete",snapshotname);
+    public void deleteExecutionSnapshot(ImageCopy image,String snapshotname) {
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "snapshot", image.getImageName(), "delete", snapshotname);
         sleep(20000);
     }
     
@@ -185,10 +185,9 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void changeExecutionMac(ImageCopy image) throws PlatformOperationException {
-    	NetworkInterface ninterface=AddressUtility.getDefaultNetworkInterface();
-    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(),"--bridgeadapter1",ninterface.getDisplayName(),"--macaddress1","auto");
-        sleep(20000);
-        
+    	NetworkInterface ninterface = AddressUtility.getDefaultNetworkInterface();
+    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--bridgeadapter1", ninterface.getDisplayName(), "--macaddress1", "auto");
+        sleep(20000);        
     }
 
     /**
@@ -218,8 +217,8 @@ public abstract class VirtualBox extends Platform {
 	 * Unregisters all VMs from platform
 	 */
 	public void unregisterAllVms(){
-		String[] h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms").split("\n|\r");
-		for(String vm:h){
+		String[] h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms").split("\n|\r");
+		for (String vm : h) {
 			LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", vm.split(" ")[1]);
 	        sleep(15000);
 		}
@@ -232,9 +231,9 @@ public abstract class VirtualBox extends Platform {
 	 */
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"clonevm",source.getImageName(),"--snapshot","unacloudbase","--name",dest.getImageName(),"--basefolder",dest.getMainFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 		sleep(20000);
-		takeExecutionSnapshot(dest,"unacloudbase");
+		takeExecutionSnapshot(dest, "unacloudbase");
         unregisterImage(dest);
 	}
 	
@@ -243,8 +242,8 @@ public abstract class VirtualBox extends Platform {
 		List<Execution> executionsToDelete = new ArrayList<Execution>();
 		List<String> list = new ArrayList<String>();
 		try {
-			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","runningvms").split("\n|\r");
-			for(String vm: result){
+			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms").split("\n|\r");
+			for (String vm : result) {
 				list.add(vm.split(" ")[0].replace("\"", "").trim());
 			}
 		} catch (Exception e) {
@@ -252,13 +251,14 @@ public abstract class VirtualBox extends Platform {
 		}
 		for (Execution execution: executions) {
 			boolean isRunning = false;
-			for(String exeInplatform: list){
-				if(exeInplatform.contains(execution.getImage().getImageName())){
+			for (String exeInplatform : list) {
+				if (exeInplatform.contains(execution.getImage().getImageName())) {
 					isRunning = true;
 					break;
 				}
 			}	
-			if(!isRunning)executionsToDelete.add(execution);	
+			if (!isRunning)
+				executionsToDelete.add(execution);	
 		}
 		return executionsToDelete;
 	}
@@ -275,7 +275,7 @@ public abstract class VirtualBox extends Platform {
 	public abstract String[] createExecutionCommand(String path, String imageName, String command, String username, String password);
 	
 	/**
-	 * Mathod to create command to copy files in guest machine
+	 * Method to create command to copy files in guest machine
 	 * @param path : VBoxManage path
 	 * @param imageName : image name
 	 * @param sourcePath : file path to be copied in guest
