@@ -5,12 +5,9 @@
 
 package uniandes.unacloud.common.utils;
 
-import java.text.DecimalFormat;
-
 /**
- * Class containing utilities to data conversion
+ * Class containing utilities to data convertion
  * @author Clouder
- * @author CesarF added some methods
  */
 public class ByteUtils {
 
@@ -47,26 +44,6 @@ public class ByteUtils {
         n |= (((long) bytes[1]) << 48) & 0xFF000000000000L;
         n |= (((long) bytes[0]) << 56) & 0xFF00000000000000L;
         return n;
-    }
-    
-    /**
-     * Transform a quantity of bytes in a String with a determinate measurement unit
-     * @param bytes to make conversion
-     * @return String wish represent bytes in a determinate measurement unit
-     */
-    public static String conversionUnitBytes (long bytes) {
-    	DecimalFormat df = new DecimalFormat("#.00");
-    	long diskSize = bytes / 1024;
-		if (diskSize > 1) {
-			if (diskSize / 1024 > 1 ) {				
-				diskSize = diskSize / 1024;
-				if (diskSize / 1024 > 1)
-				return df.format(diskSize/1024) + " GB";
-				else return df.format(diskSize) + " MB";
-			}				
-			else return df.format(diskSize) + " KB";		
-		}
-		else return df.format(bytes) + " Bytes";
     }
 
 

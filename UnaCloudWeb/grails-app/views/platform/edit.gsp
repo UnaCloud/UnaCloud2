@@ -35,7 +35,7 @@
 	                            	<input type="text" class="form-control" value="${platform.platformVersion}" name="vers" placeholder="Platform version">
 	                         	</div>
 	                         	<div class="form-group">
-	                            	<label>Class</label>
+	                            	<label>Version</label>
 	                            	<input type="text" class="form-control" value="${platform.classPlatform}" name="cls" placeholder="Platform class in agent">
 	                         	</div>
 	                         	<div class="form-group">

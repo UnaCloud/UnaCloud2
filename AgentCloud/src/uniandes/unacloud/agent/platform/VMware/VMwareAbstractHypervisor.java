@@ -15,7 +15,7 @@ import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.system.OSFactory;
-import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * Implementation of platform abstract class to give support for

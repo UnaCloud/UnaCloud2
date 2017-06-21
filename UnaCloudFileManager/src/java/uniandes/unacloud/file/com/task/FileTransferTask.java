@@ -20,40 +20,41 @@ import uniandes.unacloud.file.db.entities.ImageFileEntity;
  * @author CesarF
  *
  */
-public class FileTransferTask implements Runnable{
+public class FileTransferTask implements Runnable {
 	Socket s;	
 	public FileTransferTask(Socket s) {
-		System.out.println("Working "+s.getRemoteSocketAddress());
+		System.out.println("Working " + s.getRemoteSocketAddress());
 		this.s = s;
 	}
 	@Override
 	public void run() {		
-		try(Socket ss=s;DataInputStream ds=new DataInputStream(s.getInputStream());OutputStream os=s.getOutputStream();Connection con = FileManager.getInstance().getDBConnection();){			
+		try (Socket ss = s; DataInputStream ds = new DataInputStream(s.getInputStream()); OutputStream os = s.getOutputStream(); Connection con = FileManager.getInstance().getDBConnection();) {			
 			
-			ZipOutputStream zos=new ZipOutputStream(os);
-			long imageId=ds.readLong();
+			ZipOutputStream zos = new ZipOutputStream(os);
+			long imageId = ds.readLong();
 			System.out.println("\tWorking "+imageId);						
 			ImageFileEntity image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
 			
-			if(image!=null){
+			if (image != null) {
 				
-				System.out.println(image+" - "+imageId+" - "+image.getState());
-				final byte[] buffer=new byte[1024*100];
-				System.out.println("\t Sending files "+image.getMainFile());
+				System.out.println(image + " - " + imageId + " - " + image.getState());
+				final byte[] buffer = new byte[1024*100];
+				System.out.println("\t Sending files " + image.getMainFile());
 				
-				for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
-					
-					System.out.println("\tprocessing: "+f.getName());
-					zos.putNextEntry(new ZipEntry(f.getName()));					
-					try(FileInputStream fis=new FileInputStream(f)){
-						for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+				for (java.io.File f : new java.io.File(image.getMainFile()).getParentFile().listFiles())
+					if (f.isFile()) {					
+						System.out.println("\tprocessing: " + f.getName());
+						zos.putNextEntry(new ZipEntry(f.getName()));					
+						try (FileInputStream fis = new FileInputStream(f)) {
+							for (int n; (n = fis.read(buffer)) != -1;)
+								zos.write(buffer,0,n);
+						}
+						zos.closeEntry();
 					}
-					zos.closeEntry();
-				}
 				
-				System.out.println("Files sent "+image.getMainFile());
+				System.out.println("Files sent " + image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
-				PrintWriter pw=new PrintWriter(zos);
+				PrintWriter pw = new PrintWriter(zos);
 				pw.println(image.getPlatform().getConfigurer());
 				pw.println(new File(image.getMainFile()).getName());
 				pw.println(image.getPassword());

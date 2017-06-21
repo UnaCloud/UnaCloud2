@@ -25,30 +25,28 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 
 	@Override
 	public void processMessage(UnaCloudMessageUDP messageUnaCloud) throws JSONException, SQLException {
-		if (messageUnaCloud.getMessage() != null && messageUnaCloud.getType().equals(UDPMessageEnum.STATE_PM)) {
-			try (Connection con = ControlManager.getInstance().getDBConnection();){
-				UDPMessageStatePM message = new UDPMessageStatePM(messageUnaCloud);							
-				if (PhysicalMachineUpdater.updatePhysicalMachine(message.getHost(), message.getHostUser(), 
-						message.getIp(), message.getFreeSpace(), message.getDataSpace(), message.getVersion(), con)) {
-					Long[] ids = message.getExecutions();	
-					if (ids != null) {
-						List<Long> idsToStop = PhysicalMachineUpdater.updateExecutions(ids, message.getHost(), con);
-						if (idsToStop != null && idsToStop.size() > 0) {
-							//Send stop machines message because executions has been reported as finished or failed to user
-							Long[] idsLong = new Long[idsToStop.size()];
-							for (int i = 0; i < idsLong.length; i++) {
-								idsLong[i] = idsToStop.get(i);
-							}
-							ControlManager.getInstance().sendStopMessageExecutions(idsLong);
+		if(messageUnaCloud.getMessage()!=null && messageUnaCloud.getType().equals(UDPMessageEnum.STATE_PM)){
+			try(Connection con = ControlManager.getInstance().getDBConnection();){
+				UDPMessageStatePM message = new UDPMessageStatePM(messageUnaCloud);
+				Long[] ids = message.getExecutions();
+				
+				if(PhysicalMachineUpdater.updatePhysicalMachine(message.getHost(), message.getHostUser(), message.getIp(), con)){
+					List<Long> idsToStop = PhysicalMachineUpdater.updateExecutions(ids, message.getHost(), con);
+					if(idsToStop!=null&&idsToStop.size()>0){
+						//Send stop machines message because executions has been reported as finished or failed to user
+						Long[] idsLong = new Long[idsToStop.size()];
+						for (int i = 0; i < idsLong.length; i++) {
+							idsLong[i]=idsToStop.get(i);
 						}
-					}					
+						ControlManager.getInstance().sendStopMessageExecutions(idsLong);
+					}
 				}			
-			} catch (Exception e) {
+			}catch (Exception e) {
 				e.printStackTrace();
 			}			
 		}
-		else {
-			System.err.println("ERROR in message: " + messageUnaCloud.getIp() + "-" + messageUnaCloud.getHost() + "-" + messageUnaCloud.getPort() + "" + (messageUnaCloud.getMessage() != null ? messageUnaCloud.getMessage().toString() : null));
+		else{
+			System.err.println("ERROR in message: "+messageUnaCloud.getIp()+"-"+messageUnaCloud.getHost()+"-"+messageUnaCloud.getPort()+""+(messageUnaCloud.getMessage()!=null?messageUnaCloud.getMessage().toString():null));
 		}
 	}
 }

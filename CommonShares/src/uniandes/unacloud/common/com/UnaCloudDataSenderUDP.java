@@ -25,7 +25,7 @@ public class UnaCloudDataSenderUDP {
 	 * Enables receiver socket
 	 * @throws SocketException 
 	 */	
-	public void enableReceiver(int port) throws SocketException{
+	public void enableReceiver(int port) throws SocketException {
 		udpReceiver = new DatagramSocket(port);
 		receiver = true;
 		bufer = new byte[1024*100];
@@ -36,7 +36,7 @@ public class UnaCloudDataSenderUDP {
 	 * @param message to send
 	 * @return true in case send message was successful, false in case not
 	 */
-	public boolean sendMessage(UnaCloudMessageUDP message){
+	public boolean sendMessage(UnaCloudMessageUDP message) {
 		try {
 			DatagramSocket socketUDP = new DatagramSocket();
 			byte[] messageBytes =message.generateByteMessage();			
@@ -44,7 +44,7 @@ public class UnaCloudDataSenderUDP {
 			DatagramPacket packg = new DatagramPacket(messageBytes, messageBytes.length, host, message.getPort());
 			socketUDP.send(packg);
 			socketUDP.close();
-			System.out.println("Send message to: "+message.getIp()+":"+message.getPort()+" - "+message.getType().name()+":"+message.getMessage());
+			System.out.println("Send message to: " + message.getIp() + ":" + message.getPort() + " - " + message.getType().name() + ":" + message.getMessage());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,8 +56,8 @@ public class UnaCloudDataSenderUDP {
 	 * Receives a message by UDP port
 	 * @return udp message
 	 */
-	public UnaCloudMessageUDP getMessage(){
-		if(!receiver)return null;
+	public UnaCloudMessageUDP getMessage() {
+		if (!receiver) return null;
 		try {
 			DatagramPacket request = new DatagramPacket(bufer, bufer.length);
 			udpReceiver.receive(request);	

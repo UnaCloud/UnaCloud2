@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @author CesarF
  *
  */
-public abstract class UnaCloudAbstractResponse implements Serializable{
+public abstract class UnaCloudAbstractResponse implements Serializable {
 
 	private static final long serialVersionUID = -6405771915642405470L;
 }

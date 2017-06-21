@@ -161,7 +161,7 @@ class DeploymentService {
 		
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
-		if(allowedHwdProfiles.find{it.id == requestOptions.hp.id} == null) throw new Exception('You don\'t have permissions to use same hardware profile in deployment')		
+		if(allowedHwdProfiles.find{it.id==requestOptions.hp.id}==null)throw new Exception('You don\'t have permissions to use same hardware profile in deployment')		
 				
 		def allowedLabs = userRestrictionService.getAllowedLabs(user)
 		if(allowedLabs.size()==0) throw new Exception('Not enough physical machines available')
@@ -171,12 +171,12 @@ class DeploymentService {
 		allowedLabs.each{
 			pms.addAll(it.getAvailableMachines(image.highAvaliavility))
 		}
-		if(pms.size() == 0) throw new Exception('Not enough physical machines available')
+		if(pms.size()==0) throw new Exception('Not enough physical machines available')
 		
 		Map<Long,PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)	
 					
 		def executions = []
-		for(int j = 0 ; j < requestOptions.instances ; j++){
+		for(int j=0;j<requestOptions.instances;j++){
 			def execution = new Execution(deployImage: image,name: requestOptions.hostname,message: "Adding Instance",  hardwareProfile: requestOptions.hp,disk:0,status: ExecutionStateEnum.QUEUED,startTime: new Date(), stopTime:stop,interfaces:[])
 			executions.add(execution)
 		}
@@ -193,7 +193,7 @@ class DeploymentService {
 			execution.saveExecution()
 		}
 		image.executions.addAll(executions)
-		image.save(failOnError:true, flush:true)
+		image.save(failOnError:true,flush:true)
 		if(!Environment.isDevelopmentMode()){
 			QueueTaskerControl.addInstancesToDeploy(executions.sort(),user,image)
 		}
@@ -207,22 +207,13 @@ class DeploymentService {
 	 */
 	def getActiveDeployments(User user){
 		List deployments= new ArrayList()
-		def deps = Deployment.where{status == DeploymentStateEnum.ACTIVE && user != user}.findAll()
+		def deps = Deployment.where{status==DeploymentStateEnum.ACTIVE && user != user}.findAll()
 		for (Deployment dep in deps){
 			if(dep.isActive())
 				deployments.add(dep)
 		}
 		return deployments
 	}
-	
-	/**
-	 * Returns the list of active executions in all users
-	 * @return list of active executions: status != FINISHED
-	 */
-	def getActiveExecutions(){
-		return Execution.findAll{ status != ExecutionStateEnum.FINISHED}.sort{it.id}
-	}
-	
 	/**
 	 * Creates a task to stop executions in list
 	 * If state is FAILED changes to FINISHED else to FINISHING
@@ -239,7 +230,7 @@ class DeploymentService {
 				executionsToStop.add(vm)
 			}
 		}
-		if(executionsToStop.size() > 0){
+		if(executionsToStop.size()>0){
 			QueueTaskerControl.stopExecutions(executionsToStop, requester)
 		}
 	}
@@ -253,8 +244,8 @@ class DeploymentService {
 	 */
 	//Validates capacity
 	def createCopy(Execution execution, User user, String newName)throws Exception{
-		if(newName == null || newName.isEmpty())throw new Exception('Image name can not be empty')
-		if(Image.where{name == newName && owner == user}.find())throw new Exception('You have a machine with the same name currently')
+		if(newName==null||newName.isEmpty())throw new Exception('Image name can not be empty')
+		if(Image.where{name==newName&&owner==user}.find())throw new Exception('You have a machine with the same name currently')
 		def repository = userRestrictionService.getRepository(user)
 		String token = Hasher.hashSha256(newName+new Date().getTime())
 		Image image = new Image(name:newName,isPublic:false, fixedDiskSize:execution.deployImage.image.fixedDiskSize,

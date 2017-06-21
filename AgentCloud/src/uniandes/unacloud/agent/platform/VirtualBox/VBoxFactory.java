@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.platform.VirtualBox;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
-import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * Responsible class to create a virtualbox instance depending of version

@@ -59,10 +59,10 @@ public class ImageCopy implements Serializable{
 	 * @return image name
 	 */
 	public String getImageName() {
-		if(mainFile==null)return "null";
-		String h=mainFile.getName();
-		int l=h.lastIndexOf(".");
-		if(l==-1)return h;
+		if (mainFile == null) return "null";
+		String h = mainFile.getName();
+		int l = h.lastIndexOf(".");
+		if (l == -1) return h;
 		return h.substring(0,l);
 	}
 	/**
@@ -115,36 +115,38 @@ public class ImageCopy implements Serializable{
 	 * Configures and starts the copy
 	 * @param machineExecution
 	 */	
-	public synchronized void configureAndStart(Execution machineExecution){
-		Platform platform=PlatformFactory.getPlatform(getImage().getPlatformId());
+	public synchronized void configureAndStart(Execution machineExecution) {
+		Platform platform = PlatformFactory.getPlatform(getImage().getPlatformId());
 		try {
 			try {
-				if(platform==null)throw new Exception("platform not found "+getImage().getPlatformId());
-				if(status!=ImageStatus.STARTING)status=ImageStatus.STARTING;
-				Class<?> configuratorClass=Class.forName("uniandes.unacloud.agent.execution.configuration."+getImage().getConfiguratorClass());
+				if (platform == null) 
+					throw new Exception("platform not found " + getImage().getPlatformId());
+				if (status != ImageStatus.STARTING) 
+					status = ImageStatus.STARTING;
+				Class<?> configuratorClass = Class.forName("uniandes.unacloud.agent.execution.configuration." + getImage().getConfiguratorClass());
 				Object configuratorObject=configuratorClass.getConstructor().newInstance();
 				
-				if(configuratorObject instanceof AbstractExecutionConfigurator){
-					AbstractExecutionConfigurator configurator=(AbstractExecutionConfigurator)configuratorObject;
+				if (configuratorObject instanceof AbstractExecutionConfigurator) {
+					AbstractExecutionConfigurator configurator = (AbstractExecutionConfigurator) configuratorObject;
 					//configurator.setplatform(platform);
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
 					platform.registerImage(this);
 	    			platform.restoreExecutionSnapshot(this,"unacloudbase");
-	        		platform.configureExecutionHardware(machineExecution.getCores(),machineExecution.getMemory(),this);
+	        		platform.configureExecutionHardware(machineExecution.getCores(), machineExecution.getMemory(), this);
 	    			platform.startExecution(this);
 	    			configurator.configureHostname();
 	    			configurator.configureIP();
 	    			System.out.println("image config "+new Date());
-	    	        PersistentExecutionManager.startUpMachine(machineExecution,!configurator.doPostConfigure());	    	       
-				}else {
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Invalid execution configurator.");
+	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
+				} else {
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Invalid execution configurator.");
 					status=ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,"Configurator class error: "+e.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Configurator class error: " + e.getMessage());
 				status=ImageStatus.FREE;
 			}
 		} catch (Exception e) {
@@ -158,8 +160,8 @@ public class ImageCopy implements Serializable{
 	 * @param dest empty image copy
 	 * @return cloned image
 	 */
-	public synchronized ImageCopy cloneCopy(ImageCopy dest){
-		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+	public synchronized ImageCopy cloneCopy(ImageCopy dest) {
+		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
 		platform.cloneImage(this,dest);
 		return dest;
 	}
@@ -168,13 +170,14 @@ public class ImageCopy implements Serializable{
 	 * Makes initialization process in copy before starting
 	 * @throws ExecutionException
 	 */
-	public synchronized void init()throws ExecutionException{
-		Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
-		if(platform==null)throw new ExecutionException("Platform doesn't exists on machine. platform was "+image.getPlatformId());
+	public synchronized void init() throws ExecutionException {
+		Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
+		if (platform == null)
+			throw new ExecutionException("Platform doesn't exists on machine. platform was " + image.getPlatformId());
 		platform.registerImage(this);
 		try {
 			platform.changeExecutionMac(this);
-			platform.takeExecutionSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);
+			platform.takeExecutionSnapshot(this, UnaCloudConstants.DEFAULT_IMG_NAME);
 		} catch (PlatformOperationException e) {
 			e.printStackTrace();
 		}
@@ -186,8 +189,8 @@ public class ImageCopy implements Serializable{
 	 * @throws ExecutionException
 	 * @throws PlatformOperationException 
 	 */
-	public synchronized void deleteSnapshot()throws ExecutionException, PlatformOperationException{
-		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+	public synchronized void deleteSnapshot() throws ExecutionException, PlatformOperationException {
+		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
 		platform.deleteExecutionSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
 	}
 
@@ -196,8 +199,8 @@ public class ImageCopy implements Serializable{
 	 * Starts copy
 	 * @throws PlatformOperationException
 	 */
-	public void startExecution()throws PlatformOperationException{ 
-		Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+	public void startExecution() throws PlatformOperationException { 
+		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
 		platform.startExecution(this);
 	}
     
@@ -207,8 +210,8 @@ public class ImageCopy implements Serializable{
 	 * @param args command arguments
 	 * @throws PlatformOperationException
 	 */
-    public void executeCommandOnExecution( String command,String...args) throws PlatformOperationException{
-    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    public void executeCommandOnExecution( String command, String...args) throws PlatformOperationException{
+    	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
     	platform.executeCommandOnExecution(this,command,args);
     }
     
@@ -219,7 +222,7 @@ public class ImageCopy implements Serializable{
      * @throws PlatformOperationException
      */
     public void copyFileOnExecution(String destinationRoute, File sourceFile) throws PlatformOperationException{
-    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
     	platform.copyFileOnExecution(this,destinationRoute,sourceFile);
     }
     
@@ -228,29 +231,29 @@ public class ImageCopy implements Serializable{
      * @throws PlatformOperationException
      */
     public void restartExecution() throws PlatformOperationException{
-    	Platform platform=PlatformFactory.getPlatform(this.getImage().getPlatformId());
+    	Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
 		platform.restartExecution(this);
     }
     
     /**
      * Finalizes copy execution
      */
-    public synchronized void stopAndUnregister(){
-    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    public synchronized void stopAndUnregister() {
+    	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
     	platform.stopAndUnregister(this);
     }
     /**
      * Finalizes copy execution without unregistering and freeing image
      */
-    public synchronized void stop(){
-    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    public synchronized void stop() {
+    	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
     	platform.stopExecution(this);
     }
     /**
      * Unregistering image copy
      */
-    public synchronized void unregister(){
-    	Platform platform=PlatformFactory.getPlatform(image.getPlatformId());
+    public synchronized void unregister() {
+    	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
     	platform.unregisterImage(this);
     }
 }

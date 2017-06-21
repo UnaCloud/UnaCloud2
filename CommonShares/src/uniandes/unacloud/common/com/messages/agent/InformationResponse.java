@@ -9,6 +9,9 @@ import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
  */
 public class InformationResponse extends UnaCloudAbstractResponse{
 	
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 923545605946862973L;
 	private String message;
 	

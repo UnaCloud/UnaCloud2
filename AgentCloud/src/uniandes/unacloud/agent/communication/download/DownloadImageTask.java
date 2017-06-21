@@ -31,15 +31,15 @@ public class DownloadImageTask {
 	 * @param copy empty copy
 	 * @throws Exception 
 	 */
-	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws Exception{
-		File root=new File(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
+	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository)throws Exception{
+		File root=new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
-		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
-		System.out.println("Connecting to "+ip+":"+puerto);
+		final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
+		System.out.println("Connecting to " + ip + ":"+puerto);
 		
-		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
+		try(Socket s = new Socket(ip,puerto); DataOutputStream ds = new DataOutputStream(s.getOutputStream())){
 			
 			//Sends operation type ID
 			System.out.println("Successful connection");
@@ -48,25 +48,24 @@ public class DownloadImageTask {
 			ds.flush();
 			
 			//sends image id
-			System.out.println("send ID "+image.getId());
+			System.out.println("send ID " + image.getId());
 			ds.writeLong(image.getId());
 			ds.flush();
 			
 			//Receives zip elements
-			try(ZipInputStream zis=new ZipInputStream(s.getInputStream())){
+			try (ZipInputStream zis = new ZipInputStream(s.getInputStream())) {
 				System.out.println("Zip open");
-				byte[] buffer=new byte[1024*100];
-				for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){
-					if(entry.getName().equals("unacloudinfo")){
+				byte[] buffer = new byte[1024*100];
+				for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
+					if (entry.getName().equals("unacloudinfo")) {
 						
-						BufferedReader br=new BufferedReader(new InputStreamReader(zis));
+						BufferedReader br = new BufferedReader(new InputStreamReader(zis));
 						image.setPlatformId(br.readLine());
-						System.out.println("Platform: "+image.getPlatformId());
-						String mainFile=br.readLine();
-						if(mainFile==null){
-							throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE+" image mainFile is null");
-						}
-						
+						System.out.println("Platform: " + image.getPlatformId());
+						String mainFile = br.readLine();
+						if (mainFile == null) {
+							throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " image mainFile is null");
+						}						
 						copy.setMainFile(new File(root,mainFile));
 						System.out.println("Main: "+mainFile);
 						image.setPassword(br.readLine());
@@ -76,16 +75,16 @@ public class DownloadImageTask {
 						image.setConfiguratorClass(br.readLine());
 						System.out.println("config: "+image.getConfiguratorClass());
 						
-					}else{
-						try(FileOutputStream fos=new FileOutputStream(new File(root,entry.getName()))){
-							for(int n;(n=zis.read(buffer))!=-1;){
+					} else {
+						try (FileOutputStream fos = new FileOutputStream(new File(root,entry.getName()))) {
+							for(int n; (n = zis.read(buffer)) != -1;) {
 								fos.write(buffer,0,n);
 							}						
 						}
 					}
 					zis.closeEntry();
 				}
-			}catch(Exception e){
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			copy.setImage(image);

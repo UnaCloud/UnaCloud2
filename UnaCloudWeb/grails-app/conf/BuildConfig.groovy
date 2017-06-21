@@ -52,7 +52,7 @@ grails.project.dependency.resolution = {
 		//compile ":jaxrs:0.11"
 		runtime ":database-migration:1.3.2"	    
         compile ":cache:1.1.7"
-		compile ":quartz:1.0.2"
+		//compile ":quartz:1.0.2"	
 		
     }
 }

@@ -22,7 +22,7 @@ public class ServerMessageSender {
      * @return If the message could be sent or not
      * @throws Exception 
      */
-    public static boolean reportExecutionState(long executionCode, ExecutionStateEnum state, String message) throws Exception{    	
+    public static boolean reportExecutionState(long executionCode,ExecutionStateEnum state,String message) throws Exception{    	
     	return UDPCommunicator.getInstance().pushInfoEXE(OSFactory.getOS().getHostname(), executionCode, state, message);
     }
     
@@ -33,17 +33,6 @@ public class ServerMessageSender {
      */
 	public static void reportPhyisicalMachine(Long[] executions) throws Exception{
 		UDPCommunicator.getInstance().pushInfoPM(OSFactory.getOS().getHostname(), OSFactory.getOS().getUserName(), executions);
-	}
-	
-	 /**
-     * Sends message reporting the state of a physical machine with extra information
-	 * @param freeSpace current free space in bytes in physical machine
-	 * @param dataSpace total space in bytes in physical machine
-	 * @param version current agent version
-	 * @throws Exception
-	 */
-	public static void reportPhyisicalMachine(long freeSpace, long dataSpace, String version) throws Exception{
-		UDPCommunicator.getInstance().pushInfoPM(OSFactory.getOS().getHostname(), OSFactory.getOS().getUserName(), freeSpace, dataSpace, version);
 	}
 	
 	/**

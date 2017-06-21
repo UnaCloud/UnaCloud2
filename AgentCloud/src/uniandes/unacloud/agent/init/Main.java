@@ -35,32 +35,32 @@ public class Main {
         //Validates data path 
         String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
     	if (dataPath == null || dataPath.isEmpty()) {
-    		System.out.println(UnaCloudConstants.DATA_PATH+" in local file is empty");
+    		System.out.println(UnaCloudConstants.DATA_PATH + " in local file is empty");
     		System.exit(0);
     	}
 
         //Start log    
         try {
     		//Create agent log file
-        	PrintStream ps = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_out.log",true),true){
+        	PrintStream ps = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_out.log", true), true){
         	
         		@Override
         		public void println(String x) {
-        			super.println(new Date()+" "+x);
+        			super.println(new Date() + " " + x);
         		}
         		@Override
         		public void println(Object x) {
-        			super.println(new Date()+" "+x);
+        			super.println(new Date() + " " + x);
         		}
         	};
-        	PrintStream psError = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_err.log",true),true){
+        	PrintStream psError = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_err.log", true), true){
             	@Override
         		public void println(String x) {
-        			super.println(new Date()+" "+x);
+        			super.println(new Date() + " " + x);
         		}
         		@Override
         		public void println(Object x) {
-        			super.println(new Date()+" "+x);
+        			super.println(new Date() + " " + x);
         		}
         	};
 			System.setOut(ps);
@@ -85,7 +85,8 @@ public class Main {
 			} 
         	
     	}    
-		if (args != null && args.length > 0 && !args[0].matches("[0-9]+")) mainCase = Integer.parseInt(args[0]);
+		if (args != null && args.length > 0 && !args[0].matches("[0-9]+"))
+			mainCase = Integer.parseInt(args[0]);
 	    if (mainCase == UnaCloudConstants.TEST) {
 	    	try {
 				ServerMessageSender.reportPhyisicalMachine(null);
@@ -108,14 +109,12 @@ public class Main {
     	System.out.println("Start reporter");
         PhysicalMachineStateReporter.getInstance().start();     
         //Attend messages from server
-        
         try {
 			ClouderClientAttention.getInstance().start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
-		}        
-       
+		}
     }
 }
 

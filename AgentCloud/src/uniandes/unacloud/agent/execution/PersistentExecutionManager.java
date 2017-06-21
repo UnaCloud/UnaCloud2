@@ -50,7 +50,7 @@ public class PersistentExecutionManager {
     /**
      * Execution hash map, contains list of execution
      */
-    private static final Map<Long,Execution> executionList=new TreeMap<>();
+    private static final Map<Long,Execution> executionList = new TreeMap<>();
         
     /**
      * Timer used to schedule shutdown events
@@ -62,9 +62,9 @@ public class PersistentExecutionManager {
      * @param executionId
      * @param checkTime 
      */
-    public static void removeExecution(long executionId,boolean checkTime) {
-    	Execution execution=executionList.remove(executionId);
-		if(execution!=null&&(!checkTime||System.currentTimeMillis()>execution.getShutdownTime())){
+    public static void removeExecution(long executionId, boolean checkTime) {
+    	Execution execution = executionList.remove(executionId);
+		if (execution != null && (!checkTime || System.currentTimeMillis() > execution.getShutdownTime())) {
 			execution.getImage().stopAndUnregister();
 		}
 		saveData();
@@ -75,8 +75,8 @@ public class PersistentExecutionManager {
      * @param executionId
      */
     public static void stopExecution(long executionId) {
-    	Execution execution=executionList.get(executionId);
-		if(execution!=null){
+    	Execution execution = executionList.get(executionId);
+		if (execution != null) {
 			execution.getImage().stop();
 		}
     }
@@ -86,8 +86,8 @@ public class PersistentExecutionManager {
      * @param executionId
      */
     public static void unregisterExecution(long executionId) {
-    	Execution execution=executionList.get(executionId);
-		if(execution!=null){
+    	Execution execution = executionList.get(executionId);
+		if (execution != null) {
 			execution.getImage().unregister();
 		}
     }
@@ -96,8 +96,10 @@ public class PersistentExecutionManager {
      * Delete directory sent by params
      * @param f directory or file
      */
-	public static void cleanDir(File f){
-		if(f.isDirectory())for(File r:f.listFiles())cleanDir(r);
+	public static void cleanDir(File f) {
+		if (f.isDirectory()) 
+			for (File r : f.listFiles()) 
+				cleanDir(r);
 		f.delete();
 	}
 	
@@ -106,7 +108,7 @@ public class PersistentExecutionManager {
      * @return response to server
      */
     public static UnaCloudAbstractResponse restartMachine(ExecutionRestartMessage restartMessage) {
-    	Execution execution=executionList.get(restartMessage.getExecutionId());
+    	Execution execution = executionList.get(restartMessage.getExecutionId());
         try {
         	execution.getImage().restartExecution();
         } catch (PlatformOperationException ex) {
@@ -127,14 +129,14 @@ public class PersistentExecutionManager {
      * @return result message
      */
     public static String startUpMachine(Execution execution,boolean started){
-    	execution.setShutdownTime(System.currentTimeMillis()+execution.getExecutionTime().toMillis());
+    	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	            if(!started)execution.getImage().startExecution();
+	            if (!started) execution.getImage().startExecution();
 	            executionList.put(execution.getId(),execution);
-	            timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
-	            ServerMessageSender.reportExecutionState(execution.getId(),ExecutionStateEnum.DEPLOYING,"Starting execution");
-	            if(new ExecutionStateViewer(execution.getId(),execution.getMainInterface().getIp()).check())
+	            timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
+	            ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.DEPLOYING, "Starting execution");
+	            if (new ExecutionStateViewer(execution.getId(), execution.getMainInterface().getIp()).check())
 	            	execution.getImage().setStatus(ImageStatus.LOCK);
 	        } catch (PlatformOperationException e) {
 	        	e.printStackTrace();
@@ -157,10 +159,10 @@ public class PersistentExecutionManager {
      * @return unacloud response
      */
     public static UnaCloudAbstractResponse extendsVMTime(ExecutionAddTimeMessage timeMessage) {
-    	Execution execution=executionList.get(timeMessage.getExecutionId());
+    	Execution execution = executionList.get(timeMessage.getExecutionId());
     	execution.setExecutionTime(timeMessage.getExecutionTime());
-    	execution.setShutdownTime(System.currentTimeMillis()+timeMessage.getExecutionTime().toMillis());
-    	timer.schedule(new Scheduler(execution.getId()),new Date(execution.getShutdownTime()+100l));
+    	execution.setShutdownTime(System.currentTimeMillis() + timeMessage.getExecutionTime().toMillis());
+    	timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
     	saveData();
         return null;
     }
@@ -168,26 +170,26 @@ public class PersistentExecutionManager {
     /**
      * Saves the current state of executions and images on this node.  
      */
-    private static void saveData(){
-    	try(ObjectOutputStream oos=new ObjectOutputStream(new FileOutputStream(executionsFile));){
+    private static void saveData() {
+    	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
         	oos.writeObject(executionList);
-        }catch(Exception e){}
+        } catch(Exception e){
+        	e.printStackTrace();
+        }
     }
     /**
      * Loads and validates status of all executions saved in file
      *
      */
-    public static void refreshData(){
+    public static void refreshData() {
     	try {
-			List<Long>ids = ImageCacheManager.getCurrentImages();
-			System.out.println("There are images "+ids.size());
+			List<Long> ids = ImageCacheManager.getCurrentImages();
+			System.out.println("There are images " + ids.size());
 			loadData();
 			List<Execution> removeExecutions = PlatformFactory.validateExecutions(executionList.values());
-			for(Execution execution: removeExecutions){		
-				if(execution.getImage().getStatus()!=ImageStatus.STARTING){
-					removeExecution(execution.getId(),false);
-				}								
-			}
+			for (Execution execution: removeExecutions)	
+				if (execution.getImage().getStatus() != ImageStatus.STARTING)
+					removeExecution(execution.getId(), false);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -198,12 +200,15 @@ public class PersistentExecutionManager {
      * not return images in state STARTING (testing running)
      * @return list of execution ids
      */
-    public static List<Long> returnIdsExecutions(){
-    	if(executionList.values().size()==0)return new ArrayList<Long>();
+    public static List<Long> returnIdsExecutions() {
+    	if (executionList.values().size() == 0) 
+    		return new ArrayList<Long>();
     	try {
     		refreshData();
         	List<Long> ids = new ArrayList<Long>();
-        	for(Execution execution: executionList.values())if(execution.getImage().getStatus()!=ImageStatus.STARTING)ids.add(execution.getId());
+        	for (Execution execution: executionList.values())
+        		if (execution.getImage().getStatus() != ImageStatus.STARTING)
+        			ids.add(execution.getId());
         	return ids;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -215,17 +220,19 @@ public class PersistentExecutionManager {
      * Loads data from file to map
      */
     @SuppressWarnings("unchecked")
-	private static void loadData(){
-    	Map<Long,Execution> executions=null;
-    	try(ObjectInputStream ois=new ObjectInputStream(new FileInputStream(executionsFile))){
-        	executions=(Map<Long,Execution>)ois.readObject();
-        	if(executions!=null){
-        		for(Execution execution:executions.values())if(execution!=null){
-    				//execution.getImage().stopAndUnregister();
-        			executionList.put(execution.getId(), execution);
-        		}
-            }else saveData();
-        } catch (Exception ex){}
+	private static void loadData() {
+    	Map<Long,Execution> executions = null;
+    	try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(executionsFile))) {
+        	executions = (Map<Long,Execution>) ois.readObject();
+        	if (executions != null)
+        		for (Execution execution:executions.values()) 
+        			if (execution != null)
+        				//execution.getImage().stopAndUnregister();
+        				executionList.put(execution.getId(), execution);
+            else saveData();
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
     }
     
     /**
@@ -233,22 +240,22 @@ public class PersistentExecutionManager {
      * @param message
      * @return unacloud response
      */
-    public static UnaCloudAbstractResponse sendImageCopy(ExecutionSaveImageMessage message){
+    public static UnaCloudAbstractResponse sendImageCopy(ExecutionSaveImageMessage message) {
     	try {
-    		Execution execution=executionList.get(message.getExecutionId());
+    		Execution execution = executionList.get(message.getExecutionId());
     		ExecutionSaveImageResponse response = new ExecutionSaveImageResponse();
-    		if(execution!=null&&execution.getImageId()==message.getImageId()){
-    			System.out.println("Start copy service with token "+message.getTokenCom());
+    		if (execution != null && execution.getImageId() == message.getImageId()) {
+    			System.out.println("Start copy service with token " + message.getTokenCom());
 				response.setMessage("Copying image");
 				response.setState(ExecutionState.COPYNG);
 				ExecutorService.executeBackgroundTask(new UploadImageTask(execution,message.getTokenCom()));
-            }else{
-				response.setMessage(UnaCloudConstants.ERROR_MESSAGE+" Execution doesn't exist");
+            } else {
+				response.setMessage(UnaCloudConstants.ERROR_MESSAGE + " Execution doesn't exist");
 				response.setState(ExecutionState.FAILED);
 			}
     		return response;
 		} catch (Exception e) {			
-			return new InvalidOperationResponse(UnaCloudConstants.ERROR_MESSAGE+e);
+			return new InvalidOperationResponse(UnaCloudConstants.ERROR_MESSAGE + e);
 		}       
     }
 }

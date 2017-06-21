@@ -22,12 +22,12 @@ public class DataServerSocket extends AbstractServerSocket{
 	@Override
 	protected Runnable processSocket(Socket s) throws Exception {
 		DataInputStream ds = new DataInputStream(s.getInputStream());
-		int byteOp=ds.readInt();					
-		System.out.println("Request from: "+s.getInetAddress()+" - operation: "+byteOp);
-		if(byteOp==UnaCloudConstants.REQUEST_IMAGE){//Agent request for image
+		int byteOp = ds.readInt();					
+		System.out.println("Request from: " + s.getInetAddress() + " - operation: " + byteOp);
+		if (byteOp == UnaCloudConstants.REQUEST_IMAGE) {//Agent request for image
 			System.out.println("Start service to send file");
 			return new FileTransferTask(s);
-		}else if(byteOp==UnaCloudConstants.SEND_IMAGE){//Agent sends an image
+		} else if(byteOp == UnaCloudConstants.SEND_IMAGE) {//Agent sends an image
 			System.out.println("Start service to request file");
 			return new FileReceiverTask(s);
 		}

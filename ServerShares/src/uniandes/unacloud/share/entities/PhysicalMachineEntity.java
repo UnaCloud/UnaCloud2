@@ -16,59 +16,17 @@ public class PhysicalMachineEntity {
 	private String ip;
 	private Date lastReport;
 	private PhysicalMachineStateEnum status;
-	private String version;
-	private Long freeSpace;
 	
-	/**
-	 * Empty constructor
-	 */
 	public PhysicalMachineEntity() {
-		
 	}
 	
-	/**
-	 * Creates a physical machine with status only
-	 * @param status of physical machine
-	 * @param id of pm
-	 */
-	public PhysicalMachineEntity (Long id, PhysicalMachineStateEnum status) {
-		this.id = id;
-		this.status = status;
-	}
-	
-	/**
-	 * Creates a new pm with basic information
-	 * @param id
-	 * @param ip
-	 * @param lastReport
-	 * @param status
-	 */
-	public PhysicalMachineEntity (Long id, String ip, Date lastReport,
+	public PhysicalMachineEntity(Long id, String ip, Date lastReport,
 			PhysicalMachineStateEnum status) {
+		super();
 		this.id = id;
 		this.ip = ip;
 		this.lastReport = lastReport;
 		this.status = status;
-	}
-	
-	
-	/**
-	 * Creates a new pm entity with all information
-	 * @param id
-	 * @param ip
-	 * @param lastReport
-	 * @param version
-	 * @param dataSpace
-	 * @param status
-	 */
-	public PhysicalMachineEntity (Long id, String ip, Date lastReport, String version, Long dataSpace,
-			PhysicalMachineStateEnum status) {
-		this.id = id;
-		this.ip = ip;
-		this.lastReport = lastReport;
-		this.status = status;
-		this.version = version;
-		this.freeSpace = dataSpace;
 	}
 
 	public Long getId() {
@@ -101,22 +59,6 @@ public class PhysicalMachineEntity {
 
 	public void setStatus(PhysicalMachineStateEnum status) {
 		this.status = status;
-	}
-	
-	public Long getFreeSpace() {
-		return freeSpace;
-	}
-	
-	public String getVersion() {
-		return version;
-	}
-	
-	public void setFreeSpace(long dataSpace) {
-		this.freeSpace = dataSpace;
-	}
-	
-	public void setVersion(String version) {
-		this.version = version;
 	}
 
 }

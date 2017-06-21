@@ -41,7 +41,7 @@ public class FileReceiverTask implements Runnable{
 		String mainFile=null;
 		String newMainFile = null;
 		String message;
-		try(Socket ss=s; DataInputStream is = new DataInputStream(s.getInputStream());Connection con = FileManager.getInstance().getDBConnection();) {
+		try (Socket ss = s; DataInputStream is = new DataInputStream(s.getInputStream()); Connection con = FileManager.getInstance().getDBConnection();) {
 			
 			Long execution = is.readLong();
 			String token= is.readUTF();
@@ -49,14 +49,14 @@ public class FileReceiverTask implements Runnable{
 			ImageFileEntity image = ImageFileManager.getImageWithFile(token, con);
 			System.out.println("\tImage requested " + image);	
 			
-			if (image!=null) {
+			if (image != null) {
 				
 				UserEntity user = UserManager.getUser(image.getOwner().getId(), con);
-				mainFile=image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator;//getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
+				mainFile = image.getRepository().getRoot()+image.getName()+"_"+user.getUsername()+File.separator;//getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
 				System.out.println("save in path: "+mainFile);
 				TreeMap<File, String>filesTemp = new TreeMap<File, String>();
 				
-				try(ZipInputStream zis = new ZipInputStream(is)) {
+				try (ZipInputStream zis = new ZipInputStream(is)) {
 					
 					System.out.println("\tZip open");
 					final byte[] buffer = new byte[1024 * 100];
@@ -67,13 +67,13 @@ public class FileReceiverTask implements Runnable{
 						boolean goodExtension = false;
 						String mainExtension = null;
 						System.out.println("\t\tFile: " + entry.getName());
-						for(PlatformEntity hyperv : platforms)
-							if(hyperv.validatesExtension(entry.getName())){		
+						for (PlatformEntity hyperv : platforms)
+							if (hyperv.validatesExtension(entry.getName())){		
 								goodExtension = true;
 								mainExtension = hyperv.getExtension();
 								break;
 							}	
-						if(goodExtension){
+						if (goodExtension) {
 							File tempFile = File.createTempFile(entry.getName(), null);
 							try (FileOutputStream fos = new FileOutputStream(tempFile)) {
 								for (int n; (n = zis.read(buffer)) != -1;) {
@@ -92,25 +92,27 @@ public class FileReceiverTask implements Runnable{
 					System.out.println("There are "+filesTemp.size()+", Delete old files");
 					Long sizeImage= 0l;
 					
-					if(filesTemp.size()>0){			
+					if (filesTemp.size() > 0) {			
 						
 						File dir = new File(mainFile);
-						System.out.println(dir+" "+dir.exists());
-						System.out.println("Creates: "+dir.mkdirs());
-						for(java.io.File f:dir.listFiles())if(f.isFile())f.delete();						
+						System.out.println(dir + " " + dir.exists());
+						System.out.println("Creates: " + dir.mkdirs());
+						for (java.io.File f:dir.listFiles())
+							if (f.isFile())
+								f.delete();						
 						System.out.println("Save new files");
 						
-						for(File temp:filesTemp.descendingKeySet()){
+						for (File temp : filesTemp.descendingKeySet()) {
 							File newFile = new File(mainFile, filesTemp.get(temp));
 							//newFile.createNewFile();
 							System.out.println("save: "+newFile);
-							try (FileInputStream streamTemp = new FileInputStream(temp);FileOutputStream ouFile = new FileOutputStream(newFile)) {
+							try (FileInputStream streamTemp = new FileInputStream(temp); FileOutputStream ouFile = new FileOutputStream(newFile)) {
 								for (int n; (n = streamTemp.read(buffer)) != -1;) {
 									ouFile.write(buffer, 0, n);
 								}															
 							}	
 							
-							sizeImage+= temp.length();
+							sizeImage += temp.length();
 							temp.delete();
 						}
 					}				

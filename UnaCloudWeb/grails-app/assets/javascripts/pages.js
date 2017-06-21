@@ -82,7 +82,8 @@ $(document).on('ready',function(){
 		var href = $(this).attr("href");
 		var form = $('#form_machines');
 		submitConfirm(form, href, 'All selected host machines will update their agents, some processes in agents will be stopped. Do you want to continue?');
-	});	
+	});
+	
 	
 	$('.clear_image').click(function (event){	
 		event.preventDefault();

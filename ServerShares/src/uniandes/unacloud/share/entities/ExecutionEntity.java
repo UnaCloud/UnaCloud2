@@ -18,17 +18,11 @@ public class ExecutionEntity {
 	private int ram;
 	private Date startTime;
 	private Date stopTime;
-	private Date lastUpdate;
-	private Date lastReport;
 	private PhysicalMachineEntity node;
 	private ExecutionStateEnum state;
 	private String hostName;
 	private List<NetInterfaceEntity> interfaces;
 	private String message;
-	
-	public ExecutionEntity(){
-		
-	}
 	
 	public ExecutionEntity(Long id, int cores, int ram, Date startTime,
 			Date stopTime, PhysicalMachineEntity node,
@@ -126,28 +120,12 @@ public class ExecutionEntity {
 		this.message = message;
 	}
 	
-	public Date getLastUpdate() {
-		return lastUpdate;
-	}
-	
-	public void setLastUpdate(Date lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
-	
-	public Date getLastReport() {
-		return lastReport;
-	}
-	
-	public void setLastReport(Date lastReport) {
-		this.lastReport = lastReport;
-	}
-	
 	/**
 	 * Returns time execution in hours
 	 * @return execution time in hours
 	 */
 	public Long getTimeInHours(){
-		long millisTime = (stopTime.getTime() - startTime.getTime());
+		long millisTime=(stopTime.getTime()-startTime.getTime());
 		return (millisTime/1000/60/60);
 	}
 	
@@ -156,15 +134,6 @@ public class ExecutionEntity {
 	 * @return execution time in millis
 	 */
 	public Long getTime(){
-		return stopTime.getTime() - startTime.getTime();
-	}
-	
-	/**
-	 * Validates if current state time is above of a certain date given as parameter
-	 * @param date to compare
-	 * @return true in case current state time is above of a certain date, false otherwise
-	 */
-	public boolean isAboveStateTime(Date date){
-		return date.getTime() - lastUpdate.getTime() > state.getTime();
+		return stopTime.getTime()-startTime.getTime();
 	}
 }

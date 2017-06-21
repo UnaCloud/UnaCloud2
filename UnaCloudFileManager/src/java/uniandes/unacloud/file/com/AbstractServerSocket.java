@@ -19,14 +19,14 @@ public abstract class AbstractServerSocket extends Thread{
 	
 	public AbstractServerSocket(int listenPort, int threads) {
 		this.listenPort = listenPort;
-		threadPool=Executors.newFixedThreadPool(3);
+		threadPool = Executors.newFixedThreadPool(3);
 	}
 	@Override
 	public void run(){
 		System.out.println("starting ss on port "+listenPort);
-		try(ServerSocket ss = new ServerSocket(listenPort)){
-			while(true){
-				Socket s=ss.accept();
+		try (ServerSocket ss = new ServerSocket(listenPort)) {
+			while (true) {
+				Socket s = ss.accept();
 				try {		
 					threadPool.submit(processSocket(s));
 				} catch (Exception e) {
