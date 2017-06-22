@@ -37,7 +37,7 @@ public class TorrentClient {
 			//Descarga un archivo de algun servidor
 
 			// Metodo para compartir los torrent locales del cliente, tasa medida en segundos. 
-			client.share(3600);
+			client.share();
 			// Metodo que se encarga de esperar a que el proceso de descarga finalice exitosamente 
 			//client.waitForCompletion();
 			System.out.println("Start :"+new Date());

@@ -18,6 +18,7 @@ import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.common.utils.Zipper;
 
 /**
  * Class responsible for manage download files process from server
@@ -32,7 +33,7 @@ public class DownloadImageTask {
 	 * @param copy empty copy
 	 * @throws Exception 
 	 */
-	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository) throws Exception {
+	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository, String requester) throws Exception {
 		File root=new File(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
@@ -51,6 +52,10 @@ public class DownloadImageTask {
 			//sends image id
 			System.out.println("send ID "+image.getId());
 			ds.writeLong(image.getId());
+			ds.flush();
+			
+			System.out.println("Request: "+requester);
+			ds.writeUTF(requester);
 			ds.flush();
 			
 			//Receives zip elements
@@ -96,8 +101,11 @@ public class DownloadImageTask {
 			throw new ExecutionException("Error opening connection",e);
 		}
 		try {
-			if (torrentName != null) 				
+			if (torrentName != null) {			
 				new TorrentClient().downloadTorrent(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base"+OperatingSystem.PATH_SEPARATOR+torrentName, root.getAbsolutePath());			
+				String zipName = (repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base"+OperatingSystem.PATH_SEPARATOR+torrentName).replace(".torrent", "");
+				Zipper.unzipIt(new File(zipName), repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
+			}
 			copy.setImage(image);
 			image.getImageCopies().add(copy);
 			copy.init();

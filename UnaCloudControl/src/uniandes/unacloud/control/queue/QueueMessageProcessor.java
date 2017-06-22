@@ -207,6 +207,7 @@ public class QueueMessageProcessor implements QueueReader{
 						vmsm.setVmMemory(execution.getRam());
 						vmsm.setExecutionId(execution.getId());
 						vmsm.setImageId(image.getImage().getId());
+						vmsm.setRequester(message.getRequester());
 						
 						List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
 						for(NetInterfaceEntity interf: execution.getInterfaces())

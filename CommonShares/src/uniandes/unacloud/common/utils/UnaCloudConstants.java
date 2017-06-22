@@ -38,6 +38,7 @@ public class UnaCloudConstants {
 	//UnaClousFileManager Variables
 	public static final String WEB_FILE_SERVER_URL = "WEB_FILE_SERVER_URL";
 	public static final String FILE_SERVER_PORT = "FILE_SERVER_PORT"; //Agent
+	public static final String FILE_SERVER_TORRENT_PORT = "FILE_SERVER_TORRENT_PORT"; //Agent
 	public static final String FILE_SERVER_IP = "FILE_SERVER_IP"; //Agent
 	public static final String VERSION_MANAGER_PORT = "VERSION_MANAGER_PORT"; //Agent
 		

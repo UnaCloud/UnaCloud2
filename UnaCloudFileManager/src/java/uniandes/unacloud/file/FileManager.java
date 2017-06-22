@@ -8,6 +8,7 @@ import uniandes.unacloud.share.db.DatabaseConnection;
 import uniandes.unacloud.share.manager.ProjectManager;
 import uniandes.unacloud.file.com.AgentServerSocket;
 import uniandes.unacloud.file.com.DataServerSocket;
+import uniandes.unacloud.file.com.torrent.TorrentServer;
 import uniandes.unacloud.file.queue.QueueMessageFileProcessor;
 
 /**
@@ -73,6 +74,7 @@ public class FileManager extends ProjectManager{
 		System.out.println("Start communication service");
 		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),30).start();
 		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 30).start();
+		TorrentServer.getInstance().startService(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP));
 	}
 
 }

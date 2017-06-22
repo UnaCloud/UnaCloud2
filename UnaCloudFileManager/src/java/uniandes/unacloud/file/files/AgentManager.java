@@ -35,8 +35,6 @@ public class AgentManager {
 		ZipOutputStream zos=new ZipOutputStream(outputStream);
 		System.out.println(System.getProperty(UnaCloudConstants.ROOT_PATH)+"agentSources/"+UnaCloudConstants.AGENT_JAR);
 		copyFile( zos,UnaCloudConstants.AGENT_JAR,new File(System.getProperty(UnaCloudConstants.ROOT_PATH),"agentSources/"+UnaCloudConstants.AGENT_JAR),true);
-		copyFile( zos,"torrent.jar",new File(System.getProperty(UnaCloudConstants.ROOT_PATH),"agentSources/torrent.jar"),true);
-		copyFile( zos,"Prueba2GB.rar.torrent",new File(System.getProperty(UnaCloudConstants.ROOT_PATH),"agentSources/Prueba2GB.rar.torrent"),true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw=new PrintWriter(zos);
 		List<ServerVariableEntity> variables = ServerVariableManager.getAllVariablesForAgent( con);

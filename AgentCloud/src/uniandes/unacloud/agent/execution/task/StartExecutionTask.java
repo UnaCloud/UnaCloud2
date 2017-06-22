@@ -14,12 +14,14 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
  */
 public class StartExecutionTask implements Runnable{
 	Execution machineExecution;
+	String requester;
 	/**
 	 * class constructor
 	 * @param machineExecution Execution instance to be started
 	 */
-	public StartExecutionTask(Execution machineExecution) {
+	public StartExecutionTask(Execution machineExecution, String requester) {
 		this.machineExecution = machineExecution;
+		this.requester = requester;
 	}
 	
 	/**
@@ -30,7 +32,7 @@ public class StartExecutionTask implements Runnable{
 		System.out.println("Start Execution");
 		try{
 			//get image 
-			ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
+			ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), requester);
 			System.out.println("Get Image");
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);

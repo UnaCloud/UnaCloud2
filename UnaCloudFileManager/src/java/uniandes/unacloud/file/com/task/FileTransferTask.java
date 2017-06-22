@@ -3,6 +3,7 @@ package uniandes.unacloud.file.com.task;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -11,7 +12,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.common.utils.Zipper;
 import uniandes.unacloud.file.FileManager;
+import uniandes.unacloud.file.com.torrent.TorrentServer;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
 
@@ -37,21 +40,52 @@ public class FileTransferTask implements Runnable{
 			
 			if(image!=null){
 				
+				String requester = ds.readUTF();
+				
 				System.out.println(image+" - "+imageId+" - "+image.getState());
-				final byte[] buffer=new byte[1024*100];
+				final byte[] buffer=new byte[1024*100];				
 				System.out.println("\t Sending files "+image.getMainFile());
 				
-				for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
+				if (requester.equals("1")) {
 					
-					System.out.println("\tprocessing: "+f.getName());
-					zos.putNextEntry(new ZipEntry(f.getName()));					
-					try(FileInputStream fis=new FileInputStream(f)){
-						for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+					FilenameFilter filter = new FilenameFilter() {
+						@Override
+						public boolean accept(File dir, String name) {
+							return name.endsWith(".torrent");
+						}
+					};
+					//TODO Only with one deploy
+					if (new java.io.File(image.getMainFile()).getParentFile().listFiles(filter).length == 0) {
+						File zipParent = new File(image.getMainFile()).getParentFile();
+						File zip = new File(image.getMainFile()+".zip");
+						Zipper.zipIt(zip, zipParent);
+						TorrentServer.getInstance().publishFile(zip);
 					}
-					zos.closeEntry();
+					for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles(filter))if(f.isFile()){
+						
+						System.out.println("\tprocessing: "+f.getName());
+						zos.putNextEntry(new ZipEntry(f.getName()));					
+						try(FileInputStream fis=new FileInputStream(f)){
+							for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+						}
+						zos.closeEntry();
+					}
+					System.out.println("Send torrent "+image.getMainFile());
 				}
+				else {
+					for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
+						
+						System.out.println("\tprocessing: "+f.getName());
+						zos.putNextEntry(new ZipEntry(f.getName()));					
+						try(FileInputStream fis=new FileInputStream(f)){
+							for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+						}
+						zos.closeEntry();
+					}
+
+					System.out.println("Files sent "+image.getMainFile());
+				}		
 				
-				System.out.println("Files sent "+image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
 				PrintWriter pw=new PrintWriter(zos);
 				pw.println(image.getPlatform().getConfigurer());

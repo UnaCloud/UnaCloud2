@@ -19,6 +19,8 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
     String snapshotRoute;
     boolean persistent;
     String hostname;
+    
+    String requester;
     List<ImageNetInterfaceComponent>interfaces;
     
     public ExecutionStartMessage() {
@@ -64,6 +66,13 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public long getImageId() {
 		return imageId;
 	}
+	public String getRequester() {
+		return requester;
+	}
+	public void setRequester(String requester) {
+		this.requester = requester;
+	}
+	
 	@Override
 	public String toString() {
 		return super.toString()+" executionTime: "+executionTime;

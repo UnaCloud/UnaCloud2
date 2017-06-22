@@ -96,7 +96,8 @@ public class ClouderServerAttentionThread implements Runnable {
             	ExecutionStartResponse resp=new ExecutionStartResponse();
         		resp.setState(ExecutionStartResponse.ExecutionState.STARTING);
         		resp.setMessage("Starting execution...");
-        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage((ExecutionStartMessage)message)));
+        		ExecutionStartMessage msg = (ExecutionStartMessage)message;
+        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage(msg), msg.getRequester()));
             	return resp;
             case ImageOperationMessage.VM_STOP:
             	ExecutorService.executeBackgroundTask(new StopExecutionTask((ExecutionStopMessage)message));

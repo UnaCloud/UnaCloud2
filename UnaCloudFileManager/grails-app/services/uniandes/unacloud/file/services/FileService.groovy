@@ -8,12 +8,14 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.common.utils.Zipper;
 import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.db.StorageManager;
 import uniandes.unacloud.share.entities.RepositoryEntity;
 import uniandes.unacloud.share.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
+import uniandes.unacloud.file.com.torrent.TorrentServer;
 import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity
@@ -37,12 +39,12 @@ class FileService implements ApplicationContextAware {
 	 * @param token
 	 * @return boolean, true if image was copy to file repository or not.
 	 */
-    def upload(files, String token){
+    def upload(files, String token) {
 		boolean copy = false;
-		try{
+		try {
 			Connection con = FileManager.getInstance().getDBConnection();
 			def image = ImageFileManager.getImageWithFile(token,con)
-			if(image){
+			if(image) {
 				boolean isValid = true;
 				files.each {
 					def fileName=it.getOriginalFilename().trim()
@@ -76,7 +78,10 @@ class FileService implements ApplicationContextAware {
 					sizeImage += it.getSize()
 				}				
 				ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null),false, con, true)
-	
+				File zipParent = new File(image.getMainFile()).getParentFile()
+				File zip = new File(image.getMainFile()+".zip")
+				Zipper.zipIt(zip, zipParent)
+				TorrentServer.getInstance().publishFile(zip);
 			}
 			con.close();
 		}catch(Exception e){

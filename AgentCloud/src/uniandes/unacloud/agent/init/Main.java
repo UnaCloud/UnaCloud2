@@ -72,17 +72,17 @@ public class Main {
        	
     	{
     		//Validate if the user that is executing agent is system user    		
-			try {
-				if(OSFactory.getOS().isRunningBySuperUser()){
-					System.err.println("You can't execute the agent as "+OSFactory.getOS().getWhoAmI());
-	        		System.exit(0);
-	        		return;
-	        	}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
-				return;
-			} 
+//			try {
+//				if(OSFactory.getOS().isRunningBySuperUser()){
+//					System.err.println("You can't execute the agent as "+OSFactory.getOS().getWhoAmI());
+//	        		System.exit(0);
+//	        		return;
+//	        	}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				System.exit(0);
+//				return;
+//			} 
         	
     	}    
 		if (args != null && args.length>0 && !args[0].matches("[0-9]+"))mainCase = Integer.parseInt(args[0]);
