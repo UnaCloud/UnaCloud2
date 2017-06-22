@@ -108,5 +108,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

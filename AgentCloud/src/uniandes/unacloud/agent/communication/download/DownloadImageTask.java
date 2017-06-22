@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import uniandes.unacloud.agent.communication.torrent.TorrentClient;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.Image;
@@ -31,15 +32,15 @@ public class DownloadImageTask {
 	 * @param copy empty copy
 	 * @throws Exception 
 	 */
-	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository)throws Exception{
+	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository) throws Exception {
 		File root=new File(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 		final String ip=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 		System.out.println("Connecting to "+ip+":"+puerto);
-		
-		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())){
+		String torrentName = null;
+		try(Socket s=new Socket(ip,puerto);DataOutputStream ds=new DataOutputStream(s.getOutputStream())) {
 			
 			//Sends operation type ID
 			System.out.println("Successful connection");
@@ -78,6 +79,7 @@ public class DownloadImageTask {
 						
 					}else{
 						try(FileOutputStream fos=new FileOutputStream(new File(root,entry.getName()))){
+							if(entry.getName().contains(".torrent")) torrentName = entry.getName();
 							for(int n;(n=zis.read(buffer))!=-1;){
 								fos.write(buffer,0,n);
 							}						
@@ -85,16 +87,22 @@ public class DownloadImageTask {
 					}
 					zis.closeEntry();
 				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+			
+		} catch (Exception e) {
+			throw new ExecutionException("Error opening connection",e);
+		}
+		try {
+			if (torrentName != null) 				
+				new TorrentClient().downloadTorrent(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base"+OperatingSystem.PATH_SEPARATOR+torrentName, root.getAbsolutePath());			
 			copy.setImage(image);
 			image.getImageCopies().add(copy);
 			copy.init();
-		} catch (ExecutionException e1) {
-			throw e1;
-		}catch (Exception e) {
-			throw new ExecutionException("Error opening connection",e);
+		} catch (Exception e) {
+			throw e;
 		}
 	}
 }
