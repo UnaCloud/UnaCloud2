@@ -43,10 +43,12 @@ public class TorrentServer {
 	
 	public void startService(int port, String ip) throws IOException {
 		if (tracker != null) return;
+		System.out.println("Configure tracker");
 		tracker_url = "http://"+ip+":"+port+"/announce";
 		IPAddress = ip;
 		tracker = new Tracker(new InetSocketAddress(port));
 		tracker.start();
+		System.out.println("Start tracker "+tracker_url);
 	}
 	
 	public void publishFile(File file) throws Exception {

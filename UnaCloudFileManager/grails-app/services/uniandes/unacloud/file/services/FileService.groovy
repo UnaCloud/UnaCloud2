@@ -81,6 +81,7 @@ class FileService implements ApplicationContextAware {
 				File zipParent = new File(image.getMainFile()).getParentFile()
 				File zip = new File(image.getMainFile()+".zip")
 				Zipper.zipIt(zip, zipParent)
+				println 'Finish zip'
 				TorrentServer.getInstance().publishFile(zip);
 			}
 			con.close();

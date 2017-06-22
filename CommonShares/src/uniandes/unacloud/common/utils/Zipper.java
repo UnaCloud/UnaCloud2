@@ -3,6 +3,7 @@ package uniandes.unacloud.common.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -21,8 +22,14 @@ public class Zipper {
 	    ZipOutputStream zos = new ZipOutputStream(fos);
 	
 	    System.out.println("Output to Zip : " + zipFile);
+	    FilenameFilter filter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return !name.endsWith(".zip");
+			}
+		};
 	
-	    for(File file : folder.listFiles()){
+	    for(File file : folder.listFiles(filter)){
 	
 	        System.out.println("File Added : " + file);
 	        ZipEntry ze= new ZipEntry(file.getName());
