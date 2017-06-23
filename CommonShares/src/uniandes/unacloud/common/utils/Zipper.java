@@ -62,6 +62,7 @@ public class Zipper {
        		folder.mkdir();
        	}
 
+        System.out.println("Zip : " + zipFile);
        	//get the zip file content
        	ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
        	//get the zipped file list entry

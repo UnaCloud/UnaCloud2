@@ -12,7 +12,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -41,7 +43,7 @@ public class TorrentServer {
 		
 	}
 	
-	public void startService(int port, String ip) throws IOException {
+	public void startService(int port, String ip, String sourcePath) throws Exception {
 		if (tracker != null) return;
 		System.out.println("Configure tracker");
 		tracker_url = "http://"+ip+":"+port+"/announce";
@@ -49,15 +51,34 @@ public class TorrentServer {
 		tracker = new Tracker(new InetSocketAddress(port));
 		tracker.start();
 		System.out.println("Start tracker "+tracker_url);
-	}
-	
-	public void publishFile(File file) throws Exception {
+		
 		FilenameFilter filter = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".torrent");
 			}
 		};
+		
+		List<File> torrentList = new ArrayList<File>();
+		torrentList = getTorrentFiles(filter, torrentList, new File(sourcePath));
+		for (File file: torrentList) {
+			System.out.println("Load "+file);
+			shareTorrent(file);
+		}
+	}
+	
+	private List<File> getTorrentFiles(FilenameFilter filter, List<File> listFiles, File file) {
+		for (File f : file.listFiles(filter)) {
+			if (f.isDirectory()) {
+				listFiles.addAll(getTorrentFiles(filter, listFiles, f));
+			}
+			else
+				listFiles.add(f);
+		}
+		return listFiles;
+	}
+	
+	public void publishFile(File file) throws Exception {
 
 		//---------------------------------------------------------------------
 		System.out.println("Parent Directory: " + file);
@@ -65,15 +86,18 @@ public class TorrentServer {
 		
 		File torrentFile = new File(file.getAbsolutePath()+".torrent");
 		createTorrent(torrentFile, file, tracker_url);
-				
-		InetAddress ip = InetAddress.getByName(IPAddress);
-		Client client = new Client(ip, SharedTorrent.fromFile(torrentFile, file.getParentFile()));
-		for (File f : file.getParentFile().listFiles(filter)) {
-			System.out.println("Loading torrent from " + f.getName());
-			tracker.announce(TrackedTorrent.load(f));
-		}
+		shareTorrent(torrentFile);
 		
-		System.out.printf("Inet Address: "+ip+"\n"+"File: " + file+"\n"+"Shared: "+file.getParent());
+	}
+	
+	private void shareTorrent (File torrentFile) throws Exception{
+		InetAddress ip = InetAddress.getByName(IPAddress);
+		Client client = new Client(ip, SharedTorrent.fromFile(torrentFile, torrentFile.getParentFile()));
+		
+		System.out.println("Loading torrent from " + torrentFile.getName());
+		tracker.announce(TrackedTorrent.load(torrentFile));
+		 
+		System.out.printf("Inet Address: "+ip+" File: " + torrentFile+" Shared: "+torrentFile.getParent());
 		client.share();
 	}
 	
