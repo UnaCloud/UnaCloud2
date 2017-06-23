@@ -253,12 +253,14 @@ public abstract class VirtualBox extends Platform {
 		for (Execution execution: executions) {
 			boolean isRunning = false;
 			for(String exeInplatform: list){
+				System.out.println(exeInplatform+" - "+execution.getImage().getImageName());
 				if(exeInplatform.contains(execution.getImage().getImageName())){
 					isRunning = true;
 					break;
 				}
 			}	
-			if(!isRunning)executionsToDelete.add(execution);	
+			System.out.println(execution.getImageId()+" - "+isRunning);
+			if(!isRunning) executionsToDelete.add(execution);	
 		}
 		return executionsToDelete;
 	}

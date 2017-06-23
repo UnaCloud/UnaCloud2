@@ -185,6 +185,7 @@ public class PersistentExecutionManager {
 			List<Execution> removeExecutions = PlatformFactory.validateExecutions(executionList.values());
 			for(Execution execution: removeExecutions){		
 				if(execution.getImage().getStatus()!=ImageStatus.STARTING){
+					System.out.println(execution.getHostname()+" - "+execution.getImageId()+" - "+execution.getImage().getImageName()+" - "+execution.getImage().getStatus());
 					removeExecution(execution.getId(),false);
 				}								
 			}

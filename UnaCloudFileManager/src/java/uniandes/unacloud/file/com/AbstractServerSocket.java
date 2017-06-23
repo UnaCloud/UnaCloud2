@@ -19,7 +19,7 @@ public abstract class AbstractServerSocket extends Thread{
 	
 	public AbstractServerSocket(int listenPort, int threads) {
 		this.listenPort = listenPort;
-		threadPool=Executors.newFixedThreadPool(3);
+		threadPool=Executors.newFixedThreadPool(threads);
 	}
 	@Override
 	public void run(){
