@@ -52,28 +52,25 @@ public class TorrentServer {
 		tracker.start();
 		System.out.println("Start tracker "+tracker_url);
 		
-		FilenameFilter filter = new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.endsWith(".torrent");
-			}
-		};
-		
+		System.out.println("load from: "+sourcePath);
 		List<File> torrentList = new ArrayList<File>();
-		torrentList = getTorrentFiles(filter, torrentList, new File(sourcePath));
+		torrentList = getTorrentFiles(torrentList, new File(sourcePath));
 		for (File file: torrentList) {
 			System.out.println("Load "+file);
 			shareTorrent(file);
 		}
 	}
 	
-	private List<File> getTorrentFiles(FilenameFilter filter, List<File> listFiles, File file) {
-		for (File f : file.listFiles(filter)) {
+	private List<File> getTorrentFiles(List<File> listFiles, File file) {
+		for (File f : file.listFiles()) {
 			if (f.isDirectory()) {
-				listFiles.addAll(getTorrentFiles(filter, listFiles, f));
+				getTorrentFiles(listFiles, f);
 			}
-			else
+			else if(f.getName().endsWith(".torrent")) {
 				listFiles.add(f);
+				System.out.println("Found: "+f);
+			}
+				
 		}
 		return listFiles;
 	}

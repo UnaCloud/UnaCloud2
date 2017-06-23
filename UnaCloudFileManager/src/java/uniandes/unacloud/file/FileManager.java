@@ -92,7 +92,7 @@ public class FileManager extends ProjectManager{
 		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),30).start();
 		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 30).start();
 		String path = null;
-		try (Connection con = FileManager.getInstance().getDBConnection();) {
+		try (Connection con = getDBConnection();) {
 			RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
 			path = main.getRoot();
 		} catch (Exception e) {
