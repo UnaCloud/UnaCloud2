@@ -25,7 +25,7 @@ public enum DeploymentStateEnum {
 	 * Return name of state
 	 * @return name
 	 */
-	public String getName(){
+	public String getName() {
 		return name;
 	}
 }

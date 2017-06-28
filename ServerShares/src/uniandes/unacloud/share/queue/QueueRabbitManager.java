@@ -23,7 +23,8 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	/**
 	 * Factory of connection to rabbit
 	 */
-	ConnectionFactory factory ;
+	ConnectionFactory factory;
+	
 	Connection connection;
 
 	public QueueRabbitManager(String username, String password, String ip,
@@ -58,7 +59,11 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 		          String message = new String(body, "UTF-8");
 		          QueueMessage qmessage = new QueueMessage();
 		          qmessage.setMessage(message);
-		          try {Thread.sleep(1000);} catch (Exception e) {}
+		          try {
+		        	  Thread.sleep(1000);
+		          } catch (Exception e) {
+		        	  
+		          }
 		          reader.processMessage(qmessage);
 		        }
 		    };
@@ -74,7 +79,7 @@ public class QueueRabbitManager extends QueueTaskerConnection{
 	 * @throws TimeoutException 
 	 * @throws IOException 
 	 */
-	private void createFactory() throws IOException, TimeoutException{
+	private void createFactory() throws IOException, TimeoutException {
 		factory = new ConnectionFactory();
 		factory.setHost(ip);
 		factory.setPort(port);

@@ -24,7 +24,7 @@ class OperatingSystemService {
 	 * @param name OS name
 	 * @param configurer OS configurer class
 	 */
-    def create(name, configurer){
+    def create(name, configurer) {
 		new OperatingSystem(name: name, configurer:configurer).save()		
 	}
 	
@@ -33,8 +33,8 @@ class OperatingSystemService {
 	 * @param os OS to be deleted
 	 */
 	
-	def delete(OperatingSystem os){
-		if(PhysicalMachine.where{operatingSystem==os}.find()||Image.where{operatingSystem==os}.find())
+	def delete(OperatingSystem os) {
+		if (PhysicalMachine.where{operatingSystem == os}.find() || Image.where{operatingSystem == os}.find())
 			throw new Exception("Operating System is being used by some Physical Machine or Execution")
 		os.delete()
 	}
@@ -46,7 +46,7 @@ class OperatingSystemService {
 	 * @param configurer OS new configurer class
 	 */
 	
-	def setValues(OperatingSystem os, name, configurer){
+	def setValues(OperatingSystem os, name, configurer) {
 		os.putAt("name", name)
 		os.putAt("configurer", configurer)
 	}

@@ -10,7 +10,7 @@ public class SystemUtils {
 	 * sleeps agent tread
 	 * @param time sleep time
 	 */
-	public static void sleep(long time){
+	public static void sleep(long time) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {

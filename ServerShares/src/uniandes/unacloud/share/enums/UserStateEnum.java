@@ -26,7 +26,7 @@ public enum UserStateEnum {
 		this.name = name;
 	}
 	
-	public String getName(){
+	public String getName() {
 		return name;
 	}
 	
@@ -35,10 +35,10 @@ public enum UserStateEnum {
 	 * @param name of user state
 	 * @return User state enum
 	 */
-	public static UserStateEnum getEnum(String name){
-		if(name.equals(AVAILABLE.name)||name.equals(AVAILABLE.name()))return AVAILABLE;
-		if(name.equals(DISABLE.name)||name.equals(DISABLE.name()))return DISABLE;
-		if(name.equals(BLOCKED.name)||name.equals(BLOCKED.name()))return BLOCKED;
+	public static UserStateEnum getEnum(String name) {
+		if (name.equals(AVAILABLE.name) || name.equals(AVAILABLE.name())) return AVAILABLE;
+		if (name.equals(DISABLE.name) || name.equals(DISABLE.name())) return DISABLE;
+		if (name.equals(BLOCKED.name) || name.equals(BLOCKED.name())) return BLOCKED;
 		return null;
 	}
 }

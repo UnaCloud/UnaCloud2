@@ -46,6 +46,7 @@ public class Ip4Validator {
 		  long c = transformIp((Inet4Address) InetAddress.getByName(ipTest));
 		  return c >= a && c <= b;
 	  }
+	  
 	  public long transformIp(String ip) throws UnknownHostException {
 		  return transformIp((Inet4Address) InetAddress.getByName(ip));
 	  }

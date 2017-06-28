@@ -30,7 +30,7 @@ class UserRestriction {
 	 * Return values in restriction
 	 * @return the list of values in restriction split by comma
 	 */
-	def getValues(){
-		return value.isEmpty()?[]:value.split(',')
+	def getValues() {
+		return value.isEmpty() ? [] : value.split(',')
 	}
 }

@@ -45,8 +45,8 @@ public class WindowsOS extends OperatingSystem{
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 br.readLine();
                 for (String linea,lw; (linea = br.readLine()) != null;) {
-                	lw=linea.toLowerCase();
-                	if(lw.contains("active")||lw.contains("activo")){
+                	lw = linea.toLowerCase();
+                	if (lw.contains("active") || lw.contains("activo")) {
                 		final String user = linea.trim().split(" |\t")[0].replaceAll("[^\\w\\.-]","");
                         userName = (userName == null ? "" : (userName+";")) + user;
                 	}
@@ -104,7 +104,7 @@ public class WindowsOS extends OperatingSystem{
 	@Override
 	public void setPriorityProcess(String processName) {
     	try {
-			executeCommandOS(new String[]{"wmic","process","where","name=\""+processName+".exe\"","CALL","setpriority","64"});
+			executeCommandOS(new String[]{"wmic", "process", "where", "name=\"" + processName + ".exe\"", "CALL", "setpriority", "64"});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	    

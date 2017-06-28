@@ -14,13 +14,13 @@ import java.io.PrintWriter;
  * PrintWriter used to write files that have an \n as line separator and not a \n\r like windows print writers
  * @author ga.sotelo69
  */
-public class LinuxPrintWriter extends PrintWriter{
+public class LinuxPrintWriter extends PrintWriter {
 
     /**
      * Creates a new linux print writer over the given outpustream
      * @param ous
      */
-    public LinuxPrintWriter(OutputStream ous){
+    public LinuxPrintWriter(OutputStream ous) {
         super(ous);
     }
 
@@ -29,7 +29,7 @@ public class LinuxPrintWriter extends PrintWriter{
      * @param ous
      * @throws FileNotFoundException
      */
-    public LinuxPrintWriter(File ous) throws FileNotFoundException{
+    public LinuxPrintWriter(File ous) throws FileNotFoundException {
         super(ous);
     }
     /**
@@ -37,7 +37,7 @@ public class LinuxPrintWriter extends PrintWriter{
      * @param ous
      * @throws FileNotFoundException
      */
-    public LinuxPrintWriter(String ous) throws FileNotFoundException{
+    public LinuxPrintWriter(String ous) throws FileNotFoundException {
         super(ous);
     }
 
@@ -46,8 +46,8 @@ public class LinuxPrintWriter extends PrintWriter{
      * @param h
      */
     @Override
-    public void println(String h){
-        super.write(h+"\n");
+    public void println(String h) {
+        super.write(h + "\n");
     }
 
 }

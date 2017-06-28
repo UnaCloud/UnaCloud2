@@ -30,27 +30,24 @@ class IpAllocatorService {
 	**/
 	//TODO manage net interfaces configuration	
 	def allocateIPAddresses(executions){		
-		for(Execution vme in executions){
-			if(vme.status.equals(ExecutionStateEnum.QUEUED)){
-				List <ExecutionIP> ips= vme.executionNode.laboratory.getAvailableIps()
-				for(ip in ips){
-					if(ip.state==IPEnum.AVAILABLE){
-						NetInterface netInterface = new NetInterface(name:'eth0',ip:ip,execution:vme)
+		for (Execution vme in executions) {
+			if (vme.status.equals(ExecutionStateEnum.QUEUED)) {
+				List <ExecutionIP> ips = vme.executionNode.laboratory.getAvailableIps()
+				for (ip in ips) {
+					if (ip.state == IPEnum.AVAILABLE) {
+						NetInterface netInterface = new NetInterface(name:'eth0', ip:ip, execution:vme)
 						vme.interfaces.add(netInterface)
-						ip.putAt('state',IPEnum.RESERVED)
-						String[] subname= ip.ip.split("\\.")
-						vme.setName(vme.name+subname[2]+subname[3]) 
+						ip.putAt('state', IPEnum.RESERVED)
+						String[] subname = ip.ip.split("\\.")
+						vme.setName(vme.name + subname[2] + subname[3]) 
 						break
 					}
 				}
-				if (vme.interfaces.size()==0){ 
-					for(Execution vm in executions){
-						if(vme.status.equals(ExecutionStateEnum.QUEUED)){
-							for(NetInterface net in vme.interfaces){
-								net.ip.putAt('state',IPEnum.AVAILABLE)
-							}
-						}						
-					}
+				if (vme.interfaces.size() == 0) { 
+					for (Execution vm in executions)
+						if (vme.status.equals(ExecutionStateEnum.QUEUED))
+							for (NetInterface net in vme.interfaces)
+								net.ip.putAt('state',IPEnum.AVAILABLE)					
 					throw new AllocatorException("Not enough IPs for this deployment")
 				}
 			}

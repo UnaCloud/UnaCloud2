@@ -12,8 +12,11 @@ import uniandes.unacloud.share.enums.UserStateEnum;
 public class UserEntity {
 	
 	private Long id;
-	private String username;	
+	
+	private String username;
+	
 	private RepositoryEntity repository;
+	
 	private UserStateEnum state;
 	
 	public UserEntity(Long id, String username, UserStateEnum state) {

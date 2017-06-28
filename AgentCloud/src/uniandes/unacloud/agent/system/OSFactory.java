@@ -18,8 +18,8 @@ public class OSFactory {
 	 * Responsible to create a operating system in case is null and return instance
 	 * @return instance of operating system
 	 */
-	public static OperatingSystem getOS() throws UnsupportedOSException{
-		if(system==null){
+	public static OperatingSystem getOS() throws UnsupportedOSException {
+		if (system == null) {
 			if(OperatingSystem.isWindows())
 				system = new WindowsOS();
 			else if(OperatingSystem.isUnix())

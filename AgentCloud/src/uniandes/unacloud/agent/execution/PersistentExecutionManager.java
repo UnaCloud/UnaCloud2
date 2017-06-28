@@ -14,21 +14,20 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TreeMap;
 
-import uniandes.unacloud.agent.communication.send.ServerMessageSender;
-import uniandes.unacloud.agent.communication.upload.UploadImageTask;
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
-import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.agent.execution.entities.ImageStatus;
-import uniandes.unacloud.agent.execution.task.ExecutorService;
+import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.execution.domain.ImageStatus;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
+import uniandes.unacloud.agent.net.upload.UploadImageTask;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.common.com.UnaCloudAbstractResponse;
-import uniandes.unacloud.common.com.messages.InvalidOperationResponse;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionAddTimeMessage;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionRestartMessage;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionSaveImageMessage;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionSaveImageResponse;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionStartResponse.ExecutionState;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.net.messages.InvalidOperationResponse;
+import uniandes.unacloud.common.net.messages.UnaCloudAbstractResponse;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionAddTimeMessage;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionRestartMessage;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageMessage;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageResponse;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionStartResponse.ExecutionState;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**

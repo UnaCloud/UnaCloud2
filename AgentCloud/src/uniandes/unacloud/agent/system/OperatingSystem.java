@@ -15,7 +15,7 @@ public abstract class OperatingSystem {
 	
 
     public static final String PATH_SEPARATOR = File.separator;
-    public static final String BIN="bin";
+    public static final String BIN = "bin";
 
     @SuppressWarnings("unused")
 	private String operatingSystemName = getOperatingSystemName();
@@ -145,8 +145,9 @@ public abstract class OperatingSystem {
      * @throws UnsupportedCommandException 
      */
     public String getHostname() throws UnsupportedCommandException {
-    	if(hostname!=null)return hostname;
-    	hostname=LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
+    	if (hostname != null)
+    		return hostname;
+    	hostname = LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
     	return hostname;
     }
     

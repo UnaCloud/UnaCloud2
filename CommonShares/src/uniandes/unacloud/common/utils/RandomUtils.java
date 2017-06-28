@@ -16,7 +16,7 @@ public class RandomUtils {
 	 * Generates a random string
 	 * @param lenght string length
 	 */
-	public static String generateRandomString(int lenght){
+	public static String generateRandomString(int lenght) {
 		byte[] buffer = new byte[128];
 		r.nextBytes(buffer);
 		String ret = new BigInteger(1,buffer).toString(32);

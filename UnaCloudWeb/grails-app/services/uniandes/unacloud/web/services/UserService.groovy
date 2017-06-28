@@ -40,7 +40,7 @@ class UserService {
 	 * @return
 	 */
 	def User getUser(String username, String password){
-		return User.findWhere(username:username,password:Hasher.hashSha256(password));
+		return User.findWhere(username: username, password: Hasher.hashSha256(password));
 	}
 	/**
 	 * Adds a new user
@@ -54,11 +54,11 @@ class UserService {
 	   String charset = (('A'..'Z') + ('0'..'9')).join()
 	   Integer length = 32
 	   String randomString = RandomStringUtils.random(length, charset.toCharArray())
-	   def user= new User(username: username, name: name, description: description, password:Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date(),email:email)
-	   user.images=[]
-	   user.restrictions=[]
-	   user.userClusters=[]
-	   user.deployments=[]
+	   def user= new User(username: username, name: name, description: description, password: Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date(), email: email)
+	   user.images = []
+	   user.restrictions = []
+	   user.userClusters = []
+	   user.deployments = []
 	   user.save()
 	   userGroupService.addToGroup(userGroupService.getDefaultGroup(), user)	   
     }
@@ -66,11 +66,10 @@ class UserService {
 	/**
 	 * Creates a new API key for the given user
 	 * @param u user which API key will be generated and replaced
-	 */
-	
-	def refreshAPIKey(User u){
+	 */	
+	def refreshAPIKey(User u) {
 		String randomString = designAPIKey()
-		u.apiKey=randomString
+		u.apiKey = randomString
 		u.save()
 		return u.apiKey
 	}
@@ -89,16 +88,17 @@ class UserService {
 	 * Puts the task to delete user, deployments, images, clusters
 	 * @param user user to be removed
 	 */	
-	def deleteUser(User user, User admin) throws Exception{
-		if(user.getActiveDeployments().size()>0)throw new Exception('User has currently active deployments')
-		if(user.getNotAvailableImages().size()>0)throw new Exception('It is necessary that all images have AVAILABLE state')
+	def deleteUser(User user, User admin) throws Exception {
+		if (user.getActiveDeployments().size() > 0)
+			throw new Exception('User has currently active deployments')
+		if (user.getNotAvailableImages().size() > 0)
+			throw new Exception('It is necessary that all images have AVAILABLE state')
 		user.deprecate()
 		userGroupService.removeUser(user);
-		if(user.images.size()>0){						
+		if (user.images.size() > 0)					
 			QueueTaskerFile.deleteUser(user, admin);			
-		}else{
-			user.delete()
-		}		
+		else
+			user.delete()				
 	}
 	
 	/**
@@ -110,14 +110,13 @@ class UserService {
 	 * @param password new password
 	 */
 	
-	def setValues(User user, String username, String name, String description, String password, String email){	
+	def setValues(User user, String username, String name, String description, String password, String email) {	
 		user.setName(name)
 		user.setDescription(description)
 		user.setUsername(username)
 		user.setEmail(email)
-		if(password){			
-			user.setPassword( Hasher.hashSha256(password))
-		}
+		if (password)		
+			user.setPassword( Hasher.hashSha256(password))		
 		user.save(failOnError:true)
 		return user
 	}
@@ -128,8 +127,8 @@ class UserService {
 	 * @param restriction
 	 * @return restriction, null if it does not exist
 	 */
-	def getRestrictionByUser(User user, String restriction){
-		return user.restrictions.find{it.name==UserRestrictionEnum.ALLOCATOR.toString()}
+	def getRestrictionByUser(User user, String restriction) {
+		return user.restrictions.find{it.name == UserRestrictionEnum.ALLOCATOR.toString()}
 	}
 	
 	/**
@@ -139,24 +138,24 @@ class UserService {
 	 * @param value restriction value
 	 */
 	
-	def setRestriction(User user, String name, String value){
-		UserRestriction old = user.restrictions.find{it.name==name}
-		if(!old&&value){			
-			def newRestriction= new UserRestriction(name: name, value: value)
+	def setRestriction(User user, String name, String value) {
+		UserRestriction old = user.restrictions.find{it.name == name}
+		if (!old && value) {			
+			def newRestriction = new UserRestriction(name: name, value: value)
 			newRestriction.save(failOnError: true)
 			user.restrictions.add(newRestriction)
 			user.save(failOnError: true)
 		}
-		else{
-			if(!value||value.equals("")){
+		else
+			if(!value || value.equals("")) {
 				user.restrictions.remove(old)
 				old.delete()
 			}
-			else{
+			else {
 				old.setValue(value)
 				old.save(failOnError: true)
 			}
-		}
+		
 	}
 	
 	/**
@@ -165,8 +164,9 @@ class UserService {
 	 * @param password current Password
 	 * @param newPassword new Password
 	 */
-	def changePassword(User user, String password, String newPassword){
-		if(!user.password.equals(Hasher.hashSha256(password)))throw new Exception('Current Password is invalid')
+	def changePassword(User user, String password, String newPassword) {
+		if (!user.password.equals(Hasher.hashSha256(password)))
+			throw new Exception('Current Password is invalid')
 		user.setPassword(Hasher.hashSha256(newPassword))
 		user.save(failOnError:true)
 	}
@@ -176,7 +176,7 @@ class UserService {
 	 * @param userId
 	 * @return user requested by id
 	 */
-	def User getUser(long userId){
+	def User getUser(long userId) {
 		return User.get(userId)
 	}
 }

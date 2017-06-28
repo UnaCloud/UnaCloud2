@@ -21,6 +21,7 @@ public class ConfigurationReader {
 	 * Data structure to save variables
 	 */
 	private TreeMap<String, String> values = new TreeMap<String, String>();
+	
 	private String fileName;
 	
 	/**
@@ -73,9 +74,8 @@ public class ConfigurationReader {
 	public void saveConfiguration() throws IOException { 
 		Properties prop = new Properties();
 		OutputStream out = new FileOutputStream(this.fileName);
-		for (String key : values.keySet()) {
-			prop.setProperty(key, values.get(key));
-		}
+		for (String key : values.keySet()) 
+			prop.setProperty(key, values.get(key));		
 		prop.store(out, null);
 	}
 	/**

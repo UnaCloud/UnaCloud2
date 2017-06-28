@@ -13,7 +13,9 @@ import org.json.*;
 public class QueueMessage {
 
 	public static final String TYPE_MESSAGE="Type";
+	
 	public static final String REQUESTER_MESSAGE="Requester";
+	
 	public static final String CONTENT_MESSAGE="Content";
 	
 	/**
@@ -38,8 +40,7 @@ public class QueueMessage {
 		super();
 		this.type = null;
 		this.requester = requester;
-		this.messageContent = new JSONObject();
-		
+		this.messageContent = new JSONObject();		
 	}
 	
 	/**

@@ -11,15 +11,30 @@ public enum TaskEnum {
 	 * Message to stop executions
 	 */
 	STOP("stop"),
+	
 	/**
 	 * Message to update agents
 	 */
 	UPDATE("update"),
+	
 	/**
 	 * Message to clear cache from agents
 	 */
-	CACHE("cache");
+	CACHE("cache"),
 	
+	/**
+	 * Message to clear cache from agents
+	 */	
+	VERSION("version"),
+	
+	/**
+	 * Message to clear cache from agents
+	 */	
+	DATA_SPACE("size");	
+	
+	/**
+	 * Name of task
+	 */
 	private String name;
 	
 	private TaskEnum(String name) {
@@ -31,10 +46,12 @@ public enum TaskEnum {
 	 * @param name of enum
 	 * @return task enum
 	 */
-	public static TaskEnum getEnum(String name){
-		if(name.equals(STOP.name))return STOP;
-		if(name.equals(UPDATE.name))return UPDATE;
-		if(name.equals(CACHE.name))return CACHE;
+	public static TaskEnum getEnum(String name) {
+		if (name.equals(STOP.name)) return STOP;
+		if (name.equals(UPDATE.name)) return UPDATE;
+		if (name.equals(CACHE.name)) return CACHE;
+		if (name.equals(DATA_SPACE.name)) return DATA_SPACE;
+		if (name.equals(VERSION.name)) return VERSION;
 		return null;
 	}
 	
@@ -42,7 +59,7 @@ public enum TaskEnum {
 	 * Returns name of enum
 	 * @return name
 	 */
-	public String getName(){
+	public String getName() {
 		return name;
 	}
 

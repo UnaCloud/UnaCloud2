@@ -24,7 +24,7 @@ public class Hasher {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String hashSha256(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+	public static String hashSha256(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
 		md.update(text.getBytes("UTF-8"));
 		return Base64.encode(md.digest());		

@@ -11,16 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import uniandes.unacloud.agent.communication.download.DownloadImageTask;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
-import uniandes.unacloud.agent.execution.entities.Image;
-import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.ImageStatus;
+import uniandes.unacloud.agent.execution.domain.Image;
+import uniandes.unacloud.agent.execution.domain.ImageCopy;
+import uniandes.unacloud.agent.execution.domain.ImageStatus;
+import uniandes.unacloud.agent.net.download.DownloadImageTask;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
@@ -59,6 +61,7 @@ public class ImageCacheManager {
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {
+					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.DOWNLOADING, "Start downloading");
 					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository);
 					saveImages();
 				} catch (ExecutionException ex) {
@@ -92,6 +95,11 @@ public class ImageCacheManager {
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
 				SystemUtils.sleep(2000);
+			}
+			try {
+				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.CONFIGURING, "Start configuring");
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		System.out.println(" clonning");
@@ -147,6 +155,7 @@ public class ImageCacheManager {
 					for(ImageCopy copy: image.getImageCopies())
 						PlatformFactory.getPlatform(image.getPlatformId()).unregisterImage(copy);
 			} catch (Exception e) {
+				e.printStackTrace();
 			}					
 			for (File f : new File(machineRepository).listFiles())
 				cleanDir(f);
