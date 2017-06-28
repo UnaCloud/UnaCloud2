@@ -1,10 +1,10 @@
-package uniandes.unacloud.agent.platform.VMware;
+package uniandes.unacloud.agent.platform.vmware;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.DOUBLE_QUOTE;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.OK_MESSAGE;
-import static uniandes.unacloud.agent.platform.VMware.VMwareAbstractHypervisor.VMW_VMX_CPU;
-import static uniandes.unacloud.agent.platform.VMware.VMwareAbstractHypervisor.VMW_VMX_MEMORY;
+import static uniandes.unacloud.agent.platform.vmware.VMwareAbstractHypervisor.VMW_VMX_CPU;
+import static uniandes.unacloud.agent.platform.vmware.VMwareAbstractHypervisor.VMW_VMX_MEMORY;
 
 import java.io.File;
 import java.io.IOException;

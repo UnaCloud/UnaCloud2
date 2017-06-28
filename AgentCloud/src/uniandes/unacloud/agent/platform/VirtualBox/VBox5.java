@@ -1,4 +1,5 @@
-package uniandes.unacloud.agent.platform.VirtualBox;
+package uniandes.unacloud.agent.platform.virtualbox;
+
 
 /**
  * Represents VirtualBox version API 5.*

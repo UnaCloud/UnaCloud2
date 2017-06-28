@@ -4,4 +4,4 @@
  * @author Clouder
  *
  */
-package uniandes.unacloud.agent.platform.VMware;
+package uniandes.unacloud.agent.platform.vmware;

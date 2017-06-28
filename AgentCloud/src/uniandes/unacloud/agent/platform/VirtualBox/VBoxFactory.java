@@ -1,4 +1,5 @@
-package uniandes.unacloud.agent.platform.VirtualBox;
+package uniandes.unacloud.agent.platform.virtualbox;
+
 
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;

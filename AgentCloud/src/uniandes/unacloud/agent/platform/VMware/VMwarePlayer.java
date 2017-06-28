@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform.VMware;
+package uniandes.unacloud.agent.platform.vmware;
 
 /**
  * Implementation of platform abstract class to give support for VMwarePlayer platform.

@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform.VMware;
+package uniandes.unacloud.agent.platform.vmware;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
