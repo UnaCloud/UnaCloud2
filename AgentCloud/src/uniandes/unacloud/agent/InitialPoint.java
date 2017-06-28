@@ -1,14 +1,15 @@
-package uniandes.unacloud.agent.init;
+package uniandes.unacloud.agent;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 
-import uniandes.unacloud.agent.communication.receive.ClouderClientAttention;
-import uniandes.unacloud.agent.communication.send.PhysicalMachineStateReporter;
-import uniandes.unacloud.agent.communication.send.ServerMessageSender;
+import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
+import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
+import uniandes.unacloud.agent.net.send.PhysicalMachineStateReporter;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
@@ -18,7 +19,7 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * Responsible for start UnaCloud Client
  *
  */
-public class Main {
+public class InitialPoint {
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -95,26 +96,28 @@ public class Main {
 			}
 	      	System.exit(0);
 	      	return;
-	    }
-    	
-    	//Init services
-    	//register platforms
-    	System.out.println("Register platforms");
-    	PlatformFactory.registerplatforms();
-    	
-    	//load executions in files
-    	System.out.println("Load data");
-        PersistentExecutionManager.refreshData();
+	    }        
+    	    
         
-    	System.out.println("Start reporter");
-        PhysicalMachineStateReporter.getInstance().start();     
-        //Attend messages from server
         try {
+        	//Init services
+        	//register platforms
+        	System.out.println("Register platforms");
+        	PlatformFactory.registerplatforms();
+        	//load executions in files
+        	System.out.println("Load data");
+        	PersistentExecutionManager.refreshData();
+        	//Start process reporter
+        	System.out.println("Start reporter");        	
+            PhysicalMachineStateReporter.getInstance().start();            
+           //Attend messages from server
 			ClouderClientAttention.getInstance().start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
+        
+        AgentManager.sendInitialMessage();
     }
 }
 

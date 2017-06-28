@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform.VirtualBox;
+package uniandes.unacloud.agent.platform.virtualbox;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
@@ -11,8 +11,8 @@ import java.util.List;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
-import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.AddressUtility;
@@ -25,6 +25,7 @@ import uniandes.unacloud.utils.LocalProcessExecutor;
 public abstract class VirtualBox extends Platform {
 	
 	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
+	
 	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
 	    
 	/**
@@ -86,8 +87,8 @@ public abstract class VirtualBox extends Platform {
     @Override
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
-        String h;
-        if ((h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless")).contains(ERROR_MESSAGE)) {
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
+        if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
         sleep(30000);

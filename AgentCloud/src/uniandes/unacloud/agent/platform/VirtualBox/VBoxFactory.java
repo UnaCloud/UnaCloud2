@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform.VirtualBox;
+package uniandes.unacloud.agent.platform.virtualbox;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
 import uniandes.unacloud.utils.LocalProcessExecutor;
@@ -19,9 +19,9 @@ public class VBoxFactory {
 	public static VirtualBox getInstalledVirtualBoxPlatform(String path) throws UnsupportedPlatformException
 	{
 		String h = LocalProcessExecutor.executeCommandOutput(path, "--version");
-		if(h.startsWith(VBox5.VERSION))
+		if (h.startsWith(VBox5.VERSION))
 			return new VBox5(path);
-		if(h.startsWith(VBox43.VERSION))
+		if (h.startsWith(VBox43.VERSION))
 			return new VBox43(path);		
 		throw new UnsupportedPlatformException("VBox: "+path);
 	}
