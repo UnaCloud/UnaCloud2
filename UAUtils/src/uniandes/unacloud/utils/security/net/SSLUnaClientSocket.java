@@ -27,16 +27,16 @@ public class SSLUnaClientSocket extends SSLUnaSocket {
 	private DataInputStream input;
 		
 	public SSLUnaClientSocket(int port, String ipAddress, String storeType, String keyStorePath, String password, String protocol, String algorithm,
-			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedProtocol, String trustedAlgorithm) throws Exception {
-		super(port, ipAddress, storeType, keyStorePath, password, protocol, algorithm, trustedStoreType, trustedKeyStorePath, trustedPassword, trustedProtocol, trustedAlgorithm);	
+			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedAlgorithm) throws Exception {
+		super(port, ipAddress, storeType, keyStorePath, password, protocol, algorithm, trustedStoreType, trustedKeyStorePath, trustedPassword, trustedAlgorithm);	
 	}
 	
 	public SSLUnaClientSocket(int port, String ipAddress, String storeType, String keyStorePath, String password, String protocol, String algorithm) throws Exception {
-		super(port, null, null, null, null, null, null, storeType, keyStorePath, password, protocol, algorithm);		
+		super(port, null, null, null, null, protocol, null, storeType, keyStorePath, password, algorithm);		
 	}
 	
 	public SSLUnaClientSocket(int port, String ipAddress, String storeType, String keyStorePath, String password) throws Exception {
-		this(port, ipAddress, storeType, keyStorePath, password, "TLS", KeyManagerFactory.getDefaultAlgorithm());
+		this(port, ipAddress, storeType, keyStorePath, password, DEFAULT_PROTOCOL, KeyManagerFactory.getDefaultAlgorithm());
 	}
 
 	@Override

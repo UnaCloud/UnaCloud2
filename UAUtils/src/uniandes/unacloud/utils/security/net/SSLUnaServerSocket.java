@@ -14,15 +14,15 @@ public class SSLUnaServerSocket extends SSLUnaSocket {
 		
 	public SSLUnaServerSocket (int port, String storeType, String keyStorePath, String password, String protocol, String algorithm,
 			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedProtocol, String trustedAlgorithm) throws Exception {
-		super(port, null, storeType, keyStorePath, password, protocol, algorithm, trustedStoreType, trustedKeyStorePath, trustedPassword, trustedProtocol, trustedAlgorithm);		
+		super(port, null, storeType, keyStorePath, password, protocol, algorithm, trustedStoreType, trustedKeyStorePath, trustedPassword, trustedAlgorithm);		
 	}
 	
 	public SSLUnaServerSocket (int port, String storeType, String keyStorePath, String password, String protocol, String algorithm) throws Exception {
-		super(port, null, storeType, keyStorePath, password, protocol, algorithm, null, null, null, null, null);		
+		super(port, null, storeType, keyStorePath, password, protocol, algorithm, null, null, null, null);		
 	}
 	
 	public SSLUnaServerSocket(int port, String storeType, String keyStorePath, String password) throws Exception {
-		this(port, storeType, keyStorePath, password, "TLS", KeyManagerFactory.getDefaultAlgorithm());
+		this(port, storeType, keyStorePath, password, DEFAULT_PROTOCOL, KeyManagerFactory.getDefaultAlgorithm());
 	}
 
 	@Override
@@ -31,9 +31,9 @@ public class SSLUnaServerSocket extends SSLUnaSocket {
 	    serverSocket = (SSLServerSocket) ssf.createServerSocket(port);		
 	}
 	
-	public SSLServerClientSocket acceptClient() throws Exception {
+	public SSLUnaServerClientSocket acceptClient() throws Exception {
 		Socket client = serverSocket.accept();
-		SSLServerClientSocket clientServer = new SSLServerClientSocket(client);
+		SSLUnaServerClientSocket clientServer = new SSLUnaServerClientSocket(client);
 		return clientServer;
 	}
 	

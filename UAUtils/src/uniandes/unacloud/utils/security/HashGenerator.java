@@ -18,7 +18,11 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
  */
 public class HashGenerator {
 		
-	private static final String HASH_ALGORITHM = "SHA-256";
+	private static final String SHA_256 = "SHA-256";
+	
+	private static final String SHA_1 = "SHA-1";
+	
+	private static final String MD5 = "MD5";
 	
 	private static SecureRandom random = new SecureRandom();
 	
@@ -29,12 +33,12 @@ public class HashGenerator {
 	 * @throws FileNotFoundException 
 	 */	
 	public static String generateChecksumMD5(File file) throws Exception {		
-        MessageDigest digest = MessageDigest.getInstance("MD5");
+        MessageDigest digest = MessageDigest.getInstance(MD5);
         return generateCheckSum(digest, file);
 	}
 	
 	public static String generateChecksumSHA1(File file) throws Exception {		
-        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        MessageDigest digest = MessageDigest.getInstance(SHA_1);
         return generateCheckSum(digest, file);
 	}
 	
@@ -60,7 +64,7 @@ public class HashGenerator {
         //This bytes[] has bytes in decimal format;
         //Convert it to hexadecimal format
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < bytes.length ; i++)
+        for (int i = 0; i < bytes.length ; i++)
             sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
               
         //return complete hash
@@ -75,7 +79,7 @@ public class HashGenerator {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static String hashSha256(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+		MessageDigest md = MessageDigest.getInstance(SHA_256);
 		md.update(text.getBytes("UTF-8"));
 		return Base64.encode(md.digest());		
 	}

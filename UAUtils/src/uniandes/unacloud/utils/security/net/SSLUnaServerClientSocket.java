@@ -11,13 +11,13 @@ import java.util.zip.ZipOutputStream;
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.utils.securty.exceptions.NetException;
 
-public class SSLServerClientSocket {
+public class SSLUnaServerClientSocket {
 
 	private Socket comSocket;
 	private DataOutputStream output;
 	private DataInputStream input;
 		
-	public SSLServerClientSocket(Socket socket) throws Exception {
+	public SSLUnaServerClientSocket(Socket socket) throws Exception {
 		this.comSocket = socket;
 		output = new DataOutputStream(comSocket.getOutputStream());
 		input = new DataInputStream(comSocket.getInputStream());

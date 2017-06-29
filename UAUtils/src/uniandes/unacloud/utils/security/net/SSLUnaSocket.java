@@ -15,8 +15,10 @@ public abstract class SSLUnaSocket {
 	
 	protected String ipAddress;
 	
+	protected final static String DEFAULT_PROTOCOL = "TLS";
+	
 	public SSLUnaSocket(int port, String ipAddress, String storeType, String keyStorePath, String password, String protocol, String algorithm,
-			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedProtocol, String trustedAlgorithm) throws Exception {
+			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedAlgorithm) throws Exception {
 		
 		if (keyStorePath == null && trustedKeyStorePath == null) 
 			throw new Exception("Key store or trusted key stored must not be null");
@@ -45,6 +47,7 @@ public abstract class SSLUnaSocket {
 		     tmf.init(trustedStore);		     
 		     trustManagers = tmf.getTrustManagers();
 		 }	    
+		 System.out.println(protocol);
 		 SSLContext sc = SSLContext.getInstance(protocol);
 	     sc.init(keyManagers, trustManagers, null);
 

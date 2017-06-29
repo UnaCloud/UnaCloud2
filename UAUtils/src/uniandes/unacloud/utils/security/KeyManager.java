@@ -14,7 +14,7 @@ public class KeyManager {
 	 * Generates a new keyStore based in parameters
 	 * @param algorithm encryption algorithm for key store
 	 * @param alias name for private key located in key store
-	 * @param keyStorePath path where key store will be stored
+	 * @param keyStorePath path where key store will be stored (store name is necessary)
 	 * @param provider name for certificate
 	 * @param organizationUnit Unit which issues certificate
 	 * @param organization which issues certificate
@@ -41,7 +41,7 @@ public class KeyManager {
 	 * Generates a public key/certificate from a private key in store
 	 * @param keyStorePath path where is located key store (store name is necessary)
 	 * @param alias name for private key in store
-	 * @param keyPath path where certificate will be exported
+	 * @param keyPath path where certificate will be exported (certified name is necessary)
 	 * @param password to access keyStore
 	 */
 	public static void generatePublicKey (String keyStorePath, String alias, String keyPath, String password) {
@@ -59,8 +59,8 @@ public class KeyManager {
 	/**
 	 * Adds a trusted key/certificate to key store 
 	 * @param alias name for public key
-	 * @param keyPath path where is located public key
-	 * @param keyStorePath path where is located key store
+	 * @param keyPath path where is located public key (certified name is necessary)
+	 * @param keyStorePath path where is located key store (store name is necessary)
 	 * @param password to access key store 
 	 */
 	public static void addTrustedCerts (String alias, String keyPath, String keyStorePath, String password) {
