@@ -1,4 +1,4 @@
-package uniandes.unacloud.utils.security.com;
+package uniandes.unacloud.utils.security.net;
 
 import java.io.FileInputStream;
 import java.security.KeyStore;
@@ -18,7 +18,8 @@ public abstract class SSLUnaSocket {
 	public SSLUnaSocket(int port, String ipAddress, String storeType, String keyStorePath, String password, String protocol, String algorithm,
 			String trustedStoreType, String trustedKeyStorePath, String trustedPassword, String trustedProtocol, String trustedAlgorithm) throws Exception {
 		
-		if (keyStorePath == null && trustedKeyStorePath == null) throw new Exception("Key store or trusted key stored must not be null");
+		if (keyStorePath == null && trustedKeyStorePath == null) 
+			throw new Exception("Key store or trusted key stored must not be null");
 		
 		this.port = port;
 		this.ipAddress = ipAddress;

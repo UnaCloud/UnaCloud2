@@ -14,7 +14,9 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
  *
  */
 public class Hasher {
+	
 	private static final String charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+	
 	private static final String HASH_ALGORITHM = "SHA-256";
 	
 	/**

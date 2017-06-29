@@ -1,4 +1,4 @@
-package uniandes.unacloud.utils.security.com;
+package uniandes.unacloud.utils.security.net;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -8,7 +8,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
-public class SSLUnaServerSocket extends SSLUnaSocket{
+public class SSLUnaServerSocket extends SSLUnaSocket {
 	
 	private SSLServerSocket serverSocket;
 		

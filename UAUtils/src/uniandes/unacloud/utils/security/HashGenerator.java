@@ -3,8 +3,13 @@ package uniandes.unacloud.utils.security;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 /**
  * 
@@ -12,6 +17,10 @@ import java.security.NoSuchAlgorithmException;
  * based on //http://howtodoinjava.com/core-java/io/how-to-generate-sha-or-md5-file-checksum-hash-in-java/
  */
 public class HashGenerator {
+		
+	private static final String HASH_ALGORITHM = "SHA-256";
+	
+	private static SecureRandom random = new SecureRandom();
 	
 	/**
 	 * @param file
@@ -57,5 +66,26 @@ public class HashGenerator {
         //return complete hash
         return sb.toString();
 	}
-
+	
+	/**
+	 * Method to create a hash based in a text using sha256
+	 * @param text
+	 * @return hash String
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String hashSha256(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+		md.update(text.getBytes("UTF-8"));
+		return Base64.encode(md.digest());		
+	}
+	
+	/**
+	 * Using to create a randomString based in a length sent by user
+	 * @param ln
+	 * @return random string based in charset
+	 */
+	public static String randomString(int ln){
+		 return new BigInteger(ln, random).toString(32);
+	}
 }
