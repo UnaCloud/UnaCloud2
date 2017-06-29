@@ -10,6 +10,7 @@ import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.utils.securty.exceptions.NetException;
+import static uniandes.unacloud.utils.security.net.SSLProtocolKeys.*;
 
 public class SSLUnaServerClientSocket {
 
@@ -25,8 +26,8 @@ public class SSLUnaServerClientSocket {
 	
 	public void sendFile(File file, int port) throws Exception {
 		
-		if (readInt() == 1) {
-			writeInt(2);
+		if (readInt() == READY_FOR_RECEIVE) {
+			writeInt(READY_FOR_SEND);
 			String key = HashGenerator.randomString(30);
 			write(key);			
 			System.out.println("Start communication with " + comSocket.getInetAddress() + " - " + port);
@@ -47,9 +48,8 @@ public class SSLUnaServerClientSocket {
 					System.out.println("File sent");	
 				}						
 				zos.flush();	
-				zos.closeEntry();	
-				zos.close();
-				if (readInt() == 4) 
+				zos.closeEntry();
+				if (readInt() == INVALID_FILE) 
 					throw new NetException("Client responses file is not valid");
 			} catch (Exception e) {
 				//it is necessary because we need to close filesocket 

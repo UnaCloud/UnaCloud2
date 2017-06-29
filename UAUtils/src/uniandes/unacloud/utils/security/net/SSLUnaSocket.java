@@ -47,7 +47,6 @@ public abstract class SSLUnaSocket {
 		     tmf.init(trustedStore);		     
 		     trustManagers = tmf.getTrustManagers();
 		 }	    
-		 System.out.println(protocol);
 		 SSLContext sc = SSLContext.getInstance(protocol);
 	     sc.init(keyManagers, trustManagers, null);
 

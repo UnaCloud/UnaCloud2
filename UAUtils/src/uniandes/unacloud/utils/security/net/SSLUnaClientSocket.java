@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSocketFactory;
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.utils.securty.exceptions.NetException;
 
+import static uniandes.unacloud.utils.security.net.SSLProtocolKeys.*;
 
 public class SSLUnaClientSocket extends SSLUnaSocket {
 	
@@ -65,12 +66,12 @@ public class SSLUnaClientSocket extends SSLUnaSocket {
 		 return input.readInt();
 	}
 	
-	public File readFile(int port) throws Exception {
+	public File readFile(int port, String path) throws Exception {
 		File file = null;
 		Socket s = null;
 		try (ServerSocket ss = new ServerSocket(port)) {
-			writeInt(1);
-			if (readInt() == 2) {
+			writeInt(READY_FOR_RECEIVE);
+			if (readInt() == READY_FOR_SEND) {
 				String key = read();
 				s = ss.accept();
 				DataInputStream dsS = new DataInputStream(s.getInputStream());
@@ -81,7 +82,8 @@ public class SSLUnaClientSocket extends SSLUnaSocket {
 					System.out.println("\tStart downloading file");
 					final byte[] buffer = new byte[1024 * 100];	
 					ZipEntry entry = zis.getNextEntry();
-					file = File.createTempFile(entry.getName(), null);
+					file = new File(path + entry.getName());
+					System.out.println("\tReceiving file: " + file);
 					try (FileOutputStream fos = new FileOutputStream(file)) {
 						for (int n; (n = zis.read(buffer)) != -1;)
 							fos.write(buffer, 0, n);																			
@@ -93,11 +95,11 @@ public class SSLUnaClientSocket extends SSLUnaSocket {
 					if (!checksum.equals(checksumFile)) {
 						System.out.println();
 						file.delete();
-						writeInt(4);
+						writeInt(INVALID_FILE);
 						throw new NetException("Checksum is not valid");
 					}
 					else 
-						writeInt(3);
+						writeInt(RECEIVED);
 				}
 				else {
 					dsS.close();					
