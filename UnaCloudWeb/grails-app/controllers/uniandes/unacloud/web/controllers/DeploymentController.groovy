@@ -52,14 +52,14 @@ class DeploymentController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){
-			flash.message="You must log in first"
+		if (!session.user) {
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
 		}		
 		def user = User.get(session.user.id)
 		session.user.refresh(user)
-		if(!user.status.equals(UserStateEnum.AVAILABLE)){
+		if (!user.status.equals(UserStateEnum.AVAILABLE)) {
 			flash.message="You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)
 			return false
@@ -74,24 +74,24 @@ class DeploymentController {
 	 */
 	
 	def deploy(){
-		Cluster cluster= Cluster.get(params.id)
-		if(cluster){			
-			def user= User.get(session.user.id)	
+		Cluster cluster = Cluster.get(params.id)
+		if (cluster) {			
+			def user = User.get(session.user.id)	
 			//validates if user is owner to deploy cluster
-			if(user.userClusters.find {it.id==cluster.id}!=null && cluster.state.equals(ClusterEnum.AVAILABLE)){
+			if (user.userClusters.find {it.id == cluster.id} != null && cluster.state.equals(ClusterEnum.AVAILABLE)) {
 				//Validates if images are available in the platform
-				def availables = cluster.images.findAll{it.state==ImageEnum.AVAILABLE}
-				if(availables.size()!=cluster.images.size()){
-					flash.message= "Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster."
-					redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)	
+				def availables = cluster.images.findAll{it.state == ImageEnum.AVAILABLE}
+				if (availables.size() != cluster.images.size()) {
+					flash.message = "Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster."
+					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)	
 					return
 				}
 				try {
 					//validates if cluster is good configured
-					def requests=new ImageRequestOptions[cluster.images.size()];
+					def requests = new ImageRequestOptions[cluster.images.size()];
 					cluster.images.eachWithIndex {it,idx->
-						HardwareProfile hp= HardwareProfile.get(params.get('option_hw_'+it.id))
-						requests[idx]=new ImageRequestOptions(it, hp,params.get('instances_'+it.id).toInteger(), params.get('host_'+it.id),(params.get('highAvailability_'+it.id))!=null);
+						HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
+						requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
 					}		
 					deploymentService.deploy(cluster, user, params.time.toLong()*60*60*1000, requests)
 					redirect(uri:"/services/deployment/list", absolute:true)
@@ -99,16 +99,16 @@ class DeploymentController {
 					
 				} catch (Exception e) {
 					e.printStackTrace()
-					if(e.message==null)
-						flash.message= e.getCause()
+					if (e.message == null)
+						flash.message = e.getCause()
 					else
-						flash.message=e.message
-					redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)
+						flash.message = e.message
+					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 					return
 				}
-			}else{
-				flash.message='You don\'t have permissions to deploy this cluster or cluster is not available'
-				redirect(uri:"/services/cluster/deploy/"+cluster.id, absolute:true)
+			} else {
+				flash.message = 'You don\'t have permissions to deploy this cluster or cluster is not available'
+				redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 				return
 			}	
 		}
@@ -121,11 +121,10 @@ class DeploymentController {
 	 * @return deployments that must be shown according to view all checkbox
 	 */
 	
-	def list(){
+	def list() {
 		def user = User.get(session.user.id)
-		if(!user.isAdmin()){
-			[myDeployments: user.getActiveDeployments()]
-		}
+		if (!user.isAdmin())
+			[myDeployments: user.getActiveDeployments()]		
 		else {	
 			def deployments = deploymentService.getActiveDeployments(user)	
 			[myDeployments: user.getActiveDeployments(),deployments: deployments]
@@ -142,21 +141,21 @@ class DeploymentController {
 		def user= User.get(session.user.id)
 		List<Execution> executions = new ArrayList<>();
 		params.each {
-			if (it.key.contains("execution_")){
-				if (it.value.contains("on")){
+			if (it.key.contains("execution_"))
+				if (it.value.contains("on")) {
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
-					if(vm != null && (vm.status.equals(ExecutionStateEnum.DEPLOYED)||vm.status.equals(ExecutionStateEnum.FAILED))){
-						if(vm.deployImage.deployment.user == user || user.isAdmin())
+					if (vm != null && (vm.status.equals(ExecutionStateEnum.DEPLOYED) || vm.status.equals(ExecutionStateEnum.FAILED))) {
+						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
-				}
-			}
+				}			
 		}	
-		if(executions.size()>0){
-			flash.message='Your request has been processed'
-			flash.type='info'
+		if (executions.size() > 0) {
+			flash.message = 'Your request has been processed'
+			flash.type = 'info'
 			deploymentService.stopExecutions(executions,user)
-		}else flash.message='Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
+		} else 
+			flash.message = 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
 	
@@ -165,11 +164,11 @@ class DeploymentController {
 	 * @param deployed image
 	 * @return render form
 	 */
-	def addInstances(){
+	def addInstances() {
 		DeployedImage image = DeployedImage.get(params.id);
-		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
-			def user= User.get(session.user.id)
-			if(image.deployment.user==user||user.isAdmin()){
+		if (image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)) {
+			def user = User.get(session.user.id)
+			if (image.deployment.user == user || user.isAdmin()) {
 				
 				def allowedHwdProfiles = []
 				allowedHwdProfiles.add(image.getDeployedHarwdProfile())
@@ -177,80 +176,82 @@ class DeploymentController {
 				def quantitiesTree = new TreeMap<String, Integer>()
 				allowedLabs.each {
 					def results = laboratoryService.calculateDeploys(it,allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
-					for(HardwareProfile hwd in allowedHwdProfiles){
-						if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
-						else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
+					for (HardwareProfile hwd in allowedHwdProfiles) {
+						if (!quantitiesTree.get(hwd.name))
+							quantitiesTree.put(hwd.name,results.get(hwd.name))
+						else 
+							quantitiesTree.put(hwd.name,results.get(hwd.name) + quantitiesTree.get(hwd.name))
 					}
 				}
 				def quantities = []
 				def high = false;
-				for(HardwareProfile hwd in allowedHwdProfiles){
+				for (HardwareProfile hwd in allowedHwdProfiles)
 					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)])
-				}
+				
 				[quantities:quantities,image:image]
-			}else{
-				flash.message='You don\'t have privileges to add instances to this deployment'
+			} else {
+				flash.message = 'You don\'t have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
-		}else{
+		} else
 			redirect(uri:"/services/deployment/list", absolute:true)
-		}
+		
 	}
 	
 	/**
 	 * Adds new instances to a selected deployed image
 	 */
-	def saveInstances(){
+	def saveInstances() {
 		DeployedImage image = DeployedImage.get(params.id);
-		if(image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)){
-			def user= User.get(session.user.id)
-			if(image.deployment.user==user||user.isAdmin()){
+		if (image && image.deployment.status.equals(DeploymentStateEnum.ACTIVE)) {
+			def user = User.get(session.user.id)
+			if (image.deployment.user == user || user.isAdmin()) {
 				try {
 					//validates if cluster is good configured
-					def request=new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(),params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(),image.highAvaliavility);
+					def request = new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(), params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(), image.highAvaliavility);
 				
-					deploymentService.addInstances(image,user, params.time.toLong()*60*60*1000,request)
+					deploymentService.addInstances(image, user, params.time.toLong() * 60 * 60 * 1000, request)
 					redirect(uri:"/services/deployment/list", absolute:true)
 					return
 					
 				} catch (Exception e) {
 					e.printStackTrace()
-					if(e.message==null)
-						flash.message= e.getCause()
+					if (e.message == null)
+						flash.message = e.getCause()
 					else
-						flash.message=e.message
+						flash.message = e.message
 					redirect(uri:"/services/deployment/"+image.id+'/add', absolute:true)
 				}
 				
-			}else{
-				flash.message='You do not have privileges to add instances to this deployment'
+			} else {
+				flash.message = 'You do not have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
-		}else{
+		} else
 			redirect(uri:"/services/deployment/list", absolute:true)
-		}
+		
 	}
 	
 	/**
 	 * Validates if user has permissions and call to deploymentService to create a new task to create a copy
 	 */
-	def createCopy(){
+	def createCopy() {
 		Execution execution = Execution.get(params.id)
-		if(execution){
-			def user= User.get(session.user.id)
-			if(execution.deployImage.deployment.user==user||user.isAdmin()){
-				try{					
+		if (execution) {
+			def user = User.get(session.user.id)
+			if (execution.deployImage.deployment.user == user || user.isAdmin()) {
+				try {					
 					deploymentService.createCopy(execution, execution.deployImage.deployment.user, params.name)
-					flash.message='Your request has been sent'
-					flash.type='info'
-				}catch(Exception e){
-					if(e.message==null)
-						flash.message= e.getCause()
+					flash.message = 'Your request has been sent'
+					flash.type = 'info'
+				} catch(Exception e) {
+					if (e.message == null)
+						flash.message = e.getCause()
 					else
-						flash.message=e.message
+						flash.message = e.message
 				}
-			}else{
-				flash.message='You do not have privileges to create a copy from this execution'
+			} else {
+				flash.message = 'You do not have privileges to create a copy from this execution'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
 		}

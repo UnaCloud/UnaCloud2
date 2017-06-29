@@ -52,15 +52,15 @@ class DeployedImage {
 	 * Returns the list of executions with status not equal FINISHED
 	 * @return list of active executions
 	 */
-	def getActiveExecutions(){
-		return executions.findAll{it.status !=ExecutionStateEnum.FINISHED}.sort{it.id}
+	def getActiveExecutions() {
+		return executions.findAll{it.status != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**
 	 * Returns the current hardware profile configured in executions
 	 * @return hardware profile from first execution
 	 */
-	def getDeployedHarwdProfile(){
+	def getDeployedHarwdProfile() {
 		return executions.first().getHardwareProfile()
 	}
 	
@@ -68,16 +68,16 @@ class DeployedImage {
 	 * Returns the hostname base for all deployments
 	 * @return String with the host name
 	 */
-	def getDeployedHostname(){
+	def getDeployedHostname() {
 		def ip = executions.first().mainIp().ip.split('\\.')
-		return executions.first().getName().substring(0, executions.first().getName().length()-(ip[2].length()+ip[3].length()))
+		return executions.first().getName().substring(0, executions.first().getName().length() - (ip[2].length() + ip[3].length()))
 	}
 	
 	/**
 	 * Returns database id for this entity
 	 * @return Long id
 	 */
-	def Long getDatabaseId(){
+	def Long getDatabaseId() {
 		return id;
 	}
 	
@@ -85,7 +85,7 @@ class DeployedImage {
 	 * Returns image
 	 * @return image
 	 */
-	def Image getImage(){
+	def Image getImage() {
 		return image
 	}
 }

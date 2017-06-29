@@ -67,7 +67,7 @@ public abstract class ProjectManager {
 	 * Returns current database connection
 	 * @return database connection
 	 */
-	public Connection getDBConnection(){
+	public Connection getDBConnection() {
 		try {
 			return connection.getConnection();
 		} catch (SQLException e) {

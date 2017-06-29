@@ -11,9 +11,13 @@ import uniandes.unacloud.share.queue.messages.QueueMessage;
 public abstract class QueueTaskerConnection {
 	
 	protected String username;
+	
 	protected String password;
+	
 	protected String ip;
+	
 	protected int port;
+	
 	protected String queueName;
 	
 	protected QueueTaskerConnection(String username, String password, String ip,

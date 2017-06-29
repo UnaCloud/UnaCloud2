@@ -56,39 +56,39 @@ class IPPool {
 	def long getDatabaseId(){
 		return id;
 	}
-	
-	
+		
 	/**
 	 * Returns the quantity of available IP in pool
 	 */
-	def int getAvailableIpsQuantity(){
+	def int getAvailableIpsQuantity() {
 		return ips.findAll{it.state == IPEnum.AVAILABLE}.size()
 	}
 	
 	/**
 	 * Returns the quantity of used IP in pool
 	 */
-	def int getUsedIpsQuantity(){
+	def int getUsedIpsQuantity() {
 		return ips.findAll{it.state == IPEnum.USED || it.state == IPEnum.RESERVED}.size()
 	}
 	
 	/**
 	 * Returns the quantity of non DISABLE IP in pool
 	 */
-	def int getIpsQuantity(){
+	def int getIpsQuantity() {
 		return ips.findAll{it.state != IPEnum.DISABLED}.size()
 	}
 	
 	/**
 	 * Return the first of IP in range
 	 */
-	def ExecutionIP first(){
+	def ExecutionIP first() {
 		return ips.sort{it.ip}.getAt(0)
 	}
+	
 	/**
 	 * Return the last IP in range
 	 */
-	def ExecutionIP last(){
-		return ips.sort{it.ip}.getAt(ips.size()-1)
+	def ExecutionIP last() {
+		return ips.sort{it.ip}.getAt(ips.size() - 1)
 	}
 }

@@ -4,19 +4,19 @@ import java.io.File;
 import java.util.Random;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
-import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
  * Abstract configuration class for physical machines
  * @author Clouder
  *
  */
-public abstract class AbstractExecutionConfigurator{
+public abstract class AbstractExecutionConfigurator {
 	
 	/**
 	 * Random object to calculate numbers
 	 */
-	private static Random random=new Random();
+	private static Random random = new Random();
 	
 	/**
 	 * Execution instance 
@@ -35,8 +35,9 @@ public abstract class AbstractExecutionConfigurator{
 	 * @return file created
 	 */
 	public static File generateRandomFile(){
-		if(!new File(UnaCloudConstants.TEMP_FILE).exists())new File(UnaCloudConstants.TEMP_FILE).mkdir();
-		return new File(UnaCloudConstants.TEMP_FILE+"/"+Math.abs(random.nextLong())+UnaCloudConstants.FILE_EXTENSION);
+		if (!new File(UnaCloudConstants.TEMP_FILE).exists())
+			new File(UnaCloudConstants.TEMP_FILE).mkdir();
+		return new File(UnaCloudConstants.TEMP_FILE + "/" + Math.abs(random.nextLong()) + UnaCloudConstants.FILE_EXTENSION);
 	}
 	
 	/**
@@ -70,10 +71,11 @@ public abstract class AbstractExecutionConfigurator{
      * waits while configuration is done
      * @param time wait time
      */
-    public final void waitTime(long time){
+    public final void waitTime(long time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException ex) {
+        	ex.printStackTrace();
         }
     }
 }

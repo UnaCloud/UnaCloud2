@@ -39,16 +39,16 @@ class OperatingSystemController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){
-			flash.message="You must log in first"
+		if (!session.user) {
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
-		}
-		else{
+		} 
+		else {
 			def user = User.get(session.user.id)
 			session.user.refresh(user)
-			if(!userGroupService.isAdmin(user)){
-				flash.message="You must be administrator to see this content"
+			if (!userGroupService.isAdmin(user)) {
+				flash.message = "You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
 			}
@@ -73,16 +73,17 @@ class OperatingSystemController {
 	 * Creates a new OS. Redirects to os list when finished
 	 */
 	def save() {
-		if(params.name&&params.configurer){
-			try{
+		if (params.name && params.configurer) {
+			try {
 				operatingSystemService.create(params.name, params.configurer)
 				redirect(uri:"/admin/os/list", absolute:true)
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 				redirect(uri:"/admin/os/new", absolute:true)
 			}
-		}else{
-			flash.message="All fields are required"
+		} 
+		else {
+			flash.message = "All fields are required"
 			redirect(uri:"/admin/os/new", absolute:true)
 		}
 	}
@@ -91,15 +92,15 @@ class OperatingSystemController {
 	 * Deletes the selected OS. Redirects to index when finished
 	 */
 	
-	def delete(){
+	def delete() {
 		def os = OperatingSystem.get(params.id)
 		if (os) {
 			try{
 				operatingSystemService.delete(os)
-				flash.message="Your request has been processed"
-				flash.type="success"
-			}catch(Exception e){
-				flash.message=e.message
+				flash.message = "Your request has been processed"
+				flash.type = "success"
+			} catch(Exception e) {
+				flash.message = e.message
 			}
 		}
 		redirect(uri:"/admin/os/list", absolute:true)
@@ -110,8 +111,8 @@ class OperatingSystemController {
 	 * @return OS selected by user
 	 */
 	
-	def edit(){
-		def os= OperatingSystem.get(params.id)
+	def edit() {
+		def os = OperatingSystem.get(params.id)
 		if (!os)
 			redirect(uri:"/admin/os/list", absolute:true)
 		else
@@ -121,22 +122,22 @@ class OperatingSystemController {
 	/**
 	 * Saves OS changes made by the user. Redirects to index when finished
 	 */
-	def saveEdit(){
-		if(params.name&&params.configurer){
-			try{
+	def saveEdit() {
+		if (params.name && params.configurer) {
+			try {
 				def os = OperatingSystem.get(params.id)
-				if(os){
-					operatingSystemService.setValues(os,params.name,params.configurer)
-					flash.message="Operating System values have been modified"
-					flash.type="success"
+				if (os) {
+					operatingSystemService.setValues(os, params.name, params.configurer)
+					flash.message = "Operating System values have been modified"
+					flash.type = "success"
 				}
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 			}
 			redirect(uri:"/admin/os/list", absolute:true)
-		}else{
-			flash.message="All fields are required"
-			redirect(uri:"/admin/os/edit/"+params.id, absolute:true)
+		} else {
+			flash.message = "All fields are required"
+			redirect(uri:"/admin/os/edit/" + params.id, absolute:true)
 		}
 	}
 

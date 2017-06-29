@@ -10,7 +10,7 @@ import java.io.PrintWriter;
  * Class responsible to implement methods to configure Ubuntu executions
  * @author Clouder
  */
-public class Ubuntu extends AbstractExecutionConfigurator{
+public class Ubuntu extends AbstractExecutionConfigurator {
     /**
      * Configures the IP address of a Ubuntu managed execution
      */
@@ -32,10 +32,10 @@ public class Ubuntu extends AbstractExecutionConfigurator{
     	}catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
-    	execution.getImage().executeCommandOnExecution("/bin/rm","/etc/udev/rules.d/*net.rules");
-    	execution.getImage().executeCommandOnExecution("/sbin/ifdown","eth0");
-    	execution.getImage().executeCommandOnExecution("/sbin/ifup","eth0");
+    	execution.getImage().copyFileOnExecution("/etc/network/interfaces", out);
+    	execution.getImage().executeCommandOnExecution("/bin/rm", "/etc/udev/rules.d/*net.rules");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifdown", "eth0");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifup", "eth0");
         out.delete();
     }
 
@@ -47,15 +47,15 @@ public class Ubuntu extends AbstractExecutionConfigurator{
     	
     }
 
-	public void configureHostname() throws PlatformOperationException{
+	public void configureHostname() throws PlatformOperationException {
 		File out=generateRandomFile();
-		try(PrintWriter pw = new LinuxPrintWriter(out)){
+		try (PrintWriter pw = new LinuxPrintWriter(out)) {
 			pw.println(execution.getHostname());
         } catch (Exception e) {
             return;
         }
-		execution.getImage().copyFileOnExecution("/etc/hostname",out);
-		execution.getImage().executeCommandOnExecution("/bin/hostname",execution.getHostname());
+		execution.getImage().copyFileOnExecution("/etc/hostname", out);
+		execution.getImage().executeCommandOnExecution("/bin/hostname", execution.getHostname());
 	}
 
 	@Override

@@ -23,7 +23,7 @@ class RepositoryService {
 	 * @param name
 	 * @return
 	 */
-	def Repository getRepositoryByName(String name){
+	def Repository getRepositoryByName(String name) {
 		return Repository.findByName(name)
 	}
     	
@@ -31,7 +31,7 @@ class RepositoryService {
 	 * Returns main repository entity
 	 * @return repository
 	 */
-	def Repository getMainRepository(){
+	def Repository getMainRepository() {
 		return getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY)
 	}	
 	
@@ -40,8 +40,8 @@ class RepositoryService {
 	 * @param name repository name
 	 * @param path repository path
 	 */
-	def create(name, path){
-		if (Repository.findByName(name)==null) {
+	def create(name, path) {
+		if (Repository.findByName(name) == null) {
 			new Repository(name: name, path:path).save()
 		} 	
 	}
@@ -51,7 +51,7 @@ class RepositoryService {
 	 * @param os OS to be deleted
 	 */
 	
-	def delete(Repository repo){
+	def delete(Repository repo) {
 		if (repo != getMainRepository() ) {
 			repo.delete()
 		}		

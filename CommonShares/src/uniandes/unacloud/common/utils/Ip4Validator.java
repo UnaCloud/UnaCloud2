@@ -20,7 +20,7 @@ public class Ip4Validator {
 			"([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
 			"([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 	 
-	  public Ip4Validator(){
+	  public Ip4Validator() {
 		  pattern = Pattern.compile(IPADDRESS_PATTERN);
 	  }
 	 
@@ -29,28 +29,29 @@ public class Ip4Validator {
 	    * @param ip ip address for validation
 	    * @return true valid ip address, false invalid ip address
 	    */
-	  public boolean validate(String ip){		  
+	  public boolean validate(String ip) {		  
 		  matcher = pattern.matcher(ip);
 		  return matcher.matches();	    	    
 	  }
 	  
-	  public boolean validateRange(String ip1, String ip2) throws UnknownHostException{
+	  public boolean validateRange(String ip1, String ip2) throws UnknownHostException {
 		  long a = transformIp((Inet4Address) InetAddress.getByName(ip1));
 		  long b = transformIp((Inet4Address) InetAddress.getByName(ip2));			 
-		  return b>=a;
+		  return b >= a;
 	  }
 	  
-	  public boolean inRange(String ip1, String ip2, String ipTest) throws UnknownHostException{
+	  public boolean inRange(String ip1, String ip2, String ipTest) throws UnknownHostException {
 		  long a = transformIp((Inet4Address) InetAddress.getByName(ip1));
 		  long b = transformIp((Inet4Address) InetAddress.getByName(ip2));	
 		  long c = transformIp((Inet4Address) InetAddress.getByName(ipTest));
-		  return c>=a&&c<=b;
+		  return c >= a && c <= b;
 	  }
-	  public long transformIp(String ip) throws UnknownHostException{
+	  
+	  public long transformIp(String ip) throws UnknownHostException {
 		  return transformIp((Inet4Address) InetAddress.getByName(ip));
 	  }
 	  
-	  public long transformIp(Inet4Address ip){
+	  public long transformIp(Inet4Address ip) {
 		  byte[] octets = ip.getAddress();
 	      long result = 0;
 	      for (byte octet : octets) {

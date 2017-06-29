@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
-import uniandes.unacloud.agent.execution.entities.Execution;
+
 import uniandes.unacloud.agent.platform.vmware.VMwareWorkstation;
 import uniandes.unacloud.agent.platform.virtualbox.VBoxFactory;
 import uniandes.unacloud.agent.platform.virtualbox.VirtualBox;
+import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -25,6 +26,7 @@ public class PlatformFactory {
      * All provide services must be statically accessed
      */
     private PlatformFactory() {
+    	
     }
     
     /**
@@ -32,14 +34,14 @@ public class PlatformFactory {
      */
     private static Map<String,Platform> map = new HashMap<>();
     
-    public static void registerplatforms(){
-    	String vmRun=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
-    	String vBox=VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
-    	if(vmRun!=null){
+    public static void registerplatforms() {
+    	String vmRun = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
+    	String vBox = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VBOX_PATH);
+    	if (vmRun != null) {
     		VMwareWorkstation vmwork = new VMwareWorkstation(vmRun);
     		map.put(vmwork.getCode(),vmwork);
     	}
-    	if(vBox!=null){
+    	if (vBox != null) {
     		VirtualBox vbox;
 			try {
 				vbox = VBoxFactory.getInstalledVirtualBoxPlatform(vBox);
@@ -59,7 +61,7 @@ public class PlatformFactory {
      * @param platformId The platform id to be instantiated
      * @return A managed platform for the given name
      */
-    public static Platform getPlatform(final String platformId){
+    public static Platform getPlatform(final String platformId) {
     	return map.get(platformId);
     }
     
@@ -67,10 +69,11 @@ public class PlatformFactory {
      * Validates the list of executions in each platform, returns the list of executions that are not running in any platform
      * @return list of executions that are not running
      */
-    public static List<Execution> validateExecutions(Collection<Execution> executions){
+    public static List<Execution> validateExecutions(Collection<Execution> executions) {
     	List<Execution> notRunningExecutions = new ArrayList<Execution>();
     	notRunningExecutions.addAll(executions);
-    	for(Platform platform:map.values())notRunningExecutions=platform.checkExecutions(notRunningExecutions);
+    	for (Platform platform : map.values()) 
+    		notRunningExecutions = platform.checkExecutions(notRunningExecutions);
     	return notRunningExecutions;
     }
 }

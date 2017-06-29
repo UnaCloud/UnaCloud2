@@ -18,7 +18,7 @@ public class ScientificLinux extends AbstractExecutionConfigurator{
     public void configureIP() throws PlatformOperationException {
     	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
     	File out=generateRandomFile();
-    	try(PrintWriter pw = new LinuxPrintWriter(out)){
+    	try (PrintWriter pw = new LinuxPrintWriter(out)) {
     		pw.println("# Advanced Micro Devices [AMD] 79c970 [PCnet32 LANCE]");
             pw.println("DEVICE=eth0");
             pw.println("BOOTPROTO=none");
@@ -30,12 +30,12 @@ public class ScientificLinux extends AbstractExecutionConfigurator{
             pw.println("USERCTL=no");
             pw.println("IPV6INIT=no");
             pw.println("PEERDNS=yes");
-    	}catch (Exception e) {
+    	} catch (Exception e) {
 			return;
 		}
-    	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
-    	execution.getImage().executeCommandOnExecution("/sbin/ifdown","eth0");
-    	execution.getImage().executeCommandOnExecution("/sbin/ifup","eth0");
+    	execution.getImage().copyFileOnExecution("/etc/network/interfaces", out);
+    	execution.getImage().executeCommandOnExecution("/sbin/ifdown", "eth0");
+    	execution.getImage().executeCommandOnExecution("/sbin/ifup", "eth0");
         out.delete();
     }
 
@@ -44,12 +44,13 @@ public class ScientificLinux extends AbstractExecutionConfigurator{
      */
     @Override
     public void configureDHCP() {
+    	
     }
 
     @Override
-	public void configureHostname() throws PlatformOperationException{
+	public void configureHostname() throws PlatformOperationException {
 		File out=generateRandomFile();
-		try(PrintWriter pw = new LinuxPrintWriter(out)){
+		try (PrintWriter pw = new LinuxPrintWriter(out)) {
 			pw.println("NETWORKING=yes");
 	        pw.println("NETWORKING_IPV6=no");
 	        pw.println("HOSTNAME=" + execution.getHostname());

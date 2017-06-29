@@ -3,6 +3,7 @@ package uniandes.unacloud.web.domain
 import java.text.DecimalFormat
 
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
+import uniandes.unacloud.common.utils.ByteUtils;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
@@ -94,6 +95,7 @@ class Image {
 		lastUpdate nullable:true
 		platform nullable: false
 	}
+	
 	static mapping = {
 		operatingSystem(lazy:false)
 	}
@@ -106,31 +108,19 @@ class Image {
 	 * Returns the size of image in GB, MB, KB
 	 * @return String size of machines: GB, MB, LB depends of files size
 	 */
-	def String getSize(){
-		DecimalFormat df = new DecimalFormat("#.00");
-		long diskSize = fixedDiskSize/1024;
-		if(diskSize>1){
-			if(diskSize/1024>1){				
-				diskSize = diskSize/1024
-				if(diskSize/1024>1)
-				return  df.format(diskSize/1024)+" GB"
-				else return  df.format(diskSize)+" MB"
-			}				
-			else return  df.format(diskSize)+" KB"		
-		}
-		else return df.format(fixedDiskSize)+" Bytes"
+	def String getSize() {
+		return ByteUtils.conversionUnitBytes(fixedDiskSize)
 	}
 	
 	/**
 	 * Changes the state of image to IN_QUEUE and clusters where it is embedded
 	 * this method is used to avoid that image in cluster could not be deployed 
 	 */
-	def freeze(){
+	def freeze() {
 		this.putAt("state", ImageEnum.IN_QUEUE);
-		def clusteres = Cluster.where{images{id==this.id;}}.findAll();
-		for(cluster in clusteres){
-			cluster.putAt("state", ClusterEnum.FREEZE);
-		}
+		def clusteres = Cluster.where{images{id == this.id;}}.findAll();
+		for (cluster in clusteres)
+			cluster.putAt("state", ClusterEnum.FREEZE);		
 		this.save(flush:true)
 	}
 	
@@ -138,7 +128,7 @@ class Image {
 	 * Returns database id
 	 * @return Long id
 	 */
-	def Long getDatabaseId(){
+	def Long getDatabaseId() {
 		return id;
 	}
 
@@ -146,7 +136,7 @@ class Image {
 	 * returns platform
 	 * @return platform
 	 */
-	def Platform getPlatform(){
+	def Platform getPlatform() {
 		return platform;
 	}
 }	

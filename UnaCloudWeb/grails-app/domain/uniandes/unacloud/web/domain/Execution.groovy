@@ -59,6 +59,10 @@ class Execution {
 	 */
 	PhysicalMachine executionNode
 	
+	/**
+	 * Last update in graph state
+	 */
+	Date lastUpdate = new Date();
 		
 	/**
 	 * deployed Image 
@@ -76,6 +80,7 @@ class Execution {
 		stopTime nullable: true 
 		startTime nullable:true
 		lastReport nullable:true
+		lastUpdate nullable:true
 	}
 	
 	//-----------------------------------------------------------------
@@ -86,45 +91,46 @@ class Execution {
 	 * Calculates and returns the remaining execution time (00h:00m:00s format)
 	 * @return formated remaining time
 	 */
-	def remainingTime(){
-		if(stopTime==null||status!=ExecutionStateEnum.DEPLOYED)return '--'
-		long millisTime=(stopTime.getTime()-System.currentTimeMillis())/1000
-		String s = ""+millisTime%60;
-        String m = ""+((long)(millisTime/60))%60;
-        String h = ""+((long)(millisTime/60/60));
-        if(s.length()==1)s="0"+s;
-        if(m.length()==1)m="0"+m;
-        return h+"h:"+m+"m:"+s+"s"
+	def remainingTime() {
+		if (stopTime == null || status != ExecutionStateEnum.DEPLOYED) 
+			return '--'
+		long millisTime = (stopTime.getTime() - System.currentTimeMillis()) / 1000
+		String s = "" + millisTime % 60;
+        String m = "" + ((long)(millisTime / 60)) % 60;
+        String h = "" + ((long)(millisTime / 60 / 60));
+        if (s.length() == 1) s = "0" + s;
+        if (m.length() == 1) m = "0" + m;
+        return h + "h:" + m + "m:" + s + "s"
 	}
 	
 	/**
 	 * Calculates and returns the remaining execution time in hours
 	 * @return hours of execution remaining
 	 */
-	int runningTimeInHours(){
-		long millisTime=(stopTime.getTime()-startTime.getTime())/1000
-		return (millisTime/60/60)+1
+	int runningTimeInHours() {
+		long millisTime = (stopTime.getTime() - startTime.getTime()) / 1000
+		return (millisTime / 60 / 60) + 1
 	}
 	
 	/**
 	 * Saves entity with net interfaces
 	 */
-	def saveExecution(){		
-		this.save(failOnError:true,flush:true)
-		for(NetInterface netInterface in interfaces){
+	def saveExecution() {		
+		this.save(failOnError: true, flush: true)
+		for (NetInterface netInterface in interfaces) {
 			netInterface.ip.putAt('state',IPEnum.USED)
-			netInterface.save(failOnerror:true,flush:true)
+			netInterface.save(failOnerror:true, flush:true)
 		}
 	}
 	
 	/**
 	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
-	def finishExecution(){
+	def finishExecution() {
 		this.putAt("status", ExecutionStateEnum.FINISHED)
 		this.putAt("stopTime", new Date())
-		for(NetInterface netinterface in interfaces)
-			netinterface.ip.putAt("state",IPEnum.AVAILABLE)
+		for (NetInterface netinterface in interfaces)
+			netinterface.ip.putAt("state", IPEnum.AVAILABLE)
 	}
 	
 	/**
@@ -132,27 +138,15 @@ class Execution {
 	 * currently is number one
 	 * @return
 	 */
-	def mainIp(){
+	def mainIp() {
 		return interfaces.getAt(0).ip
 	}
-	
-	/**
- 	 * Returns time of last state from node
-	 * @return last date reported in state machine graph
-	 */
-	def Date getLastStateTime(){
-		def exe = this
-		//def requestExec = ExecutionRequest.findAll("from ExecutionRequest as e where e.execution = ? and status = ? ",[this,status],[max:1, sort:'requestTime', order: "asc"])
-		def requestExec = ExecutionRequest.list(fetch: [execution: exe,status:exe.status],max:1, sort:'requestTime', order: "desc")		
-		if(requestExec&&requestExec.size()>0)return requestExec.get(0).requestTime
-		else new Date();
-	}
-	
+		
 	/**
 	 * Returns database id
 	 * @return Long id
 	 */
-	def Long getDatabaseId(){
+	def Long getDatabaseId() {
 		return id;
 	}
 	
@@ -161,15 +155,25 @@ class Execution {
 	 * @return true in case execution has DEPLOYED, RECONNECTING or FAILED status
 	 * 
 	 */
-	def boolean showDetails(){
-		return status.equals(ExecutionStateEnum.DEPLOYED)||status.equals(ExecutionStateEnum.RECONNECTING)||status.equals(ExecutionStateEnum.FAILED)
+	def boolean showDetails() {
+		return status.equals(ExecutionStateEnum.DEPLOYED) || status.equals(ExecutionStateEnum.RECONNECTING) || status.equals(ExecutionStateEnum.FAILED)
 	}
 	
 	/**
 	 * Responsible for returning deployedImage
 	 * @return deployed image
 	 */
-	def getDeployedImage(){
+	def getDeployedImage() {
 		return deployImage;
+	}
+	
+	
+	/**
+	 * Validates if current state time is above of a certain date given as parameter
+	 * @param date to compare
+	 * @return true in case current state time is above of a certain date, false otherwise
+	 */
+	def isAboveStateTime(Date date) {
+		return date.getTime() - lastUpdate.getTime() > status.getTime();
 	}
 }

@@ -12,35 +12,32 @@ import uniandes.unacloud.web.domain.Execution;
  * @author Clouder
  *
  */
-public class SingletonAllocator extends ExecutionAllocator{
+public class SingletonAllocator extends ExecutionAllocator {
 
 	/**
 	 * Assigns only one execution for each physical machine
 	 */
 	@Override
-	protected void allocateExecutions(
-			List<Execution> executionList,
-			List<PhysicalMachine> physicalMachines,
-			Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)
-			throws AllocatorException {
-			for(PhysicalMachine pm: physicalMachines){
-				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
-				if (pmad == null){
-					for (Execution vm : executionList){
-						if(fitEXonPM(vm, pm, pmad)){
-							vm.setExecutionNode(pm);
-							if(pmad==null){
-								pmad=new PhysicalMachineAllocationDescription(pm.getDatabaseId(),0,0,0);
-								physicalMachineDescriptions.put(pmad.getNodeId(),pmad);
-							}
-							pmad.addResources(vm.getHardwareProfile().getCores(),vm.getHardwareProfile().getRam(), 1);
+	protected void allocateExecutions(List<Execution> executionList, List<PhysicalMachine> physicalMachines, 
+			Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException {
+		for (PhysicalMachine pm : physicalMachines) {
+			PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
+			if (pmad == null) {
+				for (Execution vm : executionList) {
+					if (fitEXonPM(vm, pm, pmad)) {
+						vm.setExecutionNode(pm);
+						if (pmad == null) {
+							pmad = new PhysicalMachineAllocationDescription(pm.getDatabaseId(), 0, 0, 0);
+							physicalMachineDescriptions.put(pmad.getNodeId(), pmad);
 						}
-						else throw new AllocatorException("Cannot allocate all Executions on a single machine");	
+						pmad.addResources(vm.getHardwareProfile().getCores(), vm.getHardwareProfile().getRam(), 1);
 					}
-					break;
+					else throw new AllocatorException("Cannot allocate all Executions on a single machine");	
 				}
-				
+				break;
 			}
+			
+		}
 	}
 
 }

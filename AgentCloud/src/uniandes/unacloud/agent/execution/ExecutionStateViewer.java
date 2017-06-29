@@ -2,16 +2,8 @@ package uniandes.unacloud.agent.execution;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
-
-
-
-
-
-import uniandes.unacloud.agent.communication.send.ServerMessageSender;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
@@ -22,6 +14,7 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
 public class ExecutionStateViewer {
 	
 	private long executionCode;
+	
 	private String vmIP;
 	
 	/**
@@ -37,23 +30,28 @@ public class ExecutionStateViewer {
     /**
      *  On this method the execution is checked and the state is reported to UnaCloud server
      */
-    public boolean check(){
-    	System.out.println("Start checking by ip to "+vmIP);
-        boolean red=false;
-        for(int e=0;e<8&&!red;e++){
-            if(!(red=pingVerification(vmIP)))try{Thread.sleep(30000);}catch(Exception ex){}
+    public boolean check() {
+    	System.out.println("Start checking by ip to " + vmIP);
+        boolean red = false;
+        for (int e = 0; e < 8 && !red; e++) {
+            if (!(red = pingVerification(vmIP)))
+            	try {
+            		Thread.sleep(30000);
+            	} catch(Exception ex) { 
+            		ex.printStackTrace();
+            	}
         }
         try {
-        	if(red){
-        		ServerMessageSender.reportExecutionState(executionCode,ExecutionStateEnum.DEPLOYED,"Execution is running");
+        	if (red) {
+        		ServerMessageSender.reportExecutionState(executionCode, ExecutionStateEnum.DEPLOYED, "Execution is running");
         		return true;
         	}
-            else{
-                PersistentExecutionManager.removeExecution(executionCode,false);
-                ServerMessageSender.reportExecutionState(executionCode,ExecutionStateEnum.FAILED,"Network error, execution initial ping doesn't respond");
+            else {
+                PersistentExecutionManager.removeExecution(executionCode, false);
+                ServerMessageSender.reportExecutionState(executionCode, ExecutionStateEnum.FAILED, "Network error, execution initial ping doesn't respond");
             }
 		} catch (Exception e) {
-			PersistentExecutionManager.removeExecution(executionCode,false);
+			PersistentExecutionManager.removeExecution(executionCode, false);
 			e.printStackTrace();
 		}
         return false;
@@ -65,19 +63,19 @@ public class ExecutionStateViewer {
      * @param vmIP The IP to be pinged
      * @return True if the given IP responds ping, false otherwise
      */
-    private boolean pingVerification(String vmIP){
+    private boolean pingVerification(String vmIP) {
         try {
             Process p = Runtime.getRuntime().exec(OSFactory.getOS().getPingCommand(vmIP));
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            for(String h;(h=br.readLine())!=null;){
-                if(h.toUpperCase().contains("TTL")){
+            for (String h; (h = br.readLine()) != null;) {
+                if (h.toUpperCase().contains("TTL")) {
                     p.destroy();
                     br.close();
                     return true;
                 }
             }
         } catch (Exception ex) {
-            Logger.getLogger(ExecutionStateViewer.class.getName()).log(Level.SEVERE, null, ex);
+        	ex.printStackTrace();
         }
         return false;
     }

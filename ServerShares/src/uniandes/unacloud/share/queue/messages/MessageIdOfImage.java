@@ -12,7 +12,7 @@ public class MessageIdOfImage extends QueueMessage{
 		super();
 	}
 	
-	public MessageIdOfImage(QueueMessageType type, String requester, long idImage){
+	public MessageIdOfImage(QueueMessageType type, String requester, long idImage) {
 		super(requester);
 		this.setType(type);
 		

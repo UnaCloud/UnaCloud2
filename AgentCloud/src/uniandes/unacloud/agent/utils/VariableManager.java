@@ -32,7 +32,8 @@ public class VariableManager {
 	 */
 	public static VariableManager getInstance() {
 		try {
-			if(instance==null)instance = new VariableManager();
+			if (instance == null) 
+			   instance = new VariableManager();
 			return instance;
 		} catch (Exception e) {
 			e.printStackTrace();

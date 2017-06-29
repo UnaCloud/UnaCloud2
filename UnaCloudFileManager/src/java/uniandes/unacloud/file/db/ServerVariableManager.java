@@ -22,14 +22,20 @@ public class ServerVariableManager {
 	 * @return list of server variable
 	 */
 	//TODO improve query to repository, use hash map
-	public static List<ServerVariableEntity> getAllVariablesForAgent(Connection con){
+	public static List<ServerVariableEntity> getAllVariablesForAgent(Connection con) {
 		try {
 			List<ServerVariableEntity> list = new ArrayList<ServerVariableEntity>();	
 			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list FROM server_variable sv WHERE sv.server_only = 0;";
 			PreparedStatement ps = con.prepareStatement(query);		
 			ResultSet rs = ps.executeQuery();		
-			while(rs.next())list.add(new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(2)));
-			try{rs.close();ps.close();}catch(Exception e){}
+			while (rs.next())
+				list.add(new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(2)));
+			try {
+				rs.close();
+				ps.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -43,7 +49,7 @@ public class ServerVariableManager {
 	 * @param name of variable
 	 * @return Server variable
 	 */
-	public static ServerVariableEntity getVariable(Connection con, String name){
+	public static ServerVariableEntity getVariable(Connection con, String name) {
 	
 		try {
 			ServerVariableEntity variable = null;
@@ -51,8 +57,14 @@ public class ServerVariableManager {
 			PreparedStatement ps = con.prepareStatement(query);		
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();		
-			if(rs.next())variable = new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(4));
-			try{rs.close();ps.close();}catch(Exception e){}
+			if (rs.next())
+				variable = new ServerVariableEntity(rs.getString(1), rs.getString(2), ServerVariableTypeEnum.getEnum(rs.getString(3)), rs.getBoolean(4));
+			try {
+				rs.close();
+				ps.close();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
 			return variable;
 		} catch (Exception e) {
 			e.printStackTrace();

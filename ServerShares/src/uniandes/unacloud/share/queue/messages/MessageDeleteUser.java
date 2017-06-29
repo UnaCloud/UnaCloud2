@@ -10,11 +10,11 @@ import uniandes.unacloud.share.enums.QueueMessageType;
  * @author cdsbarrera
  * 
  */
-public class MessageDeleteUser extends QueueMessage{
+public class MessageDeleteUser extends QueueMessage {
 	
 	private final static String TAG_ID_USER = "id_user";
 	
-	public MessageDeleteUser(String requester, long idUser){
+	public MessageDeleteUser(String requester, long idUser) {
 		super(requester);
 		this.setType(QueueMessageType.DELETE_USER);
 		

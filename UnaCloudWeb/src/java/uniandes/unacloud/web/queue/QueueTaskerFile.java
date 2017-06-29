@@ -33,7 +33,7 @@ public class QueueTaskerFile {
 	 * @param image to copy
 	 * @param user image owner
 	 */
-	public static void createPublicCopy(Image image, User user){
+	public static void createPublicCopy(Image image, User user) {
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CREATE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -43,7 +43,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void createCopyFromPublic(Image publicImage, Image image, User user){
+	public static void createCopyFromPublic(Image publicImage, Image image, User user) { 
 		MessageCreateCopyFromPublic message = new MessageCreateCopyFromPublic(String.valueOf(user.getDatabaseId()), image.getDatabaseId(), publicImage.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -52,7 +52,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void deleteImage(Image image, User user){
+	public static void deleteImage(Image image, User user) {
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -62,7 +62,7 @@ public class QueueTaskerFile {
 	 * @param image
 	 * @param user
 	 */
-	public static void deletePublicImage(Image image, User user){
+	public static void deletePublicImage(Image image, User user) {
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.DELETE_PUBLIC_IMAGE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}
@@ -71,7 +71,7 @@ public class QueueTaskerFile {
 	 * Puts a task to remove an user, its machines, clusters and deployments
 	 * @param user User that will be removed
 	 */
-	public static void deleteUser(User user, User admin){
+	public static void deleteUser(User user, User admin) {
 		MessageDeleteUser message = new MessageDeleteUser(String.valueOf(admin.getDatabaseId()), user.getDatabaseId());
 		fileQueue.sendMessage(message);
 	}

@@ -54,13 +54,13 @@ class ImageService {
 	 * @param user owner user
 	 * @return token to validate image 
 	 */
-	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, platformId, username, password,User user) {
+	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, platformId, username, password, User user) {
 		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
 		Repository repo = userRestrictionService.getRepository(user)
-		String token = Hasher.hashSha256(name+new Date().getTime())
-		def image= new Image(owner: user, repository:repo, name: name, lastUpdate:new Date(),
-			isPublic: isPublic,accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId), 
-			platform: Platform.get(platformId),user: username, password: password, token:token,fixedDiskSize:0, state: ImageEnum.UNAVAILABLE)	
+		String token = Hasher.hashSha256(name + new Date().getTime())
+		def image = new Image(owner: user, repository: repo, name: name, lastUpdate: new Date(),
+			isPublic: isPublic, accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId), 
+			platform: Platform.get(platformId), user: username, password: password, token: token, fixedDiskSize: 0, state: ImageEnum.UNAVAILABLE)	
 		image.save(failOnError: true)
 		return token;
     }
@@ -72,27 +72,29 @@ class ImageService {
 	 * @param user owner user
 	 * @return true in case task has been send, false in case not
 	 */
-	def newPublic(name, imageId, User user){
-		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
+	def newPublic(name, imageId, User user) {
+		if (user.existImage(name))
+			throw new Exception('Currently you have an image with the same name.')
 		def publicImage = Image.get(imageId)
-		if(publicImage){
-			def repo= userRestrictionService.getRepository(user)
-			def image= new Image(state: ImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
-				owner: user, repository:repo, name: name , avaliable: true, lastUpdate:new Date(),isPublic: false, imageVersion: 0,
-				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem,user: publicImage.user, 
-				password:  publicImage.password, platform:  publicImage.platform)
+		if (publicImage) {
+			def repo = userRestrictionService.getRepository(user)
+			def image = new Image(state: ImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
+				owner: user, repository: repo, name: name , avaliable: true, lastUpdate: new Date(), isPublic: false, imageVersion: 0,
+				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem, user: publicImage.user, 
+				password: publicImage.password, platform: publicImage.platform)
 			image.save(failOnError:true)
 			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)			
 			return true
-		}else return false	
+		} else 
+			return false	
 	}
 	
 	/**
 	 * Returns all available public images
 	 * @return list of available public images
 	 */
-	def getAvailablePublicImages(){
-		return Image.where{isPublic==true&&state==ImageEnum.AVAILABLE}.findAll()
+	def getAvailablePublicImages() {
+		return Image.where{isPublic == true && state == ImageEnum.AVAILABLE}.findAll()
 	}
 	
 	/**
@@ -104,15 +106,14 @@ class ImageService {
 	 * @return true in case image has been deleted, false in case not
 	 */	
 	def deleteImage(User user,Image image){		
-		def clusteres = Cluster.where{images{id==image.id;}}.findAll();
-		if(clusteres&&clusteres.size()>0){
+		def clusteres = Cluster.where{images{id == image.id;}}.findAll();
+		if (clusteres && clusteres.size() > 0)
 			return false;
-		}
-		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id:image.id]);
-		if(image.mainFile){
+		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id : image.id]);
+		if (image.mainFile) {
 			image.freeze()
 			QueueTaskerFile.deleteImage(image, user)				
-		}else{
+		} else {
 			user.images.remove(image)
 			user.save()
 			image.delete()
@@ -124,7 +125,7 @@ class ImageService {
 	 * Sends a task to remove image from cache in all physical machines
 	 * @param image
 	 */
-	def clearCache(Image image){
+	def clearCache(Image image) {
 		image.freeze()
 		QueueTaskerControl.clearCache(image, image.owner);		
 	}
@@ -139,8 +140,9 @@ class ImageService {
 	 * @param platformId new platform
 	 */
 	
-	def setValues(Image image, name, user, password, operatingSystemId, platformId){
-		if(image.name!=name&&image.owner.existImage(name))throw new Exception('Currently you have an image with the same name.')
+	def setValues(Image image, name, user, password, operatingSystemId, platformId) {
+		if (image.name != name && image.owner.existImage(name))
+			throw new Exception('Currently you have an image with the same name.')
 		image.putAt("operatingSystem", OperatingSystem.get(operatingSystemId))
 		image.putAt("platform", Platform.get(platformId))
 		image.putAt("name", name)
@@ -155,13 +157,12 @@ class ImageService {
 	 * @param image
 	 * @param user
 	 */
-	def alterImagePrivacy(toPublic, Image image){
+	def alterImagePrivacy(toPublic, Image image) {
 		image.freeze()
-		if(!toPublic && image.isPublic){
+		if (!toPublic && image.isPublic)
 			QueueTaskerFile.deletePublicImage(image, image.owner);
-		}else if(toPublic && !image.isPublic){
-			QueueTaskerFile.createPublicCopy(image, image.owner);
-		}			
+		else if(toPublic && !image.isPublic)
+			QueueTaskerFile.createPublicCopy(image, image.owner);				
 	}
 	
 	/**
@@ -171,8 +172,8 @@ class ImageService {
 	 * @param user owner user
 	 * @return token to validates image
 	 */	
-	def updateFiles(Image image){		
-		String token = Hasher.hashSha256(image.getName()+new Date().getTime())
+	def updateFiles(Image image) {		
+		String token = Hasher.hashSha256(image.getName() + new Date().getTime())
 		image.putAt("token",token)
 		image.putAt("state",ImageEnum.UNAVAILABLE)
 		return token
@@ -183,8 +184,8 @@ class ImageService {
 	 * @param plat
 	 * @return void
 	 */
-	def getListMachinesByPlatform(Platform plat){
-		return Image.where{platform==plat}.findAll()
+	def getListMachinesByPlatform(Platform plat) {
+		return Image.where{platform == plat}.findAll()
 	}
 	
 	/**
@@ -192,15 +193,14 @@ class ImageService {
 	 * @param user
 	 * @return void
 	 */
-	def removeUnavailableImages(User user){		
-		for(Image im: user.getUnavailableImages())
-		if(!im.mainFile){
-			deleteImage(user, im)
-		}
-		else{
-			im.putAt("state", ImageEnum.AVAILABLE)
-			im.putAt("token", null)
-		}
+	def removeUnavailableImages(User user) {		
+		for (Image im: user.getUnavailableImages())
+			if (!im.mainFile)
+				deleteImage(user, im)
+			else {
+				im.putAt("state", ImageEnum.AVAILABLE)
+				im.putAt("token", null)
+			}
 		user.save(failOnError:true)
 	}
 }

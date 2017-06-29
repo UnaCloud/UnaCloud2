@@ -14,12 +14,15 @@ import org.apache.commons.dbcp2.BasicDataSource;
 public class DatabaseConnection {
 	
 	private String host;
+	
 	private String username ;
+	
 	private String password ;
 	
 	private BasicDataSource dataSource;
 	
-	public DatabaseConnection(){
+	public DatabaseConnection() {
+		
 	}
 	
 	/**
@@ -44,11 +47,11 @@ public class DatabaseConnection {
 	 * @param username
 	 * @param password
 	 */
-	public void connect(String db, int port, String ip, String username, String password){
-		this.host = "jdbc:mysql://"+ip+":"+port+"/"+db+"?useUnicode=yes&characterEncoding=UTF-8";
+	public void connect(String db, int port, String ip, String username, String password) {
+		this.host = "jdbc:mysql://" + ip + ":" + port + "/" + db + "?useUnicode=yes&characterEncoding=UTF-8";
 		this.username = username;
 		this.password = password;
-		System.out.println("Create connection to: "+this.host);
+		System.out.println("Create connection to: " + this.host);
 		setConnection();
 	}
 		

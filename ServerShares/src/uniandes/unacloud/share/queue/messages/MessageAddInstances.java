@@ -11,22 +11,23 @@ import uniandes.unacloud.share.enums.QueueMessageType;
  * @author cdsbarrera
  * 
  */
-public class MessageAddInstances extends QueueMessage{
+public class MessageAddInstances extends QueueMessage {
+	
 	private final static String TAG_LIST_EXECUTIONS = "list_executions";
+	
 	private final static String TAG_ID_IMAGE = "id_image";
 
-	public MessageAddInstances(String requester, Long idImage, Long[] executions){
+	public MessageAddInstances(String requester, Long idImage, Long[] executions) {
 		super(requester);
 		this.setType(QueueMessageType.ADD_INSTANCES);
 
 		JSONObject temp = this.getMessageContent();
 
 		JSONArray array = new JSONArray();
-		if(executions!=null) {
-			for (int i = 0; i < executions.length; i++) {
-				array.put(executions[i]);
-			}
-		}
+		if (executions != null)
+			for (int i = 0; i < executions.length; i++)
+				array.put(executions[i]);			
+		
 		temp.put(TAG_ID_IMAGE, idImage);
 		temp.put(TAG_LIST_EXECUTIONS, array);
 
@@ -61,9 +62,8 @@ public class MessageAddInstances extends QueueMessage{
 		JSONObject temp = this.getMessageContent();
 		JSONArray list = temp.getJSONArray(TAG_LIST_EXECUTIONS);
 		Long[] array = new Long[list.length()];
-		for (int i = 0; i < list.length(); i++) {
-			array[i] = list.getLong(i);
-		}
+		for (int i = 0; i < list.length(); i++) 
+			array[i] = list.getLong(i);		
 		return array;
 	}
 }

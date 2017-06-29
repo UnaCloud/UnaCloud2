@@ -12,7 +12,8 @@ package uniandes.unacloud.agent.platform.vmware;
  * @author Clouder
  */
 
-public class VMwareWorkstation extends VMwareAbstractHypervisor{
+public class VMwareWorkstation extends VMwareAbstractHypervisor {
+	
 	public VMwareWorkstation(String path) {
 		super(path);
 	}

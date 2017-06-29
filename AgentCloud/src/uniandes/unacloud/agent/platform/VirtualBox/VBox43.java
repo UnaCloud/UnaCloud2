@@ -1,4 +1,5 @@
 package uniandes.unacloud.agent.platform.virtualbox;
+
 /**
  * Represents VirtualBox version API 4.3
  * @author Cesar
@@ -13,13 +14,36 @@ public class VBox43 extends VirtualBox{
 	}
 	
 	@Override
-	public String[] createExecutionCommand(String path, String imageName,String command, String username, String password) {
-		return new String[]{path, "--nologo", "guestcontrol", imageName, "execute", "--image", command, "--username", username, "--password", password, "--wait-exit", "--"};
+	public String[] createExecutionCommand(String path, String imageName, String command, String username, String password) {
+		return new String[]{
+				path, 
+				"--nologo", 
+				"guestcontrol", 
+				imageName, 
+				"execute", 
+				"--image", 
+				command, 
+				"--username", 
+				username, 
+				"--password", 
+				password, 
+				"--wait-exit", 
+				"--"};
 	}
 
 	@Override
-	public String[] createCopyToCommand(String path, String imageName,String sourcePath, String guestPath, String username,String password) {
-		return new String[]{path, "guestcontrol", imageName, "copyto", sourcePath, guestPath, "--username", username, "--password", password};
+	public String[] createCopyToCommand(String path, String imageName, String sourcePath, String guestPath, String username, String password) {
+		return new String[]{
+				path, 
+				"guestcontrol", 
+				imageName, 
+				"copyto", 
+				sourcePath, 
+				guestPath, 
+				"--username", 
+				username, 
+				"--password", 
+				password};
 	}
 
 }

@@ -9,17 +9,17 @@ import uniandes.unacloud.agent.utils.AddressUtility;
 /**
  * Class responsible to implement methods to configure Debian execution
  */
-public class Debian extends AbstractExecutionConfigurator{
+public class Debian extends AbstractExecutionConfigurator {
 	@Override
-	public void configureHostname() throws PlatformOperationException{
+	public void configureHostname() throws PlatformOperationException {
 		File out=generateRandomFile();
-		try(PrintWriter pw = new LinuxPrintWriter(out)){
+		try(PrintWriter pw = new LinuxPrintWriter(out)) {
             pw.println(execution.getHostname());
         } catch (Exception e) {
             return;
         }
-		execution.getImage().copyFileOnExecution("/etc/hostname",out);
-		execution.getImage().executeCommandOnExecution("/bin/hostname",execution.getHostname());
+		execution.getImage().copyFileOnExecution("/etc/hostname", out);
+		execution.getImage().executeCommandOnExecution("/bin/hostname", execution.getHostname());
 		out.delete();
 	}
     /**
@@ -28,9 +28,9 @@ public class Debian extends AbstractExecutionConfigurator{
      */
     @Override
     public void configureIP() throws PlatformOperationException {
-    	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(),execution.getMainInterface().getNetMask());
+    	AddressUtility au = new AddressUtility(execution.getMainInterface().getIp(), execution.getMainInterface().getNetMask());
     	File out=generateRandomFile();
-    	try(PrintWriter pw = new LinuxPrintWriter(out)){
+    	try (PrintWriter pw = new LinuxPrintWriter(out)) {
     		pw.println("auto lo");
             pw.println("iface lo inet loopback");
             pw.println("auto eth0");
@@ -40,7 +40,7 @@ public class Debian extends AbstractExecutionConfigurator{
             pw.println("network " + au.getNetwork());
             pw.println("broadcast " + au.getBroadcast());
             pw.println("gateway " + au.getGateway());
-    	}catch (Exception e) {
+    	} catch (Exception e) {
 			return;
 		}
     	execution.getImage().copyFileOnExecution("/etc/network/interfaces",out);
@@ -60,12 +60,11 @@ public class Debian extends AbstractExecutionConfigurator{
      * Configure the host table of the Debian managed execution
      */
     @Override
-    public void configureHostTable() {
-        
+    public void configureHostTable() {        
     }
+    
 	@Override
-	public boolean doPostConfigure(){
-		//platform.stopVirtualMachine(execution.getImage());
+	public boolean doPostConfigure() {
 		return false;
 	}
 }
