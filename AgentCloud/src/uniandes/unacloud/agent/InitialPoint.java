@@ -96,9 +96,8 @@ public class InitialPoint {
 			}
 	      	System.exit(0);
 	      	return;
-	    }        
-    	    
-        
+	    }      
+
         try {
         	//Init services
         	//register platforms
@@ -116,8 +115,7 @@ public class InitialPoint {
 			e.printStackTrace();
 			System.exit(0);
 		}
-        
-        AgentManager.sendInitialMessage();
+  
     }
 }
 
