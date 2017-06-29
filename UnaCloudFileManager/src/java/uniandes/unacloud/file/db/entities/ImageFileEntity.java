@@ -1,8 +1,8 @@
 package uniandes.unacloud.file.db.entities;
 
-import uniandes.unacloud.share.entities.PlatformEntity;
-import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.db.entities.PlatformEntity;
+import uniandes.unacloud.share.db.entities.RepositoryEntity;
+import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
