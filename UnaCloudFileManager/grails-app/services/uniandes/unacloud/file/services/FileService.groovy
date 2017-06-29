@@ -10,8 +10,8 @@ import org.springframework.context.ApplicationContextAware
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.db.StorageManager;
-import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.db.entities.RepositoryEntity;
+import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;

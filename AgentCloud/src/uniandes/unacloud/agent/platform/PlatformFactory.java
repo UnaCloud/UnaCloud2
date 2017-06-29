@@ -8,9 +8,9 @@ import java.util.Map;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
 import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.agent.platform.VMware.VMwareWorkstation;
-import uniandes.unacloud.agent.platform.VirtualBox.VBoxFactory;
-import uniandes.unacloud.agent.platform.VirtualBox.VirtualBox;
+import uniandes.unacloud.agent.platform.vmware.VMwareWorkstation;
+import uniandes.unacloud.agent.platform.virtualbox.VBoxFactory;
+import uniandes.unacloud.agent.platform.virtualbox.VirtualBox;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 

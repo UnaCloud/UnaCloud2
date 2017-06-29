@@ -10,7 +10,7 @@ import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.agent.platform.VirtualBox.VirtualBox;
+import uniandes.unacloud.agent.platform.virtualbox.VirtualBox;
 
 /**
  * Abstract class to be implemented by each platform. It must be only instantiated by the platform factory

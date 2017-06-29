@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import uniandes.unacloud.share.entities.PlatformEntity;
+import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.entities.UserEntity;

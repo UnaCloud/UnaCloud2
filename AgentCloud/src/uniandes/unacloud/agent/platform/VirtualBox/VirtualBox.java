@@ -1,4 +1,4 @@
-package uniandes.unacloud.agent.platform.VirtualBox;
+package uniandes.unacloud.agent.platform.virtualbox;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
