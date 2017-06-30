@@ -30,11 +30,15 @@ public abstract class ProjectManager {
 	 */
 	protected DatabaseConnection connection;
 	
+	/**
+	 * Creates a project manager
+	 */
 	public ProjectManager() {
 		try {
 			loadVariables();
-			startQueueService();
+			//TODO validate if start and configuring should be separated processes
 			startDatabaseService();
+			startQueueService();			
 			startCommunicationService();
 		} catch (Exception e) {
 			e.printStackTrace();
