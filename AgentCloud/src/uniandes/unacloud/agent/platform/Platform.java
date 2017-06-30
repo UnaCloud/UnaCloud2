@@ -9,6 +9,8 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 
+import uniandes.unacloud.agent.utils.SystemUtils;
+
 /**
  * Abstract class to be implemented by each platform. It must be only instantiated by the platform factory
  * @author Clouder
@@ -106,12 +108,8 @@ public abstract class Platform {
 		}
     }
     
-    protected void sleep(long l) {
-        try {
-            Thread.sleep(l);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
+    protected void sleep(long milli) {
+    	SystemUtils.sleep(milli);      
     }
     /**
      * Used to validate if a list of execution are running in platform.

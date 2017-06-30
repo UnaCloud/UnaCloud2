@@ -22,8 +22,39 @@ public class ControlManager extends ProjectManager {
 	 */
 	private static ControlManager control;
 	
+	/**
+	 * Queue message processor
+	 */
 	private QueueMessageProcessor processor;
 	
+	/**
+	 * Number of initial and minimum active connections to database
+	 */
+	private static final int POOL_SIZE = 5;
+
+	/**
+	 * Number of concurrent threads to process messages from physical machines
+	 */
+	private static final int CONCURRENT_THREADS_PM = 50;
+	
+	/**
+	 * Number of concurrent threads to process messages from virtual machines status
+	 */
+	private static final int CONCURRENT_THREADS_VM = 30;
+	
+	/**
+	 * Number of concurrent threads to process messages from queue
+	 */
+	private static final int CONCURRENT_THREADS_QUEUE = 50;
+	
+	/**
+	 * Number of tasks in each thread in queue processor
+	 */
+	private static final int TASK_BY_THREAD_QUEUE = 5;
+	
+	/**
+	 * Creates a project manager with all services
+	 */
 	public ControlManager() {
 		super();
 	}
@@ -32,7 +63,7 @@ public class ControlManager extends ProjectManager {
 	 * Returns control  manager instance
 	 * @return instance
 	 */
-	public static ControlManager getInstance(){
+	public static ControlManager getInstance() {
 		try {
 			if (control == null)
 				control = new ControlManager();
@@ -47,7 +78,7 @@ public class ControlManager extends ProjectManager {
 	 * @return agent port
 	 * @throws Exception 
 	 */
-	public int getPort() throws Exception{
+	public int getPort() throws Exception {
 		return reader.getIntegerVariable(UnaCloudConstants.AGENT_PORT);
 	}
 	
@@ -92,7 +123,8 @@ public class ControlManager extends ProjectManager {
 				reader.getIntegerVariable(UnaCloudConstants.DB_PORT),
 				reader.getStringVariable(UnaCloudConstants.DB_IP), 
 				reader.getStringVariable(UnaCloudConstants.DB_USERNAME), 
-				reader.getStringVariable(UnaCloudConstants.DB_PASS));
+				reader.getStringVariable(UnaCloudConstants.DB_PASS),
+				POOL_SIZE);
 		connection.getConnection().close();		
 	}
 
@@ -111,7 +143,7 @@ public class ControlManager extends ProjectManager {
 				UnaCloudConstants.QUEUE_CONTROL);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		processor = new QueueMessageProcessor(50, 5);
+		processor = new QueueMessageProcessor(CONCURRENT_THREADS_QUEUE, TASK_BY_THREAD_QUEUE);
 		queueReceiver.startReceiver(processor);		
 	}
 	
@@ -122,8 +154,8 @@ public class ControlManager extends ProjectManager {
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
-		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT), 50).start();
-		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT), 50).start();
+		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT), CONCURRENT_THREADS_PM).start();
+		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT), CONCURRENT_THREADS_VM).start();
 	}	
 	
 	/**

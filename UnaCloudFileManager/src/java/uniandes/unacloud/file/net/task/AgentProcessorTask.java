@@ -17,7 +17,7 @@ import uniandes.unacloud.file.files.AgentFileManager;
  * @author CesarF
  *
  */
-public class AgentProcessorTask implements Runnable{
+public class AgentProcessorTask implements Runnable {
 	
 	private Socket socket;
 	
@@ -27,14 +27,19 @@ public class AgentProcessorTask implements Runnable{
 
 	@Override
 	public void run() {
-		try (Socket ss = socket; DataOutputStream out = new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream()); Connection con = FileManager.getInstance().getDBConnection();) {
+		try (Socket ss = socket; DataOutputStream out = new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream());) {
 			if (is.readInt() == UnaCloudConstants.REQUEST_AGENT_VERSION) {
-				ServerVariableEntity variable = ServerVariableManager.getVariable(con, UnaCloudConstants.AGENT_VERSION);
+				ServerVariableEntity variable = null;
+				try (Connection con = FileManager.getInstance().getDBConnection();) {
+					variable = ServerVariableManager.getVariable(con, UnaCloudConstants.AGENT_VERSION);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				out.writeUTF(variable.getValue());
 				int respond = is.readInt();
 				if (respond == UnaCloudConstants.GIVE_ME_FILES) {
 					System.out.println(ss.getInetAddress().getHostName() + " request agent");
-					AgentFileManager.copyAgentOnStream(out, con);
+					AgentFileManager.copyAgentOnStream(out);
 				}				
 			}
 		} catch (Exception e) {

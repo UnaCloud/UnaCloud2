@@ -31,13 +31,18 @@ public class FileTransferTask implements Runnable {
 	
 	@Override
 	public void run() {		
-		try (Socket ss = s; DataInputStream ds = new DataInputStream(s.getInputStream()); OutputStream os = s.getOutputStream(); Connection con = FileManager.getInstance().getDBConnection();) {			
+		try (Socket ss = s; DataInputStream ds = new DataInputStream(s.getInputStream()); OutputStream os = s.getOutputStream(); ) {			
 			
 			ZipOutputStream zos = new ZipOutputStream(os);
 			long imageId = ds.readLong();
-			System.out.println("\tWorking "+imageId);						
-			ImageFileEntity image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
-			
+			System.out.println("\tWorking " + imageId);						
+			ImageFileEntity image = null;
+			try (Connection con = FileManager.getInstance().getDBConnection();) {
+				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+						
 			if (image != null) {
 				
 				System.out.println(image + " - " + imageId + " - " + image.getState());

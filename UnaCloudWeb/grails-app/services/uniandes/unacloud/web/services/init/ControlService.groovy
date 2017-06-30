@@ -22,8 +22,7 @@ class ControlService {
 	
 	/**
 	 * Representation of deployment services
-	 */
-	
+	 */	
 	DeploymentService deploymentService
 	
 	//-----------------------------------------------------------------
@@ -87,7 +86,7 @@ class ControlService {
 					exe.putAt("message",'Connection lost')
 				}
 			}
-			else if (exe.status ==ExecutionStateEnum.REQUEST_COPY) {
+			else if (exe.status == ExecutionStateEnum.REQUEST_COPY) {
 				if (exe.isAboveStateTime(currentDate)) {
 					exe.putAt("status", ExecutionStateEnum.DEPLOYED)
 					if (exe.message.contains("Copy request to image ")) {
@@ -101,7 +100,7 @@ class ControlService {
 					exe.putAt("message",'Image copy request failed')
 				}
 			}
-			else if (exe.status ==ExecutionStateEnum.COPYING) {
+			else if (exe.status == ExecutionStateEnum.COPYING) {
 				if (exe.isAboveStateTime(currentDate)) {
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					if (exe.message.contains("Copy request to image ")) {

@@ -1,5 +1,5 @@
 /**
- * In this package are located all classes required to offer file agent communication services in project.
+ * In this package are located all classes required to manage agent file and manipulate image files
 
  * @author CesarF
  *

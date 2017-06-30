@@ -19,8 +19,11 @@ public class Image implements Serializable {
 	private long id;
 	
 	private String username;
+	
 	private String password;
+	
 	private String configuratorClass;
+	
 	private String platformId;
 	
 	/**

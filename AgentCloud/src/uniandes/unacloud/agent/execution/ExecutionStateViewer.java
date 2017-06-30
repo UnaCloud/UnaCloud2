@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
+import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * This class is responsible for checking if an execution has been correctly deployed. That is, if the execution has started and if it has well configured its IP address
@@ -33,14 +36,11 @@ public class ExecutionStateViewer {
     public boolean check() {
     	System.out.println("Start checking by ip to " + vmIP);
         boolean red = false;
-        for (int e = 0; e < 8 && !red; e++) {
+        SystemUtils.sleep(3000);
+       
+        for (int e = 0; e < 8 && !red; e++)
             if (!(red = pingVerification(vmIP)))
-            	try {
-            		Thread.sleep(30000);
-            	} catch(Exception ex) { 
-            		ex.printStackTrace();
-            	}
-        }
+            	 SystemUtils.sleep(30000);        
         try {
         	if (red) {
         		ServerMessageSender.reportExecutionState(executionCode, ExecutionStateEnum.DEPLOYED, "Execution is running");
@@ -65,7 +65,7 @@ public class ExecutionStateViewer {
      */
     private boolean pingVerification(String vmIP) {
         try {
-            Process p = Runtime.getRuntime().exec(OSFactory.getOS().getPingCommand(vmIP));
+        	Process p = Runtime.getRuntime().exec(OSFactory.getOS().getPingCommand(vmIP));
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             for (String h; (h = br.readLine()) != null;) {
                 if (h.toUpperCase().contains("TTL")) {
