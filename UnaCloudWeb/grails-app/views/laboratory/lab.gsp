@@ -95,7 +95,7 @@
 				                                  <td>
 				                                  	<small class = 
 				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
-				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>>
+				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>
 				                                  		<g:else> "text-success" </g:else>>
 				                                  		${machine.getUsedPercentage()} %
 				                                  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="T: ${machine.getTotalDiskSize()} - F: ${machine.getAvailableDisk()}"></i>
