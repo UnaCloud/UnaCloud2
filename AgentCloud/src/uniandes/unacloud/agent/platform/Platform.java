@@ -8,7 +8,9 @@ import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
+
 import uniandes.unacloud.agent.utils.SystemUtils;
+
 /**
  * Abstract class to be implemented by each platform. It must be only instantiated by the platform factory
  * @author Clouder
