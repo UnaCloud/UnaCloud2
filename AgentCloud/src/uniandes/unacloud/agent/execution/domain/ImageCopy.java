@@ -34,6 +34,9 @@ public class ImageCopy implements Serializable {
 	 */
 	private Image image;
 	
+	/**
+	 * Initial status for Image
+	 */
 	private transient ImageStatus status = ImageStatus.FREE;
 	
 	/**
@@ -47,6 +50,7 @@ public class ImageCopy implements Serializable {
 	public File getMainFile() {
 		return mainFile;
 	}
+	
 	/**
 	 * Update main file
 	 * @param mainFile
@@ -54,6 +58,7 @@ public class ImageCopy implements Serializable {
 	public void setMainFile(File mainFile) {
 		this.mainFile = mainFile;
 	}
+	
 	/**
 	 * Gets image name
 	 * @return image name
@@ -67,6 +72,7 @@ public class ImageCopy implements Serializable {
 			return h;
 		return h.substring(0,l);
 	}
+	
 	/**
 	 * Gets image status
 	 * @return status
@@ -74,6 +80,7 @@ public class ImageCopy implements Serializable {
 	public ImageStatus getStatus() {
 		return status;
 	}
+	
 	/**
 	 * Updates image status
 	 * @param status
@@ -81,6 +88,7 @@ public class ImageCopy implements Serializable {
 	public void setStatus(ImageStatus status) {
 		this.status = status;
 	}
+	
 	/**
 	 * Returns image
 	 * @return image entity
@@ -126,7 +134,7 @@ public class ImageCopy implements Serializable {
 				if (status != ImageStatus.STARTING) 
 					status = ImageStatus.STARTING;
 				Class<?> configuratorClass = Class.forName("uniandes.unacloud.agent.execution.configuration." + getImage().getConfiguratorClass());
-				Object configuratorObject=configuratorClass.getConstructor().newInstance();
+				Object configuratorObject = configuratorClass.getConstructor().newInstance();
 				
 				if (configuratorObject instanceof AbstractExecutionConfigurator) {
 					AbstractExecutionConfigurator configurator = (AbstractExecutionConfigurator) configuratorObject;
@@ -143,13 +151,13 @@ public class ImageCopy implements Serializable {
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
 				} else {
 					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Invalid execution configurator.");
-					status=ImageStatus.FREE;
+					status = ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Configurator class error: " + e.getMessage());
-				status=ImageStatus.FREE;
+				status = ImageStatus.FREE;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -127,14 +127,16 @@ public class PersistentExecutionManager {
      * @param started if execution should be started
      * @return result message
      */
-    public static String startUpMachine(Execution execution,boolean started){
+    public static String startUpMachine(Execution execution, boolean started) {
     	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	            if (!started) execution.getImage().startExecution();
+	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.DEPLOYING, "Starting execution");
+	            if (!started) 
+	            	execution.getImage().startExecution();
 	            executionList.put(execution.getId(),execution);
 	            timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
-	            ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.DEPLOYING, "Starting execution");
+	            
 	            if (new ExecutionStateViewer(execution.getId(), execution.getMainInterface().getIp()).check())
 	            	execution.getImage().setStatus(ImageStatus.LOCK);
 	        } catch (PlatformOperationException e) {

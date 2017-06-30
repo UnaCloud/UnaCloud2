@@ -52,8 +52,7 @@ public class LinuxOS extends OperatingSystem{
                 	String[] data = linea.split(" ");
                 	if (data.length > 0) {                		
                         userName = data[0];
-                	}
-                    
+                	}                    
                 }
             }
             p.destroy();

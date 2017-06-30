@@ -35,7 +35,7 @@ public class ControlManager extends ProjectManager {
 	/**
 	 * Number of concurrent threads to process messages from physical machines
 	 */
-	private static final int CONCURRENT_THREADS_PM = 30;
+	private static final int CONCURRENT_THREADS_PM = 50;
 	
 	/**
 	 * Number of concurrent threads to process messages from virtual machines status

@@ -30,12 +30,12 @@ public class FileManager extends ProjectManager {
 	/**
 	 * Number of concurrent threads to process request for files
 	 */
-	private static final int CONCURRENT_THREADS_FILE = 30;
+	private static final int CONCURRENT_THREADS_FILE = 50;
 	
 	/**
 	 * Number of concurrent threads to process messages from agents
 	 */
-	private static final int CONCURRENT_THREADS_AGENT = 30;
+	private static final int CONCURRENT_THREADS_AGENT = 50;
 	
 	/**
 	 * Number of concurrent threads to process messages from queue

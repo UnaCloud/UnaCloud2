@@ -8,8 +8,10 @@ import java.io.IOException;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
+import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * Class responsible to execute commands to control agent operation
@@ -18,6 +20,9 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class AgentManager {
 	
+	/**
+	 * Current agent version
+	 */
 	private static String agentVersion;
 	
 	/**
@@ -26,18 +31,14 @@ public class AgentManager {
 	 */
 	public static String updateAgent() {
 		ClouderClientAttention.close();
-        try {
-			Runtime.getRuntime().exec(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY+""});
-        } catch (Exception e) {
+		try {
+			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY+""});
+		} catch (Exception e) {
         	e.printStackTrace();
         }
         new Thread() {
         	public void run() {
-        		try {
-        			Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+        		SystemUtils.sleep(1000);
         		System.exit(6);
         	};
         }.start();
@@ -52,11 +53,7 @@ public class AgentManager {
 	     ClouderClientAttention.close();
          new Thread() {
          	public void run() {
-         		try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+         		SystemUtils.sleep(1000);
          		System.exit(0);
          	};
          }.start();

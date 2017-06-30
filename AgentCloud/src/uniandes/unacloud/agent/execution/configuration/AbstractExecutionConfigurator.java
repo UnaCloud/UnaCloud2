@@ -5,6 +5,7 @@ import java.util.Random;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
  * Abstract configuration class for physical machines
@@ -72,10 +73,6 @@ public abstract class AbstractExecutionConfigurator {
      * @param time wait time
      */
     public final void waitTime(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException ex) {
-        	ex.printStackTrace();
-        }
+    	SystemUtils.sleep(time);      
     }
 }
