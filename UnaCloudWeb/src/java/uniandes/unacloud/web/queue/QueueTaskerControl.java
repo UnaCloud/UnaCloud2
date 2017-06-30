@@ -58,7 +58,7 @@ public class QueueTaskerControl {
 	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user) {
 		long[] listIds = new long[machines.size()];
 		for (int i = 0; i < machines.size(); i++)
-			listIds[i]=machines.get(i).getDatabaseId();
+			listIds[i] = machines.get(i).getDatabaseId();
 		
 		String nameTask = task.getName();
 		
@@ -97,7 +97,7 @@ public class QueueTaskerControl {
 	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image) {
 		Long[] listIds = new Long[executions.size()];
 		for (int i = 0; i < executions.size(); i++)
-			listIds[i]=executions.get(i).getDatabaseId();
+			listIds[i] = executions.get(i).getDatabaseId();
 		
 		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), ((Image)image.getImage()).getDatabaseId(), listIds);
 		controlQueue.sendMessage(message);

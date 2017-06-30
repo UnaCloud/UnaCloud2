@@ -18,8 +18,14 @@ import uniandes.unacloud.web.domain.Platform;
  */
 public abstract class ExecutionAllocator{
 	
+	/**
+	 * Required IPs for deployment
+	 */
 	private TreeMap<Long, Integer> ipsNeeded;
 	
+	/**
+	 * Creates an execution allocator
+	 */
 	public ExecutionAllocator() {
 		ipsNeeded = new TreeMap<Long, Integer>();
 	}
@@ -86,10 +92,10 @@ public abstract class ExecutionAllocator{
 	 * @return true if platform is supported else false
 	 */
 	private boolean isSupportedPlatform(Platform platform, PhysicalMachine pm){
-		for (Platform plat : pm.getAllPlatforms()) {
+		for (Platform plat : pm.getAllPlatforms())
 			if (plat.getDatabaseId() == platform.getDatabaseId())
 				return true;
-		}
+		
 		return false;
 	}
 }

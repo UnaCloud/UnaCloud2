@@ -7,8 +7,6 @@ import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
-import uniandes.unacloud.utils.LocalProcessExecutor;
 
 /**
  * This class is responsible for checking if an execution has been correctly deployed. That is, if the execution has started and if it has well configured its IP address

@@ -26,7 +26,7 @@ public class RandomAllocator extends ExecutionAllocator {
 		if (executionList.size() <= 2 * physicalMachines.size()) {
 			Collections.shuffle(executionList);
 			
-			for (int e = 0; e<executionList.size(); e++) {
+			for (int e = 0; e < executionList.size(); e++) {
 				Execution vm = executionList.get(e);
 				Collections.shuffle(physicalMachines);
 				for (Iterator iterator = physicalMachines.iterator(); iterator.hasNext();) {

@@ -11,7 +11,7 @@ class Utils {
 	 * @param text
 	 * @return
 	 */
-	def validate(text){
+	def validate(text) {
 		if (text || text.isEmpty()) 
 			return false
 		else 
