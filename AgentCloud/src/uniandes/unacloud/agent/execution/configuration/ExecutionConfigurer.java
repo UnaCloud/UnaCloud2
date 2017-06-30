@@ -1,21 +1,21 @@
 package uniandes.unacloud.agent.execution.configuration;
 
-import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
-import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionStartResponse;
+import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.execution.domain.ImageCopy;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionStartResponse;
 
 /**
  * Responsible to configure execution
  * @author clouder
  *
  */
-public final class ExecutionConfigurer extends Thread{
+public final class ExecutionConfigurer extends Thread {
 	/**
-	 * Executiion to be configured
+	 * Execution to be configured
 	 */
 	Execution machineExecution;
 	
@@ -45,11 +45,11 @@ public final class ExecutionConfigurer extends Thread{
 	public void run() {
 		System.out.println("startExecution");
 		try {
-			try{
+			try {
 				ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
 				machineExecution.setImage(image);
 				image.configureAndStart(machineExecution);
-			}catch(ExecutionException ex){
+			} catch(ExecutionException ex) {
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
 			}
 		} catch (Exception e) {

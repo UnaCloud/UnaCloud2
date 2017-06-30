@@ -33,7 +33,7 @@ public enum NetworkQualityEnum {
 	
 	private String name;
 	
-	NetworkQualityEnum(String n){
+	NetworkQualityEnum(String n) {
 		name = n;
 	}
 	
@@ -41,9 +41,14 @@ public enum NetworkQualityEnum {
 	 * Returns a list of all network quality values for physical machines
 	 * @return String list with configurations
 	 */
-	public static String[] getConfigurations(){
-		return new String[]{ETHERNET10MBPS.name,ETHERNET100MBPS.name,ETHERNET1GBPS.name,
-				ETHERNET10GBPS.name,INFINIBAND.name, FIBERCHANNEL.name};
+	public static String[] getConfigurations() {
+		return new String[]{
+				ETHERNET10MBPS.name,
+				ETHERNET100MBPS.name,
+				ETHERNET1GBPS.name,
+				ETHERNET10GBPS.name,
+				INFINIBAND.name, 
+				FIBERCHANNEL.name};
 	}
 	
 	/**
@@ -51,13 +56,13 @@ public enum NetworkQualityEnum {
 	 * @param name to be search
 	 * @return Network Quality value
 	 */
-	public static NetworkQualityEnum getNetworkQuality(String name){
-		if(ETHERNET10MBPS.name.equals(name))return ETHERNET10MBPS;
-		if(ETHERNET100MBPS.name.equals(name))return ETHERNET100MBPS;
-		if(ETHERNET1GBPS.name.equals(name))return ETHERNET1GBPS;
-		if(ETHERNET10GBPS.name.equals(name))return ETHERNET10GBPS;
-		if(INFINIBAND.name.equals(name))return INFINIBAND;
-		if(FIBERCHANNEL.name.equals(name))return FIBERCHANNEL;
+	public static NetworkQualityEnum getNetworkQuality(String name) {
+		if (ETHERNET10MBPS.name.equals(name)) return ETHERNET10MBPS;
+		if (ETHERNET100MBPS.name.equals(name)) return ETHERNET100MBPS;
+		if (ETHERNET1GBPS.name.equals(name)) return ETHERNET1GBPS;
+		if (ETHERNET10GBPS.name.equals(name)) return ETHERNET10GBPS;
+		if (INFINIBAND.name.equals(name)) return INFINIBAND;
+		if (FIBERCHANNEL.name.equals(name)) return FIBERCHANNEL;
 		return null;
 	}
 	

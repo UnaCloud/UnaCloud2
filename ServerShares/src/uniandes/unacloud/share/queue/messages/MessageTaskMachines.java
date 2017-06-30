@@ -12,23 +12,23 @@ import uniandes.unacloud.share.enums.TaskEnum;
  * @author cdsbarrera
  * 
  */
-public class MessageTaskMachines extends QueueMessage{
+public class MessageTaskMachines extends QueueMessage {
 
 	private final static String TAG_LIST_MACHINES_ID = "list_machines";
+	
 	private final static String TAG_TASK = "task";
 	
-	public MessageTaskMachines(String requester, long[] machines, String task){
+	public MessageTaskMachines(String requester, long[] machines, String task) {
 		super(requester);
 		this.setType(QueueMessageType.SEND_TASK);
 		
 		JSONObject temp = this.getMessageContent();
 		
 		JSONArray array = new JSONArray();
-		if(machines!=null) {
-			for (int i = 0; i < machines.length; i++) {
+		if (machines != null)
+			for (int i = 0; i < machines.length; i++)
 				array.put(machines[i]);
-			}	
-		}
+			
 		temp.put(TAG_TASK, task);
 		temp.put(TAG_LIST_MACHINES_ID, array);
 		
@@ -58,9 +58,9 @@ public class MessageTaskMachines extends QueueMessage{
 		JSONObject temp = this.getMessageContent();
 		JSONArray list = temp.getJSONArray(TAG_LIST_MACHINES_ID);
 		Long[] array = new Long[list.length()];
-		for (int i = 0; i < list.length(); i++) {
+		for (int i = 0; i < list.length(); i++)
 			array[i] = list.getLong(i);
-		}
+		
 		return array;
 	}
 }

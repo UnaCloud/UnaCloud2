@@ -49,8 +49,8 @@ class ClusterController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){
-			flash.message="You must log in first"
+		if (!session.user) {
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
 		}
@@ -79,7 +79,7 @@ class ClusterController {
 	 * New cluster creation action that sends the available images for the user
 	 * @return list of ordered images that user can add to a new cluster
 	 */
-	def newCluster(){
+	def newCluster() {
 		def user = User.get(session.user.id)
 		[images: user.getAvailableImages()]
 	}
@@ -87,24 +87,23 @@ class ClusterController {
 	/**
 	 * Action to create a new cluster. It redirects to index after saving
 	 */
-	def save(){		
-		if(params.name&&params.images){			
+	def save() {		
+		if (params.name && params.images) {			
 			def user = User.get(session.user.id)
-			try{
-				clusterService.createCluster(params.name,params.images, user)
-				flash.message="Your new cluster has been created"
-				flash.type="success"
+			try {
+				clusterService.createCluster(params.name, params.images, user)
+				flash.message = "Your new cluster has been created"
+				flash.type = "success"
 				redirect(uri:"/services/cluster/list", absolute:true)
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 				redirect(uri:"/services/cluster/new", absolute:true)
 			}		
-		}else{
-			if(!params.name){
-				flash.message="The name for your new cluster is required"
-			}else if(!params.images){
-				flash.message="At least one image must be selected"
-			}			
+		} else {
+			if (!params.name)
+				flash.message = "The name for your new cluster is required"
+			else if (!params.images)
+				flash.message = "At least one image must be selected"						
 			redirect(uri:"/services/cluster/new", absolute:true)
 		}	
 	}
@@ -114,15 +113,15 @@ class ClusterController {
 	 * responses success and redirect to index after deletion
 	 * @return
 	 */
-	def delete(){
+	def delete() {
 		def cluster = Cluster.get(params.id)
-		if(cluster){
-			def user= User.get(session.user.id)
-			try{
+		if (cluster) {
+			def user = User.get(session.user.id)
+			try {
 				clusterService.deleteCluster(cluster, user)
-				flash.message="Your cluster has been deleted"
-				flash.type="success"
-			}catch(Exception e){
+				flash.message = "Your cluster has been deleted"
+				flash.type = "success"
+			} catch(Exception e) {
 				flash.message = e.message;
 			}			
 		}
@@ -134,14 +133,14 @@ class ClusterController {
 	 * image in the cluster
 	 * @return limits shown in the information of form and cluster to be deployed
 	 */
-	def deployOptions(){
+	def deployOptions() {
 		//get cluster and validates if cluster is Available
-		def cluster=Cluster.get(params.id);
-		if(cluster&&cluster.state==ClusterEnum.AVAILABLE){
+		def cluster = Cluster.get(params.id);
+		if (cluster && cluster.state == ClusterEnum.AVAILABLE) {
 			//Validates if all images are available in the cluster
-			def unavailable = cluster.images.findAll {it.state==ImageEnum.AVAILABLE}
-			if(unavailable.size()!=cluster.images.size()){
-				flash.message= "Some images in cluster are not available at this moment. Please, change cluster or remove images in cluster."
+			def unavailable = cluster.images.findAll {it.state == ImageEnum.AVAILABLE}
+			if (unavailable.size() != cluster.images.size()) {
+				flash.message = "Some images in cluster are not available at this moment. Please, change cluster or remove images in cluster."
 				redirect(uri:"/services/cluster/list", absolute:true)
 				return
 			}	
@@ -155,8 +154,8 @@ class ClusterController {
 			def platforms = new TreeMap<String, String>()
 			
 			//get all platforms used for images in cluster
-			for(Image im : cluster.images)
-				if(!platforms.get(im.platform.name))
+			for (Image im : cluster.images)
+				if (!platforms.get(im.platform.name))
 					platforms.put(im.platform.name, im.platform)
 					
 		    def resourcesByPlatform = []
@@ -165,37 +164,42 @@ class ClusterController {
 				Platform plat = it
 				allowedLabs.each {
 					//Get resources for lab
-					def results = laboratoryService.calculateDeploys(it,allowedHwdProfiles, false, plat)
-					def resultsAvailable = laboratoryService.calculateDeploys(it,allowedHwdProfiles, true, plat)
-					for(HardwareProfile hwd in allowedHwdProfiles){
-						if(!quantitiesTree.get(hwd.name))quantitiesTree.put(hwd.name,results.get(hwd.name))
-						else quantitiesTree.put(hwd.name,results.get(hwd.name)+quantitiesTree.get(hwd.name))
-						if(!quantitiesAvailableTree.get(hwd.name))quantitiesAvailableTree.put(hwd.name,resultsAvailable.get(hwd.name))
-						else quantitiesAvailableTree.put(hwd.name,resultsAvailable.get(hwd.name)+quantitiesAvailableTree.get(hwd.name))
+					def results = laboratoryService.calculateDeploys(it, allowedHwdProfiles, false, plat)
+					def resultsAvailable = laboratoryService.calculateDeploys(it, allowedHwdProfiles, true, plat)
+					for (HardwareProfile hwd in allowedHwdProfiles) {
+						if (!quantitiesTree.get(hwd.name))
+							quantitiesTree.put(hwd.name, results.get(hwd.name))
+						else 
+							quantitiesTree.put(hwd.name, results.get(hwd.name) + quantitiesTree.get(hwd.name))
+						if (!quantitiesAvailableTree.get(hwd.name))
+							quantitiesAvailableTree.put(hwd.name, resultsAvailable.get(hwd.name))
+						else 
+							quantitiesAvailableTree.put(hwd.name, resultsAvailable.get(hwd.name) + quantitiesAvailableTree.get(hwd.name))
 					}
 				}
 				def quantities = []
 				def quantitiesAvailable = []
 				def high = false;
-				for(HardwareProfile hwd in allowedHwdProfiles){
-					quantities.add(['name':hwd.name,'quantity':quantitiesTree.get(hwd.name)?quantitiesTree.get(hwd.name):0])
-					if(quantitiesAvailableTree.get(hwd.name)>0&&!high)high = true
-					quantitiesAvailable.add(['name':hwd.name,'quantity':quantitiesAvailableTree.get(hwd.name)?quantitiesAvailableTree.get(hwd.name):0])
+				for (HardwareProfile hwd in allowedHwdProfiles) {
+					quantities.add(['name':hwd.name, 'quantity':quantitiesTree.get(hwd.name) ? quantitiesTree.get(hwd.name) : 0])
+					if (quantitiesAvailableTree.get(hwd.name) > 0 && !high)
+						high = true
+					quantitiesAvailable.add(['name':hwd.name, 'quantity':quantitiesAvailableTree.get(hwd.name) ? quantitiesAvailableTree.get(hwd.name) : 0])
 				}
-				def res = [name:plat.name,quantities:quantities,quantitiesAvailable:quantitiesAvailable,images:cluster.images.findAll{it.platform.id == plat.id},high:high]
+				def res = [name:plat.name,quantities:quantities, quantitiesAvailable:quantitiesAvailable, images:cluster.images.findAll{it.platform.id == plat.id}, high:high]
 				resourcesByPlatform.add(res)
 			}
-			[resources:resourcesByPlatform,hardwareProfiles: HardwareProfile.list(),clusterid:cluster.id]
-		}else{
+			[resources:resourcesByPlatform,hardwareProfiles: HardwareProfile.list(), clusterid:cluster.id]
+		} else
 			redirect(uri:"/services/cluster/list", absolute:true)
-		}		
+		 		
 	}
 	
 	/**
 	 * Action used to render view to deploy the cluster in external provider
 	 * @return
 	 */
-	def externalDeployOptions(){		
+	def externalDeployOptions() {		
 		//TODO to be implemented
 	}
 }

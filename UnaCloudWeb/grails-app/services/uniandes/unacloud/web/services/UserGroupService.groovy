@@ -38,7 +38,8 @@ class UserGroupService {
 	 * @param user 
 	 */
 	def addToGroup(UserGroup group, User user){
-		if(!group.users)group.users =[]
+		if (!group.users)
+			group.users = []
 		group.users.add(user)
 		group.save(failOnError:true)
 	}
@@ -48,10 +49,10 @@ class UserGroupService {
 	 * if group doesn't exist, create and return it
 	 * @return admin default group
 	 */
-	def UserGroup getAdminGroup(){
+	def UserGroup getAdminGroup() {
 		UserGroup admins = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
-		if(!admins){
-			admins = new UserGroup (name:UnaCloudConstants.ADMIN_GROUP, visualName:UnaCloudConstants.ADMIN_GROUP);
+		if (!admins) {
+			admins = new UserGroup (name: UnaCloudConstants.ADMIN_GROUP, visualName: UnaCloudConstants.ADMIN_GROUP);
 			admins.users = []
 			admins.save();
 		}
@@ -64,10 +65,10 @@ class UserGroupService {
 	 * if group doesn't exist, create and return it
 	 * @return user default group
 	 */
-	def UserGroup getDefaultGroup(){
+	def UserGroup getDefaultGroup() {
 		UserGroup usersGroup = UserGroup.findByName(UnaCloudConstants.USERS_GROUP);
-		if(!usersGroup){
-			usersGroup = new UserGroup(name:UnaCloudConstants.USERS_GROUP, visualName:UnaCloudConstants.USERS_GROUP);
+		if (!usersGroup) {
+			usersGroup = new UserGroup(name: UnaCloudConstants.USERS_GROUP, visualName: UnaCloudConstants.USERS_GROUP);
 			usersGroup.users = []
 			usersGroup.save();
 		}
@@ -79,8 +80,8 @@ class UserGroupService {
 	 * @param user: to be validate
 	 * @return true is admin, false is not
 	 */
-	def boolean isAdmin(User user){
-		return getAdminGroup().users.find{it.id == user.id}?true:false;
+	def boolean isAdmin(User user) {
+		return getAdminGroup().users.find{it.id == user.id} ? true : false;
 	}
 	
 	/**
@@ -88,9 +89,10 @@ class UserGroupService {
 	 * @param userId
 	 * @return true if user id is from a admin user, false in case not
 	 */
-	def boolean isAdmin(long userId){
+	def boolean isAdmin(long userId) {
 		User user = User.get(userId)
-		if(!user)return false
+		if (!user)
+			return false
 		return isAdmin(user)
 	}
 	
@@ -101,15 +103,13 @@ class UserGroupService {
 	 */
 	def addGroup(name, users){
 		Date d = new Date()
-		def group = new UserGroup(visualName:name, name: "userg"+d.getDate()+"_"+Hasher.randomString(10));		
+		def group = new UserGroup(visualName: name, name: "userg" + d.getDate() + "_" + Hasher.randomString(10));		
 		group.users = []
-		if(users.getClass().equals(String))
+		if (users.getClass().equals(String))
 			group.users.add(User.get(users))
-		else{
-			for(userId in users){
+		else
+			for (userId in users)
 				group.users.add(User.get(userId))
-			}
-		}
 		group.save()
 	}
 	
@@ -117,8 +117,8 @@ class UserGroupService {
 	 * Deletes the given group
 	 * @param group to be deleted
 	 */	
-	def deleteGroup(UserGroup group){
-		for(restriction in group.restrictions)
+	def deleteGroup(UserGroup group) {
+		for (restriction in group.restrictions)
 			restriction.delete()
 		group.delete()
 	}
@@ -129,16 +129,14 @@ class UserGroupService {
 	 * @param users new list of users
 	 * @param name new name
 	 */	
-	def setValues(UserGroup group, users, String name){
+	def setValues(UserGroup group, users, String name) {
 		group.putAt("visualName", name)
-		Set newUsers= []
+		Set newUsers = []
 		if(users.getClass().equals(String))
 			newUsers.add(User.get(users))		
-		else{
-			for(userId in users){
-				newUsers.add(User.get(userId))
-			}
-		}
+		else
+			for(userId in users)
+				newUsers.add(User.get(userId))		
 		group.putAt("users", newUsers)		
 	}
 	
@@ -148,16 +146,16 @@ class UserGroupService {
 	 * @param name restriction name
 	 * @param value restriction value
 	 */	
-	def setRestriction(UserGroup group, String name, String value){
-		UserRestriction old = group.restrictions.find{it.name==name}
-		if(!old&&value){
-			def newRestriction= new UserRestriction(name: name, value: value)
+	def setRestriction(UserGroup group, String name, String value) {
+		UserRestriction old = group.restrictions.find{it.name == name}
+		if (!old && value) {
+			def newRestriction = new UserRestriction(name: name, value: value)
 			newRestriction.save(failOnError: true)
 			group.restrictions.add(newRestriction)
 			group.save(failOnError: true)
 		}
-		else{
-			if(!value||value.equals("")){
+		else
+			if (!value || value.equals("")) {
 				group.restrictions.remove(old)
 				old.delete()
 			}
@@ -165,15 +163,16 @@ class UserGroupService {
 				old.setValue(value)
 				old.save(failOnError: true)
 			}
-		}
+		
 	}
 	
 	/**
 	 * Removes user from all groups where it is added
 	 * @param user to be removed
 	 */
-	def removeUser(User user){
+	def removeUser(User user) {
 		def groups = UserGroup.where{users{id == user.id}}.findAll()
-		for(UserGroup group in groups)group.users.remove(user)
+		for (UserGroup group in groups)
+			group.users.remove(user)
 	}
 }

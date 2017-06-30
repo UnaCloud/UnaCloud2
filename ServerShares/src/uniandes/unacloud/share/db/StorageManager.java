@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import uniandes.unacloud.share.entities.RepositoryEntity;
+import uniandes.unacloud.share.db.entities.RepositoryEntity;
 
 /**
  * Class used to execute query, update and delete processes in database for Repository Entity. 
@@ -27,8 +27,14 @@ public class StorageManager {
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			RepositoryEntity repo = null;
-			if(rs.next())repo =  new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
-			try{rs.close();ps.close();}catch(Exception e){}
+			if (rs.next()) 
+				repo =  new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+			try {
+				rs.close();
+				ps.close();
+			} catch (Exception e) {
+				
+			}
 			return repo;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,8 +55,14 @@ public class StorageManager {
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			RepositoryEntity repo = null;
-			if(rs.next())repo = new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
-			try{rs.close();ps.close();}catch(Exception e){}
+			if (rs.next())
+				repo = new RepositoryEntity(rs.getLong(1), rs.getString(2), rs.getInt(3), rs.getString(4));
+			try {
+				rs.close();
+				ps.close();
+			} catch (Exception e) {
+				
+			}
 			return repo;
 		} catch (Exception e) {
 			e.printStackTrace();

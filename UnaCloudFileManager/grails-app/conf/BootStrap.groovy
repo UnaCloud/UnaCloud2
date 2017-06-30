@@ -5,7 +5,7 @@ import uniandes.unacloud.file.services.FileService;
 
 /**
  * Initial point in app
- * @author Cesar
+ * @author CesarF
  *
  */
 class BootStrap {
@@ -22,7 +22,7 @@ class BootStrap {
 		}
 		fileService.updateProperty();
 		
-		println 'Path: '+System.getProperty(UnaCloudConstants.ROOT_PATH)
+		println 'Path: ' + System.getProperty(UnaCloudConstants.ROOT_PATH)
     }
     def destroy = {
     }

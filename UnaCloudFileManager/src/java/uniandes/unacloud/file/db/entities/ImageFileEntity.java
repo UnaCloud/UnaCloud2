@@ -1,8 +1,8 @@
 package uniandes.unacloud.file.db.entities;
 
-import uniandes.unacloud.share.entities.PlatformEntity;
-import uniandes.unacloud.share.entities.RepositoryEntity;
-import uniandes.unacloud.share.entities.ImageEntity;
+import uniandes.unacloud.share.db.entities.PlatformEntity;
+import uniandes.unacloud.share.db.entities.RepositoryEntity;
+import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.enums.ImageEnum;
 
 /**
@@ -15,14 +15,21 @@ import uniandes.unacloud.share.enums.ImageEnum;
 public class ImageFileEntity extends ImageEntity{
 	
 	private RepositoryEntity repository;
-	private Boolean isPublic;
-	private Long fixDisk;
-	private String mainFile;
-	private String name;
-	private UserEntity owner;
-	private String configurer;
-	private PlatformEntity platform;
 	
+	private Boolean isPublic;
+	
+	private Long fixDisk;
+	
+	private String mainFile;
+	
+	private String name;
+	
+	private UserEntity owner;
+	
+	private String configurer;
+	
+	private PlatformEntity platform;
+		
 	public ImageFileEntity(Long id, ImageEnum state, String token, RepositoryEntity repository, PlatformEntity platform, Boolean isPublic, Long disk, String mainFile, String name, String configurer) {
 		
 		super(id, null, null, state, token);

@@ -32,7 +32,7 @@ class ExecutionRequest {
 	/**
 	 * Execution which belongs this request
 	 */
-	static belongsTo=  [execution:Execution]
+	static belongsTo = [execution:Execution]
 
 	/**
 	 * status and time never can be null

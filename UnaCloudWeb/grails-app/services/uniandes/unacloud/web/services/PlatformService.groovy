@@ -32,7 +32,7 @@ class PlatformService {
 	 * @param name platform new name
 	 */
 	
-	def setValues(Platform platform, name, platformVersion, mainExt, filesExt, cls){
+	def setValues(Platform platform, name, platformVersion, mainExt, filesExt, cls) {
 		platform.putAt("name", name)
 		platform.putAt("platformVersion", platformVersion)
 		platform.putAt("mainExtension", mainExt)
@@ -45,7 +45,7 @@ class PlatformService {
 	 * @param platform platform to be deleted
 	 */
 	
-	def deletePlatform(Platform platform){
+	def deletePlatform(Platform platform) {
 		platform.delete()
 	}
 }

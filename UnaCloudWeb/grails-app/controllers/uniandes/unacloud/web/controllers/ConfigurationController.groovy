@@ -39,16 +39,16 @@ class ConfigurationController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){
-			flash.message="You must log in first"
+		if (!session.user) {
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
 		}
-		else{
+		else {
 			def user = User.get(session.user.id)
 			session.user.refresh(user)
-			if(!userGroupService.isAdmin(user)){
-				flash.message="You must be administrator to see this content"
+			if (!userGroupService.isAdmin(user)) {
+				flash.message = "You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
 			}
@@ -65,13 +65,13 @@ class ConfigurationController {
 	/**
 	 * Sets value in a server variable
 	 */
-	def setVariable(){
+	def setVariable() {
 		def variable = ServerVariable.get(params.id)
-		if(variable){
-			configurationService.setValue(variable, variable.serverVariableType.equals(ServerVariableTypeEnum.BOOLEAN)?
-				params.value?'true':'false':params.value.equals("NoOne")?"":params.value)
-			flash.message="The server variable has been modified"
-			flash.type="success"
+		if (variable) {
+			configurationService.setValue(variable, variable.serverVariableType.equals(ServerVariableTypeEnum.BOOLEAN) ?
+				params.value ? 'true':'false' : params.value.equals("NoOne") ? "" : params.value)
+			flash.message = "The server variable has been modified"
+			flash.type = "success"
 		}
 		redirect(uri:"/config/variables", absolute:true)
 	}
@@ -79,27 +79,27 @@ class ConfigurationController {
 	/**
 	 * Renders page to manage agent configuration
 	 */
-	def agentConfig(){
-		[agent:configurationService.getAgentVersion()]
+	def agentConfig() {
+		[agent: configurationService.getAgentVersion()]
 	}
 	
 	/**
 	 * Increases agent version
 	 */
-	def setAgentVersion(){
+	def setAgentVersion() {
 		configurationService.setAgentVersion();
-		flash.message="The Agent version has been increased"
-		flash.type="success"
+		flash.message = "The Agent version has been increased"
+		flash.type = "success"
 		redirect(uri:"/config/agent", absolute:true)
 	}
 	
 	/**
 	 * call service to load files in stream
 	 */
-	def downloadAgent(){
+	def downloadAgent() {
 		response.setContentType("application/zip")
 		response.setHeader("Content-disposition", "filename=agent.zip")
-		configurationService.copyUpdaterOnStream(response.outputStream,grailsAttributes.getApplicationContext().getResource("/").getFile())
+		configurationService.copyUpdaterOnStream(response.outputStream, grailsAttributes.getApplicationContext().getResource("/").getFile())
 		response.outputStream.flush()
 	}
 }

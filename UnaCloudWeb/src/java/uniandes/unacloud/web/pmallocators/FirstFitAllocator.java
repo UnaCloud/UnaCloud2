@@ -20,22 +20,22 @@ public class FirstFitAllocator extends ExecutionAllocator {
 	 * Assigns all possible executions for each physical machine based in available resources
 	 */
 	@Override
-	protected void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines,final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	protected void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines, final Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException {
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {
 			public int compare(PhysicalMachine p1, PhysicalMachine p2) {
-				return Long.compare(p1.getDatabaseId(),p2.getDatabaseId());
+				return Long.compare(p1.getDatabaseId(), p2.getDatabaseId());
 			}
 		});
-		vmCycle:for(Execution vme:executionList){
-			for(PhysicalMachine pm:physicalMachines){
+		vmCycle : for(Execution vme : executionList) {
+			for (PhysicalMachine pm : physicalMachines) {
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
-				if(fitEXonPM(vme, pm, pmad)){
+				if (fitEXonPM(vme, pm, pmad)) {
 					vme.setExecutionNode(pm);
-					if(pmad==null){
-						pmad=new PhysicalMachineAllocationDescription(pm.getDatabaseId(),0,0,0);
-						physicalMachineDescriptions.put(pmad.getNodeId(),pmad);
+					if (pmad == null) {
+						pmad=new PhysicalMachineAllocationDescription(pm.getDatabaseId(), 0, 0, 0);
+						physicalMachineDescriptions.put(pmad.getNodeId(), pmad);
 					}
-					pmad.addResources(vme.getHardwareProfile().getCores(),vme.getHardwareProfile().getRam(), 1);
+					pmad.addResources(vme.getHardwareProfile().getCores(), vme.getHardwareProfile().getRam(), 1);
 					continue vmCycle;
 				}
 			}

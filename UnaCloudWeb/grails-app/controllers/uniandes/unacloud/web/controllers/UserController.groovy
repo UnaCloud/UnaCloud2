@@ -44,13 +44,13 @@ class UserController {
 	/**
 	 * Makes session verifications before executing user administration actions
 	 */	
-	def beforeInterceptor = [action:{
-			if(!session.user){
-				flash.message="You must log in first"
+	def beforeInterceptor = [action: {
+			if (!session.user) {
+				flash.message = "You must log in first"
 				redirect(uri:"/login", absolute:true)
 				return false
 			}	
-			else{
+			else {
 				def user = User.get(session.user.id)
 				session.user.refresh(user)
 			}
@@ -64,11 +64,11 @@ class UserController {
 	 * Initial action. Selects redirection depending on session status
 	 */
 	def index() {
-		if(session.user){
+		if (session.user) {
 			redirect(uri:"/home", absolute:true)
 			return true
 		}
-		else{
+		else {
 			redirect(uri:"/login", absolute:true)
 			return true
 		}
@@ -80,19 +80,20 @@ class UserController {
 	 */	
 	def login(){
 		def user = userService.getUser(params.username,params.password)		
-		if (user){
-			if(user.status==UserStateEnum.AVAILABLE){	
-				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString(),user.isAdmin())		
+		if (user) {
+			if (user.status == UserStateEnum.AVAILABLE) {	
+				UserSession userSession = new UserSession(user.id, user.name, user.username, user.description, user.registerDate.toString(), user.isAdmin())		
 				session.user = userSession
-				flash.message=user.name
+				flash.message = user.name
 				redirect(uri: '/', absolute: true)
-			}else{
-				flash.message="Disabled user"
+			} 
+			else {
+				flash.message = "Disabled user"
 				redirect(uri: '/login', absolute: true)
 			}
 		}
 		else {
-			flash.message="Wrong username or password"
+			flash.message = "Wrong username or password"
 			redirect(uri: '/login', absolute: true)
 		}
 	}
@@ -101,7 +102,7 @@ class UserController {
 	 * Removes the current session user. Redirects to login page
 	 * @return
 	 */
-	def logout(){
+	def logout() {
 		session.invalidate()
 		redirect(uri: '/login', absolute: true)
 	}
@@ -113,52 +114,56 @@ class UserController {
 	def home(){
 		def user = User.get(session.user.id)	
 		TreeMap<String, Integer> treeImages = new TreeMap<String, Integer>();
-		if(user.images.size()>0){
-			treeImages.put('ALL',user.images.size())
-			for(Image image in user.images){
-				if(treeImages.get(image.state.name)==null)treeImages.put(image.state.name,0)
-				treeImages.put(image.state.name,treeImages.get(image.state.name)+1)
+		if (user.images.size() > 0) {
+			treeImages.put('ALL', user.images.size())
+			for (Image image in user.images) {
+				if (treeImages.get(image.state.name) == null)
+					treeImages.put(image.state.name, 0)
+				treeImages.put(image.state.name, treeImages.get(image.state.name) + 1)
 			}
 		}	
 		
 		TreeMap<String, Integer> treeClusters = new TreeMap<String, Integer>();
-		if(user.userClusters.size()>0){
-			treeClusters.put('ALL',user.userClusters.size())
-			treeClusters.put('DEPLOYED',0)
-			for(Cluster cluster in user.userClusters){
-				if(treeClusters.get(cluster.state.name)==null)treeClusters.put(cluster.state.name,0)
-				treeClusters.put(cluster.state.name,treeClusters.get(cluster.state.name)+1)
-				if(cluster.isDeployed())treeClusters.put('DEPLOYED',treeClusters.get('DEPLOYED')+1)
+		if (user.userClusters.size() > 0) {
+			treeClusters.put('ALL', user.userClusters.size())
+			treeClusters.put('DEPLOYED', 0)
+			for (Cluster cluster in user.userClusters) {
+				if (treeClusters.get(cluster.state.name) == null)
+					treeClusters.put(cluster.state.name,0)
+				treeClusters.put(cluster.state.name, treeClusters.get(cluster.state.name) + 1)
+				if (cluster.isDeployed())
+					treeClusters.put('DEPLOYED', treeClusters.get('DEPLOYED') + 1)
 			}
 		}
 		
 		TreeMap<String, Integer> treeDeployments = new TreeMap<String, Integer>();
-		if(user.deployments.size()>0){
-			treeDeployments.put('ALL',user.deployments.size())
-			for(Deployment deployment in user.deployments){
-				if(treeDeployments.get(deployment.status.name)==null)treeDeployments.put(deployment.status.name,0)
-				treeDeployments.put(deployment.status.name,treeDeployments.get(deployment.status.name)+1)
+		if (user.deployments.size() > 0) {
+			treeDeployments.put('ALL', user.deployments.size())
+			for (Deployment deployment in user.deployments) {
+				if (treeDeployments.get(deployment.status.name) == null)
+					treeDeployments.put(deployment.status.name, 0)
+				treeDeployments.put(deployment.status.name, treeDeployments.get(deployment.status.name) + 1)
 			}
 		}
 		
-		if(user.isAdmin()){
+		if (user.isAdmin()) {
 			def boxes  = []
-			boxes.add([name:'Users',quantity:User.count(),color:'aqua',url:'/admin/user/list',icon:'ion-person'])
-			boxes.add([name:'Groups',quantity:UserGroup.count(),color:'green',url:'/admin/group/list',icon:'ion-person-stalker'])
-			boxes.add([name:'Platforms',quantity:Platform.count(),color:'yellow',url:'/admin/platform/list',icon:'ion-star'])
-			boxes.add([name:'Operating Systems',quantity:OperatingSystem.count(),color:'blue',url:'/admin/os/list',icon:'ion-load-a'])			
-			boxes.add([name:'Hosts',quantity:PhysicalMachine.count(),color:'teal',url:'/admin/lab/list',icon:'ion-monitor'])
-			boxes.add([name:'Storage',quantity:Repository.count(),color:'maroon',url:'/admin/repository/list',icon:'ion-folder'])
-			[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments,boxes:boxes]
-		}else		
-		 	[myImages:treeImages,myClusters:treeClusters,myDeployments:treeDeployments]
+			boxes.add([name:'Users', quantity:User.count(), color:'aqua', url:'/admin/user/list', icon:'ion-person'])
+			boxes.add([name:'Groups', quantity:UserGroup.count(), color:'green', url:'/admin/group/list', icon:'ion-person-stalker'])
+			boxes.add([name:'Platforms', quantity:Platform.count(), color:'yellow', url:'/admin/platform/list', icon:'ion-star'])
+			boxes.add([name:'Operating Systems', quantity:OperatingSystem.count(), color:'blue',url:'/admin/os/list', icon:'ion-load-a'])			
+			boxes.add([name:'Hosts', quantity:PhysicalMachine.count(), color:'teal', url:'/admin/lab/list', icon:'ion-monitor'])
+			boxes.add([name:'Storage', quantity:Repository.count(), color:'maroon', url:'/admin/repository/list', icon:'ion-folder'])
+			[myImages:treeImages, myClusters:treeClusters, myDeployments:treeDeployments, boxes:boxes]
+		} else		
+		 	[myImages:treeImages, myClusters:treeClusters, myDeployments:treeDeployments]
 		
 	}	
 	
 	/**
 	 * Renders page with current user session attributes
 	 */
-	def profile(){
+	def profile() {
 		def user = User.get(session.user.id)
 		[user: user]
 	}
@@ -166,19 +171,20 @@ class UserController {
 	/**
 	 * Sets changed values in profile
 	 */
-	def changeProfile(){
-		if(params.name&&params.description){			
-			try{
+	def changeProfile() {
+		if (params.name && params.description) {			
+			try {
 				def user = User.get(session.user.id)
 				userService.setValues(user,user.username, params.name, params.description, null, params.email)
 				session.user.refresh(user)
-				flash.message="Profile values have been modified"
-				flash.type="success"
-			}catch(Exception e){
+				flash.message = "Profile values have been modified"
+				flash.type = "success"
+			} catch(Exception e) {
 				e.printStackTrace()
-				flash.message=e.message
+				flash.message = e.message
 			}
-		}else flash.message="Email is optional, other values are required"
+		} else 
+			flash.message = "Email is optional, other values are required"
 		redirect(uri:"/user/profile", absolute:true)
 	}
 	
@@ -191,20 +197,22 @@ class UserController {
 	/**
 	 * Validates and saves new password
 	 */
-	def savePassword(){
-		if(params.passwd&&params.newPasswd&&params.confirmPasswd){
-			if(params.confirmPasswd.equals(params.newPasswd)){
-				try{
+	def savePassword() {
+		if (params.passwd && params.newPasswd && params.confirmPasswd) {
+			if (params.confirmPasswd.equals(params.newPasswd)) {
+				try {
 					def user = User.get(session.user.id)
 					userService.changePassword(user, params.passwd, params.newPasswd)
 					session.user.refresh(user)
-					flash.message="Password has been modified"
-					flash.type="success"
-				}catch(Exception e){
-					flash.message=e.message
+					flash.message = "Password has been modified"
+					flash.type = "success"
+				} catch(Exception e) {
+					flash.message = e.message
 				}
-			}else flash.message="Password fields don't match"
-		}else flash.message="All fields are required"
+			} else 
+				flash.message = "Password fields don't match"
+		} else 
+			flash.message = "All fields are required"
 		redirect(uri:"/user/profile/change", absolute:true)
 	}
 }

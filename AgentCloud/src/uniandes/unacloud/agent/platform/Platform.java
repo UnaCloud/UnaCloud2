@@ -3,14 +3,13 @@ package uniandes.unacloud.agent.platform;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
-import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.Execution;
-import uniandes.unacloud.agent.platform.VirtualBox.VirtualBox;
+import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.execution.domain.ImageCopy;
+
+import uniandes.unacloud.agent.utils.SystemUtils;
 
 /**
  * Abstract class to be implemented by each platform. It must be only instantiated by the platform factory
@@ -28,8 +27,8 @@ public abstract class Platform {
      */
     private String executablePath;
     
-    public Platform(String path){
-    	this.executablePath=path;
+    public Platform(String path) {
+    	this.executablePath = path;
     }
 
     public String getExecutablePath() {
@@ -109,12 +108,8 @@ public abstract class Platform {
 		}
     }
     
-    protected void sleep(long l) {
-        try {
-            Thread.sleep(l);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(VirtualBox.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    protected void sleep(long milli) {
+    	SystemUtils.sleep(milli);      
     }
     /**
      * Used to validate if a list of execution are running in platform.
@@ -128,7 +123,8 @@ public abstract class Platform {
 	 * @return code
 	 */
 	public String getCode() {
-		if(code == null)code = this.getClass().getSimpleName();
+		if(code == null)
+			code = this.getClass().getSimpleName();
 		return code;
 	}
 }

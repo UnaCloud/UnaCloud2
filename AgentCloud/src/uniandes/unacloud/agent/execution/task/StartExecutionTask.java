@@ -1,10 +1,10 @@
 package uniandes.unacloud.agent.execution.task;
 
-import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
-import uniandes.unacloud.agent.execution.entities.ImageCopy;
-import uniandes.unacloud.agent.execution.entities.Execution;
+import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.execution.domain.ImageCopy;
+import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 
 /**
@@ -12,8 +12,10 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
  * @author CesarF
  *
  */
-public class StartExecutionTask implements Runnable{
+public class StartExecutionTask implements Runnable {
+	
 	Execution machineExecution;
+	
 	/**
 	 * class constructor
 	 * @param machineExecution Execution instance to be started
@@ -28,16 +30,16 @@ public class StartExecutionTask implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("Start Execution");
-		try{
+		try {
 			//get image 
-			ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
+			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
 			System.out.println("Get Image");
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");
-		}catch(ExecutionException ex){
+		} catch(ExecutionException ex) {
 			try {
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

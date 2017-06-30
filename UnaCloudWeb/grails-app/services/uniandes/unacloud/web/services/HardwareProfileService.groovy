@@ -24,8 +24,8 @@ class HardwareProfileService {
 	 * @param names list of names 
 	 * @return list of Hardware Profiles
 	 */
-	def getHardwareProfilesByName(String[] names){
-		if(names==null)
+	def getHardwareProfilesByName(String[] names) {
+		if (names == null)
 			return HardwareProfile.all
 		return HardwareProfile.where{name in names}.findAll()
 	}

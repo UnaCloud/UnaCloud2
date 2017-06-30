@@ -38,7 +38,7 @@ class ConfigurationService {
 	 * returns the current agent version in system
 	 * @return
 	 */
-	def getAgentVersion(){
+	def getAgentVersion() {
 		return ServerVariable.findByName(UnaCloudConstants.AGENT_VERSION).variable
 	}
 	
@@ -47,9 +47,9 @@ class ConfigurationService {
 	 * @return
 	 */
 	def setAgentVersion(){
-		ServerVariable agentVersion= ServerVariable.findByName(UnaCloudConstants.AGENT_VERSION)
-		int newVerNumber= ((agentVersion.getVariable()-"2.0.") as Integer)+1
-		String newVersion=  "2.0."+ newVerNumber
+		ServerVariable agentVersion = ServerVariable.findByName(UnaCloudConstants.AGENT_VERSION)
+		int newVerNumber = ((agentVersion.getVariable()-"2.0.") as Integer) + 1
+		String newVersion =  "2.0." + newVerNumber
 		agentVersion.putAt("variable", newVersion)
 	}
 	
@@ -58,16 +58,16 @@ class ConfigurationService {
 	 * @param outputStream file output stream for download
 	 * @param appDir directory where the zip will be stored
 	 */
-	def copyUpdaterOnStream(OutputStream outputStream,File appDir){
-		ZipOutputStream zos=new ZipOutputStream(outputStream);
-		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir,"agentSources/"+UnaCloudConstants.UPDATER_JAR),true);
+	def copyUpdaterOnStream(OutputStream outputStream,File appDir) {
+		ZipOutputStream zos = new ZipOutputStream(outputStream);
+		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir, "agentSources/" + UnaCloudConstants.UPDATER_JAR), true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
-		PrintWriter pw=new PrintWriter(zos);
-		for(ServerVariable sv:ServerVariable.where{serverOnly == false}.findAll())
-			pw.println(sv.name+"="+sv.variable);
+		PrintWriter pw = new PrintWriter(zos);
+		for(ServerVariable sv : ServerVariable.where{serverOnly == false}.findAll())
+			pw.println(sv.name + "=" + sv.variable);
 		pw.flush();
 		zos.closeEntry();
-		pw=new PrintWriter(zos);
+		pw = new PrintWriter(zos);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.LOCAL_FILE));
 		pw.println("DATA_PATH=path_to_save_logs");
 		pw.println("VM_REPO_PATH=path_to_local_repository");
@@ -86,11 +86,13 @@ class ConfigurationService {
 	 * @param tells if the file is in root directory
 	 */
 	
-	private static void copyFile(ZipOutputStream zos,String filePath,File f,boolean root)throws IOException{
-		if(f.isDirectory())for(File r:f.listFiles())copyFile(zos,(root?"":(filePath+"/"))+r.getName(),r,false);
-		else if(f.isFile()){
+	private static void copyFile(ZipOutputStream zos, String filePath, File f, boolean root) throws IOException{
+		if (f.isDirectory())
+			for (File r : f.listFiles())
+				copyFile(zos, (root ? "" : (filePath + "/")) + r.getName(), r, false);
+		else if (f.isFile()) {
 			zos.putNextEntry(new ZipEntry(filePath));
-			Files.copy(f.toPath(),zos);
+			Files.copy(f.toPath(), zos);
 			zos.closeEntry();
 		}
 	}

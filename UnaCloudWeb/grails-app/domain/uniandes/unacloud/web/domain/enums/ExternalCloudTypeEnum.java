@@ -7,6 +7,7 @@ package uniandes.unacloud.web.domain.enums;
  *
  */
 public enum ExternalCloudTypeEnum {
+	
 	/**
 	 * Computing resources services
 	 */
@@ -15,12 +16,14 @@ public enum ExternalCloudTypeEnum {
 	 * Storage services
 	 */
 	STORAGE("Storage");
+	
 	String name;
 	
 	private ExternalCloudTypeEnum(String name) {
-		this.name= name;
+		this.name = name;
 	}
-	public String getName(){
+	
+	public String getName() {
 		return name;
 	}
 }

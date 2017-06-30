@@ -1,14 +1,14 @@
 package uniandes.unacloud.agent.execution.task;
 
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.common.com.messages.exeo.ExecutionStopMessage;
+import uniandes.unacloud.common.net.messages.exeo.ExecutionStopMessage;
 
 /**
  * Task to stop an execution
  * @author CesarF
  *
  */
-public class StopExecutionTask implements Runnable{
+public class StopExecutionTask implements Runnable {
 	
 	ExecutionStopMessage stopMessage;
 	

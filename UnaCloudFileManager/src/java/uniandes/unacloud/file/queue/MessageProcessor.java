@@ -30,7 +30,7 @@ public abstract class MessageProcessor extends Thread{
 	/**
 	 * Method to be implemented to process message
 	 */
-	protected abstract void processMessage(QueueMessage message)throws Exception;
+	protected abstract void processMessage(QueueMessage message) throws Exception;
 	
 	/**
 	 * Method to be implemented to process exception in process message method

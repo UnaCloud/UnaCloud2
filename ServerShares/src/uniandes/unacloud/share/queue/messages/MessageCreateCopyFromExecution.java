@@ -13,7 +13,9 @@ import uniandes.unacloud.share.enums.QueueMessageType;
 public class MessageCreateCopyFromExecution extends QueueMessage{
 	
 	private final static String TAG_ID_EXECUTION = "id_execution";
+	
 	private final static String TAG_ID_IMAGE = "id_image";
+	
 	private final static String TAG_PAST_ID_IMAGE = "past_id_image";
 	
 	public MessageCreateCopyFromExecution(String requester, long idExecution, long idImage, long pastIdImage){

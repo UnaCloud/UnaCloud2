@@ -9,11 +9,11 @@ import uniandes.unacloud.share.enums.QueueMessageType;
  * @author cdsbarrera
  *
  */
-public class MessageDeployCluster extends QueueMessage{
+public class MessageDeployCluster extends QueueMessage {
 	
 	private static final String TAG_DEPLOYMENT = "id_deployment";
 	
-	public MessageDeployCluster(String requester, long idDeployment){
+	public MessageDeployCluster(String requester, long idDeployment) {
 		super(requester);
 		this.setType(QueueMessageType.DEPLOY_CLUSTER);
 		

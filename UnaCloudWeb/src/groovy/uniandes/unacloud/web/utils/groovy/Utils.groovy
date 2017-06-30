@@ -12,7 +12,9 @@ class Utils {
 	 * @return
 	 */
 	def validate(text){
-		if(text||text.isEmpty())return false
-		else return true
+		if (text || text.isEmpty()) 
+			return false
+		else 
+			return true
 	}
 }

@@ -25,7 +25,7 @@ public enum ClusterEnum {
 	
 	String name;
 	
-	private ClusterEnum(String name){
+	private ClusterEnum(String name) {
 		this.name = name;
 	}
 }

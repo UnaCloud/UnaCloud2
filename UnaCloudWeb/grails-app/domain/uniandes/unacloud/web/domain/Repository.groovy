@@ -41,7 +41,7 @@ class Repository {
 	 * Validates if this repository is default one
 	 * @return true is the repository is default, false is not
 	 */	
-	def boolean isDefault(){
+	def boolean isDefault() {
 		return this == Repository.findByName(UnaCloudConstants.MAIN_REPOSITORY);		
 	}
 }
