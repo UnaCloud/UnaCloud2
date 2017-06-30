@@ -35,22 +35,29 @@ import uniandes.unacloud.file.db.entities.ImageFileEntity;
  */
 public class QueueMessageFileProcessor implements QueueReader {
 		
+	/**
+	 * Thread pool 
+	 */
 	private ExecutorService threadPool;
 	
+	/**
+	 * Main repository for all images
+	 */
 	private RepositoryEntity mainRepo;
 
+	/**
+	 * Creates a queue processor to process messages to manage file
+	 * @param threads
+	 */
 	public QueueMessageFileProcessor(int threads) {
-		threadPool = Executors.newFixedThreadPool(threads);
-		try (Connection con = FileManager.getInstance().getDBConnection()) {			
-			mainRepo = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
-		} catch (Exception e) {	
-			e.printStackTrace();
-		}
+		threadPool = Executors.newFixedThreadPool(threads);		
 	}
 	
 	@Override
 	public void processMessage(QueueMessage message) {
 		System.out.println("Receives message " + message.getType());
+		if (mainRepo == null) 
+			initializeMainRepo();
 		switch (message.getType()) {
 		case CREATE_PUBLIC_IMAGE:
 			createPublicImage(message);
@@ -72,6 +79,17 @@ public class QueueMessageFileProcessor implements QueueReader {
 		}
 	}
 	
+	/**
+	 * Initialize main repo to avoid extra queries to database
+	 */
+	private void initializeMainRepo() {
+		try (Connection con = FileManager.getInstance().getDBConnection()) {			
+			mainRepo = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+		} catch (Exception e) {	
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Creates a copy from a current private image in a public folder
 	 * @param message

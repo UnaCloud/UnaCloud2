@@ -53,8 +53,8 @@
 					                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/stop/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
 					                                   	 	<a title="Clean host cache" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/cache/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-eraser" ></i></a>
 					                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/update/', absolute: true)}" data-toggle="tooltip"><i class="fa fa-level-up"></i></a>
-															<a title="Request Version" class="version-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/version/', absolute: true)}" data-toggle="tooltip">Request Version<i class="glyphicon glyphicon-save"></i></a>
-					                                        <a title="Request free disk space" class="disk-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/size/', absolute: true)}" data-toggle="tooltip">Request disk size<i class="glyphicon glyphicon-floppy-save"></i></a>
+															<a title="Request Version" class="version-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/version/', absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-save"></i></a>
+					                                        <a title="Request used disk space" class="disk-agents btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/size/', absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-floppy-save"></i></a>
 														</div>		  	
 												  	</td>
 											  </tr>
@@ -64,7 +64,7 @@
 				                                  <th>Host Name</th>
 				                                  <th>IP</th>
 				                                  <th>State</th>
-				                                  <th>Data Space</th>
+				                                  <th>Used Space</th>
 				                                  <th>Activity</th>
 				                                  <th>Platforms</th>
 				                                  <th>Actions</th>
@@ -76,9 +76,17 @@
 				                              	  <td class="column-center">	
 										      		<input type="checkbox" name="machine_${machine.id}" class="all"/>  
 										      	  </td>
-										      	  <td><small>${machine.name} <span class = "label label-success"> V ${machine.getCurrentAgentVersion()}</span></small></td>
-				                                  <td><small>${machine.ip.ip}</small></td>
-				                                  <td>
+										      	  <td>
+										      	  	<small>${machine.name} 
+										      	  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="
+										      	  			<g:if test = "${machine.getCurrentAgentVersion()}">V ${machine.getCurrentAgentVersion()}</g:if><g:else>NO-VERSION</g:else>">
+										      	  		</i>
+										      	  	  </small>
+										      	  </td>
+										      	  <td class="column-center">
+										      	  	<small>${machine.ip.ip}</small>
+										      	  </td>
+				                                  <td class="column-center">
 					                                <g:if test="${machine.state.equals(PhysicalMachineStateEnum.ON) }">
 											   			<span class="label label-success">${machine.state.toString()}</span>
 											   		</g:if>
@@ -92,7 +100,7 @@
 											   			<span class="label label-warning">${machine.state.toString()}</span>
 											   		</g:if>
 				                                  </td>
-				                                  <td>
+				                                  <td class="column-center">
 				                                  	<small class = 
 				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
 				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>
@@ -103,7 +111,8 @@
 				                                  </td>
 				                                  <td class = "column-center">	
 										      		<g:if test = "${machine.withUser}"><i class = "fa fa-user text-green" title = "With user" data-toggle="tooltip"></i></g:if> 
-										      		<g:if test = "${machine.withExecution()}"><i class = "fa fa-laptop text-green" title = "With executions" data-toggle="tooltip"></i></g:if>  </td>
+										      		<g:if test = "${machine.withExecution()}"><i class = "fa fa-laptop text-green" title = "With executions" data-toggle="tooltip"></i></g:if>
+										      	  </td>
 										      	  <td class = "platform-list">
 										      	 	<g:each in = "${machine.platforms}"  var = "platform">
 										      	 		<span class="label label-primary">${platform.name}</span>

@@ -42,7 +42,9 @@ public class FileManager extends ProjectManager {
 	 */
 	private static final int CONCURRENT_THREADS_QUEUE = 50;
 	
-	
+	/**
+	 * Creates a File Manager
+	 */
 	public FileManager() {
 		super();
 	}
