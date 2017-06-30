@@ -12,7 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
+import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ServerVariableManager;
 import uniandes.unacloud.file.db.entities.ServerVariableEntity;
 
@@ -31,14 +31,19 @@ public class AgentFileManager {
 	 * @throws SQLException 
 	 */
 	
-	public static void copyAgentOnStream(OutputStream outputStream, Connection con) throws IOException, SQLException {
+	public static void copyAgentOnStream(OutputStream outputStream) throws IOException, SQLException {
 		ZipOutputStream zos = new ZipOutputStream(outputStream);
 		System.out.println(System.getProperty(UnaCloudConstants.ROOT_PATH) + "agentSources/" + UnaCloudConstants.AGENT_JAR);
 		copyFile( zos, UnaCloudConstants.AGENT_JAR, new File(System.getProperty(UnaCloudConstants.ROOT_PATH), "agentSources/" + UnaCloudConstants.AGENT_JAR), true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw = new PrintWriter(zos);
-		List<ServerVariableEntity> variables = ServerVariableManager.getAllVariablesForAgent( con);
-		for (ServerVariableEntity sv:variables)
+		List<ServerVariableEntity> variables = null;
+		try (Connection con = FileManager.getInstance().getDBConnection();) {
+			variables = ServerVariableManager.getAllVariablesForAgent(con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		for (ServerVariableEntity sv : variables)
 			pw.println(sv.getName() + "=" + sv.getValue());
 		pw.flush();
 		zos.closeEntry();

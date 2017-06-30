@@ -17,7 +17,7 @@ import uniandes.unacloud.control.db.PhysicalMachineUpdater;
  * @author CesarF
  *
  */
-public class PmMessageProcessor extends AbstractReceiverProcessor{
+public class PmMessageProcessor extends AbstractReceiverProcessor {
 
 	public PmMessageProcessor(UnaCloudMessageUDP message) {
 		super(message);

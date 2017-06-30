@@ -242,61 +242,61 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void doDeploy(MessageDeployCluster message){
 		
-			Long deploymentId =  message.getIdDeployment();
-			
-			DeploymentEntity deploy = null;
-			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				deploy = DeploymentManager.getDeployment(deploymentId, con);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
-			if (deploy != null) {
-				System.out.println("Deploy " + deploy.getId());
-				for (DeployedImageEntity image : deploy.getImages()) {
-					for (final ExecutionEntity execution : image.getExecutions()) {
-						
-						ExecutionStartMessage vmsm = new ExecutionStartMessage();
-						System.out.println("Execution from " + execution.getStartTime() + " to: "+execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
-						vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
-						vmsm.setHostname(execution.getHostName());
-						vmsm.setVmCores(execution.getCores());
-						vmsm.setVmMemory(execution.getRam());
-						vmsm.setExecutionId(execution.getId());
-						vmsm.setImageId(image.getImage().getId());
-						
-						List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
-						for (NetInterfaceEntity interf: execution.getInterfaces())
-							interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
-						vmsm.setInterfaces(interfaces);						
-						List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
-						machines.add(execution.getNode());
-						
-						threadPool.submit(new MessageSender(machines, 
-								vmsm, new AbstractResponseProcessor() {			
-							@Override
-							public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									Date stopTime = new Date();
-									stopTime.setTime(stopTime.getTime() + execution.getTime());
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, null, null, "Sent message"), con2);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+		Long deploymentId =  message.getIdDeployment();
+		
+		DeploymentEntity deploy = null;
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			deploy = DeploymentManager.getDeployment(deploymentId, con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}			
+		if (deploy != null) {
+			System.out.println("Deploy " + deploy.getId());
+			for (DeployedImageEntity image : deploy.getImages()) {
+				for (final ExecutionEntity execution : image.getExecutions()) {
+					
+					ExecutionStartMessage vmsm = new ExecutionStartMessage();
+					System.out.println("Execution from " + execution.getStartTime() + " to: "+execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
+					vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
+					vmsm.setHostname(execution.getHostName());
+					vmsm.setVmCores(execution.getCores());
+					vmsm.setVmMemory(execution.getRam());
+					vmsm.setExecutionId(execution.getId());
+					vmsm.setImageId(image.getImage().getId());
+					
+					List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
+					for (NetInterfaceEntity interf: execution.getInterfaces())
+						interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
+					vmsm.setInterfaces(interfaces);						
+					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
+					machines.add(execution.getNode());
+					
+					threadPool.submit(new MessageSender(machines, 
+							vmsm, new AbstractResponseProcessor() {			
+						@Override
+						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
+							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+								Date stopTime = new Date();
+								stopTime.setTime(stopTime.getTime() + execution.getTime());
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, null, null, "Sent message"), con2);
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-							@Override
-							public void attendError(String message, Long id) {
-								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error " + message), con2);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+						}
+						@Override
+						public void attendError(String message, Long id) {
+							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
+								PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error " + message), con2);
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						}));
-					}
-				}				
-			}
+						}
+					}));
+				}
+			}				
+		}
 	
 	}
 	

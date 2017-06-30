@@ -15,9 +15,33 @@ import uniandes.unacloud.file.queue.QueueMessageFileProcessor;
  * 
  * @author CesarF
  */
-public class FileManager extends ProjectManager{
+public class FileManager extends ProjectManager {
 	
+	/**
+	 * File manager instance
+	 */
 	private static FileManager fileManager;
+	
+	/**
+	 * Number of initial and minimum active connections to database
+	 */
+	private static final int POOL_SIZE = 5;
+
+	/**
+	 * Number of concurrent threads to process request for files
+	 */
+	private static final int CONCURRENT_THREADS_FILE = 30;
+	
+	/**
+	 * Number of concurrent threads to process messages from agents
+	 */
+	private static final int CONCURRENT_THREADS_AGENT = 30;
+	
+	/**
+	 * Number of concurrent threads to process messages from queue
+	 */
+	private static final int CONCURRENT_THREADS_QUEUE = 50;
+	
 	
 	public FileManager() {
 		super();
@@ -27,7 +51,7 @@ public class FileManager extends ProjectManager{
 	 * Returns file manager instance
 	 * @return instance
 	 */
-	public static FileManager getInstance(){
+	public static FileManager getInstance() {
 		try {
 			if (fileManager == null)
 				fileManager = new FileManager();
@@ -69,7 +93,8 @@ public class FileManager extends ProjectManager{
 				reader.getIntegerVariable(UnaCloudConstants.DB_PORT),
 				reader.getStringVariable(UnaCloudConstants.DB_IP), 
 				reader.getStringVariable(UnaCloudConstants.DB_USERNAME), 
-				reader.getStringVariable(UnaCloudConstants.DB_PASS));
+				reader.getStringVariable(UnaCloudConstants.DB_PASS),
+				POOL_SIZE);
 		connection.getConnection().close();		
 	}
 
@@ -84,14 +109,14 @@ public class FileManager extends ProjectManager{
 				UnaCloudConstants.QUEUE_FILE);
 		queueReceiver = new QueueMessageReceiver();
 		queueReceiver.createConnection(rabbitManager);
-		queueReceiver.startReceiver(new QueueMessageFileProcessor(50));	
+		queueReceiver.startReceiver(new QueueMessageFileProcessor(CONCURRENT_THREADS_QUEUE));	
 	}
 
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
-		new FileServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT), 30).start();
-		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 30).start();
+		new FileServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT), CONCURRENT_THREADS_FILE).start();
+		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), CONCURRENT_THREADS_AGENT).start();
 	}
 
 }
