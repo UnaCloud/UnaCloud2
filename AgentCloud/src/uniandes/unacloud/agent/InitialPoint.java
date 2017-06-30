@@ -115,6 +115,8 @@ public class InitialPoint {
 			e.printStackTrace();
 			System.exit(0);
 		}
+        
+        AgentManager.sendInitialMessage();
   
     }
 }
