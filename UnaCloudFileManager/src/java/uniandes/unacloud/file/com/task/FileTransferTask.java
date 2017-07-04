@@ -52,7 +52,7 @@ public class FileTransferTask implements Runnable{
 				final byte[] buffer=new byte[1024*100];				
 				System.out.println("\t Sending files "+image.getMainFile());
 				
-				if (requester.equals("1")) {
+				//if (requester.equals("1")) {
 					
 					FilenameFilter filter = new FilenameFilter() {
 						@Override
@@ -77,20 +77,20 @@ public class FileTransferTask implements Runnable{
 						zos.closeEntry();
 					}
 					System.out.println("Send torrent "+image.getMainFile());
-				}
-				else {
-					for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
-						
-						System.out.println("\tprocessing: "+f.getName());
-						zos.putNextEntry(new ZipEntry(f.getName()));					
-						try(FileInputStream fis=new FileInputStream(f)){
-							for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
-						}
-						zos.closeEntry();
-					}
-
-					System.out.println("Files sent "+image.getMainFile());
-				}		
+//				}
+//				else {
+//					for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles())if(f.isFile()){
+//						
+//						System.out.println("\tprocessing: "+f.getName());
+//						zos.putNextEntry(new ZipEntry(f.getName()));					
+//						try(FileInputStream fis=new FileInputStream(f)){
+//							for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+//						}
+//						zos.closeEntry();
+//					}
+//
+//					System.out.println("Files sent "+image.getMainFile());
+//				}		
 				
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
 				PrintWriter pw=new PrintWriter(zos);

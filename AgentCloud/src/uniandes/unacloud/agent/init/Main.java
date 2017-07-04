@@ -10,7 +10,6 @@ import uniandes.unacloud.agent.communication.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
