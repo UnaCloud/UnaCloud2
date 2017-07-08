@@ -18,6 +18,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.processor.FileProcessor;
 import grails.transaction.Transactional
 
 /**
@@ -29,6 +30,9 @@ import grails.transaction.Transactional
 @Transactional
 class FileService implements ApplicationContextAware { 
 	
+	/**
+	 * Application context
+	 */
      ApplicationContext applicationContext 
 
 	/**
@@ -38,48 +42,74 @@ class FileService implements ApplicationContextAware {
 	 * @param token
 	 * @return boolean, true if image was copy to file repository or not.
 	 */
-    def upload(files, String token){
+    def upload(files, String token) {
 		boolean copy = false;
-		try{
-			Connection con = FileManager.getInstance().getDBConnection();
-			def image = ImageFileManager.getImageWithFile(token,con)
+		try {
+			RepositoryEntity main = null;
+			UserEntity user = null;
+			Connection con = null;
+			ImageFileEntity image = null;
+			try {
+				con = FileManager.getInstance().getDBConnection();
+				image = ImageFileManager.getImageWithFile(token, con)
+				if (image) {
+					main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+					user = UserManager.getUser(image.getOwner().getId(), con)
+				}				
+			} catch (Exception e) {
+				e.printStackTrace()
+			} finally {
+				if (con != null)
+					con.close()
+			}		
+			
 			if (image) {
+				
 				boolean isValid = true;
 				files.each {
 					def fileName = it.getOriginalFilename().trim()
-					if (!image.getPlatform().validatesExtension(fileName)) {
+					if (!image.getPlatform().validatesExtension(fileName))
 						isValid = false;
-					}
 				}
-				if(!isValid)return null										
-				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
-				if(image.isPublic()){
+				
+				if (!isValid)
+					return null			
+				if (image.isPublic()) {
 					File file = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName());
 					if (file.exists()) {
 						image.setPublic(false)
 						copy = false;
-					}else copy = true
+					} else 
+						copy = true
 				}
+				
 				Long sizeImage = 0;
-				UserEntity user = UserManager.getUser(image.getOwner().getId(), con)
 				files.each {
+					
 					def fileName = it.getOriginalFilename()
-					File file= new File(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator + fileName + File.separator)
+					File file = new File(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator + fileName)
 					file.mkdirs()
 					it.transferTo(file)
-					if (image.isPublic()) {
-						File newFile = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + fileName);
-						FileUtils.copyFile(file, newFile);
-					}
-					if (fileName.matches(".*" + image.getPlatform().getExtension())) {
-						image.setMainFile(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator + fileName)
-					}
+					if (image.isPublic())
+						FileProcessor.copyFileSync(file.getAbsolutePath(), main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + fileName);						
+					
+					if (fileName.matches(".*" + image.getPlatform().getExtension()))
+						image.setMainFile(file.getAbsolutePath())
+				
 					sizeImage += it.getSize()
-				}				
-				ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null), false, con, true)
-	
+				}
+					
+				try {
+					con = FileManager.getInstance().getDBConnection();
+					ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.PROCESSING, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null), false, con, true)
+				} catch (Exception e) {
+					e.printStackTrace()
+				} finally {
+					if (con != null)
+						con.close()
+				}		
+				shareFile(image)
 			}
-			con.close();
 		}catch(Exception e){
 			e.printStackTrace()
 		}		
@@ -94,44 +124,82 @@ class FileService implements ApplicationContextAware {
 	
 	def updateFiles(files, String token) {
 		try {
-			Connection con = FileManager.getInstance().getDBConnection();
-			def image = ImageFileManager.getImageWithFile(token, con)
+			RepositoryEntity main = null;
+			UserEntity user = null;
+			Connection con = null;
+			ImageFileEntity image = null;
+			try {
+				con = FileManager.getInstance().getDBConnection();
+				image = ImageFileManager.getImageWithFile(token, con)
+				if (image) {
+					main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+					user = UserManager.getUser(image.getOwner().getId(), con)
+				}
+			} catch (Exception e) {
+				e.printStackTrace()
+			} finally {
+				if (con != null)
+					con.close()
+			}
 			if (image) {
 				println 'Main file: ' + image.getMainFile()
 				files.each {
 					def fileName = it.getOriginalFilename()
-					if (!image.getPlatform().validatesExtension(fileName)) {
+					if (!image.getPlatform().validatesExtension(fileName))
 						return null
-					}
 				}
 				if (image.getMainFile() != null)
-					new java.io.File(image.getMainFile()).getParentFile().deleteDir()
-				RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+					FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 				def sizeImage = 0;
-				UserEntity user = UserManager.getUser(image.getOwner().getId(), con)
 				files.each {
 					def filename = it.getOriginalFilename()
-					File file = new File(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator + filename + File.separator)
+					File file = new File(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator + filename)
 					file.mkdirs()
 					it.transferTo(file)
-					if (image.isPublic()) {
-						File newFile = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName( )+ File.separator + filename);
-						FileUtils.copyFile(file, newFile);
-					}
-					if (filename.matches(".*" + image.getPlatform().getExtension())) {
-						image.setMainFile(image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator+filename)
-					}
+					if (image.isPublic()) 
+						FileProcessor.copyFileSync(file.getAbsolutePath(), main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + filename);					
+					if (filename.matches(".*" + image.getPlatform().getExtension()))
+						image.setMainFile(file.getAbsolutePath())				
 					sizeImage += it.getSize()
+				}				
+				try {
+					con = FileManager.getInstance().getDBConnection();
+					println 'Update: ' + ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.PROCESSING, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null), true, con, true)
+				} catch (Exception e) {
+					e.printStackTrace()
+				} finally {
+					if (con != null)
+						con.close()
 				}
-				println 'Update: ' + ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), sizeImage, image.getMainFile(), null, null), true, con, true)
-				
+				shareFile(image)
 			}
-			con.close();
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace()
 		}		
 		return false;	
+	}
+	
+	private void shareFile(ImageFileEntity image) {
+		FileProcessor.zipFileAsync(image.getMainFile(), new Observer() {				
+			@Override
+			public void update(Observable o, Object arg) {
+				Connection con = null;
+				try {
+					con = FileManager.getInstance().getDBConnection();
+					File zip = (File) arg;
+					if (zip != null) {
+						//TODO publish in torrent
+						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), null, image.getMainFile(), null, null), false, con, true)
+					} else {
+						FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
+						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.UNAVAILABLE, null, null, null, image.isPublic(), null, image.getMainFile(), null, null), false, con, true)
+					}
+				} catch (Exception e) {
+					e.printStackTrace()
+				}
+			}
+		})
 	}
 	
 	/**

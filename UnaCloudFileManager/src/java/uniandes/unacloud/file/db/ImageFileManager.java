@@ -98,6 +98,7 @@ public class ImageFileManager {
 	 * @param update if version should be updated
 	 * @param con Database connection
 	 * @return true in case image was update, false in case not
+	 * TODO improve this code
 	 */
 	public static boolean setImageFile(ImageFileEntity image, boolean update, Connection con, boolean withToken) {
 		if (image.getId() == null || image.getId() < 1)

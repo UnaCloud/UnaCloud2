@@ -27,6 +27,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.processor.FileProcessor;
 
 /**
  * Class to process messages in queue. This messages represent tasks to manage files from web application
@@ -234,22 +235,14 @@ public class QueueMessageFileProcessor implements QueueReader {
 				}
 				if (image != null) {
 					try {
-						File file = new java.io.File(image.getMainFile());
-						if (file != null) {
-							File dir = file.getParentFile();
-							for (File f: dir.listFiles())
-								System.out.println("Deletes file: " + f.getAbsolutePath() + " " + f.delete());
-							System.out.println("Deletes file: " + dir.getAbsolutePath() + " " + dir.delete());
-						}
+						FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 					} catch (Exception e) {
-						System.err.println("original image files can't be deleted "+image.getMainFile());
+						System.err.println("original image files can't be deleted " + image.getMainFile());
 					}
 					try {
-						if (image.isPublic()) {
-							File folder = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);						
-							if (folder.exists())
-								System.out.println("Delete file: " + folder.getAbsolutePath() + " " + folder.delete());	
-						}
+						if (image.isPublic())
+							FileProcessor.deleteFileSync(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);							
+						
 					} catch (Exception e) {
 						System.err.println("public copy files can't be deleted " + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);
 					}	
@@ -294,26 +287,16 @@ public class QueueMessageFileProcessor implements QueueReader {
 					if (images != null) {
 						for (ImageFileEntity image : images) {						
 							try {
-								File file = new File(image.getMainFile());
-								if (file != null) {
-									File dir = file.getParentFile();
-									for (File f : dir.listFiles())
-										System.out.println("Deletes file: " + f.getAbsolutePath() + " " + f.delete());
-									System.out.println("Deletes file: " + dir.getAbsolutePath() + " " + dir.delete());
-								}									
+								FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());																
 							} catch (Exception e) {
 								System.err.println("original image files can't be deleted " + image.getMainFile());
 							}
 							try {
-								if (image.isPublic()) {
-									File folder = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);						
-									if (folder.exists())
-										System.out.println("Delete folder: " + folder.getAbsolutePath() + " " + folder.delete());	
-								}
+								if (image.isPublic())
+									FileProcessor.deleteFileSync(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);					
 							} catch (Exception e) {
 								System.err.println("public copy files can't be deleted  " + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);
-							}					
-							
+							}	
 						}
 					}					
 					try (Connection con = FileManager.getInstance().getDBConnection()) {						
@@ -350,14 +333,9 @@ public class QueueMessageFileProcessor implements QueueReader {
 					e.printStackTrace();
 				}						
 				if (image != null) {
-					if (image.isPublic()) {
-						File folder = new File(mainRepo.getRoot()+UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);						
-						if (folder.exists()) {
-							for(File f : folder.listFiles())
-								System.out.println("Deletes file: " + f.getAbsolutePath() + " " + f.delete());
-							System.out.println("Deletes folder: " + folder.getAbsolutePath() + " " + folder.delete());
-						}								
-					}
+					if (image.isPublic())
+						FileProcessor.deleteFileSync(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);							
+					
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
 						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, false, null, null, null, null), false, con, false);
 					} catch (Exception e) {	

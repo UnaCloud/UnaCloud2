@@ -183,7 +183,7 @@ class ImageService {
 		image.freeze()
 		if (!toPublic && image.isPublic)
 			QueueTaskerFile.deletePublicImage(image, image.owner);
-		else if(toPublic && !image.isPublic)
+		else if (toPublic && !image.isPublic)
 			QueueTaskerFile.createPublicCopy(image, image.owner);				
 	}
 	

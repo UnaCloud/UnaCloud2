@@ -2,7 +2,6 @@ package uniandes.unacloud.file.net.task;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
@@ -24,6 +23,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.processor.FileProcessor;
 
 /**
  * This class receives files from agent when user requests to save image in server.
@@ -32,8 +32,15 @@ import uniandes.unacloud.file.db.entities.ImageFileEntity;
  */
 public class FileReceiverTask implements Runnable {
 	
+	/**
+	 * Socket to process task
+	 */
 	private Socket s;	
 	
+	/**
+	 * Creates a new file receiver task
+	 * @param s socket to process task
+	 */
 	public FileReceiverTask(Socket s) {
 		System.out.println("Attending " + s.getRemoteSocketAddress());
 		this.s = s;
@@ -41,7 +48,7 @@ public class FileReceiverTask implements Runnable {
 	
 	@Override
 	public void run() {
-		String mainFile = null;
+		
 		String newMainFile = null;
 		String message = null;
 		try (Socket ss = s; DataInputStream is = new DataInputStream(s.getInputStream());) {
@@ -66,18 +73,16 @@ public class FileReceiverTask implements Runnable {
 			System.out.println("\tImage requested " + image);	
 			
 			if (image != null) {
+				String mainFolder = image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator;
 				boolean received = false;
 				Long sizeImage = 0l;
-				mainFile = image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator;//getMainFile().substring(0,image.getMainFile().lastIndexOf(java.io.File.separatorChar)+1);
-				System.out.println("save in path: " + mainFile);
+				System.out.println("save in path: " + mainFolder);
 				TreeMap<File, String> filesTemp = new TreeMap<File, String>();
 				
 				try (ZipInputStream zis = new ZipInputStream(is)) {
 					
 					System.out.println("\tZip open");
 					final byte[] buffer = new byte[1024 * 100];
-					// for(ZipEntry entry;(entry=zis.getNextEntry())!=null;){					
-									
 					
 					for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
 						boolean goodExtension = false;
@@ -95,36 +100,26 @@ public class FileReceiverTask implements Runnable {
 								for (int n; (n = zis.read(buffer)) != -1;)
 									fos.write(buffer, 0, n);
 								if (entry.getName().endsWith(mainExtension))
-									newMainFile = mainFile + entry.getName();
+									newMainFile = mainFolder + entry.getName();
 							}	
-							System.out.println("Save temp "+tempFile);
-							filesTemp.put(tempFile,entry.getName());
+							System.out.println("Save temp " + tempFile);
+							filesTemp.put(tempFile, entry.getName());
 							tempFile.deleteOnExit();
 						}
 						zis.closeEntry();
 					}
-					System.out.println("There are "+filesTemp.size() + ", Delete old files");
-					
+					System.out.println("There are " + filesTemp.size() + ", Delete old files");					
 					
 					if (filesTemp.size() > 0) {			
 						
-						File dir = new File(mainFile);
-						System.out.println(dir + " " + dir.exists());
+						FileProcessor.deleteFileSync(mainFolder);						
+						File dir = new File(mainFolder);						
 						System.out.println("Creates: " + dir.mkdirs());
-						for (java.io.File f:dir.listFiles())
-							if (f.isFile())
-								f.delete();						
-						System.out.println("Save new files");
-						
+												
 						for (File temp : filesTemp.descendingKeySet()) {
-							File newFile = new File(mainFile, filesTemp.get(temp));
-							//newFile.createNewFile();
-							System.out.println("save: "+newFile);
-							try (FileInputStream streamTemp = new FileInputStream(temp); FileOutputStream ouFile = new FileOutputStream(newFile)) {
-								for (int n; (n = streamTemp.read(buffer)) != -1;)
-									ouFile.write(buffer, 0, n);																						
-							}	
 							
+							File newFile = FileProcessor.copyFileSync(temp.getAbsolutePath(), mainFolder + filesTemp.get(temp));
+							System.out.println("save: " + newFile);
 							sizeImage += temp.length();
 							temp.delete();
 						}
