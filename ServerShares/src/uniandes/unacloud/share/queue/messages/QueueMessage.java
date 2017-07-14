@@ -25,21 +25,22 @@ public class QueueMessage {
 	 */
 	private String requester;	
 	
+	
+	private int tipo;
+	
 	/**
 	 * Object JSON
 	 */
 	private JSONObject messageContent;
 	
 	public QueueMessage() {
-		
 	}
 	
 	public QueueMessage(String requester) {
 		super();
 		this.type = null;
 		this.requester = requester;
-		this.messageContent = new JSONObject();
-		
+		this.messageContent = new JSONObject();	
 	}
 	
 	/**
@@ -119,5 +120,13 @@ public class QueueMessage {
 	 */
 	public void setRequester(String requester) {
 		this.requester = requester;
+	}
+	
+	public int getTipo() {
+		return tipo;
+	}
+	
+	public void setTipo(int tipo) {
+		this.tipo = tipo;
 	}
 }

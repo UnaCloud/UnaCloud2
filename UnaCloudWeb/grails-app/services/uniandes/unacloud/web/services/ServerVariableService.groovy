@@ -30,4 +30,9 @@ class ServerVariableService {
 	def getUrlFileManager(){
 		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable
 	}
+	
+	
+	def getDeploymentType(){
+		return Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.TYPE).variable)
+	}
 }

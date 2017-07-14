@@ -20,7 +20,7 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
     boolean persistent;
     String hostname;
     
-    String requester;
+    int tipo;
     List<ImageNetInterfaceComponent>interfaces;
     
     public ExecutionStartMessage() {
@@ -66,11 +66,11 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public long getImageId() {
 		return imageId;
 	}
-	public String getRequester() {
-		return requester;
+	public int getTipo() {
+		return tipo;
 	}
-	public void setRequester(String requester) {
-		this.requester = requester;
+	public void setTipo(int requester) {
+		this.tipo = requester;
 	}
 	
 	@Override

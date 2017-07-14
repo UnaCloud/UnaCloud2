@@ -46,7 +46,7 @@ public final class ExecutionConfigurer extends Thread{
 		System.out.println("startExecution");
 		try {
 			try{
-				ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), null);
+				ImageCopy image=ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), 0);
 				machineExecution.setImage(image);
 				image.configureAndStart(machineExecution);
 			}catch(ExecutionException ex){

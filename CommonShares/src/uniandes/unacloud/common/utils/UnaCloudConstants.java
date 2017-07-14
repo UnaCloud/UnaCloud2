@@ -28,6 +28,7 @@ public class UnaCloudConstants {
 	public static final String DB_NAME = "DB_NAME";	
 	public static final String FILE_CONFIG = "config.properties";
 	public static final String ROOT_PATH = "ROOT_PATH";
+	public static final String TYPE = "DEPLOY_TYPE";
 	
 	//UnaCloudControl Variables
 	public static final String CONTROL_SERVER_IP = "CONTROL_SERVER_IP"; //Agent

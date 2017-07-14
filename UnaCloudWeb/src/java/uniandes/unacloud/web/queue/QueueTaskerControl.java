@@ -71,8 +71,8 @@ public class QueueTaskerControl {
 	 * @param deployment
 	 * @param user
 	 */
-	public static void deployCluster(Deployment deployment, User user){
-		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId());
+	public static void deployCluster(Deployment deployment, User user, int tipo){
+		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId(), tipo);
 		controlQueue.sendMessage(message);
 	}
 	

@@ -2,7 +2,6 @@ package uniandes.unacloud.web.services
 
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
-
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
@@ -19,7 +18,6 @@ import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Image;
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions;
-
 import grails.transaction.Transactional
 import grails.util.Environment;
 
@@ -63,6 +61,9 @@ class DeploymentService {
 	 */
 	
 	RepositoryService repositoryService
+	
+	
+	ServerVariableService serverVariableService
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -140,8 +141,12 @@ class DeploymentService {
 			}
 		}
 		
-		//if(!Environment.isDevelopmentMode()){				
-			QueueTaskerControl.deployCluster(dep,user)
+		
+		//if(!Environment.isDevelopmentMode()){			
+		//TODO 	
+			int tipo = serverVariableService.getDeploymentType()
+			println "Deployment type: "+ tipo
+			QueueTaskerControl.deployCluster(dep,user, tipo)
 		//}		
 		
 		return dep
