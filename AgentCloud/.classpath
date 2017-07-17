@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/udt-java-0.5-SNAPSHOT.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/UAUtils"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

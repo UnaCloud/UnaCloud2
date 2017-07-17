@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.sql.Connection;
@@ -19,7 +20,9 @@ import java.util.zip.ZipOutputStream;
 import udt.UDTClient;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.common.utils.Zipper;
 import uniandes.unacloud.file.FileManager;
+import uniandes.unacloud.file.com.torrent.TorrentServer;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
 
@@ -55,7 +58,7 @@ public class FileTransferTask implements Runnable{
 				e.printStackTrace();
 			}			
 			
-			if(image!=null){
+			if(image!=null) {
 				
 				System.out.println(image+" - "+imageId+" - "+image.getState());
 				
@@ -65,8 +68,7 @@ public class FileTransferTask implements Runnable{
 				
 				os.writeUTF(zip.getName());
 				
-				int tipo = ds.readInt();
-				
+				int tipo = ds.readInt();				
 				
 				switch (tipo) {							
 					case TCP:
@@ -80,14 +82,16 @@ public class FileTransferTask implements Runnable{
 						System.out.println("Files sent zip "+image.getMainFile());
 						break;					
 					case P2P:
-						FilenameFilter filterTorrent = new FilenameFilter() {
-							@Override
-							public boolean accept(File dir, String name) {
-								return name.endsWith(".torrent");
-							}
-						};
-						sendByTCP(os, zip.getParentFile(), filterTorrent);
-						System.out.println("Files sent torrent");
+//						FilenameFilter filterTorrent = new FilenameFilter() {
+//							@Override
+//							public boolean accept(File dir, String name) {
+//								return name.endsWith(".torrent");
+//							}
+//						};
+//						sendByTCP(os, zip.getParentFile(), filterTorrent);
+//						System.out.println("Files sent torrent");
+						SendByP2P(image, ss);
+						
 						break;
 					case FTP:
 						FilenameFilter filterFTP = new FilenameFilter() {
@@ -105,11 +109,12 @@ public class FileTransferTask implements Runnable{
 						os.writeUTF("\\\\157.253.236.162\\unacloud");
 						System.out.println("Files sent SAMBA");
 						break;
-					case UDT:
-						MyUDTThread thread = new MyUDTThread(zip, ss.getInetAddress());
-						thread.start();
-						System.out.println("Files sent UDT");
-						break;
+//					case UDT:
+//						os.writeInt(4);//Son n archivos
+//						os.writeInt(10034);//abra el 10034 en tcp
+//						os.writeInt(10035);//yo estoy escuchando en UDT por el 10035
+//						System.out.println("Files sent UDT");
+//						break;
 				}					
 				
 			}		
@@ -119,68 +124,114 @@ public class FileTransferTask implements Runnable{
 		}
 	}
 	
-	private static class MyUDTThread extends Thread {
+	private static void SendByP2P (ImageFileEntity image, Socket socket) throws Exception {
 		
-		private File zip;
-		private InetAddress ip;
+		ZipOutputStream zos=new ZipOutputStream(socket.getOutputStream());
+		final byte[] buffer=new byte[1024*100];				
+		System.out.println("\t Sending files "+image.getMainFile());
 		
-		public MyUDTThread(File f, InetAddress ip) {
-			this.zip = f;
-			this.ip = ip;
-		}
-		@Override
-		public void run() {
-			try {
-				Date d = new Date();
-				FilenameFilter filter = new FilenameFilter() {						
-					@Override
-					public boolean accept(File dir, String name) {							
-						return name.startsWith("Part_");
-					}
-				};
-				int totalFile = zip.getParentFile().listFiles(filter).length;
-				if(totalFile == 0) {
-					splitFile(zip);		
-					totalFile = zip.getParentFile().listFiles(filter).length;
-				}
-				
-				Date inicioTotal = new Date();
-			
-				int filesSent = 0;
-				for(File f: zip.getParentFile().listFiles(filter)){
-					
-					Socket server = new Socket(ip, 10035);
-					DataOutputStream dos = new DataOutputStream(server.getOutputStream());			
-					dos.writeUTF(f.getName());			
-					System.out.println("\t"+f.getName());
-					filesSent++;
-					dos.writeInt(totalFile-filesSent);
-					System.out.println("\t"+(totalFile-filesSent));						
-					
-					UDTClient udt = new UDTClient(ip , 10035);
-					System.out.println("\t connect to "+ip.getHostAddress());
-					udt.connect(ip.getHostAddress(), 10034);
-					byte[]buf=new byte[1024*100];
-					try(FileInputStream fis=new FileInputStream(f)) {
-						while(fis.read(buf)!=-1) {
-							udt.send(buf);	
-						}
-					}
-					
-					System.out.println("Finish "+d+" - "+new Date()+" "+f.getName());
-					udt.flush();
-					dos.close();				
-					udt.shutdown();
-					server.close();
-				}
-				System.out.println("TERMINE!!!!! "+inicioTotal+" - "+new Date());
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+		//if (requester.equals("1")) {
+		
+		FilenameFilter filter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".torrent");
 			}
-		
+		};
+		//TODO Only with one deploy
+		if (new java.io.File(image.getMainFile()).getParentFile().listFiles(filter).length == 0) {
+			File zipParent = new File(image.getMainFile()).getParentFile();
+			File zip = new File(image.getMainFile()+".zip");
+			Zipper.zipIt(zip, zipParent);
+			TorrentServer.getInstance().publishFile(zip);
 		}
+		for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles(filter))if(f.isFile()){
+			
+			System.out.println("\tprocessing: "+f.getName());
+			zos.putNextEntry(new ZipEntry(f.getName()));					
+			try(FileInputStream fis=new FileInputStream(f)){
+				for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+			}
+			zos.closeEntry();
+		}
+		System.out.println("Send torrent "+image.getMainFile());
+		
+		zos.putNextEntry(new ZipEntry("unacloudinfo"));
+		PrintWriter pw=new PrintWriter(zos);
+		pw.println(image.getPlatform().getConfigurer());
+		pw.println(new File(image.getMainFile()).getName());
+		pw.println(image.getPassword());
+		pw.println(image.getUser());
+		pw.println(image.getName());
+		pw.println(image.getConfigurer());
+		pw.flush();
+		
+		zos.closeEntry();
+		zos.flush();
 	}
+	
+//	private static class MyUDTThread extends Thread {
+//		
+//		private File zip;
+//		private InetAddress ip;
+//		
+//		public MyUDTThread(File f, InetAddress ip) {
+//			this.zip = f;
+//			this.ip = ip;
+//		}
+//		@Override
+//		public void run() {
+//			try {
+//				Date d = new Date();
+//				FilenameFilter filter = new FilenameFilter() {						
+//					@Override
+//					public boolean accept(File dir, String name) {							
+//						return name.startsWith("Part_");
+//					}
+//				};
+//				int totalFile = zip.getParentFile().listFiles(filter).length;
+//				if(totalFile == 0) {
+//					splitFile(zip);		
+//					totalFile = zip.getParentFile().listFiles(filter).length;
+//				}
+//				
+//				Date inicioTotal = new Date();
+//			
+//				int filesSent = 0;
+//				for(File f: zip.getParentFile().listFiles(filter)){
+//					
+//					Socket server = new Socket(ip, 10035);
+//					DataOutputStream dos = new DataOutputStream(server.getOutputStream());			
+//					dos.writeUTF(f.getName());			
+//					System.out.println("\t"+f.getName());
+//					filesSent++;
+//					dos.writeInt(totalFile-filesSent);
+//					System.out.println("\t"+(totalFile-filesSent));						
+//					
+//					UDTClient udt = new UDTClient(ip , 10035);
+//					System.out.println("\t connect to "+ip.getHostAddress());
+//					udt.connect(ip.getHostAddress(), 10034);
+//					byte[]buf=new byte[1024*100];
+//					try(FileInputStream fis=new FileInputStream(f)) {
+//						while(fis.read(buf)!=-1) {
+//							udt.send(buf);	
+//						}
+//					}
+//					
+//					System.out.println("Finish "+d+" - "+new Date()+" "+f.getName());
+//					udt.flush();
+//					dos.close();				
+//					udt.shutdown();
+//					server.close();
+//				}
+//				System.out.println("TERMINE!!!!! "+inicioTotal+" - "+new Date());
+//				
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		
+//		}
+//	}
 	
 	private void sendByTCP(DataOutputStream os, File folder, FilenameFilter filter)	throws IOException, FileNotFoundException {
 		final byte[] buffer=new byte[1024*100];	
@@ -198,28 +249,5 @@ public class FileTransferTask implements Runnable{
 
 	}
 	
-	public static void splitFile(File f) throws IOException {
-        int partCounter = 1;//I like to name parts from 001, 002, 003, ...
-                            //you can change it to 0 if you want 000, 001, ...
-
-        int sizeOfFiles = 1024 * 1024 * 500;// 1MB
-        byte[] buffer = new byte[sizeOfFiles];
-
-        String fileName = f.getName();
-
-        //try-with-resources to ensure closing stream
-        try (FileInputStream fis = new FileInputStream(f);
-             BufferedInputStream bis = new BufferedInputStream(fis)) {
-
-            int bytesAmount = 0;
-            while ((bytesAmount = bis.read(buffer)) > 0) {
-                //write each chunk of data into separate file with different number in name
-                String filePartName = String.format("%s.%03d", "Part_"+fileName, partCounter++);
-                File newFile = new File(f.getParent(), filePartName);
-                try (FileOutputStream out = new FileOutputStream(newFile)) {
-                    out.write(buffer, 0, bytesAmount);
-                }
-            }
-        }
-    }
+	
 }
