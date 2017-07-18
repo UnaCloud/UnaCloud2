@@ -54,7 +54,11 @@ public class PhysicalMachineUpdater {
 	 */
 	public static boolean updateExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con){
 		try {
-			String query = "update execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
+			String query = null;
+			if (status == ExecutionStateEnum.CONFIGURING)
+				query = "update execution vm set vm.message= ?, vm.last_update = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
+			else
+				query =	"update execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, message);
 			ps.setString(2, status.name());

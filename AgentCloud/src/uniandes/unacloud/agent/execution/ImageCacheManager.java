@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.communication.download.DownloadImageTask;
+import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.entities.Image;
 import uniandes.unacloud.agent.execution.entities.ImageCopy;
@@ -21,6 +22,7 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
@@ -50,7 +52,7 @@ public class ImageCacheManager {
 			if(vmi.getImageCopies().isEmpty()){
 				ImageCopy copy=new ImageCopy();
 				try{
-					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository, tipo);
+					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository, tipo);					
 					saveImages();
 				}catch(ExecutionException ex){
 					throw ex;

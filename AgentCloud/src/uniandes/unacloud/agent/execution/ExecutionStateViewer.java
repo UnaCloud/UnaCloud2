@@ -45,7 +45,7 @@ public class ExecutionStateViewer {
         }
         try {
         	if(red){
-        		ServerMessageSender.reportExecutionState(executionCode,ExecutionStateEnum.DEPLOYED,"Execution is running");
+        		ServerMessageSender.reportExecutionState(executionCode,ExecutionStateEnum.DEPLOYED,"Execution is running - file");
         		return true;
         	}
             else{

@@ -15,7 +15,7 @@ public enum ExecutionStateEnum {
 	/**
 	 * Execution is in configuring process, can't exceed 30 minutes
 	 */
-	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*60),
+	CONFIGURING("CONFIGURING",CalendarUtils.MINUTE*30),
 	/**
 	 * Execution is in deploying process, can't exceed 8 minutes
 	 */

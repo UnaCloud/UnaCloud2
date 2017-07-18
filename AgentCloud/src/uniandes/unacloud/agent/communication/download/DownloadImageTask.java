@@ -21,6 +21,7 @@ import udt.UDTClient;
 import udt.UDTInputStream;
 import udt.UDTServerSocket;
 import udt.UDTSocket;
+import uniandes.unacloud.agent.communication.send.ServerMessageSender;
 import uniandes.unacloud.agent.communication.torrent.TorrentClient;
 import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
@@ -29,6 +30,7 @@ import uniandes.unacloud.agent.execution.entities.ImageCopy;
 import uniandes.unacloud.agent.execution.entities.ImageStatus;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.LocalProcessExecutor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.file.Zipper;
@@ -125,116 +127,32 @@ public class DownloadImageTask {
 				image.getImageCopies().add(copy);
 				copy.init();	
 			break;
-//			case UDT:
-//				totalLUDP = downloadByUDT(root, totalFiles, portOpen, portUDT);
-//			break;
 		}
-		//if(tipo == UDT) validateAndClean(root, totalLUDP, size);
-		if (tipo != P2P) {
+		if (tipo == P2P || tipo == TCP) {		
+			boolean imageIsOk = validate(root, size, zipFile);
+			if (!imageIsOk)
+				throw new ExecutionException("ERROR: Finish test protocol "+tipo+" - "+imageIsOk);
+			else
+				ServerMessageSender.reportExecutionState(image.getId(), ExecutionStateEnum.CONFIGURING, "Download finished "+imageIsOk+ " - " + tipo);
+		} else {			
 			boolean imageIsOk = validateAndClean(root, size, zipFile);
-			throw new ExecutionException("Finish test for protocol "+tipo+" finish "+imageIsOk);
+			throw new ExecutionException("Finish test protocol "+tipo+" - "+imageIsOk);
 		}
 		
 	}
 	
-//	private static boolean validateAndClean(File root, long totalLUDP, long size) {
-//		FilenameFilter filter = new FilenameFilter() {						
-//			@Override
-//			public boolean accept(File dir, String name) {							
-//				return name.startsWith("Part_");
-//			}
-//		};
-//		long currentLong = 0;
-//		System.out.println("Time to validate");
-//		for(File f: root.listFiles(filter)){
-//			currentLong+=f.length();
-//			System.out.println("\t"+currentLong);
-//		}
-//		
-//		boolean result = false;
-//		if(currentLong >= totalLUDP) result = true;
-//		ImageCacheManager.cleanDir(root);
-//		return result;
-//	}
-
 	private static boolean validateAndClean(File root, long size, String zipFile) {
-		File f = new File(root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+zipFile);
-		boolean result = false;
-		if(size == f.length()) result = true;
+		boolean result = validate(root, size, zipFile);
 		ImageCacheManager.cleanDir(root);
 		return result;
 	}
+	
+	private static boolean validate(File root, long size, String zipFile) {
+		File f = new File(root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+zipFile);
+		if(size == f.length()) return true;
+		return false;
+	}
 
-//	private static long downloadByUDT(File root, int totalFiles, int portOpen, int portUDT, InetAddress ipServer) {
-//		long totalL = 0;
-//		try {
-//			
-//			System.out.println("Start UDT client");
-//			ServerSocket serverTcp = new ServerSocket(portOpen);
-//			for (int i = 1; i <= totalFiles; i++) {				
-//				UDTClient udt = new UDTClient(InetAddress.getByName("localhost") , 10035);
-//				System.out.println("\t connect to "+ipServer.getHostAddress());
-//				udt.connect(ipServer.getHostAddress(), portUDT);
-//				
-//				
-//				
-//				byte[]buf=new byte[1024*100];
-//				try(FileInputStream fis=new FileInputStream(f)) {
-//					while(fis.read(buf)!=-1) {
-//						udt.send(buf);	
-//					}
-//				}
-//				
-//				//System.out.println("Finish "+d+" - "+new Date()+" "+f.getName());
-//				udt.flush();				
-//				udt.shutdown();
-//			}
-//			serverTcp.close();
-//			
-//			UDTServerSocket server = new UDTServerSocket(10034);
-//			
-//			while(continuar){
-//				
-//				Socket client = serverTcp.accept();
-//				DataInputStream dis = new DataInputStream(client.getInputStream());
-//				String name = dis.readUTF();
-//				File f = new File(root,name);
-//				if(dis.readInt()==0) continuar = false;
-//				System.out.println("Receive "+name);			
-//				
-//				UDTSocket socket = server.accept();
-//				//is.setBlocking(false);
-//				byte[]buf=new byte[1024*100];
-//				UDTInputStream isD = socket.getInputStream();							
-//				System.out.println("Start "+new Date());
-//				try(FileOutputStream fis=new FileOutputStream(f)){
-//					for(int n;(n=isD.read(buf))!=-1;){
-//						fis.write(buf,0,n);
-//					}
-//				}
-//				try {
-//					isD.close();
-//					socket.close();
-//					dis.close();
-//					client.close();
-//				} catch (Exception e) {
-//					// TODO: handle exception
-//				}					
-//				System.out.println("Finish "+ new Date());
-//				totalL += f.length();
-//			}
-//			try {
-//				server.shutDown();
-//				serverTcp.close();
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//			}
-//			System.out.println("Finish total ");
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}	
-//		return totalL;
-//	}
 	
 	private static String downloadByTCP(File root, Socket s) {
 		String fileName = null;
