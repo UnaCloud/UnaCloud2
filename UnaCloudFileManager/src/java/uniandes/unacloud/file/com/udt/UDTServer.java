@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import udt.UDTInputStream;
-import udt.UDTServerSocket;
-import udt.UDTSocket;
+//import udt.UDTInputStream;
+//import udt.UDTServerSocket;
+//import udt.UDTSocket;
 
 public class UDTServer extends Thread{
 	
@@ -46,58 +46,58 @@ public class UDTServer extends Thread{
 	
 	@Override
 	public void run() {
-		UDTServerSocket server = null;
-		try {
-			server = new UDTServerSocket(port);
-			while(true){
-				UDTSocket socket = server.accept();
-				UDTThread th = new UDTThread(socket);
-				threadPool.submit(th);				
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			if(server!=null)server.shutDown();
-		}
+//		UDTServerSocket server = null;
+//		try {
+//			server = new UDTServerSocket(port);
+//			while(true){
+//				UDTSocket socket = server.accept();
+//				UDTThread th = new UDTThread(socket);
+//				threadPool.submit(th);				
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			if(server!=null)server.shutDown();
+//		}
 	}
 	
-	private class UDTThread extends Thread {
-		
-		private UDTSocket socket;
-		
-		public UDTThread(UDTSocket socket) {
-			this.socket = socket;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				byte[]buf=new byte[1024*100];
-				System.out.println("Request from: "+socket.getEndpoint().getLocalAddress());				
-				System.out.println("Start "+new Date());
-				Socket tcp = new Socket(socket.getEndpoint().getLocalAddress(), portClient);
-				DataInputStream ds = new DataInputStream(tcp.getInputStream());
-				DataOutputStream ou = new DataOutputStream(tcp.getOutputStream());
-				int file = ds.readInt();
-				ou.writeUTF(files.get(file).getName());
-				
-				UDTInputStream isD = socket.getInputStream();	
-				try(FileOutputStream fis=new FileOutputStream(files.get(file))){
-					for(int n;(n=isD.read(buf))!=-1;){
-						fis.write(buf,0,n);
-					}
-				}
-				try {
-					isD.close();
-					socket.close();
-					tcp.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}	
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+//	private class UDTThread extends Thread {
+//		
+//		private UDTSocket socket;
+//		
+//		public UDTThread(UDTSocket socket) {
+//			this.socket = socket;
+//		}
+//		
+//		@Override
+//		public void run() {
+//			try {
+//				byte[]buf=new byte[1024*100];
+//				System.out.println("Request from: "+socket.getEndpoint().getLocalAddress());				
+//				System.out.println("Start "+new Date());
+//				Socket tcp = new Socket(socket.getEndpoint().getLocalAddress(), portClient);
+//				DataInputStream ds = new DataInputStream(tcp.getInputStream());
+//				DataOutputStream ou = new DataOutputStream(tcp.getOutputStream());
+//				int file = ds.readInt();
+//				ou.writeUTF(files.get(file).getName());
+//				
+//				UDTInputStream isD = socket.getInputStream();	
+//				try(FileOutputStream fis=new FileOutputStream(files.get(file))){
+//					for(int n;(n=isD.read(buf))!=-1;){
+//						fis.write(buf,0,n);
+//					}
+//				}
+//				try {
+//					isD.close();
+//					socket.close();
+//					tcp.close();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}	
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 	private static void splitFile(File f) throws IOException {
         int partCounter = 1;//I like to name parts from 001, 002, 003, ...

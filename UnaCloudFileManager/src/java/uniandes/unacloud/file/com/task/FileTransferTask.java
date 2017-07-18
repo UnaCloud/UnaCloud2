@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import udt.UDTClient;
+//import udt.UDTClient;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.common.utils.Zipper;
@@ -106,7 +106,7 @@ public class FileTransferTask implements Runnable{
 						System.out.println("Files sent FTP");
 						break;
 					case SMB:
-						os.writeUTF("\\\\157.253.236.162\\unacloud");
+						os.writeUTF("\\\\157.253.195.56\\unacloud");
 						System.out.println("Files sent SAMBA");
 						break;
 //					case UDT:

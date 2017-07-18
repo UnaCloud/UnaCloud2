@@ -38,6 +38,7 @@ public class PmMessageProcessor extends AbstractReceiverProcessor{
 						for (int i = 0; i < idsLong.length; i++) {
 							idsLong[i]=idsToStop.get(i);
 						}
+						//TODO separar esta parte
 						ControlManager.getInstance().sendStopMessageExecutions(idsLong);
 					}
 				}			
