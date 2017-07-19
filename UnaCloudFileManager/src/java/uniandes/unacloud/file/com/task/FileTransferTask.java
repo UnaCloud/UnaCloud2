@@ -72,24 +72,10 @@ public class FileTransferTask implements Runnable{
 				
 				switch (tipo) {							
 					case TCP:
-						FilenameFilter filterZip = new FilenameFilter() {
-							@Override
-							public boolean accept(File dir, String name) {
-								return name.endsWith(".zip");
-							}
-						};
-						sendByTCP(os, zip.getParentFile(), filterZip);
+						SendByTCP(image, ss);
 						System.out.println("Files sent zip "+image.getMainFile());
 						break;					
 					case P2P:
-//						FilenameFilter filterTorrent = new FilenameFilter() {
-//							@Override
-//							public boolean accept(File dir, String name) {
-//								return name.endsWith(".torrent");
-//							}
-//						};
-//						sendByTCP(os, zip.getParentFile(), filterTorrent);
-//						System.out.println("Files sent torrent");
 						SendByP2P(image, ss);
 						
 						break;
@@ -106,15 +92,9 @@ public class FileTransferTask implements Runnable{
 						System.out.println("Files sent FTP");
 						break;
 					case SMB:
-						os.writeUTF("\\\\157.253.195.56\\unacloud");
+						os.writeUTF("\\\\157.253.236.159\\unacloud");
 						System.out.println("Files sent SAMBA");
 						break;
-//					case UDT:
-//						os.writeInt(4);//Son n archivos
-//						os.writeInt(10034);//abra el 10034 en tcp
-//						os.writeInt(10035);//yo estoy escuchando en UDT por el 10035
-//						System.out.println("Files sent UDT");
-//						break;
 				}					
 				
 			}		
@@ -155,6 +135,45 @@ public class FileTransferTask implements Runnable{
 			zos.closeEntry();
 		}
 		System.out.println("Send torrent "+image.getMainFile());
+		
+		zos.putNextEntry(new ZipEntry("unacloudinfo"));
+		PrintWriter pw=new PrintWriter(zos);
+		pw.println(image.getPlatform().getConfigurer());
+		pw.println(new File(image.getMainFile()).getName());
+		pw.println(image.getPassword());
+		pw.println(image.getUser());
+		pw.println(image.getName());
+		pw.println(image.getConfigurer());
+		pw.flush();
+		
+		zos.closeEntry();
+		zos.flush();
+	}
+	
+	private static void SendByTCP (ImageFileEntity image, Socket socket) throws Exception {
+		
+		ZipOutputStream zos=new ZipOutputStream(socket.getOutputStream());
+		final byte[] buffer=new byte[1024*100];				
+		System.out.println("\t Sending files "+image.getMainFile());
+		
+		//if (requester.equals("1")) {
+		
+		FilenameFilter filter = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.endsWith(".zip");
+			}
+		};
+		for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles(filter))if(f.isFile()){
+			
+			System.out.println("\tprocessing: "+f.getName());
+			zos.putNextEntry(new ZipEntry(f.getName()));					
+			try(FileInputStream fis=new FileInputStream(f)){
+				for(int n;(n=fis.read(buffer))!=-1;)zos.write(buffer,0,n);
+			}
+			zos.closeEntry();
+		}
+		System.out.println("Send file tcp "+image.getMainFile());
 		
 		zos.putNextEntry(new ZipEntry("unacloudinfo"));
 		PrintWriter pw=new PrintWriter(zos);

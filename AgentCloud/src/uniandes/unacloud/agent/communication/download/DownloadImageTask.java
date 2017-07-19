@@ -89,10 +89,10 @@ public class DownloadImageTask {
 						
 			switch (tipo) {							
 				case TCP:
-					fileName =  downloadByTCP(root, s);
+					downloadByTCPDeploy(root, s, image, copy);
 					break;					
 				case P2P:
-					fileName = downloadByTCPDeployTorrent(root, s, image, copy);
+					fileName = downloadByTCPDeploy(root, s, image, copy);
 					break;
 				case FTP:
 					fileName = downloadByTCP(root, s);
@@ -132,8 +132,10 @@ public class DownloadImageTask {
 			boolean imageIsOk = validate(root, size, zipFile);
 			if (!imageIsOk)
 				throw new ExecutionException("ERROR: Finish test protocol "+tipo+" - "+imageIsOk);
-			else
+			else {
 				ServerMessageSender.reportExecutionState(image.getId(), ExecutionStateEnum.CONFIGURING, "Download finished "+imageIsOk+ " - " + tipo);
+				unzipper(root, zipFile);
+			}
 		} else {			
 			boolean imageIsOk = validateAndClean(root, size, zipFile);
 			throw new ExecutionException("Finish test protocol "+tipo+" - "+imageIsOk);
@@ -141,6 +143,10 @@ public class DownloadImageTask {
 		
 	}
 	
+	private static void unzipper(File root, String imageName) throws Exception {
+		Zipper.unzipIt(new File(imageName), root.getAbsolutePath());		
+	}
+
 	private static boolean validateAndClean(File root, long size, String zipFile) {
 		boolean result = validate(root, size, zipFile);
 		ImageCacheManager.cleanDir(root);
@@ -176,7 +182,7 @@ public class DownloadImageTask {
 		return fileName;
 	}
 	
-	private static String downloadByTCPDeployTorrent(File root, Socket s, Image image, ImageCopy copy) {
+	private static String downloadByTCPDeploy(File root, Socket s, Image image, ImageCopy copy) {
 		String fileName = null;
 		System.out.println("Download seed");
 		try(ZipInputStream zis=new ZipInputStream(s.getInputStream())){
@@ -221,9 +227,7 @@ public class DownloadImageTask {
 
 	private static void downloadByP2P(File root, String torrentName) throws Exception {
 		System.out.println("Start P2P");
-		new TorrentClient().downloadTorrent(root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+torrentName, root.getAbsolutePath());			
-		String zipName = (root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+torrentName).replace(".torrent", "");
-		Zipper.unzipIt(new File(zipName), root.getAbsolutePath());				
+		new TorrentClient().downloadTorrent(root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+torrentName, root.getAbsolutePath());				
 	}
 
 	private static void downloadByFTP(File root, String file) {
@@ -239,7 +243,7 @@ public class DownloadImageTask {
 		try {
 			System.out.println("Start SMB");
 			//{"net","use","X:","\\\\157.253.195.56\\Cursos"});
-			LocalProcessExecutor.executeCommand(new String[]{"net","use","X:",path});
+			LocalProcessExecutor.executeCommand(new String[]{"net","use","X:",path,"/user:estudiante","T3mp0r4l18"});
 			//"xcopy","X:\\fz.exe"
 			LocalProcessExecutor.executeCommand(new String[]{"xcopy","X:\\"+file,root.getAbsolutePath()});	
 			LocalProcessExecutor.executeCommand(new String[]{"net","use","X:","/delete"});	

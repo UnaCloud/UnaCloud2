@@ -101,7 +101,7 @@ public class FileManager extends ProjectManager{
 			e.printStackTrace();
 		}
 		if (path  == null) throw new Exception("********************************************** Path is not valid *******************************************");
-		TorrentServer.getInstance().startService(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), path);
+		//TorrentServer.getInstance().startService(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), path);
 		//new UDTServer(10035, 50, 10034);
 	}
 
