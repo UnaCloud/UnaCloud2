@@ -54,7 +54,7 @@ public class DownloadImageTask {
 	 * @param copy empty copy
 	 * @throws Exception 
 	 */
-	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository, int tipo) throws Exception {
+	public static void dowloadImageCopy(Image image,ImageCopy copy,String repository, int tipo, long executionId) throws Exception {
 		File root=new File(repository+OperatingSystem.PATH_SEPARATOR+image.getId()+OperatingSystem.PATH_SEPARATOR+"base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
@@ -108,7 +108,7 @@ public class DownloadImageTask {
 			}			
 			
 		} catch (Exception e) {
-			throw new ExecutionException("Error opening connection",e);
+			throw new ExecutionException("Error opening connection: "+e.getMessage(),e);
 		}
 		//long totalLUDP = 0;
 		switch (tipo) {
@@ -122,10 +122,7 @@ public class DownloadImageTask {
 			break;					
 			case P2P:
 				//WORKS
-				downloadByP2P(root, fileName);
-				copy.setImage(image);
-				image.getImageCopies().add(copy);
-				copy.init();	
+				downloadByP2P(root, fileName);				
 			break;
 		}
 		if (tipo == P2P || tipo == TCP) {		
@@ -133,8 +130,11 @@ public class DownloadImageTask {
 			if (!imageIsOk)
 				throw new ExecutionException("ERROR: Finish test protocol "+tipo+" - "+imageIsOk);
 			else {
-				ServerMessageSender.reportExecutionState(image.getId(), ExecutionStateEnum.CONFIGURING, "Download finished "+imageIsOk+ " - " + tipo);
+				ServerMessageSender.reportExecutionState(executionId, ExecutionStateEnum.CONFIGURING, "Download finished "+imageIsOk+ " - " + tipo);
 				unzipper(root, zipFile);
+				copy.setImage(image);
+				image.getImageCopies().add(copy);
+				copy.init();	
 			}
 		} else {			
 			boolean imageIsOk = validateAndClean(root, size, zipFile);
@@ -144,7 +144,7 @@ public class DownloadImageTask {
 	}
 	
 	private static void unzipper(File root, String imageName) throws Exception {
-		Zipper.unzipIt(new File(imageName), root.getAbsolutePath());		
+		Zipper.unzipIt(new File(root.getAbsolutePath()+OperatingSystem.PATH_SEPARATOR+imageName), root.getAbsolutePath());		
 	}
 
 	private static boolean validateAndClean(File root, long size, String zipFile) {
@@ -243,10 +243,10 @@ public class DownloadImageTask {
 		try {
 			System.out.println("Start SMB");
 			//{"net","use","X:","\\\\157.253.195.56\\Cursos"});
-			LocalProcessExecutor.executeCommand(new String[]{"net","use","X:",path,"/user:estudiante","T3mp0r4l18"});
+			System.out.println(LocalProcessExecutor.executeCommandOutput("net","use","X:",path,"/user:Pruebas-paper-3\\estudiante","T3mp0r4l18"));
 			//"xcopy","X:\\fz.exe"
-			LocalProcessExecutor.executeCommand(new String[]{"xcopy","X:\\"+file,root.getAbsolutePath()});	
-			LocalProcessExecutor.executeCommand(new String[]{"net","use","X:","/delete"});	
+			System.out.println(LocalProcessExecutor.executeCommandOutput("xcopy","X:\\"+file,root.getAbsolutePath()));	
+			System.out.println(LocalProcessExecutor.executeCommandOutput("net","use","X:","/delete"));	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

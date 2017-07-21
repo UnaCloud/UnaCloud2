@@ -43,7 +43,7 @@ public class ImageCacheManager {
 	 * @param imageId image Id 
 	 * @return image available copy
 	 */
-	public static ImageCopy getFreeImageCopy(long imageId, int tipo) throws ExecutionException {
+	public static ImageCopy getFreeImageCopy(long imageId, int tipo, long executionId) throws ExecutionException {
 		System.out.println("getFreeImageCopy "+imageId);
 		Image vmi=getImage(imageId);
 		ImageCopy source,dest;
@@ -52,13 +52,14 @@ public class ImageCacheManager {
 			if(vmi.getImageCopies().isEmpty()){
 				ImageCopy copy=new ImageCopy();
 				try{
-					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository, tipo);					
+					DownloadImageTask.dowloadImageCopy(vmi,copy,machineRepository, tipo, executionId);					
 					saveImages();
 				}catch(ExecutionException ex){
+					ex.printStackTrace();
 					throw ex;
 				}catch(Exception ex){
 					ex.printStackTrace();
-					throw new ExecutionException("Error downloading image",ex);
+					throw new ExecutionException("Error downloading image -> "+ex.getMessage(),ex);
 				}
 				System.out.println(" downloaded");
 				return copy;

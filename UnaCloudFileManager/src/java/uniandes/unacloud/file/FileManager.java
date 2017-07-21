@@ -51,6 +51,7 @@ public class FileManager extends ProjectManager{
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{
+				UnaCloudConstants.MAIN_REPOSITORY,
 				UnaCloudConstants.VERSION_MANAGER_PORT,
 				UnaCloudConstants.FILE_SERVER_PORT,
 				UnaCloudConstants.QUEUE_USER,
@@ -92,16 +93,9 @@ public class FileManager extends ProjectManager{
 		System.out.println("Start communication service");
 		new DataServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT),100).start();
 		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 100).start();
-		String path = null;
-		try (Connection con = getDBConnection();) {
-			RepositoryEntity main = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
-			path = main.getRoot();
-			con.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String path = reader.getStringVariable(UnaCloudConstants.MAIN_REPOSITORY);
 		if (path  == null) throw new Exception("********************************************** Path is not valid *******************************************");
-		//TorrentServer.getInstance().startService(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), path);
+		TorrentServer.getInstance().startService(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), path);
 		//new UDTServer(10035, 50, 10034);
 	}
 

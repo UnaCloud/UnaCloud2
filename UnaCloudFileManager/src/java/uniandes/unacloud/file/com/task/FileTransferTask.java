@@ -120,9 +120,9 @@ public class FileTransferTask implements Runnable{
 		};
 		//TODO Only with one deploy
 		if (new java.io.File(image.getMainFile()).getParentFile().listFiles(filter).length == 0) {
-			File zipParent = new File(image.getMainFile()).getParentFile();
+			//File zipParent = new File(image.getMainFile()).getParentFile();
 			File zip = new File(image.getMainFile()+".zip");
-			Zipper.zipIt(zip, zipParent);
+			//Zipper.zipIt(zip, zipParent);
 			TorrentServer.getInstance().publishFile(zip);
 		}
 		for(java.io.File f:new java.io.File(image.getMainFile()).getParentFile().listFiles(filter))if(f.isFile()){
