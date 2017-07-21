@@ -91,7 +91,7 @@ class Deployment {
 		for (DeployedImage image: images) {
 			image.executions.each {
 				def exec = it
-				ExecutionRequest.where{execution == exec}.list().each {
+				ExecutionHistory.where{execution == exec}.list().each {
 					it.delete();
 				}
 				exec.delete();

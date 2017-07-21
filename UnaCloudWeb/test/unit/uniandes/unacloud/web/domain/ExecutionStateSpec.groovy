@@ -1,14 +1,13 @@
-package uniandes.unacloud.web.test
+package uniandes.unacloud.web.domain
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
-import uniandes.unacloud.web.domain.ExecutionHistory;
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(ExecutionHistory)
-class ExecutionRequestSpec extends Specification {
+@TestFor(ExecutionState)
+class ExecutionStateSpec extends Specification {
 
     def setup() {
     }

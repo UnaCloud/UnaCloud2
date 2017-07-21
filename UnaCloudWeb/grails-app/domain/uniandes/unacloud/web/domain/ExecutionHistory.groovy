@@ -12,7 +12,7 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
  *
  * @author CesarF
  */
-class ExecutionRequest {
+class ExecutionHistory {
 	
 	/**
 	 * Node state (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)

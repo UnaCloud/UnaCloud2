@@ -47,7 +47,7 @@ class Execution {
 	/**
 	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
 	 */
-	ExecutionStateEnum status
+	ExecutionState state
 	
 	/**
 	 * Execution last message
@@ -92,7 +92,7 @@ class Execution {
 	 * @return formated remaining time
 	 */
 	def remainingTime() {
-		if (stopTime == null || status != ExecutionStateEnum.DEPLOYED) 
+		if (stopTime == null || state != ExecutionStateEnum.DEPLOYED) 
 			return '--'
 		long millisTime = (stopTime.getTime() - System.currentTimeMillis()) / 1000
 		String s = "" + millisTime % 60;
@@ -156,7 +156,7 @@ class Execution {
 	 * 
 	 */
 	def boolean showDetails() {
-		return status.equals(ExecutionStateEnum.DEPLOYED) || status.equals(ExecutionStateEnum.RECONNECTING) || status.equals(ExecutionStateEnum.FAILED)
+		return state.equals(ExecutionStateEnum.DEPLOYED) || state.equals(ExecutionStateEnum.RECONNECTING) || state.equals(ExecutionStateEnum.FAILED)
 	}
 	
 	/**
@@ -174,6 +174,6 @@ class Execution {
 	 * @return true in case current state time is above of a certain date, false otherwise
 	 */
 	def isAboveStateTime(Date date) {
-		return date.getTime() - lastUpdate.getTime() > status.getTime();
+		return date.getTime() - lastUpdate.getTime() > state.getTime();
 	}
 }

@@ -4,6 +4,11 @@ import java.io.FileInputStream;
 
 
 
+
+
+
+import sun.security.ssl.HandshakeMessage.Finished;
+import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.ConfigurationReader
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -16,6 +21,7 @@ import uniandes.unacloud.share.utils.EnvironmentManager;
 import uniandes.unacloud.web.domain.ExternalCloudProvider;
 import uniandes.unacloud.web.domain.UserGroup
 import uniandes.unacloud.web.services.UserGroupService
+import uniandes.unacloud.web.domain.ExecutionState;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.IP
@@ -125,6 +131,16 @@ class BootStrap {
 			Repository repo = new Repository(name:UnaCloudConstants.MAIN_REPOSITORY, capacity: 20, path: reader.getStringVariable(UnaCloudConstants.MAIN_REPOSITORY))
 			repo.save(failOnError:true)
 		}
+		
+		if (ExecutionState.count() == 0) {
+			
+			ExecutionState finished = new ExecutionState(state: ExecutionStateEnum.FINISHED).save()
+			ExecutionState finishing = new ExecutionState(state: ExecutionStateEnum.FINISHING, nextControl: finished, controlTime: 1).save()
+			ExecutionState failed = new ExecutionState(state: ExecutionStateEnum.FAILED, nextRequested: finished).save()
+			ExecutionState copying = new ExecutionState(state: ExecutionStateEnum.COPYING, next: finished, nextControl: failed, controlTime: 20).save()
+			ExecutionState deployed = new ExecutionState(state: ExecutionStateEnum.DEPLOYED, next: finishing, nextControl: failed, controlTime: 20).save()
+		}
+		
 
 		QueueRabbitManager queueControl = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 
