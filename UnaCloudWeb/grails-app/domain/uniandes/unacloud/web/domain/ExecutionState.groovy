@@ -14,7 +14,9 @@ class ExecutionState {
 	
 	ExecutionState nextControl
 	
-	int controlTime 
+	long controlTime 
+	
+	String controlMessage
 
     static constraints = {		
 		nextRequested nullable: true

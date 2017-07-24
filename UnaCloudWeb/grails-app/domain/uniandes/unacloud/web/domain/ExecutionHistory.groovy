@@ -2,8 +2,6 @@ package uniandes.unacloud.web.domain
 
 import java.util.Date;
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 
 /**
  * Entity to represent the state of execution in an specified time.
@@ -15,14 +13,14 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
 class ExecutionHistory {
 	
 	/**
-	 * Node state (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
+	 * Node state
 	 */
-	ExecutionStateEnum status
+	ExecutionState state
 	
 	/**
 	 * Date when the node change of status
 	 */
-	Date requestTime
+	Date changeTime
 	
 	/**
 	 * Status message
@@ -38,8 +36,8 @@ class ExecutionHistory {
 	 * status and time never can be null
 	 */
     static constraints = {
-		status nullable:false
-		requestTime nullable: false
+		state nullable:false
+		changeTime nullable: false
 		message nullable:true
     }
 }

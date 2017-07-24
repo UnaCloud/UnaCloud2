@@ -135,12 +135,21 @@ class BootStrap {
 		if (ExecutionState.count() == 0) {
 			
 			ExecutionState finished = new ExecutionState(state: ExecutionStateEnum.FINISHED).save()
-			ExecutionState finishing = new ExecutionState(state: ExecutionStateEnum.FINISHING, nextControl: finished, controlTime: 1).save()
 			ExecutionState failed = new ExecutionState(state: ExecutionStateEnum.FAILED, nextRequested: finished).save()
-			ExecutionState copying = new ExecutionState(state: ExecutionStateEnum.COPYING, next: finished, nextControl: failed, controlTime: 20).save()
-			ExecutionState deployed = new ExecutionState(state: ExecutionStateEnum.DEPLOYED, next: finishing, nextControl: failed, controlTime: 20).save()
-		}
-		
+			ExecutionState finishing = new ExecutionState(state: ExecutionStateEnum.FINISHING, nextControl: finished, controlTime: 1000 * 60, controlMessage: 'User requested finishing instance').save()
+			ExecutionState copying = new ExecutionState(state: ExecutionStateEnum.COPYING, next: finished, nextControl: failed, controlTime: 1000 * 60 * 20, controlMessage: 'Copying process failed').save()
+			ExecutionState deployed = new ExecutionState(state: ExecutionStateEnum.DEPLOYED, next: finishing, controlTime: 1000 * 60 * 4, controlMessage: 'Execution has not been reported for a few minutes').save()
+			ExecutionState requestCopy = new ExecutionState(state: ExecutionStateEnum.REQUEST_COPY, next: copying, nextControl: deployed, controlTime: 1000 * 60 * 4, controlMessage: 'Request copy process failed').save()
+			ExecutionState reconnecting = new ExecutionState(state: ExecutionStateEnum.RECONNECTING, next: deployed, nextControl: failed, controlTime: 1000 * 60 * 10, controlMessage: 'Connection lost').save()
+			deployed.setNextControl(reconnecting)
+			deployed.setNextRequested(requestCopy)
+			deployed.save()
+			ExecutionState deploying = new ExecutionState(state: ExecutionStateEnum.DEPLOYING, next: deployed, nextControl: failed, controlTime: 1000 * 60 * 8, controlMessage: 'Error in deployment, check agent log').save()
+			ExecutionState configuring = new ExecutionState(state: ExecutionStateEnum.CONFIGURING, next: deploying, nextControl: failed, controlTime: 1000 * 60 * 10, controlMessage: 'Configuring process failed in agent').save()
+			ExecutionState transmitting = new ExecutionState(state: ExecutionStateEnum.TRANSMITTING, next: configuring, nextControl: failed, controlTime: 1000 * 60 * 20, controlMessage: 'Error transmitting file to agent').save()
+			new ExecutionState(state: ExecutionStateEnum.REQUESTED, next: configuring, nextControl: failed, controlTime: 1000 * 60 * 3, nextRequested: transmitting, controlMessage: 'Task failed: agent does not respond').save()
+			
+		}		
 
 		QueueRabbitManager queueControl = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 

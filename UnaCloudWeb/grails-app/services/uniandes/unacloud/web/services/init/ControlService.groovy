@@ -39,19 +39,19 @@ class ControlService {
 		executions.each {
 			Date currentDate = new Date()
 			Execution exe = it
-			if (exe.status == ExecutionStateEnum.QUEUED) {
+			if (exe.state == ExecutionStateEnum.REQUESTED) {//ready
 				if (exe.isAboveStateTime(currentDate)) {
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					exe.putAt("message",'Task failed: too much time in queue')
 				}
 			}
-			else if (exe.status == ExecutionStateEnum.CONFIGURING) {
+			else if (exe.status == ExecutionStateEnum.CONFIGURING) { //ready
 				if (exe.isAboveStateTime(currentDate)) {
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					exe.putAt("message",'Configuring process failed in agent')
 				}
 			}
-			else if (exe.status == ExecutionStateEnum.DEPLOYING) {
+			else if (exe.status == ExecutionStateEnum.DEPLOYING) {//ready
 				if (exe.stopTime == null) {
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					exe.putAt("message",'Deploying error')
@@ -62,7 +62,7 @@ class ControlService {
 				}
 			}
 			else if (exe.status == ExecutionStateEnum.DEPLOYED) {
-				if (exe.stopTime == null) {
+				if (exe.stopTime == null) { //ready
 					exe.putAt("stopTime", new Date())
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					exe.putAt("message",'Deploying error')
@@ -70,7 +70,7 @@ class ControlService {
 				else if (exe.stopTime.before(currentDate)) {
 					exe.finishExecution()
 				}
-				else if (exe.lastReport != null && currentDate.getTime() - exe.lastReport.getTime() > CalendarUtils.MINUTE * 4) {
+				else if (exe.lastReport != null && currentDate.getTime() - exe.lastReport.getTime() > CalendarUtils.MINUTE * 4) { //ready
 					exe.putAt("status", ExecutionStateEnum.RECONNECTING);
 					exe.putAt("message","Execution has not been reported for a few minutes");					
 				}
@@ -81,13 +81,13 @@ class ControlService {
 					exe.putAt("status", ExecutionStateEnum.DEPLOYED)
 					exe.putAt("message",'Reconnected on '+exe.lastReport.getTime())
 				}
-				else if (exe.isAboveStateTime(currentDate)) {
+				else if (exe.isAboveStateTime(currentDate)) {//ready
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					exe.putAt("message",'Connection lost')
 				}
 			}
 			else if (exe.status == ExecutionStateEnum.REQUEST_COPY) {
-				if (exe.isAboveStateTime(currentDate)) {
+				if (exe.isAboveStateTime(currentDate)) {//TODO
 					exe.putAt("status", ExecutionStateEnum.DEPLOYED)
 					if (exe.message.contains("Copy request to image ")) {
 						try {
@@ -101,7 +101,7 @@ class ControlService {
 				}
 			}
 			else if (exe.status == ExecutionStateEnum.COPYING) {
-				if (exe.isAboveStateTime(currentDate)) {
+				if (exe.isAboveStateTime(currentDate)) {//TODO
 					exe.putAt("status", ExecutionStateEnum.FAILED)
 					if (exe.message.contains("Copy request to image ")) {
 						try {
@@ -114,9 +114,9 @@ class ControlService {
 					exe.putAt("message",'Image copy request failed')
 				}
 			}
-			else if (exe.status == ExecutionStateEnum.FINISHING) {
+			else if (exe.status == ExecutionStateEnum.FINISHING) {//ready
 				if (exe.isAboveStateTime(currentDate)) {
-					exe.finishExecution()
+					exe.finishExecution()//TODO
 				}
 			}
 			else if(exe.status == ExecutionStateEnum.FAILED) {

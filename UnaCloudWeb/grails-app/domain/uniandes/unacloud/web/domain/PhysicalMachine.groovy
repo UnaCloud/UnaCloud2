@@ -129,8 +129,8 @@ class PhysicalMachine {
 	 * @return an object with available resources in this host. Physical Cores, Cores, Ram, 
 	 */
 	def availableResources() {
-		def usedResources = Execution.executeQuery('select count(*) AS executions,sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\''+ExecutionStateEnum.FINISHED+"\'",[node_id:this.id])		
-		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]:pCores, ram:usedResources[0][1] != null ? ram-usedResources[0][1] : ram,cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
+		def usedResources = Execution.executeQuery('select count(*) AS executions, sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\''+ExecutionStateEnum.FINISHED+"\'", [node_id:this.id])		
+		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]:pCores, ram:usedResources[0][1] != null ? ram-usedResources[0][1] : ram, cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
 	}
 	
 	/**
@@ -138,7 +138,8 @@ class PhysicalMachine {
 	 * @return true in case there is at least one execution in machine, false in case not
 	 */
 	def withExecution() {
-		return Execution.where {executionNode == this && status != ExecutionStateEnum.FINISHED}.findAll().size() > 0
+		def exe = this
+		return Execution.where {executionNode == exe && state != ExecutionStateEnum.FINISHED}.findAll().size() > 0
 	}
 	
 	/**

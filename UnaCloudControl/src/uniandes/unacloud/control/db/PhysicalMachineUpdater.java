@@ -90,7 +90,7 @@ public class PhysicalMachineUpdater {
 	
 	
 	/**
-	 * Updates all executions with id in array and host by name
+	 * Updates all executions by name and id in array
 	 * @param ids executions 
 	 * @param host which reports
 	 * @param con Database connection

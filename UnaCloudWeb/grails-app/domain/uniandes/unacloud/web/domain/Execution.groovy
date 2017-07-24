@@ -45,9 +45,9 @@ class Execution {
 	Date stopTime
 	
 	/**
-	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
+	 * Actual state , by default is requested
 	 */
-	ExecutionState state
+	ExecutionState state = ExecutionStateEnum.REQUESTED
 	
 	/**
 	 * Execution last message
@@ -58,12 +58,7 @@ class Execution {
 	 * Physical machine where the node is or was deployed
 	 */
 	PhysicalMachine executionNode
-	
-	/**
-	 * Last update in graph state
-	 */
-	Date lastUpdate = new Date();
-		
+			
 	/**
 	 * deployed Image 
 	 */
@@ -73,14 +68,23 @@ class Execution {
 	 * Last report of execution
 	 */
 	Date lastReport
+		
+	/**
+	 * Duration of execution 
+	 */
+	long duration
 	
+	/**
+	 * Image id where files of this instance will be saved
+	 * This id is optional
+	 */
+	long copyTo	
 	
 	static constraints = {
 		executionNode nullable: true
 		stopTime nullable: true 
-		startTime nullable:true
-		lastReport nullable:true
-		lastUpdate nullable:true
+		startTime nullable: true
+		lastReport nullable: false
 	}
 	
 	//-----------------------------------------------------------------
@@ -118,7 +122,7 @@ class Execution {
 	def saveExecution() {		
 		this.save(failOnError: true, flush: true)
 		for (NetInterface netInterface in interfaces) {
-			netInterface.ip.putAt('state',IPEnum.USED)
+			netInterface.ip.putAt('state', IPEnum.USED)
 			netInterface.save(failOnerror:true, flush:true)
 		}
 	}
@@ -127,7 +131,7 @@ class Execution {
 	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
 	def finishExecution() {
-		this.putAt("status", ExecutionStateEnum.FINISHED)
+		this.putAt("state", ExecutionStateEnum.FINISHED)
 		this.putAt("stopTime", new Date())
 		for (NetInterface netinterface in interfaces)
 			netinterface.ip.putAt("state", IPEnum.AVAILABLE)
@@ -168,12 +172,21 @@ class Execution {
 	}
 	
 	
+	
 	/**
-	 * Validates if current state time is above of a certain date given as parameter
-	 * @param date to compare
-	 * @return true in case current state time is above of a certain date, false otherwise
+	 * Changes current execution state to next one
 	 */
-	def isAboveStateTime(Date date) {
-		return date.getTime() - lastUpdate.getTime() > state.getTime();
+	def goNext() {
+		if (state.next != null)
+			state = state.next
 	}
+	
+	/**
+	 * Changes current execution state to requested next one if exits
+	 */
+	def goNextRequested	() {
+		if (state.nextRequested != null)
+			state = state.nextRequested
+	}
+	
 }

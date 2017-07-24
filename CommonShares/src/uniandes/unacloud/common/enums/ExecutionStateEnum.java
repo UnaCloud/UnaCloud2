@@ -1,7 +1,5 @@
 package uniandes.unacloud.common.enums;
 
-import uniandes.unacloud.common.utils.CalendarUtils;
-
 /**
  * Represents state of executions
  * @author CesarF
@@ -10,64 +8,60 @@ import uniandes.unacloud.common.utils.CalendarUtils;
 public enum ExecutionStateEnum {
 	
 	/**
-	* Execution is in queue, can't exceed 2 minutes
+	* Execution has been requested, can't exceed 2 minutes
 	 */
-	QUEUED ("QUEUED", CalendarUtils.MINUTE * 2),
+	REQUESTED ("REQUESTED"),
 	
 	/**
-	 * Execution is been downloading, can't exceed 30 minutes
+	 * Instance is been transmitted to physical machine, can't exceed 30 minutes
 	 */
-	DOWNLOADING("DOWNLOADING", CalendarUtils.MINUTE * 30),
+	TRANSMITTING("TRANSMITTING"),
 	
 	/**
 	 * Execution is in configuring process, can't exceed 10 minutes
 	 */
-	CONFIGURING ("CONFIGURING", CalendarUtils.MINUTE * 10),
+	CONFIGURING ("CONFIGURING"),
 	
 	/**
 	 * Execution is in deploying process, can't exceed 8 minutes
 	 */
-	DEPLOYING ("DEPLOYING", CalendarUtils.MINUTE * 8),
+	DEPLOYING ("DEPLOYING"),
 	
 	/**
 	 * Execution is in deployed state, running up to stop time
 	 */
-	DEPLOYED ("DEPLOYED", 0),
+	DEPLOYED ("DEPLOYED"),
 	
 	/**
 	 * Execution is in failed state, should be terminate by user or by stop time
 	 */
-	FAILED ("FAILED", 0),
+	FAILED ("FAILED"),
 	
 	/**
 	 * Execution has been requested to be finished, can't exceed 5 minutes
 	 */
-	FINISHING ("FINISHING", CalendarUtils.MINUTE * 5),
+	FINISHING ("FINISHING"),
 	
 	/**
 	 * Execution is finished
 	 */
-	FINISHED("FINISHED", 0),
+	FINISHED("FINISHED"),
 	
 	/**
 	 * Execution has been requested to be saved in server, can't exceed 4 minutes
 	 */
-	REQUEST_COPY("REQUEST COPY", CalendarUtils.MINUTE * 4),
+	REQUEST_COPY("REQUEST COPY"),
 	
 	/**
 	 * Execution is in copying process, can't exceed 30 minutes
 	 */
-	COPYING("COPYING", CalendarUtils.MINUTE * 30),
+	COPYING("COPYING"),
 	
 	/**
 	 * Execution has not been reported for some minutes, process wait for 15 minutes to back to deployed state or move to failed
 	 */
-	RECONNECTING("RECONNECTING", CalendarUtils.MINUTE * 15);//because time in validation (DEPLOYED status) is four, check control procedure
+	RECONNECTING("RECONNECTING");
 	
-	/**
-	 * Limit time in milliseconds for state
-	 */
-	private long time;
 	
 	/**
 	 * Name of state
@@ -79,28 +73,19 @@ public enum ExecutionStateEnum {
 	 * @param name != null
 	 * @param time > 0 
 	 */
-	private ExecutionStateEnum(String name, long time) {
+	private ExecutionStateEnum(String name) {
 		this.name = name;
-		this.time = time;
 	}
-	
-	/**
-	 * Returns limit time for state in milliseconds
-	 * @return limit time
-	 */
-	public long getTime() {
-		return time;
-	}
-	
+		
 	/**
 	 * Returns an execution state searched by name
 	 * @param name of execution
 	 * @return Execution state
 	 */
 	public static ExecutionStateEnum getEnum(String name){
-		if (QUEUED.name.equals(name) || QUEUED.name().equals(name)) return QUEUED;
+		if (REQUESTED.name.equals(name) || REQUESTED.name().equals(name)) return REQUESTED;
 		if (CONFIGURING.name.equals(name) || CONFIGURING.name().equals(name)) return CONFIGURING;
-		if (DOWNLOADING.name.equals(name) || DOWNLOADING.name().equals(name)) return DOWNLOADING;
+		if (TRANSMITTING.name.equals(name) || TRANSMITTING.name().equals(name)) return TRANSMITTING;
 		if (DEPLOYING.name.equals(name) || DEPLOYING.name().equals(name)) return DEPLOYING;
 		if (DEPLOYED.name.equals(name) || DEPLOYED.name().equals(name)) return DEPLOYED;
 		if (FAILED.name.equals(name) || FAILED.name().equals(name)) return FAILED;

@@ -101,25 +101,19 @@ class DeploymentService {
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
-		def images = []
-		Date start = new java.util.Date()
-		Date stop = new java.util.Date(start.getTime() + time)
+		def images = []		
 		requests.eachWithIndex(){ request, i->
 			
-			def depImage= new DeployedImage(image:request.image, highAvaliavility:request.high, executions:[])			
+			def depImage= new DeployedImage(image: request.image, highAvaliavility: request.high, executions: [])			
 			def executions = []
-			for (int j = 0 ; j < request.instances; j++) {				
-				def execution = new Execution(
+			for (int j = 0 ; j < request.instances; j++) {		
+				executions.add( new Execution(
 					deployImage: depImage, 
 					name: request.hostname, 
 					message: "Initializing", 
 					hardwareProfile: request.hp, 
-					disk: 0, 
-					status: ExecutionStateEnum.QUEUED, 
-					startTime: start, 
-					stopTime: stop, 
-					interfaces: [])
-				executions.add(execution)
+					duration: time,					
+					interfaces: []))
 			}
 			depImage.executions = executions
 			images.add(depImage)	
@@ -139,8 +133,8 @@ class DeploymentService {
 			
 		}	
 		
-		Deployment dep = new Deployment(user:user, startTime: start, stopTime: stop,status: DeploymentStateEnum.ACTIVE, cluster:cluster)
-		dep.save(failOnError: true,flush:true)		
+		Deployment dep = new Deployment(user: user, duration: time, status: DeploymentStateEnum.ACTIVE, cluster: cluster)
+		dep.save(failOnError: true, flush: true)		
 				
 		for (DeployedImage image in images) {
 			image.deployment = dep
@@ -242,7 +236,7 @@ class DeploymentService {
 	 * @return list of active executions: status != FINISHED
 	 */
 	def getActiveExecutions() {
-		return Execution.findAll{ status != ExecutionStateEnum.FINISHED}.sort{it.id}
+		return Execution.findAll{ state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**
