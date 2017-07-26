@@ -160,10 +160,7 @@ class DeploymentService {
 	 * @param requests group of deployment properties for executions
 	 */
 	def synchronized addInstances(DeployedImage image, User user, long time, ImageRequestOptions requestOptions) {
-		
-		Date start = new Date()
-		Date stop = new Date(start.getTime() + time)
-		
+				
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
 		if (allowedHwdProfiles.find{it.id == requestOptions.hp.id} == null) 
@@ -185,16 +182,13 @@ class DeploymentService {
 					
 		def executions = []
 		for (int j = 0 ; j < requestOptions.instances ; j++) {
-			def execution = new Execution(
-				deployImage: image, 
-				name: requestOptions.hostname, 
-				message: "Adding Instance",  
-				hardwareProfile: requestOptions.hp, 
-				disk: 0, 
-				status: ExecutionStateEnum.QUEUED, 
-				startTime: new Date(), 
-				stopTime:stop, interfaces:[])
-			executions.add(execution)
+			executions.add( new Execution(
+				deployImage: image,
+				name: requestOptions.hostname,
+				message: "Adding Instance",
+				hardwareProfile: requestOptions.hp,
+				duration: time,
+				interfaces: []))			
 		}
 		
 //		println 'Load Map with used machines '+pmDescriptions.entrySet().size()
@@ -233,7 +227,7 @@ class DeploymentService {
 	
 	/**
 	 * Returns the list of active executions in all users
-	 * @return list of active executions: status != FINISHED
+	 * @return list of active executions: state != FINISHED
 	 */
 	def getActiveExecutions() {
 		return Execution.findAll{ state != ExecutionStateEnum.FINISHED}.sort{it.id}
@@ -248,12 +242,12 @@ class DeploymentService {
 	def stopExecutions(List<Execution> executions, User requester) {
 		List<Execution> executionsToStop = new ArrayList<Execution>()
 		for (Execution vm : executions) {
-			if (vm.status.equals(ExecutionStateEnum.FAILED))			
-				vm.finishExecution()
-			else if(vm.status.equals(ExecutionStateEnum.DEPLOYED)) {
-				vm.putAt("status", ExecutionStateEnum.FINISHING)				
+			if(vm.state.equals(ExecutionStateEnum.DEPLOYED))
 				executionsToStop.add(vm)
-			}
+			//TODO date should be from database
+			//TODO breakinterfaces should be a task in all modules? 
+			vm.goNext("Finish execution", new Date())
+			vm.save()
 		}
 		if (executionsToStop.size() > 0) {
 			QueueTaskerControl.stopExecutions(executionsToStop, requester)
@@ -268,7 +262,7 @@ class DeploymentService {
 	 * @throws Exception
 	 */
 	//Validates capacity
-	def createCopy(Execution execution, User user, String newName)throws Exception{
+	def createCopy(Execution execution, User user, String newName) throws Exception {
 		if (newName == null || newName.isEmpty()) 
 			throw new Exception('Image name can not be empty')
 		if (Image.where{name == newName && owner == user}.find()) 
@@ -292,8 +286,10 @@ class DeploymentService {
 			platform:execution.deployImage.image.platform);
 
 		image.save(failOnError:true, flush:true)
-		execution.putAt("status", ExecutionStateEnum.REQUEST_COPY)
-		execution.putAt("message", 'Copy request to image ' + image.id)
+		//TODO time should be from database
+		execution.goNextRequested("Copying deployed image to " + image.id, new Date())
+		execution.copyTo = image.id
+		execution.save()
 		QueueTaskerControl.createCopyFromExecution(execution, image, execution.deployImage.image, user)
 	}
 }

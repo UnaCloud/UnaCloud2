@@ -1,12 +1,19 @@
 package uniandes.unacloud.web.services.init
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat
+
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.CalendarUtils;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Execution
+import uniandes.unacloud.web.domain.ExecutionHistory;
+import uniandes.unacloud.web.domain.ExecutionState;
 import uniandes.unacloud.web.domain.Image;
 import uniandes.unacloud.web.services.DeploymentService;
 import grails.transaction.Transactional
+import groovy.sql.Sql
 
 /**
  * This service is responsible to control status of some entities
@@ -21,6 +28,11 @@ class ControlService {
 	//-----------------------------------------------------------------
 	
 	/**
+	 * Datasource representation
+	 */
+	def dataSource
+	
+	/**
 	 * Representation of deployment services
 	 */	
 	DeploymentService deploymentService
@@ -33,97 +45,49 @@ class ControlService {
 	 * Changes and control status in all active executions based in status graph
 	 */
 	def validateExecutionStates() {
-		
+		def sql = new Sql(dataSource)
 		def executions = deploymentService.getActiveExecutions();
+		def dbTime = sql.rows("SELECT CURRENT_TIMESTAMP")		
+		println dbTime
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)		
+		Date current = format.parse(dbTime)
 		
 		executions.each {
-			Date currentDate = new Date()
+			
 			Execution exe = it
-			if (exe.state == ExecutionStateEnum.REQUESTED) {//ready
-				if (exe.isAboveStateTime(currentDate)) {
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Task failed: too much time in queue')
+			
+			if (exe.state == ExecutionStateEnum.RECONNECTING) {
+				ExecutionHistory history = exe.getHistoryStatus(ExecutionStateEnum.RECONNECTING)
+				if (history != null && exe.lastReport.after(history.changeTime)) {
+					exe.goNext("Reconnection succesful")
+					exe.save()
 				}
 			}
-			else if (exe.status == ExecutionStateEnum.CONFIGURING) { //ready
-				if (exe.isAboveStateTime(currentDate)) {
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Configuring process failed in agent')
+			else if (exe.state == ExecutionStateEnum.DEPLOYED) {
+				if (exe.stopTime.before(current) ) {
+					exe.goNext("Finishing execution")
+					exe.save()
 				}
 			}
-			else if (exe.status == ExecutionStateEnum.DEPLOYING) {//ready
-				if (exe.stopTime == null) {
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Deploying error')
+			
+			if (exe.isControlExceeded(current)) {
+				if (exe.state == ExecutionStateEnum.REQUEST_COPY) {
+					Image.get(exe.copyTo).delete()
+					exe.copyTo = 0;
 				}
-				else if(exe.isAboveStateTime(currentDate)) {
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Task failed: too much time in deploying')
-				}
-			}
-			else if (exe.status == ExecutionStateEnum.DEPLOYED) {
-				if (exe.stopTime == null) { //ready
-					exe.putAt("stopTime", new Date())
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Deploying error')
-				}
-				else if (exe.stopTime.before(currentDate)) {
-					exe.finishExecution()
-				}
-				else if (exe.lastReport != null && currentDate.getTime() - exe.lastReport.getTime() > CalendarUtils.MINUTE * 4) { //ready
-					exe.putAt("status", ExecutionStateEnum.RECONNECTING);
-					exe.putAt("message","Execution has not been reported for a few minutes");					
-				}
-			}
-			else if (exe.status == ExecutionStateEnum.RECONNECTING) {
-				//if last message was before 4 minutes, it means that execution is alive but after 4 is still reconnecting
-				if (exe.lastReport && ((currentDate.getTime() - exe.lastReport.getTime()) < CalendarUtils.MINUTE * 4)) {
-					exe.putAt("status", ExecutionStateEnum.DEPLOYED)
-					exe.putAt("message",'Reconnected on '+exe.lastReport.getTime())
-				}
-				else if (exe.isAboveStateTime(currentDate)) {//ready
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					exe.putAt("message",'Connection lost')
-				}
-			}
-			else if (exe.status == ExecutionStateEnum.REQUEST_COPY) {
-				if (exe.isAboveStateTime(currentDate)) {//TODO
-					exe.putAt("status", ExecutionStateEnum.DEPLOYED)
-					if (exe.message.contains("Copy request to image ")) {
-						try {
-							Long imageId = Long.parseLong(exe.message.replace("Copy request to image ", ""))
-							Image.get(imageId).delete()
-						} catch(Exception e) {
-							e.printStackTrace()
-						}
-					}
-					exe.putAt("message",'Image copy request failed')
-				}
-			}
-			else if (exe.status == ExecutionStateEnum.COPYING) {
-				if (exe.isAboveStateTime(currentDate)) {//TODO
-					exe.putAt("status", ExecutionStateEnum.FAILED)
-					if (exe.message.contains("Copy request to image ")) {
-						try {
-							Long imageId = Long.parseLong(exe.message.replace("Copy request to image ", ""))
-							Image.get(imageId).putAt("state", ImageEnum.UNAVAILABLE)
-						} catch(Exception e) {
-							e.printStackTrace()
-						}
-					}
-					exe.putAt("message",'Image copy request failed')
-				}
-			}
-			else if (exe.status == ExecutionStateEnum.FINISHING) {//ready
-				if (exe.isAboveStateTime(currentDate)) {
-					exe.finishExecution()//TODO
-				}
-			}
-			else if(exe.status == ExecutionStateEnum.FAILED) {
-				if (exe.stopTime != null && exe.stopTime.before(currentDate)) {
-					exe.finishExecution()
-				}
-			}
+				else if (exe.state == ExecutionStateEnum.COPYING) { //es necesario dejarla inhabilitada para que sea eliminada posteriormente. Validar este punto.
+					Image.get(exe.copyTo).putAt("state", ImageEnum.UNAVAILABLE)
+					exe.copyTo = 0;
+					exe.stopTime = current
+				}			
+				else if (exe.state == ExecutionStateEnum.RECONNECTING) 
+					exe.stopTime = current
+				
+				if (exe.state != ExecutionStateEnum.DEPLOYED && exe.state != ExecutionStateEnum.REQUEST_COPY)
+					exe.breakFreeInterfaces()
+				exe.goNextControl(current)
+				exe.save()
+			}		
 		}		
 	}	
 }

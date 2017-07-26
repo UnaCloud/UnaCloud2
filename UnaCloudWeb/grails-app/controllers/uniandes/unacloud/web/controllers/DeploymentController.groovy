@@ -60,7 +60,7 @@ class DeploymentController {
 		def user = User.get(session.user.id)
 		session.user.refresh(user)
 		if (!user.status.equals(UserStateEnum.AVAILABLE)) {
-			flash.message="You don\'t have permissions to do this action"
+			flash.message = "You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)
 			return false
 		}
@@ -137,14 +137,14 @@ class DeploymentController {
 	 * stopped. Redirects to index when the operation is finished.
 	 */
 	
-	def stop(){
+	def stop() {
 		def user= User.get(session.user.id)
 		List<Execution> executions = new ArrayList<>();
 		params.each {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
-					if (vm != null && (vm.status.equals(ExecutionStateEnum.DEPLOYED) || vm.status.equals(ExecutionStateEnum.FAILED))) {
+					if (vm != null && (vm.state.equals(ExecutionStateEnum.DEPLOYED) || vm.state.equals(ExecutionStateEnum.FAILED))) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
@@ -208,7 +208,7 @@ class DeploymentController {
 			if (image.deployment.user == user || user.isAdmin()) {
 				try {
 					//validates if cluster is good configured
-					def request = new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(), params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(), image.highAvaliavility);
+					def request = new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(), params.get('instances_' + image.id).toInteger(), image.getDeployedHostname(), image.highAvaliavility);
 				
 					deploymentService.addInstances(image, user, params.time.toLong() * 60 * 60 * 1000, request)
 					redirect(uri:"/services/deployment/list", absolute:true)
@@ -220,7 +220,7 @@ class DeploymentController {
 						flash.message = e.getCause()
 					else
 						flash.message = e.message
-					redirect(uri:"/services/deployment/"+image.id+'/add', absolute:true)
+					redirect(uri:"/services/deployment/" + image.id + '/add', absolute:true)
 				}
 				
 			} else {

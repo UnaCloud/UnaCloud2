@@ -37,32 +37,6 @@ class DatabaseService {
 	def initDatabase(){
 		def sql = new Sql(dataSource)
 		//Creates event to control executions
-		try {
-			sql.execute ('DROP PROCEDURE IF EXISTS sp_check_vm')
-			sql.execute ('CREATE PROCEDURE sp_check_vm() '
-						+ 'BEGIN '
-							+ 'SELECT @deployedID := id FROM execution_state WHERE state = \'' + ExecutionStateEnum.DEPLOYED + '\';'
-							+ 'SELECT @reconnectID := id FROM execution_state WHERE state = \'' + ExecutionStateEnum.RECONNECTING + '\';'
-								//Update executions in reconnecting state to deployed in case last report is greater than reconnecting time
-							+ 'UPDATE execution exe JOIN execution_state exest ON exe.state_id = exest.id JOIN execution_history exehis ON exe.id = exehis.execution_id '
-								+ 'SET exe.state_id = exest.next_id, exe.message = \'Reconnection succesful\', exe.last_report = CURRENT_TIMESTAMP '
-								+ 'WHERE exe.last_report > exehis.change_time '
-								+ 'AND exe.state_id = @reconnectID AND exehis.state_id = @reconnectID AND exe.id > 0; '
-								//Update executions in deployed state to finishing in case current time exceeds stop time
-							+ 'UPDATE execution exe JOIN execution_state exest ON exe.state_id = exest.id '
-								+ 'SET exe.state_id = exest.next_id, exe.message = \'Finishing execution\', exe.last_report = CURRENT_TIMESTAMP '
-								+ 'WHERE exe.stop_time < CURRENT_TIMESTAMP '
-								+ 'AND exe.state_id = @deployedID AND exe.id > 0; '
-								//Update all executions (except failed or finished) to control state if control time has been exceeded
-							+ 'UPDATE execution exe JOIN execution_state exest ON exe.state_id = exest.id '
-								+ 'SET exe.state_id = exest.next_control_id, exe.message = exest.message, exe.last_report = CURRENT_TIMESTAMP '
-								+ 'WHERE TIMESTAMPDIFF(SECOND, exe.last_report, CURRENT_TIMESTAMP) > exest.control_time/1000 '
-								+ 'AND exest.next_control_id IS NOT NULL AND exe.id > 0; '
-						+ 'END')
-			sql.execute ('CREATE EVENT if not exists update_vms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_vm')
-		} catch(Exception e) {
-			print 'Error creating control execution event'
-		}
 		
 		try {
 			sql.execute 'CREATE TRIGGER '

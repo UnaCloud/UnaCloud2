@@ -5,7 +5,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
@@ -123,16 +122,14 @@ class Execution {
 		this.save(failOnError: true, flush: true)
 		for (NetInterface netInterface in interfaces) {
 			netInterface.ip.putAt('state', IPEnum.USED)
-			netInterface.save(failOnerror:true, flush:true)
+			netInterface.save(failOnerror: true, flush:true)
 		}
 	}
 	
 	/**
 	 * Sets status to finished and breaks free IP from net interfaces.
 	 */
-	def finishExecution() {
-		this.putAt("state", ExecutionStateEnum.FINISHED)
-		this.putAt("stopTime", new Date())
+	def breakFreeInterfaces() {
 		for (NetInterface netinterface in interfaces)
 			netinterface.ip.putAt("state", IPEnum.AVAILABLE)
 	}
@@ -169,24 +166,55 @@ class Execution {
 	 */
 	def getDeployedImage() {
 		return deployImage;
-	}
-	
-	
+	}	
 	
 	/**
 	 * Changes current execution state to next one
 	 */
-	def goNext() {
-		if (state.next != null)
+	def goNext(String newMessage, Date changeTime) {
+		if (state.next != null) {
 			state = state.next
+			message = newMessage
+			lastReport = changeTime
+		}
 	}
 	
 	/**
 	 * Changes current execution state to requested next one if exits
 	 */
-	def goNextRequested	() {
-		if (state.nextRequested != null)
+	def goNextRequested	(String newMessage, Date changeTime) {
+		if (state.nextRequested != null) {
 			state = state.nextRequested
+			message = newMessage
+			lastReport = changeTime
+		}
+	}
+	
+	/**
+	 * Changes current execution state to control next one if exits
+	 */
+	def goNextControl(Date changeTime) {
+		if (state.nextControl != null) {
+			state = state.nextControl
+			message = state.controlMessage
+			lastReport = changeTime
+		}
+	}
+	
+	def isControlExceeded(Date current) {
+		println current.getTime() - lastReport.getTime() + " - " + state.controlTime
+		if (state.nextControl != null)
+			return current.getTime() - lastReport.getTime() > state.controlTime
+		return false
+	}
+	
+	/**
+	 * Returns execution history based in one state
+	 * @param state to search history for execution
+	 * @return history status 
+	 */
+	def getHistoryStatus(ExecutionStateEnum searchState) {
+		return ExecutionHistory.where{state == searchState && execution == this}.find()
 	}
 	
 }

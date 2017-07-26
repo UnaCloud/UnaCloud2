@@ -1,12 +1,6 @@
 
 import java.io.FileInputStream;
 
-
-
-
-
-
-
 import sun.security.ssl.HandshakeMessage.Finished;
 import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.ConfigurationReader
@@ -18,7 +12,6 @@ import org.junit.internal.runners.statements.FailOnTimeout;
 
 import uniandes.unacloud.share.queue.QueueRabbitManager;
 import uniandes.unacloud.share.utils.EnvironmentManager;
-import uniandes.unacloud.web.domain.ExternalCloudProvider;
 import uniandes.unacloud.web.domain.UserGroup
 import uniandes.unacloud.web.services.UserGroupService
 import uniandes.unacloud.web.domain.ExecutionState;

@@ -61,7 +61,7 @@ public class ImageCacheManager {
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {
-					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.DOWNLOADING, "Start downloading");
+					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.TRANSMITTING, "Start Transmission");
 					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository);
 					saveImages();
 				} catch (ExecutionException ex) {

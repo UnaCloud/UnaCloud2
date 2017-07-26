@@ -195,11 +195,4 @@ class ClusterController {
 		 		
 	}
 	
-	/**
-	 * Action used to render view to deploy the cluster in external provider
-	 * @return
-	 */
-	def externalDeployOptions() {		
-		//TODO to be implemented
-	}
 }

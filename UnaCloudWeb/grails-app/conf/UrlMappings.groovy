@@ -28,7 +28,6 @@ class UrlMappings {
 		"/services/image/public"(controller:'Image',action:'newFromPublic')
 		"/services/image/public/copy"(controller:'Image',action:'copyPublic')
 		"/services/image/edit/save"(controller:'Image',action:'saveEdit')
-		"/services/image/external/$id"(controller:'Image',action:'external')
 		"/services/image/update/$id"(controller:'Image',action:'update')
 		"/services/image/update/save"(controller:'Image',action:'updateFiles')
 		
@@ -38,7 +37,6 @@ class UrlMappings {
 		"/services/cluster/save"(controller:"Cluster",action:"save")
 		"/services/cluster/delete/$id"(controller:"Cluster",action:"delete")
 		"/services/cluster/deploy/$id"(controller:"Cluster",action:"deployOptions")
-		"/services/cluster/external/$id"(controller:"Cluster",action:"externalDeployOptions")		
 		
 		/** services - deployments **/
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")

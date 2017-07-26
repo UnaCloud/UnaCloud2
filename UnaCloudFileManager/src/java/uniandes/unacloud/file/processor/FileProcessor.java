@@ -7,7 +7,7 @@ import java.util.Observer;
 
 import org.apache.commons.lang.NullArgumentException;
 
-import uniandes.unacloud.common.utils.Zipper;
+import uniandes.unacloud.utils.file.Zipper;
 
 /**
  * Class responsible to manages file processes: copy, delete and zip

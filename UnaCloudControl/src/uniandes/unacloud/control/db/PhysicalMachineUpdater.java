@@ -31,7 +31,7 @@ public class PhysicalMachineUpdater {
 	 */
 	public static boolean updatePhysicalMachine(String host, String hostUser, String ip, Long freeSpace, Long dataSpace, String version, Connection con) {
 		try {
-			String query = "update physical_machine pm set pm.with_user= ?, pm.state = CASE WHEN pm.state = \'" + PhysicalMachineStateEnum.OFF.name()
+			String query = "UPDATE physical_machine pm SET pm.with_user= ?, pm.state = CASE WHEN pm.state = \'" + PhysicalMachineStateEnum.OFF.name()
 					+ "\' THEN  \'"+PhysicalMachineStateEnum.ON.name() + "\' ELSE pm.state END, pm.last_report = CURRENT_TIMESTAMP "
 					+ (dataSpace != null ? ", pm.data_space = ?" : "")
 					+ (freeSpace != null ? ", pm.free_space = ?" : "")
@@ -67,9 +67,10 @@ public class PhysicalMachineUpdater {
 	 * @param con connection to database
 	 * @return true in case execution could be updated, false in case not
 	 */
-	public static boolean updateExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con) {
+	public static boolean updateExecution(Long id, String host, String message, ExecutionStateEnum status, Connection con, int t) {
 		try {
-			String query = "update execution vm set vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.status = ?  WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
+			String query = "UPDATE execution vm SET vm.message= ?, vm.last_report = CURRENT_TIMESTAMP, vm.state = ? "
+						+ " WHERE vm.id = ? and vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?);"; 
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setString(1, message);
 			ps.setString(2, status.name());
@@ -106,7 +107,7 @@ public class PhysicalMachineUpdater {
 			
 			builder = builder.deleteCharAt( builder.length() -1 );
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM execution vm where vm.id in (" + builder.toString() + ") AND (vm.status = \'" + ExecutionStateEnum.FAILED.name() + "\' OR vm.status = \'" + ExecutionStateEnum.FINISHED.name() + "\' OR vm.status = \'" + ExecutionStateEnum.FINISHING.name() + "\')";
+			String query = "SELECT vm.id FROM execution vm WHERE vm.id in (" + builder.toString() + ") AND (vm.state = \'" + ExecutionStateEnum.FAILED.name() + "\' OR vm.status = \'" + ExecutionStateEnum.FINISHED.name() + "\' OR vm.state = \'" + ExecutionStateEnum.FINISHING.name() + "\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for (Long idvme : ids) {

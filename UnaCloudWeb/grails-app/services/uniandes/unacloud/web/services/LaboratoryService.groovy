@@ -238,10 +238,10 @@ class LaboratoryService {
 	def deleteHost(Laboratory lab, host) {
 		PhysicalMachine hostMachine = PhysicalMachine.where{id == host && laboratory == lab}.find()
 		if (hostMachine) {			
-			if (Execution.where {executionNode == hostMachine && status != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
+			if (Execution.where {executionNode == hostMachine && state != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
 				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
 			def executions = Execution.where{
-					executionNode == hostMachine && status == ExecutionStateEnum.FINISHED}.findAll()
+					executionNode == hostMachine && state == ExecutionStateEnum.FINISHED}.findAll()
 			for (Execution exe in executions)
 					exe.putAt("executionNode", null)			
 			hostMachine.delete()			

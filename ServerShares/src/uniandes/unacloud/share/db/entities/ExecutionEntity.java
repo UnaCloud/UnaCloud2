@@ -169,13 +169,13 @@ public class ExecutionEntity {
 	public Long getTime() {
 		return stopTime.getTime() - startTime.getTime();
 	}
-	
-	/**
-	 * Validates if current state time is above of a certain date given as parameter
-	 * @param date to compare
-	 * @return true in case current state time is above of a certain date, false otherwise
-	 */
-	public boolean isAboveStateTime(Date date) {
-		return date.getTime() - lastUpdate.getTime() > state.getTime();
-	}
+//	
+//	/**
+//	 * Validates if current state time is above of a certain date given as parameter
+//	 * @param date to compare
+//	 * @return true in case current state time is above of a certain date, false otherwise
+//	 */
+//	public boolean isAboveStateTime(Date date) {
+//		return date.getTime() - lastUpdate.getTime() > state.getTime();
+//	}
 }

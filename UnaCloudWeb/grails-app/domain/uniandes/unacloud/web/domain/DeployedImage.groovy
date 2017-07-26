@@ -53,7 +53,7 @@ class DeployedImage {
 	 * @return list of active executions
 	 */
 	def getActiveExecutions() {
-		return executions.findAll{it.status != ExecutionStateEnum.FINISHED}.sort{it.id}
+		return executions.findAll{it.state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**

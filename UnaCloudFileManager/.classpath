@@ -108,5 +108,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

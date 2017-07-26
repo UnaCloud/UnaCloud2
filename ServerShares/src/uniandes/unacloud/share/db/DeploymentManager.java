@@ -57,11 +57,11 @@ public class DeploymentManager {
 				
 			}
 			if (deploy != null) {
-				ps = con.prepareStatement("SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token"
+				ps = con.prepareStatement("SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.state, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token"
 						+ " FROM execution vme INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id INNER JOIN deployed_image dp ON dp.id = vme.deploy_image_id "
-						+ " INNER JOIN image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.status = ?;");
+						+ " INNER JOIN image vmi ON dp.image_id = vmi.id WHERE dp.deployment_id = ? AND vme.state = ?;");
 				ps.setLong(1, id);
-				ps.setString(2, ExecutionStateEnum.QUEUED.name());
+				ps.setString(2, ExecutionStateEnum.REQUESTED.name());
 				rs = ps.executeQuery();	
 				System.out.println(ps.toString());
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
@@ -129,7 +129,7 @@ public class DeploymentManager {
 				stop = start + 1;
 			}
 			if (execution.getState() != null) {
-				query += (start > 0 || stop > 0 ? "," : "") + " vme.status= ? ";
+				query += (start > 0 || stop > 0 ? "," : "") + " vme.state = ? ";
 				state = stop > 0 ? stop + 1 : start + 1;
 			}
 			if (execution.getMessage() != null) {
@@ -235,7 +235,7 @@ public class DeploymentManager {
 					state = ExecutionStateEnum.getEnum(rs.getString(6));
 					if(state.equals(ExecutionStateEnum.DEPLOYED))				
 						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Connection lost in server"), con);					
-					if(state.equals(ExecutionStateEnum.QUEUED))				
+					if(state.equals(ExecutionStateEnum.REQUESTED))				
 						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con);	
 				} else {
 					ExecutionEntity vme = new ExecutionEntity(
@@ -287,12 +287,12 @@ public class DeploymentManager {
 			ExecutionEntity execution = null;
 			
 			if (rs.next()) {
-				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON,con);
+				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
 				if (pm == null) {
 					if(state.equals(ExecutionStateEnum.DEPLOYED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Connection lost in server"),con);					
-					if(state.equals(ExecutionStateEnum.QUEUED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"),con);	
+						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Connection lost in server"), con);					
+					if(state.equals(ExecutionStateEnum.REQUESTED))				
+						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con);	
 				} else {
 					execution = new ExecutionEntity(
 							rs.getLong(1), 

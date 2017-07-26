@@ -34,8 +34,13 @@ public class ImageFileManager {
 		try {
 			String query = null;
 			if (withConfigurer) 
-				query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id, os.configurer"+(withUser?",vm.owner_id":"")+" FROM image vm INNER JOIN operating_system os ON vm.operating_system_id = os.id WHERE vm.state = ? and vm.id = ?;";
-			else query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id"+(withUser?",vm.owner_id":"")+" FROM image vm WHERE vm.state = ? and vm.id = ?;";
+				query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id, os.configurer" + (withUser ? ", vm.owner_id" : "") 
+				+ " FROM image vm "
+				+ " INNER JOIN operating_system os ON vm.operating_system_id = os.id "
+				+ " WHERE vm.state = ? and vm.id = ?;";
+			else query = "SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.token, vm.user, vm.password, vm.name, vm.platform_id" + (withUser ? ", vm.owner_id" : "") 
+					+ " FROM image vm "
+					+ " WHERE vm.state = ? and vm.id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
@@ -70,7 +75,10 @@ public class ImageFileManager {
 	 */
 	public static ImageFileEntity getImageWithFile(String token,Connection con) {
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.state, vm.name, vm.owner_id, vm.platform_id FROM image vm WHERE vm.token = ? ;");
+			PreparedStatement ps = con.prepareStatement(
+					"SELECT vm.id, vm.fixed_disk_size, vm.is_public, vm.main_file, vm.repository_id, vm.state, vm.name, vm.owner_id, vm.platform_id "
+					+ "FROM image vm "
+					+ "WHERE vm.token = ? ;");
 			ps.setString(1,token);
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
@@ -104,33 +112,15 @@ public class ImageFileManager {
 		if (image.getId() == null || image.getId() < 1)
 			return false;
 		try {
-			String query = "update image vm set" + (withToken ? " vm.token = NULL," : "");
-			int isPublic = 0;
-			int repository = 0;
-			int mainFile = 0;
-			int status = 0;
-			int token = 0;
-			if (image.isPublic() != null) {
-				query += " vm.is_public = ? ";
-				isPublic = 1;
-			}
-			if (image.getRepository() != null) {
-				query += (isPublic > 0 ? "," : "") + " vm.repository_id = ? ";
-				repository = isPublic+1;
-			}
-			if (image.getMainFile() != null) {
-				query += (isPublic > 0 || repository > 0 ? "," : "") + " vm.main_file = ? ";
-				mainFile = repository > 0 ? repository + 1 : isPublic + 1;
-			}	
-			if (image.getState() != null) {
-				query += (isPublic > 0 || repository > 0 || mainFile > 0 ? "," : "") + " vm.state = ? ";
-				status = mainFile > 0 ? mainFile + 1 : repository > 0 ? repository + 1 : isPublic + 1;
-			}
-			if (!withToken && image.getToken() != null) {
-				query += (isPublic > 0 || repository > 0 || mainFile > 0 || token > 0 ? "," : "") + " vm.token = ? ";
-				token = status > 0 ? status + 1 : mainFile > 0 ? mainFile + 1 : repository > 0 ? repository + 1 : isPublic + 1;
-			}
-			if (isPublic > 0 || repository > 0 || mainFile > 0 || status > 0 || token > 0) {
+			String query = "update image vm set" + 
+						(withToken ? ", vm.token = NULL" : "") +
+						(image.isPublic() != null ? ", vm.is_public = ? " : "") +
+						(image.getRepository() != null ? ", vm.repository_id = ? " : "") +
+						(image.getMainFile() != null ? ", vm.main_file = ? " : "") +
+						(image.getState() != null ? ", vm.state = ? " : "") +
+						(!withToken && image.getToken() != null ? ", vm.token = ? " : "");
+			if (query.contains(",")) {
+				query = query.replaceFirst(",", "");
 				if (update)
 					query += ", vm.image_version = vm.image_version + 1 ";
 				if (image.getFixDisk() != null && image.getFixDisk() > 0)
@@ -138,26 +128,11 @@ public class ImageFileManager {
 				query += "where vm.id = ? and vm.id > 0;";				
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
-				if (isPublic > 0) {
-					ps.setBoolean(isPublic, image.isPublic());
-					id++;
-				}
-				if (repository > 0) {
-					ps.setLong(repository, image.getRepository().getId());
-					id++;
-				}
-				if (mainFile>0) {
-					ps.setString(mainFile, image.getMainFile());
-					id++;
-				}
-				if (status>0) {
-					ps.setString(status, image.getState().name());
-					id++;
-				}
-				if (token>0) {
-					ps.setString(token, image.getToken());
-					id++;
-				}
+				if (image.isPublic() != null) ps.setBoolean(id++, image.isPublic());
+				if (image.getRepository() != null) ps.setLong(id++, image.getRepository().getId());
+				if (image.getMainFile() != null) ps.setString(id++, image.getMainFile());
+				if (image.getState() != null) ps.setString(id++, image.getState().name());
+				if (!withToken && image.getToken() != null) ps.setString(id++, image.getToken());
 				ps.setLong(id, image.getId());
 				System.out.println(ps.toString());
 				System.out.println("Change " + ps.executeUpdate() + " lines");
@@ -184,7 +159,9 @@ public class ImageFileManager {
 	public static List<ImageFileEntity> getAllImagesByUser(Long userId, Connection con) {
 		try {
 			List<ImageFileEntity> list = new ArrayList<ImageFileEntity>();	
-			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name, vm.platform_id FROM image vm WHERE vm.owner_id = ?;";
+			String query = "SELECT vm.id, vm.state, vm.token, vm.repository_id, vm.is_public, vm.fixed_disk_size, vm.main_file, vm.name, vm.platform_id "
+							+ "FROM image vm "
+							+ "WHERE vm.owner_id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);			
 			ps.setLong(1, userId);
 			System.out.println(ps.toString());

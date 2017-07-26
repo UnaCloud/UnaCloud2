@@ -380,7 +380,7 @@ public class QueueMessageProcessor implements QueueReader{
 		
 		List<ExecutionEntity> executions = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
-			executions = DeploymentManager.getExecutions(ids, ExecutionStateEnum.QUEUED, true, con);
+			executions = DeploymentManager.getExecutions(ids, ExecutionStateEnum.REQUESTED, true, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
