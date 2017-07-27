@@ -33,7 +33,6 @@ import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.db.entities.NetInterfaceEntity;
 import uniandes.unacloud.share.db.entities.PhysicalMachineEntity;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
-import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.share.queue.QueueReader;
@@ -184,7 +183,7 @@ public class QueueMessageProcessor implements QueueReader {
 	 */
 	private void sendTaskToAgents(MessageTaskMachines messageTask) {		
 			
-		int task = messageTask.getTask();
+		int task = messageTask.getTask().getId();
 		Long[] ids = messageTask.getIdMachines();
 		List<PhysicalMachineEntity> machines = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
@@ -379,7 +378,7 @@ public class QueueMessageProcessor implements QueueReader {
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, "Execution finished");
 									ExecutionManager.updateExecution(exe, con2);
-									ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
+									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -393,7 +392,7 @@ public class QueueMessageProcessor implements QueueReader {
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, "Connection lost with agent, execution will be removed when it reconnects");
 									ExecutionManager.updateExecution(exe, con2);
-									ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
+									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}

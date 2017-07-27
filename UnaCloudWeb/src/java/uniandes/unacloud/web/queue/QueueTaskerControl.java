@@ -10,6 +10,7 @@ import uniandes.unacloud.share.queue.messages.MessageIdOfImage;
 import uniandes.unacloud.share.queue.messages.MessageStopExecutions;
 import uniandes.unacloud.share.queue.messages.MessageTaskMachines;
 import uniandes.unacloud.share.enums.QueueMessageType;
+import uniandes.unacloud.share.enums.TaskEnum;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.PhysicalMachine;
@@ -54,12 +55,12 @@ public class QueueTaskerControl {
 	 * @param user
 	 * @throws Exception in case task is null or number of machines is 0
 	 */
-	public static void taskMachines(List<PhysicalMachine> machines, int task, User user) {
+	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user) {
 		long[] listIds = new long[machines.size()];
 		for (int i = 0; i < machines.size(); i++)
 			listIds[i] = machines.get(i).getDatabaseId();
 		
-		MessageTaskMachines message = new MessageTaskMachines(String.valueOf(user.getDatabaseId()), listIds, task);
+		MessageTaskMachines message = new MessageTaskMachines(String.valueOf(user.getDatabaseId()), listIds, task.getName());
 		controlQueue.sendMessage(message);
 	}
 	

@@ -39,7 +39,7 @@ public class DeploymentManager {
 			PreparedStatement ps = con.prepareStatement(
 					"SELECT dp.id, dp.start_time, dp.stop_time, dp.status "
 					+ "FROM deployment dp "
-					+ "WHERE dp.status = ? and dp.id = ?;");
+					+ "WHERE dp.status = ? AND dp.id = ?;");
 			ps.setString(1, DeploymentStateEnum.ACTIVE.name());
 			ps.setLong(2, id);
 			ResultSet rs = ps.executeQuery();	

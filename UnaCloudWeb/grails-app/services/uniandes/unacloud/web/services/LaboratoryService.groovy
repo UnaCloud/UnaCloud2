@@ -3,6 +3,7 @@ package uniandes.unacloud.web.services
 import org.springframework.aop.ThrowsAdvice;
 
 import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
@@ -16,7 +17,6 @@ import uniandes.unacloud.web.domain.PhysicalIP;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Platform;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.Ip4Validator
 import grails.transaction.Transactional
 
@@ -238,10 +238,10 @@ class LaboratoryService {
 	def deleteHost(Laboratory lab, host) {
 		PhysicalMachine hostMachine = PhysicalMachine.where{id == host && laboratory == lab}.find()
 		if (hostMachine) {			
-			if (Execution.where {executionNode == hostMachine && state != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
+			if (Execution.where {executionNode == hostMachine && state.state != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
 				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
 			def executions = Execution.where{
-					executionNode == hostMachine && state == ExecutionStateEnum.FINISHED}.findAll()
+					executionNode == hostMachine && state.state == ExecutionStateEnum.FINISHED}.findAll()
 			for (Execution exe in executions)
 					exe.putAt("executionNode", null)			
 			hostMachine.delete()			

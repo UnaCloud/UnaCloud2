@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uniandes.unacloud.share.enums.QueueMessageType;
+import uniandes.unacloud.share.enums.TaskEnum;
 
 /**
  * Class used to represent the message of Task in a list of Machines. 
@@ -16,7 +17,7 @@ public class MessageTaskMachines extends QueueMessage {
 	
 	private final static String TAG_TASK = "task";
 	
-	public MessageTaskMachines(String requester, long[] machines, int task) {
+	public MessageTaskMachines(String requester, long[] machines, String task) {
 		super(requester);
 		this.setType(QueueMessageType.SEND_TASK);
 		
@@ -43,9 +44,9 @@ public class MessageTaskMachines extends QueueMessage {
 	 * Return the Task in class TaskEnum
 	 * @return TaskEnum
 	 */
-	public int getTask() {
+	public TaskEnum getTask() {
 		JSONObject temp = this.getMessageContent();
-		return temp.getInt(TAG_TASK);
+		return TaskEnum.getEnum(temp.getString(TAG_TASK));
 	}
 
 	/**

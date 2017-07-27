@@ -2,7 +2,6 @@
 import java.io.FileInputStream;
 
 import sun.security.ssl.HandshakeMessage.Finished;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.ConfigurationReader
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -28,6 +27,7 @@ import uniandes.unacloud.web.domain.Repository
 import uniandes.unacloud.web.services.UserService
 import uniandes.unacloud.web.domain.enums.ExternalCloudTypeEnum;
 import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.share.enums.ServerVariableProgramEnum;
 import uniandes.unacloud.share.enums.ServerVariableTypeEnum;

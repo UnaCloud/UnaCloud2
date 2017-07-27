@@ -10,7 +10,6 @@ import java.util.List;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
-import uniandes.unacloud.share.enums.IPEnum;
 
 public class ExecutionManager {
 
@@ -28,12 +27,13 @@ public class ExecutionManager {
 					"UPDATE execution vme "
 					+ "JOIN execution_state exest "
 					+ "ON vme.state_id = exest.id " 
-					+ "SET vme.last_report = CURRENT_TIMESTAMP " +
+					+ "SET "+
 			(execution.getStartTime() != null? ", vme.start_time = ? " : "") +
 			(execution.getStopTime() != null? ", vme.stop_time = ? " : "") +
 			(execution.getMessage() != null? ", vme.message = ? " : "");
 			if (execution.getState() != null) {
 				String state = null;
+				if (query.contains(",")) query = query.replaceFirst(",", "");
 				if (execution.getState() == ExecutionProcessEnum.FAIL)
 					state = "exest.next_control_id";
 				else if (execution.getState() == ExecutionProcessEnum.REQUEST)
@@ -69,7 +69,8 @@ public class ExecutionManager {
 	}
 	
 	/**
-	 * Updates all executions by name and id in array and return which are in finishing process
+	 * Updates all executions by name and id in array and return which are in finishing process.
+	 * Method used to update report
 	 * @param ids executions 
 	 * @param host which reports
 	 * @param con Database connection
@@ -133,32 +134,32 @@ public class ExecutionManager {
 		return null;
 	}
 	
-	/**
-	 * Updates states for IP in database
-	 * @param executionId execution to modify IP
-	 * @param con database connection
-	 * @param ipstate State of IP
-	 * @return true in case update was success, false in case not
-	 */
-	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate) {
-		try {
-			String update = 
-					"UPDATE ip SET state = ? "
-					+ "WHERE id in (SELECT ip_id FROM net_interface WHERE execution_id = ?) "
-					+ "AND id > 0;"; 
-			PreparedStatement ps = con.prepareStatement(update);
-			ps.setString(1, ipstate.name());
-			ps.setLong(2, executionId);
-			System.out.println("Update: "+ps.executeUpdate());
-			try {
-				ps.close();
-			} catch (Exception e) {
-				
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}		
-	}
+//	/**
+//	 * Updates states for IP in database
+//	 * @param executionId execution to modify IP
+//	 * @param con database connection
+//	 * @param ipstate State of IP
+//	 * @return true in case update was success, false in case not
+//	 */
+//	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate) {
+//		try {
+//			String update = 
+//					"UPDATE ip SET state = ? "
+//					+ "WHERE id in (SELECT ip_id FROM net_interface WHERE execution_id = ?) "
+//					+ "AND id > 0;"; 
+//			PreparedStatement ps = con.prepareStatement(update);
+//			ps.setString(1, ipstate.name());
+//			ps.setLong(2, executionId);
+//			System.out.println("Update: "+ps.executeUpdate());
+//			try {
+//				ps.close();
+//			} catch (Exception e) {
+//				
+//			}
+//			return true;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return false;
+//		}		
+//	}
 }

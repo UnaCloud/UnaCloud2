@@ -69,7 +69,7 @@ class Execution {
 	Date lastReport
 		
 	/**
-	 * Duration of execution 
+	 * Duration of execution in milliseconds
 	 */
 	long duration
 	
@@ -125,15 +125,7 @@ class Execution {
 			netInterface.save(failOnerror: true, flush:true)
 		}
 	}
-	
-	/**
-	 * Sets status to finished and breaks free IP from net interfaces.
-	 */
-	def breakFreeInterfaces() {
-		for (NetInterface netinterface in interfaces)
-			netinterface.ip.putAt("state", IPEnum.AVAILABLE)
-	}
-	
+		
 	/**
 	 * Returns main IP configured in Net interfaces
 	 * currently is number one
@@ -176,7 +168,6 @@ class Execution {
 		if (state.next != null) {
 			state = state.next
 			message = newMessage
-			lastReport = new Date()
 		}
 	}
 	
@@ -187,7 +178,6 @@ class Execution {
 		if (state.nextRequested != null) {
 			state = state.nextRequested
 			message = newMessage
-			lastReport = new Date()
 		}
 	}
 	
@@ -198,12 +188,10 @@ class Execution {
 		if (state.nextControl != null) {
 			state = state.nextControl
 			message = state.controlMessage
-			lastReport = new Date()
 		}
 	}
 	
-	def isControlExceeded() {
-		Date current = new Date()
+	def isControlExceeded(Date current) {
 		println current.getTime() - lastReport.getTime() + " - " + state.controlTime
 		if (state.nextControl != null)
 			return current.getTime() - lastReport.getTime() > state.controlTime

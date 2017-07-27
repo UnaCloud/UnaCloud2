@@ -105,7 +105,8 @@ class DeploymentController {
 					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 					return
 				}
-			} else {
+			} 
+			else {
 				flash.message = 'You don\'t have permissions to deploy this cluster or cluster is not available'
 				redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 				return

@@ -23,7 +23,7 @@ public class PhysicalMachineManager {
 	 * @param con Database Connection
 	 * @return Physical Machine entity, could be null
 	 */
-	public static PhysicalMachineEntity getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState,Connection con) {
+	public static PhysicalMachineEntity getPhysicalMachine(Long id, PhysicalMachineStateEnum machineState, Connection con) {
 		try {
 			PreparedStatement ps = con.prepareStatement(
 					"SELECT pm.id, i.ip, pm.state, pm.last_report, pm.name "

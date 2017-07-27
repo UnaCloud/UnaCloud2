@@ -23,7 +23,7 @@ public class ImageManager {
 	 */
 	public static ImageEntity getImage(Long id, ImageEnum state, Connection con) {
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM image vm WHERE vm.state = ? and vm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM image vm WHERE vm.state = ? AND vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			System.out.println(ps.toString());
@@ -55,7 +55,7 @@ public class ImageManager {
 		if (image.getId() == null || image.getId() < 1)
 			return false;
 		try {
-			String query = "update image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
+			String query = "UPDATE image vm SET vm.state = ? WHERE vm.id = ? AND vm.id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());

@@ -1,11 +1,11 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.pmallocators.AllocatorException
 import uniandes.unacloud.web.pmallocators.PhysicalMachineAllocationDescription

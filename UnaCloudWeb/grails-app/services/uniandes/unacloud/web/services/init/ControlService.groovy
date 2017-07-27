@@ -4,8 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.utils.CalendarUtils;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Execution
 import uniandes.unacloud.web.domain.ExecutionHistory;
@@ -46,12 +45,17 @@ class ControlService {
 	 */
 	def validateExecutionStates() {
 		def executions = deploymentService.getActiveExecutions();
-		Date current = new Date()
+		def sql = new Sql(dataSource)
+		def dbTime = sql.rows("SELECT CURRENT_TIMESTAMP")		
+		println dbTime
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)		
+		Date current = format.parse(dbTime)
 		
 		executions.each {
 			
 			Execution exe = it
 			
+			//Validates if agent has send a report after lost connection
 			if (exe.state.state == ExecutionStateEnum.RECONNECTING) {
 				ExecutionHistory history = exe.getHistoryStatus(ExecutionStateEnum.RECONNECTING)
 				if (history != null && exe.lastReport.after(history.changeTime)) {
@@ -66,21 +70,7 @@ class ControlService {
 				}
 			}
 			
-			if (exe.isControlExceeded()) {
-				if (exe.state.state == ExecutionStateEnum.REQUEST_COPY) {
-					Image.get(exe.copyTo).delete()
-					exe.copyTo = 0;
-				}
-				else if (exe.state.state == ExecutionStateEnum.COPYING) { //es necesario dejarla inhabilitada para que sea eliminada posteriormente. Validar este punto.
-					Image.get(exe.copyTo).putAt("state", ImageEnum.UNAVAILABLE)
-					exe.copyTo = 0;
-					exe.stopTime = current
-				}			
-				else if (exe.state.state == ExecutionStateEnum.RECONNECTING) 
-					exe.stopTime = current
-				
-				if (exe.state.state != ExecutionStateEnum.DEPLOYED && exe.state.state != ExecutionStateEnum.REQUEST_COPY)
-					exe.breakFreeInterfaces()
+			if (exe.isControlExceeded(current)) {				
 				exe.goNextControl()
 				exe.save()
 			}		
