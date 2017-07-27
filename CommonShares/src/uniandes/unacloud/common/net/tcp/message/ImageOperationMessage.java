@@ -2,15 +2,12 @@ package uniandes.unacloud.common.net.tcp.message;
 
 import org.json.JSONObject;
 
-import uniandes.unacloud.common.net.UnaCloudMessage;
-
-
 /**
  * Represents kind of execution operation message sent to agents
  * @author CesarF
  *
  */
-public class ImageOperationMessage extends UnaCloudMessage {
+public class ImageOperationMessage extends ClientMessage {
 	
 	private static final long serialVersionUID = -719111911251582119L;
 	
@@ -27,15 +24,12 @@ public class ImageOperationMessage extends UnaCloudMessage {
     public static final int VM_HOST_TABLE = 6;
     
     public static final int VM_SAVE_IMG = 7;
-    
-    public static final String TYPE_TASK = "task";
-    
+        
     public static final String EXECUTION = "execution_id";
         
-	public ImageOperationMessage(String ip, int port, String host, int task, long executionId) {
-		super(ip, port, host, TCPMessageEnum.EXECUTION_OPERATION.name());		
+	public ImageOperationMessage(String ip, int port, String host, int task, long pmId, long executionId) {
+		super(ip, port, host, TCPMessageEnum.EXECUTION_OPERATION.name(), task, pmId);		
 		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TYPE_TASK, task);
 		tempMessage.put(EXECUTION, executionId);
 		this.setMessage(tempMessage);	
 	}

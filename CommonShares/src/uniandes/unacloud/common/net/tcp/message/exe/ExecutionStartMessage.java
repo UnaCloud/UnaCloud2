@@ -32,8 +32,8 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	
 	public static final String NET_INTERFACE = "net_interface";
     
-	public ExecutionStartMessage(String ip, int port, String host, long executionId, long imageId, int vmCores, int vmMemory, Time exeTime, String snapshotRoute, boolean persistent, String vmHostName, List<ImageNetInterfaceComponent> interfaces) {
-		super(ip, port, host, ImageOperationMessage.VM_START, executionId);		
+	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String snapshotRoute, boolean persistent, String vmHostName, List<ImageNetInterfaceComponent> interfaces) {
+		super(ip, port, host, ImageOperationMessage.VM_START, pmId, executionId);		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(IMAGE, imageId);
 		tempMessage.put(VM_CORES, vmCores);

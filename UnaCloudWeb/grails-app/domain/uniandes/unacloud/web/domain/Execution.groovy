@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
@@ -95,7 +95,7 @@ class Execution {
 	 * @return formated remaining time
 	 */
 	def remainingTime() {
-		if (stopTime == null || state != ExecutionStateEnum.DEPLOYED) 
+		if (stopTime == null || state.state != ExecutionStateEnum.DEPLOYED) 
 			return '--'
 		long millisTime = (stopTime.getTime() - System.currentTimeMillis()) / 1000
 		String s = "" + millisTime % 60;

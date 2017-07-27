@@ -37,7 +37,7 @@ public class PmMessageProcessor extends AbstractTCPSocketProcessor {
 						message.getIp(), message.getFreeSpace(), message.getDataSpace(), message.getVersion(), con)) {
 					Long[] ids = message.getExecutions();	
 					if (ids != null)
-						idsToStop = ExecutionManager.updateExecutions(ids, message.getHost(), con);				
+						idsToStop = ExecutionManager.updateExecutions(message.getHost(), ids, con);				
 				}			
 			} catch (Exception e) {
 				e.printStackTrace();

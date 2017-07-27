@@ -17,8 +17,8 @@ public class ExecutionAddTimeMessage extends ImageOperationMessage {
 	
 	public static final String TIME_EXTENSION = "time_ext";
 	
-	public ExecutionAddTimeMessage(String ip, int port, String host, long executionId, Time extension) {
-		super(ip, port, host, ImageOperationMessage.VM_TIME, executionId);
+	public ExecutionAddTimeMessage(String ip, int port, String host, long executionId, long pmId, Time extension) {
+		super(ip, port, host, ImageOperationMessage.VM_TIME, pmId, executionId);
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(TIME_EXTENSION, extension);
 		this.setMessage(tempMessage);	

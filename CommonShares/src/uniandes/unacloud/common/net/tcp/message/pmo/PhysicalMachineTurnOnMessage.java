@@ -17,8 +17,8 @@ public class PhysicalMachineTurnOnMessage extends PhysicalMachineOperationMessag
 	
 	public static final String MACS = "macs";
 	
-	public PhysicalMachineTurnOnMessage(String ip, int port, String host, String[] macs) {
-		super(ip, port, host, PhysicalMachineOperationMessage.PM_TURN_ON);
+	public PhysicalMachineTurnOnMessage(String ip, int port, String host, String[] macs, long pmId) {
+		super(ip, port, host, PhysicalMachineOperationMessage.PM_TURN_ON, pmId);
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(MACS, macs);
 		this.setMessage(tempMessage);	

@@ -2,7 +2,7 @@ package uniandes.unacloud.web.domain
 
 import java.util.ArrayList;
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 
 
 /**
@@ -53,7 +53,7 @@ class DeployedImage {
 	 * @return list of active executions
 	 */
 	def getActiveExecutions() {
-		return executions.findAll{it.state != ExecutionStateEnum.FINISHED}.sort{it.id}
+		return executions.findAll{it.state.state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**

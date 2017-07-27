@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.ByteUtils;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 
 /**
@@ -90,6 +90,7 @@ class PhysicalMachine {
 	 */
 	Laboratory laboratory	
 	
+	
 	static belongsTo =  [laboratory:Laboratory]
 	
 	
@@ -98,6 +99,7 @@ class PhysicalMachine {
 	 */
 	static hasMany = [platforms: Platform]
 		
+	
 	static constraints = {
 		name unique:true
 		lastReport nullable:true
@@ -129,7 +131,7 @@ class PhysicalMachine {
 	 * @return an object with available resources in this host. Physical Cores, Cores, Ram, 
 	 */
 	def availableResources() {
-		def usedResources = Execution.executeQuery('select count(*) AS executions, sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.status!=\''+ExecutionStateEnum.FINISHED+"\'", [node_id:this.id])		
+		def usedResources = Execution.executeQuery('select count(*) AS executions, sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.state.state != \''+ExecutionStateEnum.FINISHED+"\'", [node_id:this.id])		
 		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]:pCores, ram:usedResources[0][1] != null ? ram-usedResources[0][1] : ram, cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
 	}
 	
@@ -139,7 +141,7 @@ class PhysicalMachine {
 	 */
 	def withExecution() {
 		def exe = this
-		return Execution.where {executionNode == exe && state != ExecutionStateEnum.FINISHED}.findAll().size() > 0
+		return Execution.where {executionNode == exe && state.state != ExecutionStateEnum.FINISHED}.findAll().size() > 0
 	}
 	
 	/**

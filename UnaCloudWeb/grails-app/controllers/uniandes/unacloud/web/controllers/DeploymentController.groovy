@@ -1,12 +1,11 @@
 package uniandes.unacloud.web.controllers
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.web.services.DeploymentService;
 import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.UserRestrictionService;
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
@@ -144,7 +143,7 @@ class DeploymentController {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
-					if (vm != null && (vm.state.state.equals(ExecutionStateEnum.DEPLOYED) || vm.state.state.equals(ExecutionStateEnum.FAILED))) {
+					if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
@@ -176,7 +175,7 @@ class DeploymentController {
 				def allowedLabs = userRestrictionService.getAllowedLabs(image.deployment.user)
 				def quantitiesTree = new TreeMap<String, Integer>()
 				allowedLabs.each {
-					def results = laboratoryService.calculateDeploys(it,allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
+					def results = laboratoryService.calculateDeploys(it, allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
 					for (HardwareProfile hwd in allowedHwdProfiles) {
 						if (!quantitiesTree.get(hwd.name))
 							quantitiesTree.put(hwd.name,results.get(hwd.name))

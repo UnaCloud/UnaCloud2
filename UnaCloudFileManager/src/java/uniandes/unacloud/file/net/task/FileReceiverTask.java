@@ -5,14 +5,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
-import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.share.db.DeploymentManager;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.share.db.ExecutionManager;
 import uniandes.unacloud.share.db.PlatformManager;
 import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
@@ -142,8 +141,9 @@ public class FileReceiverTask implements Runnable {
 						 for (File tmpFile : filesTemp.keySet())
 							tmpFile.delete();	
 					}
-					DeploymentManager.setExecution(new ExecutionEntity(execution, 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, message), con);
-					DeploymentManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
+					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
+					ExecutionManager.updateExecution(exe, con);
+					ExecutionManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

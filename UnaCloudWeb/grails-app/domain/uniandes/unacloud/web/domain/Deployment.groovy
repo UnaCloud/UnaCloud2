@@ -1,7 +1,5 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 

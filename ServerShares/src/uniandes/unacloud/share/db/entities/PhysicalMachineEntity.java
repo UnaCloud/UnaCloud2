@@ -24,6 +24,8 @@ public class PhysicalMachineEntity {
 	
 	private Long freeSpace;
 	
+	private String host;
+	
 	/**
 	 * Empty constructor
 	 */
@@ -49,11 +51,12 @@ public class PhysicalMachineEntity {
 	 * @param status
 	 */
 	public PhysicalMachineEntity (Long id, String ip, Date lastReport,
-			PhysicalMachineStateEnum status) {
+			PhysicalMachineStateEnum status, String host) {
 		this.id = id;
 		this.ip = ip;
 		this.lastReport = lastReport;
 		this.status = status;
+		this.host = host;
 	}
 	
 	
@@ -67,7 +70,7 @@ public class PhysicalMachineEntity {
 	 * @param status
 	 */
 	public PhysicalMachineEntity (Long id, String ip, Date lastReport, String version, Long dataSpace,
-			PhysicalMachineStateEnum status) {
+			PhysicalMachineStateEnum status, String host) {
 		super();
 		this.id = id;
 		this.ip = ip;
@@ -75,6 +78,7 @@ public class PhysicalMachineEntity {
 		this.status = status;
 		this.version = version;
 		this.freeSpace = dataSpace;
+		this.host = host;
 	}
 
 	public Long getId() {
@@ -123,6 +127,14 @@ public class PhysicalMachineEntity {
 	
 	public void setVersion(String version) {
 		this.version = version;
+	}
+	
+	public String getHost() {
+		return host;
+	}
+	
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 }

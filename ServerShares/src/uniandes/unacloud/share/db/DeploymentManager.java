@@ -3,12 +3,11 @@ package uniandes.unacloud.share.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.share.db.entities.DeployedImageEntity;
 import uniandes.unacloud.share.db.entities.DeploymentEntity;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
@@ -17,7 +16,6 @@ import uniandes.unacloud.share.db.entities.NetInterfaceEntity;
 import uniandes.unacloud.share.db.entities.PhysicalMachineEntity;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
-import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
@@ -35,7 +33,7 @@ public class DeploymentManager {
 	 * @param con Database Connection
 	 * @return Deployment entity, could be null
 	 */
-	public static DeploymentEntity getDeployment(Long id, Connection con, int t) {
+	public static DeploymentEntity getDeployment(Long id, Connection con) {
 		try {
 			DeploymentEntity deploy = null;
 			PreparedStatement ps = con.prepareStatement(
@@ -79,9 +77,10 @@ public class DeploymentManager {
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
 				while (rs.next()) {
 					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(6), PhysicalMachineStateEnum.ON, con);
-					if (pm == null)
-						//ExecutionManager.updateExecution(rs.getLong(1), pm.g, message, status, con)
-						//ExecutionManager.setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, new Date(), null, ExecutionStateEnum.FAILED, null, "Communication error"), con);
+					if (pm == null){
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+						ExecutionManager.updateExecution(exe, con);
+					}
 					else {
 						ExecutionEntity vme = new ExecutionEntity(rs.getLong(1), 
 								rs.getInt(2), 
@@ -93,7 +92,13 @@ public class DeploymentManager {
 								rs.getString(13));
 						if (executions.get(rs.getLong(8)) == null)
 							executions.put(rs.getLong(8), 
-									new DeployedImageEntity(new ImageEntity(rs.getLong(8), rs.getString(9), rs.getString(10), ImageEnum.getEnum(rs.getString(11)), rs.getString(13)), 
+									new DeployedImageEntity(
+											new ImageEntity(
+													rs.getLong(8), 
+													rs.getString(9), 
+													rs.getString(10), 
+													ImageEnum.getEnum(rs.getString(11)), 
+													rs.getString(13)), 
 											new ArrayList<ExecutionEntity>()));
 						executions.get(rs.getLong(8)).getExecutions().add(vme);						
 					}
@@ -162,36 +167,48 @@ public class DeploymentManager {
 	 * @param con Database connection
 	 * @return list of execution
 	 */
-	public static List<ExecutionEntity> getExecutions(Long[]ids, ExecutionStateEnum state, boolean withInterfaces, Connection con, int t) {
+	public static List<ExecutionEntity> getExecutions(Long[]ids, boolean withInterfaces, ExecutionStateEnum[] states, Connection con) {
 		try {			
 			StringBuilder builder = new StringBuilder();
-			for(@SuppressWarnings("unused") Long id: ids) {
+			for (@SuppressWarnings("unused") Long id: ids)
 				builder.append("?,");
-			}
-			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
+			StringBuilder builderS = new StringBuilder();
+			if (states != null) 
+				for(@SuppressWarnings("unused") ExecutionStateEnum id: states)
+					builderS.append("?,");
+			
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, ex.state, vme.execution_node_id, vme.name, vme.message "
 							+ "FROM execution vme "
 								+ "INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
-							+ "WHERE vme.id IN (" + builder.deleteCharAt( builder.length() -1 ).toString() + ")" + (state != null ? " AND vme.status = ?;" : ";");
+								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
+							+ "WHERE vme.id IN (" + builder.deleteCharAt( builder.length() -1 ).toString() + ") ";
+			if (states != null && states.length > 0)
+				query += " AND exe.state IN (" + builder.deleteCharAt( builderS.length() -1 ).toString() + ")";
+			query += ";";
 			PreparedStatement ps = con.prepareStatement(query);
 		
 			int index = 1;
-			for (Long idvme: ids) {
-				ps.setLong(index, idvme);
-				index++;
-			}
-			if (state != null) 
-				ps.setString(index, state.name());
+			for (Long idvme: ids)
+				ps.setLong(index++, idvme);
+			if (states != null) 
+				for (ExecutionStateEnum state: states)
+					ps.setString(index++, state.name());
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			List<ExecutionEntity> executions = new ArrayList<ExecutionEntity>();
 			while (rs.next()) {
-				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON,con);
+				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
 				if (pm == null) {
-					state = ExecutionStateEnum.getEnum(rs.getString(6));
-					if(state.equals(ExecutionStateEnum.DEPLOYED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Connection lost in server"), con);					
-					if(state.equals(ExecutionStateEnum.REQUESTED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con);	
+					ExecutionStateEnum state = ExecutionStateEnum.getEnum(rs.getString(6));
+					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
+						ExecutionManager.updateExecution(exe, con);
+					}			
+					if(state.equals(ExecutionStateEnum.REQUESTED))	{
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+						ExecutionManager.updateExecution(exe, con);
+					}
+					
 				} else {
 					ExecutionEntity vme = new ExecutionEntity(
 							rs.getLong(1), 
@@ -200,7 +217,6 @@ public class DeploymentManager {
 							new java.util.Date(rs.getTimestamp(4).getTime()),
 							new java.util.Date(rs.getTimestamp(5).getTime()),
 							pm, 
-							ExecutionStateEnum.getEnum(rs.getString(6)),
 							rs.getString(8), 
 							rs.getString(9));
 					executions.add(vme);		
@@ -229,12 +245,13 @@ public class DeploymentManager {
 	 * @param con Database Connection
 	 * @return Execution object, could be null
 	 */
-	public static ExecutionEntity getExecution(Long id, ExecutionStateEnum state, Connection con, int t) {
+	public static ExecutionEntity getExecution(Long id, ExecutionStateEnum state, Connection con) {
 		try {			
-			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.status, vme.execution_node_id, vme.name, vme.message "
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, exe.state, vme.execution_node_id, vme.name, vme.message "
 							+ "FROM execution vme "
 								+ "INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
-							+ "WHERE vme.status = ? AND vme.id = ?;";
+								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
+							+ "WHERE exe.state = ? AND vme.id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
@@ -245,11 +262,16 @@ public class DeploymentManager {
 			if (rs.next()) {
 				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
 				if (pm == null) {
-					if(state.equals(ExecutionStateEnum.DEPLOYED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.RECONNECTING, null, "Connection lost in server"), con);					
-					if(state.equals(ExecutionStateEnum.REQUESTED))				
-						setExecution(new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error"), con);	
-				} else {
+					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
+						ExecutionManager.updateExecution(exe, con);
+					}			
+					if(state.equals(ExecutionStateEnum.REQUESTED))	{
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+						ExecutionManager.updateExecution(exe, con);
+					}
+				} 
+				else {
 					execution = new ExecutionEntity(
 							rs.getLong(1), 
 							rs.getInt(2), 
@@ -257,7 +279,6 @@ public class DeploymentManager {
 							new java.util.Date(rs.getTimestamp(4).getTime()), 
 							new java.util.Date(rs.getTimestamp(5).getTime()), 
 							pm, 
-							ExecutionStateEnum.getEnum(rs.getString(6)),
 							rs.getString(8), 
 							rs.getString(9));
 				}
@@ -273,32 +294,6 @@ public class DeploymentManager {
 			e.printStackTrace();
 			return null;
 		}
-	}
-	
-	/**
-	 * Updates states for IP in database
-	 * @param executionId execution to modify IP
-	 * @param con database connection
-	 * @param ipstate State of IP
-	 * @return true in case update was success, false in case not
-	 */
-	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate) {
-		try {
-			String update = "UPDATE ip SET state = ? WHERE id in (SELECT ip_id FROM net_interface WHERE execution_id = ?) AND id > 0"; 
-			PreparedStatement ps = con.prepareStatement(update);
-			ps.setString(1, ipstate.name());
-			ps.setLong(2, executionId);
-			System.out.println("Update: "+ps.executeUpdate());
-			try {
-				ps.close();
-			} catch (Exception e) {
-				
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}		
 	}
 
 }

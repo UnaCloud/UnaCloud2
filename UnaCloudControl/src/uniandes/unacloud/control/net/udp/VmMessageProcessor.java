@@ -10,7 +10,8 @@ import uniandes.unacloud.common.net.tcp.message.ExecutionStateMessage;
 import uniandes.unacloud.common.net.udp.AbstractUDPReceiverProcessor;
 import uniandes.unacloud.common.net.udp.message.UDPMessageEnum;
 import uniandes.unacloud.control.ControlManager;
-import uniandes.unacloud.control.db.PhysicalMachineUpdater;
+import uniandes.unacloud.share.db.ExecutionManager;
+import uniandes.unacloud.share.db.entities.ExecutionEntity;
 
 /**
  * Process message from physical machines with reports about executions
@@ -31,8 +32,9 @@ public class VmMessageProcessor extends AbstractUDPReceiverProcessor{
 				try (Connection con = ControlManager.getInstance().getDBConnection();) {
 					ExecutionStateMessage message = new ExecutionStateMessage(unacloudMessage);
 					System.out.println("Report EXE: " + message.getHost() + " - ");
-					PhysicalMachineUpdater.updateExecution(message.getExecutionCode(), message.getHost(), message.getExecutionMessage(), message.getState(), con);
-				}catch (Exception e) {
+					ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(),  message.getExecutionMessage());
+					ExecutionManager.updateExecution(exe, con);
+				} catch (Exception e) {
 					e.printStackTrace();
 				}			 
 			}

@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain
 
 import groovy.transform.Immutable;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum
 
 /**
  * Class to represent states in graph execution state diagram

@@ -1,15 +1,12 @@
 package uniandes.unacloud.common.net.tcp.message;
 
-import org.json.JSONObject;
-
-import uniandes.unacloud.common.net.UnaCloudMessage;
 
 /**
  * Represents type of tasks for agent
  * @author CesarF
  *
  */
-public class AgentMessage extends UnaCloudMessage {
+public class AgentMessage extends ClientMessage {
 	
 	private static final long serialVersionUID = 2295996510707565731L;
 	
@@ -37,22 +34,13 @@ public class AgentMessage extends UnaCloudMessage {
 	 * Request free space in data path
 	 */
 	public static final int GET_DATA_SPACE = 11;
-	
-	
-	public static final String TYPE_TASK = "task";
-	
-	public static final String PM_ID = "pm_id";
-	
+		
 	/**
 	 * Creates a new Agent message
 	 * @param subOperation
 	 */
 	public AgentMessage(String ip, int port, String host, int task, long pmId) {
-		super(ip, port, host, TCPMessageEnum.AGENT_OPERATION.name());		
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TYPE_TASK, task);
-		tempMessage.put(PM_ID, pmId);
-		this.setMessage(tempMessage);		
+		super(ip, port, host, TCPMessageEnum.AGENT_OPERATION.name(), task, pmId);			
 	}
 	
 	/**

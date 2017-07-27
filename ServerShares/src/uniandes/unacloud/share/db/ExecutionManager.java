@@ -10,6 +10,7 @@ import java.util.List;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
+import uniandes.unacloud.share.enums.IPEnum;
 
 public class ExecutionManager {
 
@@ -19,25 +20,40 @@ public class ExecutionManager {
 	 * @param con Database connection
 	 * @return true in case execution was updated, false in case not
 	 */
-	public static boolean setExecution(ExecutionEntity execution, Connection con, int t) {
+	public static boolean updateExecution(ExecutionEntity execution, Connection con) {
 		if (execution.getId() == null || execution.getId() < 1) 
 			return false;
 		try {
-			String query = "UPDATE execution vme SET " + 
+			String query = 
+					"UPDATE execution vme "
+					+ "JOIN execution_state exest "
+					+ "ON vme.state_id = exest.id " 
+					+ "SET vme.last_report = CURRENT_TIMESTAMP " +
 			(execution.getStartTime() != null? ", vme.start_time = ? " : "") +
 			(execution.getStopTime() != null? ", vme.stop_time = ? " : "") +
-			(execution.getState() != null? ", vme.state = ? " : "") +
 			(execution.getMessage() != null? ", vme.message = ? " : "");
-			if (query.contains(",")) {
-				query = query.replaceFirst(",", "");
-				query += "WHERE vme.id = ? AND vme.id > 0;";
+			if (execution.getState() != null) {
+				String state = null;
+				if (execution.getState() == ExecutionProcessEnum.FAIL)
+					state = "exest.next_control_id";
+				else if (execution.getState() == ExecutionProcessEnum.REQUEST)
+					state = "exest.next_requested_id";
+				else if (execution.getState() == ExecutionProcessEnum.SUCCESS) 
+					state = "exest.next_id";
+				query = ", vme.state_id = " + state
+						+ " WHERE vme.id = ? ";						
+				if (execution.getNode() != null && execution.getNode().getHost() != null) 
+					query += "AND vme.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?) ";
+				query += "AND vme.id > 0 "
+						+ "AND " + state + " IS NOT NULL;"; 
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
 				if (execution.getStartTime() != null) ps.setTimestamp(id++, new Timestamp(execution.getStartTime().getTime()));
 				if (execution.getStopTime() != null) ps.setTimestamp(id++,  new Timestamp(execution.getStopTime().getTime()));
-				if (execution.getState() != null) ps.setString(id++, execution.getState().name());
 				if (execution.getMessage() != null) ps.setString(id++, execution.getMessage());
 				ps.setLong(id, execution.getId());
+				if (execution.getNode() != null && execution.getNode().getHost() != null) ps.setString(id++,execution.getNode().getHost());
+				
 				System.out.println(ps.toString() + " change " + ps.executeUpdate() + " lines");				
 				try {
 					ps.close();
@@ -53,63 +69,13 @@ public class ExecutionManager {
 	}
 	
 	/**
-	 * Updates status from of execution
-	 * @param id execution 
-	 * @param host unique in net	
-	 * @param message description
-	 * @param status in agent
-	 * @param con connection to database
-	 * @return true in case execution could be updated, false in case not
-	 */
-	//TODO 
-	public static boolean updateExecution(Long id, String host, String message, ExecutionProcessEnum status, Connection con) {
-		try {
-			String query = null;
-			if (status == ExecutionProcessEnum.FAIL)
-				query = "UPDATE execution vm JOIN execution_state exest ON vm.state_id = exest.id "
-						+ "SET vm.message = exest.control_message, vm.last_report = CURRENT_TIMESTAMP, vm.state_id = exest.next_control_id"
-						+ "WHERE vm.id = ? "
-							+ "AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)"
-							+ "AND exest.next_control_id IS NOT NULL;"; 
-			if (status == ExecutionProcessEnum.REQUEST)
-				query = "UPDATE execution vm JOIN execution_state exest ON vm.state_id = exest.id "
-						+ "SET vm.message = ?, vm.last_report = CURRENT_TIMESTAMP, vm.state_id = exest.next_requested_id "
-						+ "WHERE vm.id = ? "
-							+ "AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)"
-							+ "AND exest.next_requested_id IS NOT NULL;"; 
-			if (status == ExecutionProcessEnum.SUCCESS)
-				query = "UPDATE execution vm JOIN execution_state exest ON vm.state_id = exest.id "
-						+ "SET vm.message = ?, vm.last_report = CURRENT_TIMESTAMP, vm.state_id = exest.next_id "
-						+ "WHERE vm.id = ? "
-							+ "AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)"
-							+ "AND exest.next_id IS NOT NULL;"; 
-			PreparedStatement ps = con.prepareStatement(query);	
-			int count = 1;
-			if (status != ExecutionProcessEnum.FAIL) ps.setString(count++, message);
-			ps.setLong(count++, id);
-			ps.setString(count++, host);
-			System.out.println(ps.toString() + " changes " + ps.executeUpdate() + " lines ");
-			try {
-				ps.close();
-			} catch (Exception e) {
-				
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();			
-		}		
-		return false;
-	}
-	
-	
-	/**
-	 * Updates all executions by name and id in array
+	 * Updates all executions by name and id in array and return which are in finishing process
 	 * @param ids executions 
 	 * @param host which reports
 	 * @param con Database connection
 	 * @return list of executions which should be stopped in agents
 	 */
-	public static List<Long> updateExecutions(Long[]ids, String host, Connection con) {
+	public static List<Long> updateExecutions( String host, Long[]ids, Connection con) {
 		if(ids == null || ids.length == 0)
 			return null;
 		try {
@@ -119,7 +85,13 @@ public class ExecutionManager {
 			
 			builder = builder.deleteCharAt( builder.length() -1 );
 			List<Long> idsToStop = new ArrayList<Long>();
-			String query = "SELECT vm.id FROM execution vm WHERE vm.id in (" + builder.toString() + ") AND (vm.state = \'" + ExecutionStateEnum.FAILED.name() + "\' OR vm.state = \'" + ExecutionStateEnum.FINISHED.name() + "\' OR vm.state = \'" + ExecutionStateEnum.FINISHING.name() + "\')";
+			String query = 
+					"SELECT vm.id "
+					+ "FROM execution vm INNER JOIN execution_state exe ON exe.id = vm.state_id "
+					+ "WHERE vm.id in (" + builder.toString() + ") "
+							+ "AND (exe.state = \'" + ExecutionStateEnum.FAILED.name() + "\' "
+									+ "OR exe.state = \'" + ExecutionStateEnum.FINISHED.name() + "\' "
+											+ "OR exe.state = \'" + ExecutionStateEnum.FINISHING.name() + "\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
 			for (Long idvme : ids) {
@@ -136,7 +108,11 @@ public class ExecutionManager {
 			} catch (Exception e) {
 				
 			}			
-			String update = "UPDATE execution vm SET vm.last_report = CURRENT_TIMESTAMP WHERE vm.id in (" + builder.toString() + ") AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
+			String update = 
+					"UPDATE execution vm "
+					+ "SET vm.last_report = CURRENT_TIMESTAMP "
+					+ "WHERE vm.id IN (" + builder.toString() + ") "
+							+ "AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
 			PreparedStatement ps2 = con.prepareStatement(update);
 			index = 1;
 			for (Long idvme : ids) {
@@ -155,5 +131,34 @@ public class ExecutionManager {
 			e.printStackTrace();			
 		}		
 		return null;
+	}
+	
+	/**
+	 * Updates states for IP in database
+	 * @param executionId execution to modify IP
+	 * @param con database connection
+	 * @param ipstate State of IP
+	 * @return true in case update was success, false in case not
+	 */
+	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate) {
+		try {
+			String update = 
+					"UPDATE ip SET state = ? "
+					+ "WHERE id in (SELECT ip_id FROM net_interface WHERE execution_id = ?) "
+					+ "AND id > 0;"; 
+			PreparedStatement ps = con.prepareStatement(update);
+			ps.setString(1, ipstate.name());
+			ps.setLong(2, executionId);
+			System.out.println("Update: "+ps.executeUpdate());
+			try {
+				ps.close();
+			} catch (Exception e) {
+				
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
 	}
 }
