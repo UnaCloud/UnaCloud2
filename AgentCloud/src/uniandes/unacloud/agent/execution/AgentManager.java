@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
@@ -25,12 +24,12 @@ public class AgentManager {
 	 */
 	private static String agentVersion;
 	
+	
 	/**
 	 * Responsible to execute command to run Agent Updater program
 	 * @return message
 	 */
 	public static String updateAgent() {
-		ClouderClientAttention.close();
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY+""});
 		} catch (Exception e) {
@@ -50,7 +49,6 @@ public class AgentManager {
 	 * @return message 
 	 */
 	public static String stopAgent() {
-	     ClouderClientAttention.close();
          new Thread() {
          	public void run() {
          		SystemUtils.sleep(1000);
@@ -120,5 +118,5 @@ public class AgentManager {
 		String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
 		return new File(dataPath).getTotalSpace();
 	}
-
+	
 }

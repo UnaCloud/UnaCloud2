@@ -46,7 +46,7 @@ class Execution {
 	/**
 	 * Actual state , by default is requested
 	 */
-	ExecutionState state = ExecutionStateEnum.REQUESTED
+	ExecutionState state
 	
 	/**
 	 * Execution last message
@@ -157,7 +157,7 @@ class Execution {
 	 * 
 	 */
 	def boolean showDetails() {
-		return state.equals(ExecutionStateEnum.DEPLOYED) || state.equals(ExecutionStateEnum.RECONNECTING) || state.equals(ExecutionStateEnum.FAILED)
+		return state.state.equals(ExecutionStateEnum.DEPLOYED) || state.state.equals(ExecutionStateEnum.RECONNECTING) || state.state.equals(ExecutionStateEnum.FAILED)
 	}
 	
 	/**
@@ -170,38 +170,40 @@ class Execution {
 	
 	/**
 	 * Changes current execution state to next one
-	 */
-	def goNext(String newMessage, Date changeTime) {
+	 */	
+	//TODO date should be from database
+	def goNext(String newMessage) {
 		if (state.next != null) {
 			state = state.next
 			message = newMessage
-			lastReport = changeTime
+			lastReport = new Date()
 		}
 	}
 	
 	/**
 	 * Changes current execution state to requested next one if exits
 	 */
-	def goNextRequested	(String newMessage, Date changeTime) {
+	def goNextRequested	(String newMessage) {
 		if (state.nextRequested != null) {
 			state = state.nextRequested
 			message = newMessage
-			lastReport = changeTime
+			lastReport = new Date()
 		}
 	}
 	
 	/**
 	 * Changes current execution state to control next one if exits
 	 */
-	def goNextControl(Date changeTime) {
+	def goNextControl() {
 		if (state.nextControl != null) {
 			state = state.nextControl
 			message = state.controlMessage
-			lastReport = changeTime
+			lastReport = new Date()
 		}
 	}
 	
-	def isControlExceeded(Date current) {
+	def isControlExceeded() {
+		Date current = new Date()
 		println current.getTime() - lastReport.getTime() + " - " + state.controlTime
 		if (state.nextControl != null)
 			return current.getTime() - lastReport.getTime() > state.controlTime
@@ -214,7 +216,7 @@ class Execution {
 	 * @return history status 
 	 */
 	def getHistoryStatus(ExecutionStateEnum searchState) {
-		return ExecutionHistory.where{state == searchState && execution == this}.find()
+		return ExecutionHistory.where{state.state == searchState && execution == this}.find()
 	}
 	
 }

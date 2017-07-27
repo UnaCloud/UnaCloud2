@@ -5,8 +5,8 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStartResponse;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartResponse;
 
 /**
  * Responsible to configure execution
@@ -50,7 +50,7 @@ public final class ExecutionConfigurer extends Thread {
 				machineExecution.setImage(image);
 				image.configureAndStart(machineExecution);
 			} catch(ExecutionException ex) {
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED,ex.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL,ex.getMessage());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

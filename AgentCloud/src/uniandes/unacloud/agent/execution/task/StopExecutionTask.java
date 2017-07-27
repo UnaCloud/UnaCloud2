@@ -1,8 +1,6 @@
 package uniandes.unacloud.agent.execution.task;
 
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStopMessage;
-
 /**
  * Task to stop an execution
  * @author CesarF
@@ -10,14 +8,14 @@ import uniandes.unacloud.common.net.messages.exeo.ExecutionStopMessage;
  */
 public class StopExecutionTask implements Runnable {
 	
-	ExecutionStopMessage stopMessage;
+	private long executionId;
 	
 	/**
 	 * class constructor
 	 * @param stopMessage stop message with operation data
 	 */
-	public StopExecutionTask(ExecutionStopMessage stopMessage) {
-		this.stopMessage = stopMessage;
+	public StopExecutionTask(long exeid) {
+		this.executionId = exeid;
 	}
 	
 	/**
@@ -25,6 +23,6 @@ public class StopExecutionTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		PersistentExecutionManager.removeExecution((stopMessage).getExecutionId(),false);
+		PersistentExecutionManager.removeExecution(executionId, false);
 	}
 }

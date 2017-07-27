@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStartMessage;
-import uniandes.unacloud.common.net.messages.exeo.ImageNetInterfaceComponent;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartMessage;
+import uniandes.unacloud.common.net.tcp.message.exe.ImageNetInterfaceComponent;
 import uniandes.unacloud.common.utils.Time;
 
 /**
@@ -22,22 +22,27 @@ public class Execution implements Serializable {
 	 * Database execution id
 	 */	
 	private long id;
+	
 	/**
 	 * Execution cores
 	 */
 	private int cores;
+	
 	/**
 	 * Execution memory in MB
 	 */
 	private int memory;
+	
 	/**
 	 * Execution time
 	 */
     private Time executionTime;
+    
     /**
      * Execution net interfaces list
      */
     private List<NetInterface> interfaces;
+    
     /**
      * Identifies if execution should persist
      */

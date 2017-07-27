@@ -11,7 +11,7 @@ import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigur
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -150,13 +150,13 @@ public class ImageCopy implements Serializable {
 	    			System.out.println("image config " + new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
 				} else {
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Invalid execution configurator.");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Invalid execution configurator.");
 					status = ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Configurator class error: " + e.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Configurator class error: " + e.getMessage());
 				status = ImageStatus.FREE;
 			}
 		} catch (Exception e) {

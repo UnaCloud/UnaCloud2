@@ -147,5 +147,46 @@ public class PhysicalMachineManager {
 		}		
 		return false;
 	}
+	
+	/**
+	 * Updates a physical machine entity on database based in hostname
+	 * @param host name in network for physical machine
+	 * @param hostUser user in physical machine
+	 * @param ip where message is coming
+	 * @param con Database Connection
+	 * @param freeSpace quantity in bytes about free space in data folder in physical machine
+	 * @param dataSpace quantity in bytes about total space in data folder in physical machine
+	 * @param version current agent version
+	 * @return true in case physical machines could be updated, false in case not
+	 * TODO: add validation of ip 
+	 */
+	public static boolean updatePhysicalMachine(String host, String hostUser, String ip, Long freeSpace, Long dataSpace, String version, Connection con) {
+		try {
+			String query = "UPDATE physical_machine pm SET pm.with_user= ?, pm.state = CASE WHEN pm.state = \'" + PhysicalMachineStateEnum.OFF.name()
+					+ "\' THEN  \'"+PhysicalMachineStateEnum.ON.name() + "\' ELSE pm.state END, pm.last_report = CURRENT_TIMESTAMP "
+					+ (dataSpace != null ? ", pm.data_space = ?" : "")
+					+ (freeSpace != null ? ", pm.free_space = ?" : "")
+					+ (version != null ? ", pm.agent_version = ?" : "")
+					+ " WHERE pm.name = ? AND pm.ip_id = (SELECT id FROM ip AS i WHERE i.ip = ?)"; PreparedStatement ps = con.prepareStatement(query);
+			int pos = 1;
+			ps.setBoolean(pos++, (hostUser != null && !hostUser.isEmpty() && !(hostUser.replace(">","").replace(" ","")).equals("null")));
+			if (dataSpace != null) ps.setLong(pos++, dataSpace);
+			if (freeSpace != null) ps.setLong(pos++, freeSpace);
+			if (version != null) ps.setString(pos++, version);
+			ps.setString(pos++, host.toUpperCase());
+			ps.setString(pos++, ip);
+			ps.executeUpdate();
+			try {
+				ps.close();
+			} catch (Exception e) {
+				
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();			
+		}		
+		return false;
+	}
+	
 
 }

@@ -5,7 +5,7 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 
 /**
  * Task to start an execution
@@ -14,7 +14,10 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
  */
 public class StartExecutionTask implements Runnable {
 	
-	Execution machineExecution;
+	/**
+	 * Machine execution
+	 */
+	private Execution machineExecution;
 	
 	/**
 	 * class constructor
@@ -39,7 +42,7 @@ public class StartExecutionTask implements Runnable {
 			System.out.println("endStartExecution");
 		} catch(ExecutionException ex) {
 			try {
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, ex.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

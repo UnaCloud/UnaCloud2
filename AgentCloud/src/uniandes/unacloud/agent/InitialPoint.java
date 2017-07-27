@@ -21,6 +21,9 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class InitialPoint {
 	
+	
+	private static final int threads = 10;
+	
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -88,6 +91,7 @@ public class InitialPoint {
     	}    
 		if (args != null && args.length > 0 && !args[0].matches("[0-9]+"))
 			mainCase = Integer.parseInt(args[0]);
+		
 	    if (mainCase == UnaCloudConstants.TEST) {
 	    	try {
 				ServerMessageSender.reportPhyisicalMachine(null);
@@ -110,7 +114,7 @@ public class InitialPoint {
         	System.out.println("Start reporter");        	
             PhysicalMachineStateReporter.getInstance().start();            
            //Attend messages from server
-			ClouderClientAttention.getInstance().start();
+			new ClouderClientAttention(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), threads).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

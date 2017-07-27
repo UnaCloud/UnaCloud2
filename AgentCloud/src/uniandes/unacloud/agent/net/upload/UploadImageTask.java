@@ -13,7 +13,7 @@ import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 
@@ -24,10 +24,21 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class UploadImageTask implements Runnable {
 
-	Execution machineExecution;
+	/**
+	 * Execution entity to be uploaded to server
+	 */
+	private Execution machineExecution;
 	
-	String secureToken;
+	/**
+	 * Secure token for server
+	 */
+	private String secureToken;
 	
+	/**
+	 * Constructs a new upload task
+	 * @param machineExecution
+	 * @param secureToken
+	 */
 	public UploadImageTask(Execution machineExecution, String secureToken) {
 		this.machineExecution = machineExecution;
 		this.secureToken = secureToken;
@@ -88,16 +99,16 @@ public class UploadImageTask implements Runnable {
 						}
 					System.out.println("Files sent");					
 					zos.flush();
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FINISHED, "Image has been copied to server");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.SUCCESS, "Image has been copied to server");
 					
 				} catch (Exception e) {
 					PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
 					throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " deleting images", e);
 				}					
 				
 			} catch (Exception e) {	
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
 				throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " opening connection",e);
 			}
 			

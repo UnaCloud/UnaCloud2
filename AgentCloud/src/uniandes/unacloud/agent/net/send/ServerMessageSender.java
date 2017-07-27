@@ -1,7 +1,7 @@
 package uniandes.unacloud.agent.net.send;
 
 import uniandes.unacloud.agent.system.OSFactory;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 
 
 /**
@@ -22,8 +22,8 @@ public class ServerMessageSender {
      * @return If the message could be sent or not
      * @throws Exception 
      */
-    public static boolean reportExecutionState(long executionCode,ExecutionStateEnum state,String message) throws Exception {    	
-    	return UDPCommunicator.getInstance().pushInfoEXE(OSFactory.getOS().getHostname(), executionCode, state, message);
+    public static boolean reportExecutionState(long executionCode, ExecutionProcessEnum state, String message) throws Exception {    	
+    	return TCPCommunicator.getInstance().pushInfoEXE(OSFactory.getOS().getHostname(), executionCode, state, message);
     }
     
     /**

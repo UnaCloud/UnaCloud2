@@ -22,7 +22,7 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.utils.RandomUtils;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
@@ -61,7 +61,7 @@ public class ImageCacheManager {
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {
-					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.TRANSMITTING, "Start Transmission");
+					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
 					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository);
 					saveImages();
 				} catch (ExecutionException ex) {
@@ -97,7 +97,7 @@ public class ImageCacheManager {
 				SystemUtils.sleep(2000);
 			}
 			try {
-				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.CONFIGURING, "Start configuring");
+				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

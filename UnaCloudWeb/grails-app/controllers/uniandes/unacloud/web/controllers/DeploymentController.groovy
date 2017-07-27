@@ -127,7 +127,7 @@ class DeploymentController {
 			[myDeployments: user.getActiveDeployments()]		
 		else {	
 			def deployments = deploymentService.getActiveDeployments(user)	
-			[myDeployments: user.getActiveDeployments(),deployments: deployments]
+			[myDeployments: user.getActiveDeployments(), deployments: deployments]
 		}
 	}
 	
@@ -144,7 +144,7 @@ class DeploymentController {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
-					if (vm != null && (vm.state.equals(ExecutionStateEnum.DEPLOYED) || vm.state.equals(ExecutionStateEnum.FAILED))) {
+					if (vm != null && (vm.state.state.equals(ExecutionStateEnum.DEPLOYED) || vm.state.state.equals(ExecutionStateEnum.FAILED))) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
@@ -154,7 +154,8 @@ class DeploymentController {
 			flash.message = 'Your request has been processed'
 			flash.type = 'info'
 			deploymentService.stopExecutions(executions,user)
-		} else 
+		} 
+		else 
 			flash.message = 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
@@ -193,7 +194,8 @@ class DeploymentController {
 				flash.message = 'You don\'t have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
-		} else
+		} 
+		else
 			redirect(uri:"/services/deployment/list", absolute:true)
 		
 	}

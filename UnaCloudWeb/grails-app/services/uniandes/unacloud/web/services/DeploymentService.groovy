@@ -230,7 +230,7 @@ class DeploymentService {
 	 * @return list of active executions: state != FINISHED
 	 */
 	def getActiveExecutions() {
-		return Execution.findAll{ state != ExecutionStateEnum.FINISHED}.sort{it.id}
+		return Execution.findAll{ state.state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
 	
 	/**
@@ -242,16 +242,14 @@ class DeploymentService {
 	def stopExecutions(List<Execution> executions, User requester) {
 		List<Execution> executionsToStop = new ArrayList<Execution>()
 		for (Execution vm : executions) {
-			if(vm.state.equals(ExecutionStateEnum.DEPLOYED))
+			if(vm.state.state.equals(ExecutionStateEnum.DEPLOYED))
 				executionsToStop.add(vm)
-			//TODO date should be from database
-			//TODO breakinterfaces should be a task in all modules? 
-			vm.goNext("Finish execution", new Date())
+			vm.goNext("Finish execution")
 			vm.save()
 		}
-		if (executionsToStop.size() > 0) {
+		if (executionsToStop.size() > 0) 
 			QueueTaskerControl.stopExecutions(executionsToStop, requester)
-		}
+		
 	}
 	
 	/**
@@ -287,7 +285,7 @@ class DeploymentService {
 
 		image.save(failOnError:true, flush:true)
 		//TODO time should be from database
-		execution.goNextRequested("Copying deployed image to " + image.id, new Date())
+		execution.goNextRequested("Copying deployed image to " + image.id)
 		execution.copyTo = image.id
 		execution.save()
 		QueueTaskerControl.createCopyFromExecution(execution, image, execution.deployImage.image, user)
