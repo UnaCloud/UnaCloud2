@@ -1,13 +1,13 @@
 package uniandes.unacloud.agent.net.upload;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
@@ -15,6 +15,7 @@ import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.file.FileProcessor;
 
 
 /**
@@ -60,11 +61,28 @@ public class UploadImageTask implements Runnable {
 			System.out.println("Unregister execution: " + machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
 			
-			//Send files
+			
 			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 			final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
+			
+			//Preparing files
+			System.out.println("Preparing file");
+			File zip = null;
+			long fileSize = 0;
+			try {				
+				//TODO: If virtual machine requires some external folder it will be deleted. Take care when a new platform will be added
+				for (File f: machineExecution.getImage().getMainFile().getParentFile().listFiles())
+					if (f.isDirectory() || f.getName().endsWith(".zip"))
+						FileProcessor.deleteFileSync(f.getAbsolutePath());
+					else
+						fileSize += f.length();
+				zip = FileProcessor.zipFileSync(machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//Send files
 			System.out.println("Connecting to " + ip + ":" + puerto);
-			try (Socket s = new Socket(ip,puerto); OutputStream os = s.getOutputStream()) {
+			try (Socket s = new Socket(ip, puerto); OutputStream os = s.getOutputStream()) {
 				
 				DataOutputStream ds = new DataOutputStream(os);
 				System.out.println("Connection succesful");
@@ -78,38 +96,39 @@ public class UploadImageTask implements Runnable {
 				System.out.println("Token " + secureToken);
 				ds.writeUTF(secureToken);
 				ds.flush();
+								
+				System.out.println("Filesize " + fileSize);
+				ds.writeLong(fileSize);
+				ds.flush();
 				
 				ZipOutputStream zos = new ZipOutputStream(ds);
 				
 				System.out.println("\tSending " + machineExecution.getId());
-				final byte[] buffer = new byte[1024*100];
+				final byte[] buffer = new byte[1024 * 100];
 				System.out.println("\tSending files" + machineExecution.getImage().getMainFile());
 				
-				try {
-					for (java.io.File f : machineExecution.getImage().getMainFile().getParentFile().listFiles())
-						if (f.isFile()) {
-							System.out.println("\tSending: " + f.getName());
-							zos.putNextEntry(new ZipEntry(f.getName()));
-								
-							try (FileInputStream fis = new FileInputStream(f)) {
-								for (int n; (n = fis.read(buffer)) != -1;)
-									zos.write(buffer,0,n);
-							}
-							zos.closeEntry();
-						}
-					System.out.println("Files sent");					
+				try {										
+					System.out.println("\tSending: " + zip.getName());
+					zos.putNextEntry(new ZipEntry(zip.getName()));
+						
+					try (FileInputStream fis = new FileInputStream(zip)) {
+						for (int n; (n = fis.read(buffer)) != -1;)
+							zos.write(buffer,0,n);
+					}
+					zos.closeEntry();
+					System.out.println("Zip sent");					
 					zos.flush();
 					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.SUCCESS, "Image has been copied to server");
 					
 				} catch (Exception e) {
+					e.printStackTrace();
 					PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
-					throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " deleting images", e);
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server" + e.getMessage());
 				}					
 				
 			} catch (Exception e) {	
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
-				throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " opening connection", e);
+				e.printStackTrace();
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server " + e.getMessage());
 			}
 			
 			System.out.println("Delete Image " + machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());

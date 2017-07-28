@@ -17,6 +17,7 @@ import uniandes.unacloud.agent.execution.domain.ImageStatus;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.file.Zipper;
 
 /**
  * Class responsible for manage download files process from server
@@ -32,6 +33,7 @@ public class DownloadImageTask {
 	 * @throws Exception 
 	 */
 	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository) throws Exception {
+		
 		File root = new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
 		ImageCacheManager.cleanDir(root);
 		root.mkdirs();
@@ -62,23 +64,22 @@ public class DownloadImageTask {
 						image.setPlatformId(br.readLine());
 						System.out.println("Platform: " + image.getPlatformId());
 						String mainFile = br.readLine();
-						if (mainFile == null) {
-							throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " image mainFile is null");
-						}						
-						copy.setMainFile(new File(root,mainFile));
-						System.out.println("Main: "+mainFile);
+						if (mainFile == null)
+							throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " image mainFile is null");		
+						copy.setMainFile(new File(root, mainFile));
+						System.out.println("Main: " + mainFile);
 						image.setPassword(br.readLine());
 						image.setUsername(br.readLine());
 						copy.setStatus(ImageStatus.LOCK);
 						/*copy.setVirtualMachineName();*/br.readLine();
 						image.setConfiguratorClass(br.readLine());
-						System.out.println("config: "+image.getConfiguratorClass());
+						System.out.println("config: " + image.getConfiguratorClass());
 						
-					} else {
-						try (FileOutputStream fos = new FileOutputStream(new File(root,entry.getName()))) {
-							for(int n; (n = zis.read(buffer)) != -1;) {
-								fos.write(buffer,0,n);
-							}						
+					} 
+					else {
+						try (FileOutputStream fos = new FileOutputStream(new File(root, entry.getName()))) {
+							for(int n; (n = zis.read(buffer)) != -1;)
+								fos.write(buffer, 0, n);	
 						}
 					}
 					zis.closeEntry();
@@ -86,12 +87,17 @@ public class DownloadImageTask {
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+						
+			String zipName = copy.getMainFile().getAbsolutePath() + ".zip";
+			Zipper.unzipIt(new File(zipName), root.getAbsolutePath());
+			
 			copy.setImage(image);
 			image.getImageCopies().add(copy);
 			copy.init();
+			
 		} catch (ExecutionException e1) {
 			throw e1;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new ExecutionException("Error opening connection " + e.getMessage(), e);
 		}
 	}

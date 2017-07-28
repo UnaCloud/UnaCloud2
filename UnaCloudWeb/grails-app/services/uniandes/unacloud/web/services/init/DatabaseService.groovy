@@ -41,6 +41,7 @@ class DatabaseService {
 		//Creates event to control executions
 		
 		try {
+			sql.execute ('DROP TRIGGER IF EXISTS create_request_events')
 			sql.execute 'CREATE TRIGGER '
 						+ 'create_request_events AFTER INSERT ON execution '
 							+ 'FOR EACH ROW BEGIN '
@@ -48,9 +49,10 @@ class DatabaseService {
 								+ 'VALUES (NEW.state_id, CURRENT_TIMESTAMP, NEW.id, 1, NEW.message); '
 							+ 'END;'
 		} catch(Exception e) {
-			print 'create_request_events is already created'
+			print e.message
 		}                 
 		try {
+			sql.execute ('DROP TRIGGER IF EXISTS save_request_events')
 			sql.execute 'CREATE TRIGGER '
 						+ 'save_request_events AFTER UPDATE ON execution '
 							+ 'FOR EACH ROW BEGIN '
@@ -72,21 +74,25 @@ class DatabaseService {
 											+ "WHERE id IN (SELECT ip_id FROM net_interface WHERE execution_id = NEW.id) "
 												+ "AND id > 0; "
 									//If copy image to server failed copy should be deleted 
-									+ 'ELSEIF OLD.state_id == @request_copy AND NEW.state_id = @deployed THEN'
+									+ 'ELSEIF OLD.state_id == @request_copy AND NEW.state_id = @deployed THEN '
 										+ 'DELETE FROM image WHERE id = OLD.copy_to; '
 									//If copy image to server failed copy should be disable to avoid other fails
-									+ 'ELSEIF OLD.state_id == @copying AND NEW.state_id = @failed THEN'
-										+ 'UPDATE image SET state = \'' + ImageEnum.UNAVAILABLE + '\' WHERE id = OLD.copy_to; '
+									+ 'ELSEIF OLD.state_id == @copying AND NEW.state_id = @failed THEN '
+										+ 'UPDATE image SET state = \'' + ImageEnum.UNAVAILABLE + '\' '
+											+ 'WHERE id = OLD.copy_to; '
 									+ 'END IF; '
 									//If execution start process to finish all stop time must be set
 									+ 'IF (OLD.state_id == @reconnecting AND NEW.state_id = @failed) OR (OLD.state_id == @request_copy AND NEW.state_id = @copying) OR (OLD.state_id == @deployed AND NEW.state_id = @finishing) THEN '
-										+ 'UPDATE execution SET stop_time = @current, last_report = @current WHERE id = NEW.id; '
+										+ 'UPDATE execution SET stop_time = @current, last_report = @current '
+											+ 'WHERE id = NEW.id; '
 									//If execution has been started
-									+ 'ELSEIF OLD.state_id == @deploying AND NEW.state_id = @deployed THEN'
-										+ 'UPDATE execution SET start_time = @current, stop_time = DATE_ADD(@current, INTERVAL NEW.duration/1000 SECONDS), last_report = @current WHERE id = NEW.id; '
-									+ 'ELSE'
-										+ 'UPDATE execution SET last_report = @current WHERE id = NEW.id; '
-									+ 'END IF;'
+									+ 'ELSEIF OLD.state_id == @deploying AND NEW.state_id = @deployed THEN '
+										+ 'UPDATE execution SET start_time = @current, stop_time = DATE_ADD(@current, INTERVAL NEW.duration/1000 SECONDS), last_report = @current '
+											+ 'WHERE id = NEW.id; '
+									+ 'ELSE '
+										+ 'UPDATE execution SET last_report = @current '
+											+ 'WHERE id = NEW.id; '
+									+ 'END IF; '
 								+ 'END IF; '
 							+ 'END'
 		} catch(Exception e) {
@@ -95,7 +101,9 @@ class DatabaseService {
 		try {
 			sql.execute ('DROP PROCEDURE IF EXISTS sp_check_pm')
 			sql.execute ('CREATE PROCEDURE sp_check_pm() BEGIN '
-							+ 'UPDATE physical_machine SET state = \'' + PhysicalMachineStateEnum.OFF.name() + '\' , with_user = false WHERE CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) AND state = \'' + PhysicalMachineStateEnum.ON.name() + '\' AND id > 0; '
+							+ 'UPDATE physical_machine SET state = \'' + PhysicalMachineStateEnum.OFF.name() + '\' , with_user = false '
+							+ 'WHERE CURRENT_TIMESTAMP > DATE_ADD(last_report, INTERVAL 4 MINUTE) '
+							+ 'AND state = \'' + PhysicalMachineStateEnum.ON.name() + '\' AND id > 0; '
 						+ 'END')
 			//sql.execute ('DROP EVENT update_pms');
 			sql.execute ('CREATE EVENT if not exists update_pms ON SCHEDULE EVERY 1 MINUTE STARTS CURRENT_TIMESTAMP DO CALL sp_check_pm')

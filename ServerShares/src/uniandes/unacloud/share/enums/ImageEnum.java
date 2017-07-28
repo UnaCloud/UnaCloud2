@@ -63,6 +63,7 @@ public enum ImageEnum {
 	 */
 	public static ImageEnum getEnum(String name) {
 		if (UNAVAILABLE.name().equals(name)) return UNAVAILABLE;
+		if (PROCESSING.name().equals(name)) return PROCESSING;
 		if (DISABLE.name().equals(name)) return DISABLE;
 		if (AVAILABLE.name().equals(name)) return AVAILABLE;
 		if (REMOVING_CACHE.name().equals(name)) return REMOVING_CACHE;

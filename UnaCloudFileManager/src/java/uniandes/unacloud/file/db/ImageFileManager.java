@@ -112,7 +112,7 @@ public class ImageFileManager {
 		if (image.getId() == null || image.getId() < 1)
 			return false;
 		try {
-			String query = "update image vm set" + 
+			String query = "UPDATE image vm SET" + 
 						(withToken ? ", vm.token = NULL" : "") +
 						(image.isPublic() != null ? ", vm.is_public = ? " : "") +
 						(image.getRepository() != null ? ", vm.repository_id = ? " : "") +
@@ -125,7 +125,7 @@ public class ImageFileManager {
 					query += ", vm.image_version = vm.image_version + 1 ";
 				if (image.getFixDisk() != null && image.getFixDisk() > 0)
 					query += ", vm.fixed_disk_size = " + image.getFixDisk() + " ";
-				query += "where vm.id = ? and vm.id > 0;";				
+				query += "WHERE vm.id = ? AND vm.id > 0;";				
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
 				if (image.isPublic() != null) ps.setBoolean(id++, image.isPublic());
@@ -167,7 +167,8 @@ public class ImageFileManager {
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();		
 			while (rs.next())
-				list.add(new ImageFileEntity(rs.getLong(1), ImageEnum.getEnum(rs.getString(2)), rs.getString(3), StorageManager.getRepository(rs.getLong(4), con), PlatformManager.getPlatform(rs.getInt(9), con), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8), null));
+				list.add(new ImageFileEntity(rs.getLong(1)
+						, ImageEnum.getEnum(rs.getString(2)), rs.getString(3), StorageManager.getRepository(rs.getLong(4), con), PlatformManager.getPlatform(rs.getInt(9), con), rs.getBoolean(5), rs.getLong(6), rs.getString(7), rs.getString(8), null));
 			try {
 				rs.close();
 				ps.close();

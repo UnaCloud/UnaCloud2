@@ -40,7 +40,7 @@ public class StartExecutionTask implements Runnable {
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");
-		} catch(ExecutionException ex) {
+		} catch (ExecutionException ex) {
 			try {
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, ex.getMessage());
 			} catch (Exception e) {

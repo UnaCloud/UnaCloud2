@@ -37,7 +37,7 @@ public class FileTransferTask extends AbstractTCPSocketProcessor {
 			System.out.println("\tWorking " + imageId);						
 			ImageFileEntity image = null;
 			try (Connection con = FileManager.getInstance().getDBConnection();) {
-				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
+				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false, true, con);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -45,19 +45,17 @@ public class FileTransferTask extends AbstractTCPSocketProcessor {
 			if (image != null) {
 				
 				System.out.println(image + " - " + imageId + " - " + image.getState());
-				final byte[] buffer = new byte[1024*100];
+				final byte[] buffer = new byte[1024 * 100];
 				System.out.println("\t Sending files " + image.getMainFile());
 				
-				for (java.io.File f : new java.io.File(image.getMainFile()).getParentFile().listFiles())
-					if (f.isFile()) {					
-						System.out.println("\tprocessing: " + f.getName());
-						zos.putNextEntry(new ZipEntry(f.getName()));					
-						try (FileInputStream fis = new FileInputStream(f)) {
-							for (int n; (n = fis.read(buffer)) != -1;)
-								zos.write(buffer,0,n);
-						}
-						zos.closeEntry();
-					}
+				File file = new java.io.File(image.getMainFile() + ".zip");				
+				System.out.println("\tprocessing: " + file.getName());
+				zos.putNextEntry(new ZipEntry(file.getName()));					
+				try (FileInputStream fis = new FileInputStream(file)) {
+					for (int n; (n = fis.read(buffer)) != -1;)
+						zos.write(buffer,0,n);
+				}
+				zos.closeEntry();
 				
 				System.out.println("Files sent " + image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));

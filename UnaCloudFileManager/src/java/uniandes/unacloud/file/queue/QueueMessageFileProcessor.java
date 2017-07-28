@@ -6,28 +6,24 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.io.FileUtils;
-
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.ImageManager;
-import uniandes.unacloud.share.db.PlatformManager;
 import uniandes.unacloud.share.db.StorageManager;
 import uniandes.unacloud.share.queue.messages.QueueMessage;
 import uniandes.unacloud.share.queue.QueueReader;
 import uniandes.unacloud.share.queue.messages.MessageCreateCopyFromPublic;
 import uniandes.unacloud.share.queue.messages.MessageDeleteUser;
 import uniandes.unacloud.share.queue.messages.MessageIdOfImage;
-import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.share.db.entities.RepositoryEntity;
 import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.utils.file.FileProcessor;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
-import uniandes.unacloud.file.processor.FileProcessor;
 
 /**
  * Class to process messages in queue. This messages represent tasks to manage files from web application
@@ -115,15 +111,12 @@ public class QueueMessageFileProcessor implements QueueReader {
 					boolean isNotPublic = false;
 					if (!image.isPublic()) {
 						isNotPublic = true;
-						File file = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName());
+						File original = new File (image.getMainFile());
+						File copy = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getName() + ".zip");
 						System.out.println("Changes to public " + image.getMainFile());
 						
-						if (!file.exists()) {
-							File folder = new File(image.getMainFile().substring(0, image.getMainFile().lastIndexOf(File.separator.toString())));
-							for (File imagefile: folder.listFiles()) {
-								File newFile = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + imagefile.getName());
-								FileUtils.copyFile(imagefile, newFile);
-							}
+						if (!copy.exists()) {
+							FileProcessor.copyFileSync(original.getAbsolutePath() + ".zip", copy.getAbsolutePath() + ".zip");
 							change = true;
 						}
 												
@@ -154,6 +147,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	 */
 	//TODO: remove platform validation because it is not necessary, use main file in public image
 	private void createPrivateImage(QueueMessage message) {
+		
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
@@ -164,12 +158,10 @@ public class QueueMessageFileProcessor implements QueueReader {
 				
 				ImageFileEntity publicImage = null;
 				ImageFileEntity privateImage = null;
-				List<PlatformEntity> platforms = null;
 				UserEntity user = null;
 				try (Connection con = FileManager.getInstance().getDBConnection()) {					
 					privateImage = ImageFileManager.getImageWithFile(imageId, ImageEnum.IN_QUEUE, true, false, con);
-					if (privateImage != null) {
-						platforms = PlatformManager.getAll(con);						
+					if (privateImage != null) {						
 						user = UserManager.getUserWithRepository(privateImage.getOwner().getId(), con);
 						publicImage = ImageFileManager.getImageWithFile(publicImageId, ImageEnum.AVAILABLE, false, false, con);
 					}
@@ -181,20 +173,17 @@ public class QueueMessageFileProcessor implements QueueReader {
 				if (privateImage != null) {
 					String mainFile = null;
 					if (publicImage != null && publicImage.isPublic()) {
-						File folder = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + publicImage.getName());
-						//TODO add elimination if folder does not exists
-						if (folder.exists()) {								
-							String regex = "";
-							for (PlatformEntity hv : platforms)
-								regex += ".*" + hv.getExtension() + (platforms.indexOf(hv) < platforms.size() -1 ? "|" : "");
-							
-							for (File imagefile: folder.listFiles()) {
-								File newFile = new File(privateImage.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + imagefile.getName());
-								FileUtils.copyFile(imagefile, newFile);
-								if (imagefile.getName().matches(regex))
-									mainFile = user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + newFile.getName();
-							}							
-						} 
+						
+						File original = new File (publicImage.getMainFile());		
+						System.out.println(original);
+						File publicFile = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + publicImage.getName() + File.separator + original.getName() + ".zip");
+						System.out.println(publicFile);
+						if (publicFile.exists()) {
+							mainFile = user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName();
+							File newFile = new File(mainFile + ".zip");
+							System.out.println(newFile);
+							FileProcessor.copyFileSync(publicFile.getAbsolutePath(), newFile.getAbsolutePath());							
+						}
 					} 
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
 						if (mainFile == null) {
