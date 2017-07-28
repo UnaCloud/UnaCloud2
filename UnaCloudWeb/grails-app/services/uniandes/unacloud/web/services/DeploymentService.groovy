@@ -259,8 +259,10 @@ class DeploymentService {
 	 * @param newName name for image copy
 	 * @throws Exception
 	 */
-	//Validates capacity
+	//TODO Validates capacity
 	def createCopy(Execution execution, User user, String newName) throws Exception {
+		if (execution.state.state != ExecutionStateEnum.DEPLOYED)
+			throw new Exception('Execution is not deployed')
 		if (newName == null || newName.isEmpty()) 
 			throw new Exception('Image name can not be empty')
 		if (Image.where{name == newName && owner == user}.find()) 
@@ -284,7 +286,6 @@ class DeploymentService {
 			platform:execution.deployImage.image.platform);
 
 		image.save(failOnError:true, flush:true)
-		//TODO time should be from database
 		execution.goNextRequested("Copying deployed image to " + image.id)
 		execution.copyTo = image.id
 		execution.save()

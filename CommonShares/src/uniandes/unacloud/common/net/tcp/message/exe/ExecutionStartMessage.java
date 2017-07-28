@@ -1,7 +1,9 @@
 package uniandes.unacloud.common.net.tcp.message.exe;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
@@ -23,26 +25,24 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public static final String VM_MEMORY = "vm_memory";
 	
 	public static final String EXE_TIME = "exe_time";
-	
-	public static final String SNAP = "snap_route";
-	
-	public static final String PERSISTENT = "persistent";
 
 	public static final String VM_HOST_NAME = "vm_host_name";
 	
 	public static final String NET_INTERFACE = "net_interface";
     
-	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String snapshotRoute, boolean persistent, String vmHostName, List<ImageNetInterfaceComponent> interfaces) {
+	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String vmHostName, List<ImageNetInterfaceComponent> interfaces) {
 		super(ip, port, host, ImageOperationMessage.VM_START, pmId, executionId);		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(IMAGE, imageId);
 		tempMessage.put(VM_CORES, vmCores);
 		tempMessage.put(VM_MEMORY, vmMemory);
 		tempMessage.put(EXE_TIME, exeTime);
-		tempMessage.put(SNAP, snapshotRoute);
-		tempMessage.put(PERSISTENT, persistent);
 		tempMessage.put(VM_HOST_NAME, vmHostName);
-		tempMessage.put(NET_INTERFACE, interfaces);
+		JSONArray array = new JSONArray();
+		if (interfaces != null)
+			for (ImageNetInterfaceComponent interf: interfaces)
+				array.put(interf);
+		tempMessage.put(NET_INTERFACE, array);
 		this.setMessage(tempMessage);	
 	}
     
@@ -56,14 +56,6 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	
 	public Time getExecutionTime() {
 		return (Time) this.getMessage().get(EXE_TIME);
-	}
-	
-	public boolean isPersistent() {
-		return this.getMessage().getBoolean(PERSISTENT);
-	}
-	
-	public String getSnapshotRoute() {
-		return this.getMessage().getString(SNAP);
 	}
 	
 	@Override
@@ -85,7 +77,12 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	}
 	
 	public List<ImageNetInterfaceComponent> getInterfaces() {
-		return (List<ImageNetInterfaceComponent>) this.getMessage().get(NET_INTERFACE);
+		JSONObject temp = this.getMessage();
+		JSONArray list = temp.getJSONArray(NET_INTERFACE);
+		List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
+		for (int i = 0; i < list.length(); i++)
+			interfaces.add((ImageNetInterfaceComponent)list.get(i));		
+		return interfaces;
 	}
 	
 }

@@ -12,11 +12,11 @@ public class ImageNetInterfaceComponent implements Serializable {
 
 	private static final long serialVersionUID = 7448905244463622715L;
 
-	public String name;
+	private String name;
 	
-	public String ip;
+	private String ip;
 	
-	public String netMask;
+	private String netMask;
 	
 	public ImageNetInterfaceComponent(String ip, String netMask, String name) {
 		super();
@@ -25,5 +25,16 @@ public class ImageNetInterfaceComponent implements Serializable {
 		this.name = name;
 	}
 	
+	public String getIp() {
+		return ip;
+	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public String getNetMask() {
+		return netMask;
+	}
+		
 }

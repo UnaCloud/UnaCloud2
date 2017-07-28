@@ -75,7 +75,7 @@ public class PhysicalMachineManager {
 						+ "FROM physical_machine pm "
 								+ "INNER JOIN ip i "
 								+ "ON pm.ip_id = i.id "
-						+ "WHERE pm.state = ? and pm.id in ("+builder.deleteCharAt( builder.length() -1 ).toString()+");";
+						+ "WHERE pm.state = ? and pm.id in (" + builder.deleteCharAt( builder.length() -1 ).toString() + ");";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, machineState.name());
 			int index = 2;

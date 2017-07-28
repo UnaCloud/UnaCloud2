@@ -9,6 +9,8 @@ import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.LocalProcessExecutor;
 
@@ -29,7 +31,7 @@ public class AgentManager {
 	 * Responsible to execute command to run Agent Updater program
 	 * @return message
 	 */
-	public static String updateAgent() {
+	public static UnaCloudResponse updateAgent() {
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY+""});
 		} catch (Exception e) {
@@ -41,21 +43,21 @@ public class AgentManager {
         		System.exit(6);
         	};
         }.start();
-        return UnaCloudConstants.SUCCESSFUL_OPERATION;
+        return new UnaCloudResponse(UnaCloudConstants.SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);          
 	}
 	
 	/**
 	 * Responsible to execute command to stop agent
 	 * @return message 
 	 */
-	public static String stopAgent() {
+	public static UnaCloudResponse stopAgent() {
          new Thread() {
          	public void run() {
          		SystemUtils.sleep(1000);
          		System.exit(0);
          	};
          }.start();
-         return UnaCloudConstants.SUCCESSFUL_OPERATION;
+         return new UnaCloudResponse(UnaCloudConstants.SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS); 
 	}
 	
 	/**
@@ -76,7 +78,7 @@ public class AgentManager {
 	        	agentVersion = "NOVERSION";
 	        }
 		}
-		return agentVersion;
+		return agentVersion; 
 	}
 	
 	/**

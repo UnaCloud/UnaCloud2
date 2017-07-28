@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
@@ -20,17 +21,15 @@ import uniandes.unacloud.file.db.entities.ImageFileEntity;
  * @author CesarF
  *
  */
-public class FileTransferTask implements Runnable {
-	
-	private Socket s;	
+public class FileTransferTask extends AbstractTCPSocketProcessor {
 	
 	public FileTransferTask(Socket s) {
+		super(s);
 		System.out.println("Working " + s.getRemoteSocketAddress());
-		this.s = s;
 	}
-	
+
 	@Override
-	public void run() {		
+	public void processMessage(Socket s) throws Exception {
 		try (Socket ss = s; DataInputStream ds = new DataInputStream(s.getInputStream()); OutputStream os = s.getOutputStream(); ) {			
 			
 			ZipOutputStream zos = new ZipOutputStream(os);
@@ -78,5 +77,6 @@ public class FileTransferTask implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 }

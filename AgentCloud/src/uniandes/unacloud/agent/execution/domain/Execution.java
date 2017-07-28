@@ -42,12 +42,7 @@ public class Execution implements Serializable {
      * Execution net interfaces list
      */
     private List<NetInterface> interfaces;
-    
-    /**
-     * Identifies if execution should persist
-     */
-    private boolean persistent;
-    
+        
     /**
      * Execution hostname
      */
@@ -152,23 +147,7 @@ public class Execution implements Serializable {
 	public void setInterfaces(List<NetInterface> interfaces) {
 		this.interfaces = interfaces;
 	}
-	
-	/**
-	 * Response if execution is persistent
-	 * @return boolean
-	 */
-	public boolean isPersistent() {
-		return persistent;
-	}
-	
-	/**
-	 * Update if image is persistent
-	 * @param persistent
-	 */
-	public void setPersistent(boolean persistent) {
-		this.persistent = persistent;
-	}
-	
+		
 	/**
 	 * Gets hostname
 	 * @return hostname
@@ -255,7 +234,6 @@ public class Execution implements Serializable {
 		vme.setId(message.getExecutionId());
 		vme.setImageId(message.getImageId());
 		vme.setInterfaces(getInterfacesFromMessage(message.getInterfaces()));
-		vme.setPersistent(message.isPersistent());
 		return vme;
 	}
 	
@@ -266,9 +244,8 @@ public class Execution implements Serializable {
 	 */
 	private static List<NetInterface> getInterfacesFromMessage( List<ImageNetInterfaceComponent> mInterfaces) {
 		List<NetInterface> interfaces = new ArrayList<NetInterface>();
-		for (ImageNetInterfaceComponent comp: mInterfaces) {
-			interfaces.add(new NetInterface(comp.name, comp.ip, comp.netMask));
-		}
+		for (ImageNetInterfaceComponent comp: mInterfaces) 
+			interfaces.add(new NetInterface(comp.getName(), comp.getIp(), comp.getNetMask()));
 		return interfaces;
 	}
 }

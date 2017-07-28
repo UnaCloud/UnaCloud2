@@ -14,11 +14,11 @@ import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.task.StartExecutionTask;
 import uniandes.unacloud.agent.execution.task.StopExecutionTask;
 import uniandes.unacloud.agent.system.OSFactory;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.common.net.UnaCloudMessage;
 import uniandes.unacloud.common.net.tcp.message.AgentMessage;
 import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
-import uniandes.unacloud.common.net.tcp.message.InformationResponse;
 import uniandes.unacloud.common.net.tcp.message.PhysicalMachineOperationMessage;
 import uniandes.unacloud.common.net.tcp.message.TCPMessageEnum;
 import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
@@ -26,8 +26,6 @@ import uniandes.unacloud.common.net.tcp.message.agent.ClearImageFromCacheMessage
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionAddTimeMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartMessage;
-import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartResponse;
-import uniandes.unacloud.common.net.tcp.message.exe.InvalidOperationResponse;
 import uniandes.unacloud.common.net.tcp.message.pmo.PhysicalMachineTurnOnMessage;
 
 
@@ -51,13 +49,13 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
         	UnaCloudMessage clouderServerRequest = (UnaCloudMessage) ois.readObject();
             System.out.println("message: " + clouderServerRequest);
             if (clouderServerRequest.getType().equals(TCPMessageEnum.EXECUTION_OPERATION.name()))
-		            oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest, ois, oos));
+		        oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest, ois, oos));
             else if (clouderServerRequest.getType().equals(TCPMessageEnum.PHYSICAL_MACHINE_OPERATION.name()))
-		        	oos.writeObject(attendPhysicalMachineOperation((PhysicalMachineOperationMessage) clouderServerRequest));
+		        oos.writeObject(attendPhysicalMachineOperation((PhysicalMachineOperationMessage) clouderServerRequest));
 		    else if (clouderServerRequest.getType().equals(TCPMessageEnum.AGENT_OPERATION.name()))
-		            oos.writeObject(attendAgentOperation((AgentMessage) clouderServerRequest));
+		        oos.writeObject(attendAgentOperation((AgentMessage) clouderServerRequest));
 		    else
-	                oos.writeObject(new InvalidOperationResponse("Operation " + clouderServerRequest.getType() + " is invalid as main operation."));
+	            oos.writeObject(new UnaCloudResponse("Operation " + clouderServerRequest.getType() + " is invalid as main operation.", ExecutionProcessEnum.FAIL));
 	          
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,25 +69,28 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
      * @param clouderServerRequestSplitted Server request
      */
     private UnaCloudResponse attendExecutionOperation(ImageOperationMessage message, ObjectInputStream ois, ObjectOutputStream pw) {
-        switch (message.getTask()) {
-            case ImageOperationMessage.VM_START:
-            	ExecutionStartResponse resp = new ExecutionStartResponse();
-        		resp.setState(ExecutionStartResponse.ExecutionState.STARTING);
-        		resp.setMessage("Starting execution...");
-        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage((ExecutionStartMessage) message)));
-            	return resp;
-            case ImageOperationMessage.VM_STOP:
-            	ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
-                return null;
-            case ImageOperationMessage.VM_RESTART:
-                return PersistentExecutionManager.restartMachine(message.getExecutionId());
-            case ImageOperationMessage.VM_TIME:
-                return PersistentExecutionManager.extendsVMTime((ExecutionAddTimeMessage) message);
-            case ImageOperationMessage.VM_SAVE_IMG:
-            	return PersistentExecutionManager.sendImageCopy((ExecutionSaveImageMessage) message);  
-            default:
-                return new InvalidOperationResponse("Invalid execution operation: " + message.getTask());
-        }
+	    try {
+	    	switch (message.getTask()) {
+	            case ImageOperationMessage.VM_START:
+	            	UnaCloudResponse resp = new UnaCloudResponse("Starting execution...", ExecutionProcessEnum.SUCCESS);
+	        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage((ExecutionStartMessage) message)));
+	            	return resp;
+	            case ImageOperationMessage.VM_STOP:
+	            	ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
+	                return null;
+	            case ImageOperationMessage.VM_RESTART:
+	                return PersistentExecutionManager.restartMachine(message.getExecutionId());
+	            case ImageOperationMessage.VM_TIME:
+	                return PersistentExecutionManager.extendsVMTime((ExecutionAddTimeMessage) message);
+	            case ImageOperationMessage.VM_SAVE_IMG:
+	            	return PersistentExecutionManager.sendImageCopy((ExecutionSaveImageMessage) message);  
+	            default:            	
+	                return new UnaCloudResponse("Invalid execution operation: " + message.getTask(), ExecutionProcessEnum.FAIL);
+	        }
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+			return new UnaCloudResponse(e.getMessage(), ExecutionProcessEnum.FAIL);
+		} 
     }
     
     /**
@@ -98,21 +99,26 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
      * @return information response
      */
     private UnaCloudResponse attendAgentOperation(AgentMessage message) {
-        switch (message.getTask()) {
-            case AgentMessage.UPDATE_OPERATION:            	
-                return new InformationResponse(AgentManager.updateAgent());
-            case AgentMessage.STOP_CLIENT:           
-                return  new InformationResponse(AgentManager.stopAgent());
-            case AgentMessage.GET_VERSION:
-                return new InformationResponse(AgentManager.getVersion());
-            case AgentMessage.CLEAR_CACHE:
-                return new InformationResponse(ImageCacheManager.clearCache());                
-            case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
-                return new InformationResponse(ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId()));
-            case AgentMessage.GET_DATA_SPACE:
-            	return new InformationResponse(AgentManager.getFreeDataSpace() + "");
-        }
-        return  new InformationResponse("Invalid operation");
+    	try {
+	        switch (message.getTask()) {
+	            case AgentMessage.UPDATE_OPERATION:            	
+	                return AgentManager.updateAgent();
+	            case AgentMessage.STOP_CLIENT:           
+	                return AgentManager.stopAgent();
+	            case AgentMessage.GET_VERSION:
+	                return new UnaCloudResponse(AgentManager.getVersion(), ExecutionProcessEnum.SUCCESS);
+	            case AgentMessage.CLEAR_CACHE:
+	                return ImageCacheManager.clearCache();                
+	            case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
+	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());
+	            case AgentMessage.GET_DATA_SPACE:
+	            	return new UnaCloudResponse(AgentManager.getFreeDataSpace() + "", ExecutionProcessEnum.SUCCESS);
+	        }
+	        return new UnaCloudResponse("Invalid operation: " + message.getTask(), ExecutionProcessEnum.FAIL);
+	    } catch (Exception e) {
+	    	e.printStackTrace();
+			return new UnaCloudResponse(e.getMessage(), ExecutionProcessEnum.FAIL);
+		} 
     }
     
     /**
@@ -127,19 +133,20 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
     	try {
     		switch (message.getTask()) {
             case PhysicalMachineOperationMessage.PM_TURN_OFF:            	
-                return new InformationResponse(OSFactory.getOS().turnOff());
+                return new UnaCloudResponse(OSFactory.getOS().turnOff(), ExecutionProcessEnum.SUCCESS);
             case PhysicalMachineOperationMessage.PM_RESTART:            	
-                return new InformationResponse(OSFactory.getOS().restart());
+                return new UnaCloudResponse(OSFactory.getOS().restart(), ExecutionProcessEnum.SUCCESS);
             case PhysicalMachineOperationMessage.PM_LOGOUT:            	
-                return new InformationResponse(OSFactory.getOS().logOut());
+                return new UnaCloudResponse(OSFactory.getOS().logOut(), ExecutionProcessEnum.SUCCESS);
             case PhysicalMachineOperationMessage.PM_TURN_ON:
                 PhysicalMachineTurnOnMessage turnOn = (PhysicalMachineTurnOnMessage) message;                
-                return new InformationResponse(OSFactory.getOS().turnOnMachines(turnOn.getMacs()));          
+                return new UnaCloudResponse(OSFactory.getOS().turnOnMachines(turnOn.getMacs()), ExecutionProcessEnum.SUCCESS);          
             default:
-                return new InformationResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getTask());
+                return new UnaCloudResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getTask(), ExecutionProcessEnum.FAIL);
     		}
 		} catch (Exception e) {
-			return new InformationResponse(e.getMessage());
+			e.printStackTrace();
+			return new UnaCloudResponse(e.getMessage(), ExecutionProcessEnum.FAIL);
 		}        
     }
 

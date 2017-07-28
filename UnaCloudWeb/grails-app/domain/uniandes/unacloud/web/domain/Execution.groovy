@@ -105,16 +105,7 @@ class Execution {
         if (m.length() == 1) m = "0" + m;
         return h + "h:" + m + "m:" + s + "s"
 	}
-	
-	/**
-	 * Calculates and returns the remaining execution time in hours
-	 * @return hours of execution remaining
-	 */
-	int runningTimeInHours() {
-		long millisTime = (stopTime.getTime() - startTime.getTime()) / 1000
-		return (millisTime / 60 / 60) + 1
-	}
-	
+		
 	/**
 	 * Saves entity with net interfaces
 	 */

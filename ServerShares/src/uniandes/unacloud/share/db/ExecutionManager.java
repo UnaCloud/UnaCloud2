@@ -52,7 +52,7 @@ public class ExecutionManager {
 				if (execution.getStopTime() != null) ps.setTimestamp(id++,  new Timestamp(execution.getStopTime().getTime()));
 				if (execution.getMessage() != null) ps.setString(id++, execution.getMessage());
 				ps.setLong(id, execution.getId());
-				if (execution.getNode() != null && execution.getNode().getHost() != null) ps.setString(id++,execution.getNode().getHost());
+				if (execution.getNode() != null && execution.getNode().getHost() != null) ps.setString(id++, execution.getNode().getHost());
 				
 				System.out.println(ps.toString() + " change " + ps.executeUpdate() + " lines");				
 				try {

@@ -1,5 +1,5 @@
 /**
- * In this package are located all classes required to allow UDP communication
+ * In this package are located all classes required to allow TCP communication
 
  * @author CesarF
  *

@@ -47,7 +47,7 @@ public class UploadImageTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			System.out.println("Stop execution: " + machineExecution.getId() + ", of Image: "+machineExecution.getImageId() );
+			System.out.println("Stop execution: " + machineExecution.getId() + ", of Image: " + machineExecution.getImageId() );
 			PersistentExecutionManager.stopExecution(machineExecution.getId());
 			
 			System.out.println("Delete snapshot: " + machineExecution.getId());
@@ -109,14 +109,13 @@ public class UploadImageTask implements Runnable {
 				
 			} catch (Exception e) {	
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server");
-				throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " opening connection",e);
+				throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " opening connection", e);
 			}
 			
 			System.out.println("Delete Image " + machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
 			PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-			if (machineExecution.getImage().getMainFile().getParentFile().getName().equals("base")) {
+			if (machineExecution.getImage().getMainFile().getParentFile().getName().equals("base"))
 				ImageCacheManager.deleteImage(machineExecution.getImageId());
-			}
 			PersistentExecutionManager.cleanDir(machineExecution.getImage().getMainFile().getParentFile());
 				
 		} catch (Exception e) {

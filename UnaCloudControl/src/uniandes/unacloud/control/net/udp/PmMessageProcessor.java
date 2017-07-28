@@ -1,12 +1,10 @@
-package uniandes.unacloud.control.net.tcp;
+package uniandes.unacloud.control.net.udp;
 
-import java.io.ObjectInputStream;
-import java.net.Socket;
 import java.sql.Connection;
 import java.util.List;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
-import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
+import uniandes.unacloud.common.net.udp.AbstractUDPReceiverProcessor;
 import uniandes.unacloud.common.net.udp.message.UDPMessageEnum;
 import uniandes.unacloud.common.net.udp.message.MachineStateMessage;
 import uniandes.unacloud.control.ControlManager;
@@ -18,21 +16,18 @@ import uniandes.unacloud.share.db.PhysicalMachineManager;
  * @author CesarF
  *
  */
-public class PmMessageProcessor extends AbstractTCPSocketProcessor {
+public class PmMessageProcessor extends AbstractUDPReceiverProcessor {
 
-	public PmMessageProcessor(Socket socket) {
-		super(socket);
+	public PmMessageProcessor(UnaCloudMessage message) {
+		super(message);
 	}
 
 	@Override
-	public void processMessage(Socket socket) throws Exception {
-		
-		ObjectInputStream ios = new ObjectInputStream(socket.getInputStream());
-		UnaCloudMessage messageUnaCloud = (UnaCloudMessage) ios.readObject();
-		if (messageUnaCloud.getMessage() != null && messageUnaCloud.getType().equals(UDPMessageEnum.STATE_PM)) {
+	public void processMessage(UnaCloudMessage uMessage) throws Exception {
+		if (uMessage.getMessage() != null && uMessage.getType().equals(UDPMessageEnum.STATE_PM)) {
 			List<Long> idsToStop = null;
 			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				MachineStateMessage message = new MachineStateMessage(messageUnaCloud);
+				MachineStateMessage message = new MachineStateMessage(uMessage);
 				if (PhysicalMachineManager.updatePhysicalMachine(message.getHost(), message.getHostUser(), 
 						message.getIp(), message.getFreeSpace(), message.getDataSpace(), message.getVersion(), con)) {
 					Long[] ids = message.getExecutions();	
@@ -51,7 +46,7 @@ public class PmMessageProcessor extends AbstractTCPSocketProcessor {
 			}
 		}
 		else{
-			System.err.println("ERROR in message: " + messageUnaCloud.getIp() + "-" + messageUnaCloud.getHost() + "-" + messageUnaCloud.getPort() + " " + (messageUnaCloud.getMessage() != null ? messageUnaCloud.getMessage().toString() : null));
+			System.err.println("ERROR in message: " + uMessage.getIp() + "-" + uMessage.getHost() + "-" + uMessage.getPort() + " " + (uMessage.getMessage() != null ? uMessage.getMessage().toString() : null));
 		}
 	}
 }

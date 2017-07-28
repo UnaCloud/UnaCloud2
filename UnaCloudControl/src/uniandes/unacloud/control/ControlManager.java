@@ -1,8 +1,8 @@
 package uniandes.unacloud.control;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-import uniandes.unacloud.control.net.tcp.PmMessageReceiver;
-import uniandes.unacloud.control.net.udp.VmMessageReceiver;
+import uniandes.unacloud.control.net.tcp.VmMessageReceiver;
+import uniandes.unacloud.control.net.udp.PmMessageReceiver;
 import uniandes.unacloud.control.queue.QueueMessageProcessor;
 import uniandes.unacloud.share.db.DatabaseConnection;
 import uniandes.unacloud.share.manager.ProjectManager;

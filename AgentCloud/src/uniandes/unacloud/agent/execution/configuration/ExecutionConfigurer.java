@@ -6,11 +6,12 @@ import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
-import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartResponse;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
 
 /**
  * Responsible to configure execution
- * @author clouder
+ * @author clouder, 
+ * @author CesarF
  *
  */
 public final class ExecutionConfigurer extends Thread {
@@ -31,12 +32,9 @@ public final class ExecutionConfigurer extends Thread {
 	 * Starts a new thread with configuration
 	 * @return response of start process
 	 */
-	public ExecutionStartResponse startProcess(){
-		ExecutionStartResponse resp=new ExecutionStartResponse();
-		resp.setState(ExecutionStartResponse.ExecutionState.STARTING);
-		resp.setMessage("Starting execution...");
+	public UnaCloudResponse startProcess() {
 		start();
-		return resp;
+		return new UnaCloudResponse("Starting execution...", ExecutionProcessEnum.SUCCESS);
 	}
 	/**
 	 * Thread run modification. Starts configuration process

@@ -53,7 +53,7 @@ public class UpdaterAgent {
 		final int port = propReader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT);
 		final String ip = propReader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 
-		try (Socket s = new Socket(ip,port); 
+		try (Socket s = new Socket(ip, port); 
 				DataOutputStream ds = new DataOutputStream(s.getOutputStream());
 				DataInputStream is = new DataInputStream(s.getInputStream())) {	
 			ds.writeInt(UnaCloudConstants.REQUEST_AGENT_VERSION);

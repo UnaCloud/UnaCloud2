@@ -55,6 +55,6 @@ public abstract class AbstractUDPMessageReceiver extends Thread {
 	 * Responsible to process message and put it in thread pool
 	 * @param message
 	 */
-	public abstract Runnable processMessage(UnaCloudMessage message);
+	public abstract Runnable processMessage(UnaCloudMessage message) throws Exception;
 
 }

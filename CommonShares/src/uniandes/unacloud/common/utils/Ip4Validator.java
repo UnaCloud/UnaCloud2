@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
  *
  */
 public class Ip4Validator {
+	
 	  private Pattern pattern;
+	  
 	  private Matcher matcher;
 	 
 	  private static final String IPADDRESS_PATTERN = 

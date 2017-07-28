@@ -11,11 +11,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.share.db.ExecutionManager;
 import uniandes.unacloud.share.db.PlatformManager;
 import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
-import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
@@ -29,25 +29,20 @@ import uniandes.unacloud.file.processor.FileProcessor;
  * @author CesarF
  *
  */
-public class FileReceiverTask implements Runnable {
-	
-	/**
-	 * Socket to process task
-	 */
-	private Socket s;	
+public class FileReceiverTask extends AbstractTCPSocketProcessor {
 	
 	/**
 	 * Creates a new file receiver task
 	 * @param s socket to process task
 	 */
 	public FileReceiverTask(Socket s) {
+		super(s);
 		System.out.println("Attending " + s.getRemoteSocketAddress());
-		this.s = s;
 	}
 	
+
 	@Override
-	public void run() {
-		
+	public void processMessage(Socket s) throws Exception {
 		String newMainFile = null;
 		String message = null;
 		try (Socket ss = s; DataInputStream is = new DataInputStream(s.getInputStream());) {
@@ -133,17 +128,18 @@ public class FileReceiverTask implements Runnable {
 				
 				try (Connection con = FileManager.getInstance().getDBConnection();) {
 					if (received) {
-						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, sizeImage, newMainFile, null, null), false, con, false);
+						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, sizeImage, newMainFile, null, null), false, con, true);
 						System.out.println("Status changed, process closed");
-					} else {
-						 ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.UNAVAILABLE, null, null, null, null, null, null, null, null), false, con, false);
-						 System.out.println("Error in process, all files should be deleted");
-						 for (File tmpFile : filesTemp.keySet())
+						ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
+						ExecutionManager.updateExecution(exe, con);
+					} else {						
+						System.out.println("Error in process, all files must be deleted");
+						for (File tmpFile : filesTemp.keySet())
 							tmpFile.delete();	
+						ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, message);
+						ExecutionManager.updateExecution(exe, con);
 					}
-					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
-					ExecutionManager.updateExecution(exe, con);
-					ExecutionManager.breakFreeInterfaces(execution, con, IPEnum.AVAILABLE);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -151,6 +147,5 @@ public class FileReceiverTask implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 }

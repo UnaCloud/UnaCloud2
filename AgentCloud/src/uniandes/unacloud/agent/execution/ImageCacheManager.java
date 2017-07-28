@@ -23,7 +23,8 @@ import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
-import uniandes.unacloud.common.utils.RandomUtils;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.utils.security.HashGenerator;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
 /**
@@ -65,10 +66,11 @@ public class ImageCacheManager {
 					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository);
 					saveImages();
 				} catch (ExecutionException ex) {
+					ex.printStackTrace();
 					throw ex;
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					throw new ExecutionException("Error downloading image", ex);
+					throw new ExecutionException("Error downloading image " + ex.getMessage(), ex);
 				}
 				System.out.println(" downloaded");
 				return copy;
@@ -81,7 +83,7 @@ public class ImageCacheManager {
 					}
 				}
 				source = vmi.getImageCopies().get(0);
-				final String vmName = "v" + RandomUtils.generateRandomString(9);
+				final String vmName = "v" + HashGenerator.randomString(9);
 				dest = new ImageCopy();
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
@@ -145,7 +147,7 @@ public class ImageCacheManager {
 	 * Removes all images for physical machine disk
 	 * @return operation confirmation
 	 */
-	public static synchronized String clearCache() {
+	public static synchronized UnaCloudResponse clearCache() {
 		System.out.println("clearCache");
 		loadImages();
 		imageList.clear();
@@ -163,7 +165,7 @@ public class ImageCacheManager {
 			ex.printStackTrace();
 		}
 		saveImages();
-		return SUCCESSFUL_OPERATION;
+		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	
 	
@@ -171,7 +173,7 @@ public class ImageCacheManager {
 	 * Removes an image from cache in repository
 	 * @return response
 	 */
-	public static synchronized String clearImageFromCache(Long imageId) {
+	public static synchronized UnaCloudResponse clearImageFromCache(Long imageId) {
 		System.out.println("clearCache for machine " + imageId);
 		loadImages();
 		Image vmi = imageList.get(imageId);		
@@ -192,7 +194,7 @@ public class ImageCacheManager {
 		if (folder.exists())
 			for (File root : new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId).listFiles())
 				cleanDir(root);
-		return SUCCESSFUL_OPERATION;
+		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	
 	/**

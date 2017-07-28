@@ -13,13 +13,11 @@ import uniandes.unacloud.common.net.tcp.TCPMultipleSender;
 import uniandes.unacloud.common.net.tcp.TCPResponseProcessor;
 import uniandes.unacloud.common.net.tcp.message.AgentMessage;
 import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
-import uniandes.unacloud.common.net.tcp.message.InformationResponse;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
 import uniandes.unacloud.common.net.tcp.message.agent.ClearImageFromCacheMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageMessage;
-import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageResponse;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ImageNetInterfaceComponent;
-import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartResponse.ExecutionState;
 import uniandes.unacloud.common.utils.Time;
 import uniandes.unacloud.control.ControlManager;
 import uniandes.unacloud.share.db.DeploymentManager;
@@ -204,9 +202,9 @@ public class QueueMessageProcessor implements QueueReader {
 							@Override
 							public void attendResponse(Object response, Object message) {
 								AgentMessage mss = (AgentMessage) message;
+								UnaCloudResponse resp = (UnaCloudResponse) response;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									PhysicalMachineEntity pm = null;
-									InformationResponse resp = (InformationResponse) response;
 									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
@@ -279,8 +277,6 @@ public class QueueMessageProcessor implements QueueReader {
 								execution.getCores(), 
 								execution.getRam(), 
 								new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
-								null, 
-								false, 
 								execution.getHostName(),
 								interfaces);
 						System.out.println("Execution from " + execution.getStartTime() + " to: " + execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
@@ -446,8 +442,6 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getCores(), 
 							execution.getRam(), 
 							new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
-							null, 
-							false, 
 							execution.getHostName(),
 							interfaces);
 					System.out.println("Execution from " + execution.getStartTime() + " to: " + execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
@@ -525,20 +519,9 @@ public class QueueMessageProcessor implements QueueReader {
 					public void attendResponse(Object response, Object message) {
 						ExecutionSaveImageMessage mss = (ExecutionSaveImageMessage) message;
 						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-							if (response instanceof ExecutionSaveImageResponse) {
-								if (((ExecutionSaveImageResponse)response).getState().equals(ExecutionState.COPYNG)) {
-									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, null);
-									ExecutionManager.updateExecution(exe, con2);
-								} else {
-									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, ((ExecutionSaveImageResponse)response).getMessage());
-									ExecutionManager.updateExecution(exe, con2);
-									//ImageManager.deleteImage(img, con2);
-								}
-							} else {
-								ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, ((ExecutionSaveImageResponse)response).getMessage());
-								ExecutionManager.updateExecution(exe, con2);
-								//ImageManager.deleteImage(img, con2);
-							}
+							UnaCloudResponse resp = (UnaCloudResponse) response;
+							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, resp.getState(), null, "Client: " + resp.getMessage());
+							ExecutionManager.updateExecution(exe, con2);							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -552,7 +535,6 @@ public class QueueMessageProcessor implements QueueReader {
 							PhysicalMachineManager.setPhysicalMachine(pm,con2);
 							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Error copying image " + message);
 							ExecutionManager.updateExecution(exe, con2);
-							//ImageManager.deleteImage(img, con2);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

@@ -92,7 +92,7 @@ public class DownloadImageTask {
 		} catch (ExecutionException e1) {
 			throw e1;
 		}catch (Exception e) {
-			throw new ExecutionException("Error opening connection",e);
+			throw new ExecutionException("Error opening connection " + e.getMessage(), e);
 		}
 	}
 }
