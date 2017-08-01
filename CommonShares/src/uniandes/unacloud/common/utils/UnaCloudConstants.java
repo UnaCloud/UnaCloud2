@@ -40,6 +40,8 @@ public class UnaCloudConstants {
 	public static final String FILE_SERVER_PORT = "FILE_SERVER_PORT"; //Agent
 	public static final String FILE_SERVER_IP = "FILE_SERVER_IP"; //Agent
 	public static final String VERSION_MANAGER_PORT = "VERSION_MANAGER_PORT"; //Agent
+	public static final String TORRENT_CLIENT_PORTS = "TORRENT_CLIENT_PORTS"; //Agent
+	public static final String FILE_SERVER_TORRENT_PORT = "FILE_SERVER_TORRENT_PORT"; //Agent
 		
 	//Communication agents and File Manager
 	public static final int REQUEST_IMAGE = 1;

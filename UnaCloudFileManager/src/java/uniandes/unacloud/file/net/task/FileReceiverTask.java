@@ -20,6 +20,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.net.torrent.TorrentTracker;
 
 /**
  * This class receives files from agent when user requests to save image in server.
@@ -102,6 +103,8 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 					FileProcessor.deleteFileSync(mainFolder);		
 					new File(mainFolder).mkdirs();
 					zip = FileProcessor.copyFileSync(temp.getAbsolutePath(), mainFolder + temp.getName());
+					//Announce in torrent
+					TorrentTracker.getInstance().publishFile(zip);
 					message = "Copying process has been successful";
 				} catch (Exception e) {
 					e.printStackTrace();

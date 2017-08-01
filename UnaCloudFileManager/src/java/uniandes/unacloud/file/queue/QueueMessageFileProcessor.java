@@ -24,6 +24,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.net.torrent.TorrentTracker;
 
 /**
  * Class to process messages in queue. This messages represent tasks to manage files from web application
@@ -182,7 +183,9 @@ public class QueueMessageFileProcessor implements QueueReader {
 							mainFile = user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName();
 							File newFile = new File(mainFile + ".zip");
 							System.out.println(newFile);
-							FileProcessor.copyFileSync(publicFile.getAbsolutePath(), newFile.getAbsolutePath());							
+							FileProcessor.copyFileSync(publicFile.getAbsolutePath(), newFile.getAbsolutePath());	
+							//Announce in torrent
+							TorrentTracker.getInstance().publishFile(newFile);
 						}
 					} 
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
@@ -224,6 +227,8 @@ public class QueueMessageFileProcessor implements QueueReader {
 				}
 				if (image != null) {
 					try {
+						//FIXME torrent path should be stored in some entity, or at least extension
+						TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"));
 						FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 					} catch (Exception e) {
 						System.err.println("original image files can't be deleted " + image.getMainFile());
@@ -276,6 +281,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 					if (images != null) {
 						for (ImageFileEntity image : images) {						
 							try {
+								TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"));
 								FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());																
 							} catch (Exception e) {
 								System.err.println("original image files can't be deleted " + image.getMainFile());

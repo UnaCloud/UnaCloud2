@@ -20,6 +20,7 @@ import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.UserEntity
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
+import uniandes.unacloud.file.net.torrent.TorrentTracker;
 import grails.transaction.Transactional
 
 /**
@@ -148,6 +149,7 @@ class FileService implements ApplicationContextAware {
 						return null
 				}
 				if (image.getMainFile() != null) {
+					TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"))
 					FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 					if (image.isPublic())
 						FileProcessor.deleteFileSync(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName());					
@@ -181,6 +183,11 @@ class FileService implements ApplicationContextAware {
 		return false;	
 	}
 	
+	/**
+	 * Zip and share file in P2P protocol
+	 * @author CesarF
+	 *
+	 */
 	private void shareFile(final ImageFileEntity image, final RepositoryEntity main) {
 		FileProcessor.zipFileAsync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath(), new Observer() {				
 			@Override
@@ -192,13 +199,14 @@ class FileService implements ApplicationContextAware {
 					File zip = (File) arg;
 					if (zip != null) {
 						println '\t publishing ' + image.getId()
-						//TODO publish in torrent
 						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), null, image.getMainFile(), null, null), false, con, true)
 						FileProcessor.deleteFilesFolder(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath(), ".*zip\$")
 						if (image.isPublic()) {
-							new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName()).mkdirs()
-							FileProcessor.copyFileSync(zip.getAbsolutePath(), main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + zip.getName());
+							File newFile = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName())
+							newFile.mkdirs()
+							FileProcessor.copyFileSync(zip.getAbsolutePath(), newFile.getAbsolutePath() + File.separator + zip.getName());
 						}					
+						TorrentTracker.getInstance().publishFile(zip);
 					}					
 					else {
 						println '\t deleting ' + image.getId()

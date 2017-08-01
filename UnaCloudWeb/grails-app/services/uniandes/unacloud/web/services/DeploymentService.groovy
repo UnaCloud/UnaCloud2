@@ -1,6 +1,5 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.common.utils.RandomUtils;
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
