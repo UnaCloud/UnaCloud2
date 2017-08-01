@@ -35,7 +35,7 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 					ExecutionStateMessage message = new ExecutionStateMessage(uMessage);
 					System.out.println("Report EXE: " + message.getHost() + " - ");
 					ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(),  message.getExecutionMessage());
-					ExecutionManager.updateExecution(exe, con);
+					ExecutionManager.updateExecution(exe, null, con);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}			 

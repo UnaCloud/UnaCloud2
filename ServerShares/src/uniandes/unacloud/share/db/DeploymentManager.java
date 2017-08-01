@@ -79,7 +79,7 @@ public class DeploymentManager {
 					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(6), PhysicalMachineStateEnum.ON, con);
 					if (pm == null){
 						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
-						ExecutionManager.updateExecution(exe, con);
+						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
 					}
 					else {
 						ExecutionEntity vme = new ExecutionEntity(rs.getLong(1), 
@@ -202,11 +202,11 @@ public class DeploymentManager {
 					ExecutionStateEnum state = ExecutionStateEnum.getEnum(rs.getString(6));
 					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
 						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
-						ExecutionManager.updateExecution(exe, con);
+						ExecutionManager.updateExecution(exe, ExecutionStateEnum.DEPLOYED, con);
 					}			
 					if(state.equals(ExecutionStateEnum.REQUESTED))	{
 						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
-						ExecutionManager.updateExecution(exe, con);
+						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
 					}
 					
 				} else {
@@ -264,11 +264,11 @@ public class DeploymentManager {
 				if (pm == null) {
 					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
 						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
-						ExecutionManager.updateExecution(exe, con);
+						ExecutionManager.updateExecution(exe, ExecutionStateEnum.DEPLOYED, con);
 					}			
 					if(state.equals(ExecutionStateEnum.REQUESTED))	{
 						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
-						ExecutionManager.updateExecution(exe, con);
+						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
 					}
 				} 
 				else {

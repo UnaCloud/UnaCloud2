@@ -16,10 +16,11 @@ public class ExecutionManager {
 	/**
 	 * Updates an execution entity on database.
 	 * @param execution to be modified
+	 * @param currentState to avoid changes if state has changed. 
 	 * @param con Database connection
 	 * @return true in case execution was updated, false in case not
 	 */
-	public static boolean updateExecution(ExecutionEntity execution, Connection con) {
+	public static boolean updateExecution(ExecutionEntity execution, ExecutionStateEnum currentState, Connection con) {
 		if (execution.getId() == null || execution.getId() < 1) 
 			return false;
 		try {
@@ -44,6 +45,8 @@ public class ExecutionManager {
 						+ " WHERE vme.id = ? ";						
 				if (execution.getNode() != null && execution.getNode().getHost() != null) 
 					query += "AND vme.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?) ";
+				if (currentState != null)
+					query += "AND exest.state == " + currentState + " ";
 				query += "AND vme.id > 0 "
 						+ "AND " + state + " IS NOT NULL;"; 
 				PreparedStatement ps = con.prepareStatement(query);
@@ -133,33 +136,4 @@ public class ExecutionManager {
 		}		
 		return null;
 	}
-	
-//	/**
-//	 * Updates states for IP in database
-//	 * @param executionId execution to modify IP
-//	 * @param con database connection
-//	 * @param ipstate State of IP
-//	 * @return true in case update was success, false in case not
-//	 */
-//	public static boolean breakFreeInterfaces(Long executionId, Connection con, IPEnum ipstate) {
-//		try {
-//			String update = 
-//					"UPDATE ip SET state = ? "
-//					+ "WHERE id in (SELECT ip_id FROM net_interface WHERE execution_id = ?) "
-//					+ "AND id > 0;"; 
-//			PreparedStatement ps = con.prepareStatement(update);
-//			ps.setString(1, ipstate.name());
-//			ps.setLong(2, executionId);
-//			System.out.println("Update: "+ps.executeUpdate());
-//			try {
-//				ps.close();
-//			} catch (Exception e) {
-//				
-//			}
-//			return true;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return false;
-//		}		
-//	}
 }
