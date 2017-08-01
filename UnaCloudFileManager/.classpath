@@ -19,8 +19,6 @@
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
-	<classpathentry kind="lib" path="lib/servershares.jar"/>
-	<classpathentry kind="lib" path="lib/commonshares.jar"/>
 	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.6/grails-app/conf">
 		<attributes>
@@ -109,5 +107,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CommonShares"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ServerShares"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>
