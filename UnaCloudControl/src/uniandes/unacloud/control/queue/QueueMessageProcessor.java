@@ -300,7 +300,7 @@ public class QueueMessageProcessor implements QueueReader {
 										PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), null, null, PhysicalMachineStateEnum.OFF, null);
 										PhysicalMachineManager.setPhysicalMachine(pm, con2);
 										ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error " + message);
-										ExecutionManager.updateExecution(exe, con2);
+										ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con2);
 									} catch (Exception e) {
 										e.printStackTrace();
 									}						
@@ -373,7 +373,7 @@ public class QueueMessageProcessor implements QueueReader {
 								ImageOperationMessage mss = (ImageOperationMessage) message;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, "Execution finished");
-									ExecutionManager.updateExecution(exe, con2);
+									ExecutionManager.updateExecution(exe, null, con2);
 									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -387,7 +387,7 @@ public class QueueMessageProcessor implements QueueReader {
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, "Connection lost with agent, execution will be removed when it reconnects");
-									ExecutionManager.updateExecution(exe, con2);
+									ExecutionManager.updateExecution(exe, null, con2);
 									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -465,7 +465,7 @@ public class QueueMessageProcessor implements QueueReader {
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), null, null, PhysicalMachineStateEnum.OFF, null);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error " + message);
-									ExecutionManager.updateExecution(exe, con2);
+									ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con2);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -521,7 +521,7 @@ public class QueueMessageProcessor implements QueueReader {
 						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 							UnaCloudResponse resp = (UnaCloudResponse) response;
 							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, resp.getState(), null, "Client: " + resp.getMessage());
-							ExecutionManager.updateExecution(exe, con2);							
+							ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUEST_COPY, con2);							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -534,7 +534,7 @@ public class QueueMessageProcessor implements QueueReader {
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm,con2);
 							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Error copying image " + message);
-							ExecutionManager.updateExecution(exe, con2);
+							ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUEST_COPY, con2);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

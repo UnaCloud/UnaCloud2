@@ -12,6 +12,7 @@ import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.share.db.ExecutionManager;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.utils.file.FileProcessor;
 import uniandes.unacloud.file.FileManager;
@@ -117,11 +118,11 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 					ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, fileSize, zip.getAbsolutePath().replace(".zip", ""), null, null), false, con, true);
 					System.out.println("Status changed, process closed");
 					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
-					ExecutionManager.updateExecution(exe, con);
+					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);
 				} else {						
 					System.out.println("Error in process, all files must be deleted");
 					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, message);
-					ExecutionManager.updateExecution(exe, con);
+					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);
 				}
 				
 			} catch (Exception e) {

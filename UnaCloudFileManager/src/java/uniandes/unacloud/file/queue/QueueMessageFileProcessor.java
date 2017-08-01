@@ -95,7 +95,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 		
 		threadPool.submit(new MessageProcessor(message) {			
 			@Override
-			protected void processMessage(QueueMessage message) throws Exception{
+			protected void processMessage(QueueMessage message) throws Exception {
 				
 				MessageIdOfImage messageId = new MessageIdOfImage(message);
 				Long imageId = messageId.getIdImage();
