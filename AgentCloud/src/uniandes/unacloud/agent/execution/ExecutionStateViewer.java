@@ -14,8 +14,14 @@ import uniandes.unacloud.common.enums.ExecutionProcessEnum;
  */
 public class ExecutionStateViewer {
 	
+	/**
+	 * Execution ID
+	 */
 	private long executionCode;
 	
+	/**
+	 * IP to be check
+	 */
 	private String vmIP;
 	
 	/**

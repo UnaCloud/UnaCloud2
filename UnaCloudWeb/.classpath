@@ -112,7 +112,7 @@
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CommonShares"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ServerShares"/>
+	<classpathentry kind="lib" path="lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/servershares.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

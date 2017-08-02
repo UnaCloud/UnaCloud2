@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import org.json.JSONObject;
 
 /**
- * Used as standard for send message in UDP Protocol
+ * Used as standard message to be used in TCP and UDP Protocols
  * @author CesarF
  *
  */
@@ -42,7 +42,9 @@ public class UnaCloudMessage implements Serializable {
 		
 	}
 	
-	
+	/**
+	 * Creates a new message using values in another message
+	 */
 	public UnaCloudMessage(UnaCloudMessage message) {	
 		this.ip = message.getIp();
 		this.port = message.getPort();
@@ -52,7 +54,7 @@ public class UnaCloudMessage implements Serializable {
 	}
 	
 	/**
-	 * Creates a new UDP message with data from IP, port, host and message type
+	 * Creates a new message with data from IP, port, host and message type
 	 */
 	public UnaCloudMessage(String ip, int port, String host, String type) {
 		this.message = new JSONObject();

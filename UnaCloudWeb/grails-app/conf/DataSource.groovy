@@ -1,4 +1,7 @@
+import grails.util.Environment;
+
 import java.io.FileInputStream;
+
 import uniandes.unacloud.share.utils.EnvironmentManager;
 import uniandes.unacloud.common.utils.ConfigurationReader
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -28,23 +31,25 @@ hibernate {
 ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG)
 // environment specific settings
 environments {
-    development {
-        dataSource {
-			//using properties file
-			username = reader.getStringVariable("dev_username");
-			password = reader.getStringVariable("dev_password");
-			dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
-			url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
-        }
-    }
-    test {
-        dataSource {
-			username = reader.getStringVariable("test_username");
-			password = reader.getStringVariable("test_password");
-            dbCreate = "update"
-            url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
-        }
-    }
+	if (Environment.isDevelopmentMode()) {
+	    development {
+	        dataSource {
+				//using properties file
+				username = reader.getStringVariable("dev_username");
+				password = reader.getStringVariable("dev_password");
+				dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
+				url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
+	        }
+	    }
+	    test {
+	        dataSource {
+				username = reader.getStringVariable("test_username");
+				password = reader.getStringVariable("test_password");
+	            dbCreate = "update"
+	            url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
+	        }
+	    }
+	}
     production {
         dataSource {
 			username = reader.getStringVariable(UnaCloudConstants.DB_USERNAME);

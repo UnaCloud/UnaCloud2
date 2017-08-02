@@ -108,7 +108,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ServerShares"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CommonShares"/>
+	<classpathentry kind="lib" path="lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/servershares.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

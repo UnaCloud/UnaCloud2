@@ -111,6 +111,7 @@ class BootStrap {
 			
 			//Load variables for File Manager		
 			new ServerVariable(name:UnaCloudConstants.WEB_FILE_SERVER_URL, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.WEB_FILE_SERVER_URL), program:ServerVariableProgramEnum.FILE_MANAGER).save()	
+			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_TORRENT_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), program:ServerVariableProgramEnum.FILE_MANAGER).save()
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()

@@ -11,11 +11,11 @@ import uniandes.unacloud.common.net.UnaCloudMessage;
  * @author CesarF
  *
  */
-public class TCPSender{
+public class TCPSender {
 	
 	
 	/**
-	 * 
+	 * Constructor
 	 */
 	public TCPSender() {
 		
@@ -28,10 +28,20 @@ public class TCPSender{
 		sendMessage(message, null);
 	}
 	
+	/**
+	 * Send message using an object to process response 
+	 * @param message
+	 * @param processor
+	 */
 	public void sendMessageWithProcessor(UnaCloudMessage message, TCPResponseProcessor processor) {
 		sendMessage(message, processor);
 	}
 	
+	/**
+	 * Send message by TCP protocol
+	 * @param message
+	 * @param processor
+	 */
 	private void sendMessage(UnaCloudMessage message, TCPResponseProcessor processor) {
 		try (Socket s =  new Socket(message.getIp(), message.getPort())) {
 			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());

@@ -1,4 +1,4 @@
-<%@page import="uniandes.unacloud.common.enums.ExecutionStateEnum"%>
+<%@page import="uniandes.unacloud.share.enums.ExecutionStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
