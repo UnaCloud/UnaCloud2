@@ -3,6 +3,7 @@ package uniandes.unacloud.web.services
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
@@ -45,21 +46,23 @@ class DeploymentService {
 	
 	/**
 	 * Representation of the physical machine allocator service
-	 */
-	
+	 */	
 	PhysicalMachineAllocatorService physicalMachineAllocatorService
 	
 	/**
 	 * Representation of the IP allocator service
-	 */
-	
+	 */	
 	IpAllocatorService ipAllocatorService
 	
 	/**
 	 * Representation of the repository service
-	 */
-	
+	 */	
 	RepositoryService repositoryService
+		
+	/**
+	 * Representation of server variable service
+	 */
+	ServerVariableService serverVariableService
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -144,8 +147,8 @@ class DeploymentService {
 			}
 		}
 		
-		if(!Environment.isDevelopmentMode()){				
-			QueueTaskerControl.deployCluster(dep,user)
+		if (!Environment.isDevelopmentMode()) {				
+			QueueTaskerControl.deployCluster(dep, user, TransmissionProtocolEnum.getEnum(serverVariableService.getTransmissionProtocol()))
 		}		
 		
 		return dep

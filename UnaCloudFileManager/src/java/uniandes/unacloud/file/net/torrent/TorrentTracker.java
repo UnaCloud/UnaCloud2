@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import uniandes.unacloud.common.utils.FileConverter;
+
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.SharedTorrent;
 import com.turn.ttorrent.tracker.TrackedTorrent;
@@ -119,7 +121,7 @@ public class TorrentTracker {
 		for (File f : file.listFiles())
 			if (f.isDirectory())
 				getTorrentFiles(listFiles, f);
-			else if(f.getName().endsWith(".torrent")) {
+			else if(f.getName().endsWith(FileConverter.TORRENT_EXTENSION)) {
 				listFiles.add(f);
 				System.out.println("Found: " + f);
 			}
@@ -131,16 +133,15 @@ public class TorrentTracker {
 	 * @param file
 	 * @throws Exception
 	 */
-	public void publishFile(File file) throws Exception {
+	public void publishFile(FileConverter file) throws Exception {
 
 		//---------------------------------------------------------------------
 		System.out.println("Parent Directory: " + file);
 		//---------------------------------------------------------------------
 		
-		File torrentFile = new File(file.getAbsolutePath() + ".torrent");
-		if (!torrentFile.exists())
-			createTorrent(torrentFile, file, tracker_url);
-		shareTorrent(torrentFile);		
+		if (!file.getTorrentFile().exists())
+			createTorrent(file.getTorrentFile(), file.getExecutableFile(), tracker_url);
+		shareTorrent(file.getTorrentFile());		
 	}
 	
 	/**
@@ -149,6 +150,12 @@ public class TorrentTracker {
 	 * @throws Exception
 	 */
 	private void shareTorrent (File torrentFile) throws Exception {
+		
+		if (torrentFile == null || !torrentFile.exists()) 
+			throw new IllegalArgumentException("Torrent file is not valid");
+		if (localClients.containsKey(torrentFile.getAbsolutePath()))
+			throw new IllegalArgumentException("Torrent is already announced");
+		
 		InetAddress ip = InetAddress.getByName(IPAddress);
 		Client client = new Client(ip, SharedTorrent.fromFile(torrentFile, torrentFile.getParentFile()), listPorts);
 		System.out.println("Loading torrent from " + torrentFile.getName());

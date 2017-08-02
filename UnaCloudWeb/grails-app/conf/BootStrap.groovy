@@ -2,6 +2,7 @@
 import java.io.FileInputStream;
 
 import sun.security.ssl.HandshakeMessage.Finished;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.utils.ConfigurationReader
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -99,7 +100,9 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.QUEUE_PASS, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), program:ServerVariableProgramEnum.SERVER).save()
 			new ServerVariable(name:UnaCloudConstants.AGENT_VERSION, serverVariableType: ServerVariableTypeEnum.STRING, variable: reader.getStringVariable(UnaCloudConstants.AGENT_VERSION), program:ServerVariableProgramEnum.WEB).save()
 			new ServerVariable(name:UnaCloudConstants.VM_DEFAULT_ALLOCATOR, serverVariableType: ServerVariableTypeEnum.STRING, variable: AllocatorEnum.ROUND_ROBIN.getName(), isList: true, program:ServerVariableProgramEnum.WEB).save()
-
+			//Load variables for communication
+			new ServerVariable(name:UnaCloudConstants.TRANSMISSION_PROTOCOL, serverVariableType: ServerVariableTypeEnum.STRING, variable: TransmissionProtocolEnum.TCP.name(), isList: true, program:ServerVariableProgramEnum.WEB).save()
+			
 			//Load variables for control
 			new ServerVariable(name:UnaCloudConstants.CONTROL_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP), program:ServerVariableProgramEnum.CONTROL, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.CONTROL_MANAGE_PM_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT), program:ServerVariableProgramEnum.CONTROL, serverOnly:false).save()
@@ -111,11 +114,11 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
-			
+						
 		}			
 		if (Platform.count() == 0) {
-			new Platform(name: "VirtualBox 5", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "5.0", classPlatform:"VBox5").save()
-			new Platform(name: "VirtualBox 4.3", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "4.3.4", classPlatform:"VBox43").save()
+			new Platform(name: "VirtualBox 5", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "5.*", classPlatform:"VBox5").save()
+			new Platform(name: "VirtualBox 4", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "4.*", classPlatform:"VBox43").save()
 		}
 		//new Hypervisor(name: Constants.VM_WARE_WORKSTATION, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()
 		//new Hypervisor(name: Constants.VM_WARE_PLAYER, hypervisorVersion: "10",mainExtension:".vmx",filesExtensions:'.vmdk').save()

@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
 import uniandes.unacloud.common.utils.Time;
 
@@ -29,8 +30,25 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public static final String VM_HOST_NAME = "vm_host_name";
 	
 	public static final String NET_INTERFACE = "net_interface";
+	
+	public static final String TRANSMISSION_TYPE = "transmission_type";
     
-	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String vmHostName, List<ImageNetInterfaceComponent> interfaces) {
+	/**
+	 * 
+	 * @param ip
+	 * @param port
+	 * @param host
+	 * @param executionId
+	 * @param pmId
+	 * @param imageId
+	 * @param vmCores
+	 * @param vmMemory
+	 * @param exeTime
+	 * @param vmHostName
+	 * @param type
+	 * @param interfaces
+	 */
+	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String vmHostName, TransmissionProtocolEnum type, List<ImageNetInterfaceComponent> interfaces) {
 		super(ip, port, host, ImageOperationMessage.VM_START, pmId, executionId);		
 		JSONObject tempMessage = this.getMessage();
 		tempMessage.put(IMAGE, imageId);
@@ -38,6 +56,7 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 		tempMessage.put(VM_MEMORY, vmMemory);
 		tempMessage.put(EXE_TIME, exeTime);
 		tempMessage.put(VM_HOST_NAME, vmHostName);
+		tempMessage.put(TRANSMISSION_TYPE, type.name());
 		JSONArray array = new JSONArray();
 		if (interfaces != null)
 			for (ImageNetInterfaceComponent interf: interfaces)
@@ -71,11 +90,10 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 		return this.getMessage().getLong(IMAGE);
 	}
 	
-	@Override
-	public String toString() {
-		return super.toString() + " executionTime: " + getExecutionTime();
+	public TransmissionProtocolEnum getTransmissionType() {
+		return TransmissionProtocolEnum.getEnum(this.getMessage().getString(TRANSMISSION_TYPE));
 	}
-	
+			
 	public List<ImageNetInterfaceComponent> getInterfaces() {
 		JSONObject temp = this.getMessage();
 		JSONArray list = temp.getJSONArray(NET_INTERFACE);
@@ -83,6 +101,11 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 		for (int i = 0; i < list.length(); i++)
 			interfaces.add((ImageNetInterfaceComponent)list.get(i));		
 		return interfaces;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString() + " executionTime: " + getExecutionTime();
 	}
 	
 }

@@ -53,7 +53,7 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
 	public void registerImage(ImageCopy image){
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getPath());
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
     }
     
@@ -232,7 +232,7 @@ public abstract class VirtualBox extends Platform {
 	 */
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 		sleep(20000);
 		takeExecutionSnapshot(dest, "unacloudbase");
         unregisterImage(dest);

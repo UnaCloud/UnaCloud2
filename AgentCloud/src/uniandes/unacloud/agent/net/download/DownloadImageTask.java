@@ -14,8 +14,10 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Image;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.execution.domain.ImageStatus;
+import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.file.Zipper;
 
@@ -30,9 +32,11 @@ public class DownloadImageTask {
 	 * Creates a new image copy requesting images from server
 	 * @param image base image
 	 * @param copy empty copy
-	 * @throws Exception 
+	 * @param repository
+	 * @param type
+	 * @throws Exception
 	 */
-	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository) throws Exception {
+	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
 		
 		File root = new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
 		ImageCacheManager.cleanDir(root);
@@ -54,10 +58,14 @@ public class DownloadImageTask {
 			ds.writeLong(image.getId());
 			ds.flush();
 			
+			System.out.println("Transmission protocol:" + type);
+			ds.writeUTF(type.name());
+			ds.flush();
+			
 			//Receives zip elements
 			try (ZipInputStream zis = new ZipInputStream(s.getInputStream())) {
 				System.out.println("Zip open");
-				byte[] buffer = new byte[1024*100];
+				byte[] buffer = new byte[1024 * 100];
 				for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
 					if (entry.getName().equals("unacloudinfo")) {						
 						BufferedReader br = new BufferedReader(new InputStreamReader(zis));
@@ -73,8 +81,7 @@ public class DownloadImageTask {
 						copy.setStatus(ImageStatus.LOCK);
 						/*copy.setVirtualMachineName();*/br.readLine();
 						image.setConfiguratorClass(br.readLine());
-						System.out.println("config: " + image.getConfiguratorClass());
-						
+						System.out.println("config: " + image.getConfiguratorClass());						
 					} 
 					else {
 						try (FileOutputStream fos = new FileOutputStream(new File(root, entry.getName()))) {
@@ -87,9 +94,11 @@ public class DownloadImageTask {
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+			
+			if (type == TransmissionProtocolEnum.P2P) 
+				TorrentClient.getInstance().downloadAndAnnounceTorrent(copy.getMainFile().getTorrentFile());
 						
-			String zipName = copy.getMainFile().getAbsolutePath() + ".zip";
-			Zipper.unzipIt(new File(zipName), root.getAbsolutePath());
+			Zipper.unzipIt(copy.getMainFile().getZipFile(), root.getAbsolutePath());
 			
 			copy.setImage(image);
 			image.getImageCopies().add(copy);

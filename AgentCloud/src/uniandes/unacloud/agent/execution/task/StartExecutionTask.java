@@ -6,6 +6,7 @@ import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 
 /**
  * Task to start an execution
@@ -20,11 +21,17 @@ public class StartExecutionTask implements Runnable {
 	private Execution machineExecution;
 	
 	/**
+	 * Transmission type to request image
+	 */
+	private TransmissionProtocolEnum transmissionType;
+	
+	/**
 	 * class constructor
 	 * @param machineExecution Execution instance to be started
 	 */
-	public StartExecutionTask(Execution machineExecution) {
+	public StartExecutionTask(Execution machineExecution, TransmissionProtocolEnum trans) {
 		this.machineExecution = machineExecution;
+		this.transmissionType = trans;
 	}
 	
 	/**
@@ -35,7 +42,7 @@ public class StartExecutionTask implements Runnable {
 		System.out.println("Start Execution");
 		try {
 			//get image 
-			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
+			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), transmissionType);
 			System.out.println("Get Image");
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);

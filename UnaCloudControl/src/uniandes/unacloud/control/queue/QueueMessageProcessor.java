@@ -278,6 +278,7 @@ public class QueueMessageProcessor implements QueueReader {
 								execution.getRam(), 
 								new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
 								execution.getHostName(),
+								message.getTypeTransmission(),
 								interfaces);
 						System.out.println("Execution from " + execution.getStartTime() + " to: " + execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
 						
@@ -443,6 +444,7 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getRam(), 
 							new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
 							execution.getHostName(),
+							null,
 							interfaces);
 					System.out.println("Execution from " + execution.getStartTime() + " to: " + execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
 					

@@ -2,6 +2,7 @@ package uniandes.unacloud.web.queue;
 
 import java.util.List;
 
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.share.queue.QueueTaskerConnection;
 import uniandes.unacloud.share.queue.messages.MessageAddInstances;
 import uniandes.unacloud.share.queue.messages.MessageCreateCopyFromExecution;
@@ -69,8 +70,8 @@ public class QueueTaskerControl {
 	 * @param deployment
 	 * @param user
 	 */
-	public static void deployCluster(Deployment deployment, User user) {
-		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId());
+	public static void deployCluster(Deployment deployment, User user, TransmissionProtocolEnum transmissionType) {
+		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId(), transmissionType);
 		controlQueue.sendMessage(message);
 	}
 	

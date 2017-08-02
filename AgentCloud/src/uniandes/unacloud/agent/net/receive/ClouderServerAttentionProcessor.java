@@ -73,14 +73,17 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	    	switch (message.getTask()) {
 	            case ImageOperationMessage.VM_START:
 	            	UnaCloudResponse resp = new UnaCloudResponse("Starting execution...", ExecutionProcessEnum.SUCCESS);
-	        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage((ExecutionStartMessage) message)));
+	            	ExecutionStartMessage msg = (ExecutionStartMessage) message;
+	        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage(msg), msg.getTransmissionType()));
 	            	return resp;
 	            case ImageOperationMessage.VM_STOP:
 	            	ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
-	                return null;
+	                return new UnaCloudResponse("Starting execution...", ExecutionProcessEnum.SUCCESS);
 	            case ImageOperationMessage.VM_RESTART:
+	            	//TODO Unused
 	                return PersistentExecutionManager.restartMachine(message.getExecutionId());
 	            case ImageOperationMessage.VM_TIME:
+	            	//TODO Unused
 	                return PersistentExecutionManager.extendsVMTime((ExecutionAddTimeMessage) message);
 	            case ImageOperationMessage.VM_SAVE_IMG:
 	            	return PersistentExecutionManager.sendImageCopy((ExecutionSaveImageMessage) message);  

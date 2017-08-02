@@ -149,7 +149,7 @@ class FileService implements ApplicationContextAware {
 						return null
 				}
 				if (image.getMainFile() != null) {
-					TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"))
+					TorrentTracker.getInstance().removeTorrent(image.getFileConversor().getTorrentFile())
 					FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 					if (image.isPublic())
 						FileProcessor.deleteFileSync(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName());					

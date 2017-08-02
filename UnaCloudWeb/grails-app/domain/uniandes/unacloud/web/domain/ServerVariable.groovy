@@ -1,7 +1,7 @@
 package uniandes.unacloud.web.domain;
 
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
 import uniandes.unacloud.share.enums.ServerVariableTypeEnum;
 import uniandes.unacloud.web.pmallocators.AllocatorEnum;
 import uniandes.unacloud.share.enums.ServerVariableProgramEnum
@@ -56,12 +56,14 @@ class ServerVariable {
 	
 	
 	/**
-	 * Returns values in variables which are list, currently only used for DEFAULT ALLOCATOR
+	 * Returns values in variables which are list, currently only used for DEFAULT ALLOCATOR and TRANSMISSION PROTOCOL
 	 * @return list of values
 	 */
 	def values(){
 		if (this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))
 			return AllocatorEnum.getList()
+		else if (this.name.equals(UnaCloudConstants.TRANSMISSION_PROTOCOL))
+			return TransmissionProtocolEnum.list()
 		else []
 	}
 	

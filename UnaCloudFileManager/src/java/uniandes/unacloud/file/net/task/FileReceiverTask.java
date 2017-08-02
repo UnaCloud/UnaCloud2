@@ -10,6 +10,7 @@ import java.util.zip.ZipInputStream;
 
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
+import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.share.db.ExecutionManager;
 import uniandes.unacloud.share.db.entities.ExecutionEntity;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
@@ -95,14 +96,14 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 		if (image != null && execution != null) {
 			// Save file in path
 			String message = null;
-			File zip = null;
+			FileConverter zip = null;
 			if (temp != null) {
 				try {
 					String mainFolder = image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator;
 					System.out.println("save in path: " + mainFolder);
 					FileProcessor.deleteFileSync(mainFolder);		
 					new File(mainFolder).mkdirs();
-					zip = FileProcessor.copyFileSync(temp.getAbsolutePath(), mainFolder + temp.getName());
+					zip = new FileConverter(FileProcessor.copyFileSync(temp.getAbsolutePath(), mainFolder + temp.getName()));
 					//Announce in torrent
 					TorrentTracker.getInstance().publishFile(zip);
 					message = "Copying process has been successful";
@@ -118,7 +119,7 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 			//Modifying data
 			try (Connection con = FileManager.getInstance().getDBConnection();) {
 				if (zip != null) {
-					ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, fileSize, zip.getAbsolutePath().replace(".zip", ""), null, null), false, con, true);
+					ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, fileSize, zip.getExecutableFile().getAbsolutePath(), null, null), false, con, true);
 					System.out.println("Status changed, process closed");
 					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
 					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);

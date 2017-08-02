@@ -33,12 +33,12 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 	
     @Override
     public void stopExecution(ImageCopy image) {
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "stop", image.getMainFile().getPath());
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "stop", image.getMainFile().getExecutableFile().getPath());
     }
 
     @Override
     public void restartExecution(ImageCopy image) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T",getType(), "reset", image.getMainFile().getPath());
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T",getType(), "reset", image.getMainFile().getExecutableFile().getPath());
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -47,7 +47,7 @@ public abstract class VMwareAbstractHypervisor extends Platform {
     @Override
     public void startExecution(ImageCopy image) throws PlatformOperationException {
         correctDataStores();
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "start", image.getMainFile().getPath(),"nogui");
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "start", image.getMainFile().getExecutableFile().getPath(),"nogui");
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -57,7 +57,7 @@ public abstract class VMwareAbstractHypervisor extends Platform {
     @Override
     public void executeCommandOnExecution(ImageCopy image,String command, String... args) throws PlatformOperationException {
         List<String> com = new ArrayList<>();
-        Collections.addAll(com, getExecutablePath(), "-T", getType(), "-gu", image.getImage().getUsername(), "-gp", image.getImage().getPassword(), "runProgramInGuest", image.getMainFile().getPath());
+        Collections.addAll(com, getExecutablePath(), "-T", getType(), "-gu", image.getImage().getUsername(), "-gp", image.getImage().getPassword(), "runProgramInGuest", image.getMainFile().getExecutableFile().getPath());
         com.add(command);
         Collections.addAll(com,args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
@@ -68,7 +68,7 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "-gu", image.getImage().getUsername(), "-gp",image.getImage().getPassword(), "copyFileFromHostToGuest", image.getMainFile().getPath(), sourceFile.getAbsolutePath(), destinationRoute);
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "-gu", image.getImage().getUsername(), "-gp",image.getImage().getPassword(), "copyFileFromHostToGuest", image.getMainFile().getExecutableFile().getPath(), sourceFile.getAbsolutePath(), destinationRoute);
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -76,7 +76,7 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 
     @Override
     public void takeExecutionSnapshot(ImageCopy image,String snapshotname) throws PlatformOperationException {
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T" ,getType(), "snapshot", image.getMainFile().getPath(), snapshotname);
+        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T" ,getType(), "snapshot", image.getMainFile().getExecutableFile().getPath(), snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -84,7 +84,7 @@ public abstract class VMwareAbstractHypervisor extends Platform {
     
     @Override
     public void deleteExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "deleteSnapshot", image.getMainFile().getPath(), snapshotname);
+    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "deleteSnapshot", image.getMainFile().getExecutableFile().getPath(), snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -92,20 +92,20 @@ public abstract class VMwareAbstractHypervisor extends Platform {
     
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
-    	if(cores!=0&&ram!=0){
-            new VMXContext(image.getMainFile().getPath()).changeVMXFileContext(cores,ram);
-       }
+    	if (cores != 0 && ram != 0 ) {
+            new VMXContext(image.getMainFile().getExecutableFile().getPath()).changeVMXFileContext(cores,ram);
+        }
     }
     
     @Override
     public boolean existsExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "listSnapshots", image.getMainFile().getPath());
+    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "listSnapshots", image.getMainFile().getExecutableFile().getPath());
     	return h!=null&&h.contains(snapshotname);
     }
     
     @Override
     public void restoreExecutionSnapshot(ImageCopy image, String snapshotname) throws PlatformOperationException {
-    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "revertToSnapshot", image.getMainFile().getPath(), snapshotname);
+    	String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "-T", getType(), "revertToSnapshot", image.getMainFile().getExecutableFile().getPath(), snapshotname);
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
         }
@@ -141,13 +141,13 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 	}
 	/**
 	 * Returns type VMware execution
-	 * @return type of hypervisor
+	 * @return type of VMware platform
 	 */
 	protected abstract String getType();
 	
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clone", source.getMainFile().getAbsolutePath(), dest.getMainFile().getAbsolutePath(), "full", "unacloudbase");
+		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clone", source.getMainFile().getExecutableFile().getAbsolutePath(), dest.getMainFile().getExecutableFile().getAbsolutePath(), "full", "unacloudbase");
 		sleep(20000);
 		try {
 			takeExecutionSnapshot(dest,"unacloudbase");

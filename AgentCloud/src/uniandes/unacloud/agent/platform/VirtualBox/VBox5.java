@@ -2,7 +2,7 @@ package uniandes.unacloud.agent.platform.virtualbox;
 
 /**
  * Represents VirtualBox version API 5.*
- * @author Cesar
+ * @author CesarF
  *
  */
 public class VBox5 extends VirtualBox{

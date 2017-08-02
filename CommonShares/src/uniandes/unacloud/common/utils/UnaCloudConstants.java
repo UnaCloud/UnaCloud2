@@ -68,12 +68,12 @@ public class UnaCloudConstants {
 	public static final int DELAY = 6;
 	public static final String UPDATER_JAR = "ClientUpdater.jar";
 	public static final String AGENT_JAR = "UnaClient.jar";
-	public static final String CONFIG_JAR = "ClientConfigurer.jar";
 	public static final String GLOBAL_FILE = "global.properties";
 	public static final String LOCAL_FILE = "local.properties";
 	public static final String VERSION_FILE = "version.txt";
 	
     //UnaCloud communication and operation constants
+	public static final String TRANSMISSION_PROTOCOL = "TRANSMISSION_PROTOCOL";
     public static final String OK_MESSAGE = "Ok: ";
     public static final String SUCCESSFUL_OPERATION = "Successful operation";
     public static final String ERROR_MESSAGE = "Error: ";

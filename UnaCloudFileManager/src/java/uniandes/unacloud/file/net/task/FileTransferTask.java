@@ -11,6 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ImageFileManager;
@@ -34,7 +35,10 @@ public class FileTransferTask extends AbstractTCPSocketProcessor {
 			
 			ZipOutputStream zos = new ZipOutputStream(os);
 			long imageId = ds.readLong();
-			System.out.println("\tWorking " + imageId);						
+			System.out.println("\tWorking " + imageId);	
+			
+			TransmissionProtocolEnum protocol = TransmissionProtocolEnum.getEnum(ds.readUTF());
+			
 			ImageFileEntity image = null;
 			try (Connection con = FileManager.getInstance().getDBConnection();) {
 				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false, true, con);
@@ -43,21 +47,25 @@ public class FileTransferTask extends AbstractTCPSocketProcessor {
 			}
 						
 			if (image != null) {
-				
 				System.out.println(image + " - " + imageId + " - " + image.getState());
 				final byte[] buffer = new byte[1024 * 100];
 				System.out.println("\t Sending files " + image.getMainFile());
+				File file = null;
 				
-				File file = new java.io.File(image.getMainFile() + ".zip");				
+				if (protocol == TransmissionProtocolEnum.TCP)	
+					file = image.getFileConversor().getZipFile();			
+				else if (protocol == TransmissionProtocolEnum.P2P)
+					file = image.getFileConversor().getTorrentFile();	
+				
 				System.out.println("\tprocessing: " + file.getName());
 				zos.putNextEntry(new ZipEntry(file.getName()));					
 				try (FileInputStream fis = new FileInputStream(file)) {
 					for (int n; (n = fis.read(buffer)) != -1;)
 						zos.write(buffer,0,n);
 				}
+				System.out.println("Files sent " + image.getMainFile());
 				zos.closeEntry();
 				
-				System.out.println("Files sent " + image.getMainFile());
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
 				PrintWriter pw = new PrintWriter(zos);
 				pw.println(image.getPlatform().getConfigurer());

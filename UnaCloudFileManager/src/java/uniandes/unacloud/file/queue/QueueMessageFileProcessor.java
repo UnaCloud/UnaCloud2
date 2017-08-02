@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.db.StorageManager;
@@ -112,12 +113,13 @@ public class QueueMessageFileProcessor implements QueueReader {
 					boolean isNotPublic = false;
 					if (!image.isPublic()) {
 						isNotPublic = true;
-						File original = new File (image.getMainFile());
-						File copy = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getName() + ".zip");
+						FileConverter original = image.getFileConversor();
+						FileConverter copy = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getExecutableFile().getName());
 						System.out.println("Changes to public " + image.getMainFile());
 						
-						if (!copy.exists()) {
-							FileProcessor.copyFileSync(original.getAbsolutePath() + ".zip", copy.getAbsolutePath() + ".zip");
+						if (!copy.getZipFile().exists()) {
+							System.out.println(" O: " + original.getZipFile() + " -> " + copy.getZipFile() );
+							FileProcessor.copyFileSync(original.getZipFile().getAbsolutePath(), copy.getZipFile().getAbsolutePath());
 							change = true;
 						}
 												
@@ -172,30 +174,32 @@ public class QueueMessageFileProcessor implements QueueReader {
 				}	
 									
 				if (privateImage != null) {
-					String mainFile = null;
+					FileConverter newFile = null;
 					if (publicImage != null && publicImage.isPublic()) {
 						
 						File original = new File (publicImage.getMainFile());		
 						System.out.println(original);
-						File publicFile = new File(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + publicImage.getName() + File.separator + original.getName() + ".zip");
+						
+						FileConverter publicFile = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + publicImage.getName() + File.separator + original.getName() );
 						System.out.println(publicFile);
-						if (publicFile.exists()) {
-							mainFile = user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName();
-							File newFile = new File(mainFile + ".zip");
-							System.out.println(newFile);
-							FileProcessor.copyFileSync(publicFile.getAbsolutePath(), newFile.getAbsolutePath());	
+						
+						if (publicFile.getZipFile().exists()) {
+							newFile = new FileConverter(user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName());
+							
+							System.out.println(newFile.getZipFile());
+							FileProcessor.copyFileSync(publicFile.getZipFile().getAbsolutePath(), newFile.getZipFile().getAbsolutePath());	
 							//Announce in torrent
 							TorrentTracker.getInstance().publishFile(newFile);
 						}
 					} 
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
-						if (mainFile == null) {
+						if (newFile == null) {
 							if (publicImage != null)
 								ImageFileManager.setImageFile(new ImageFileEntity(publicImage.getId(), null, null, null, null, false, null, null, null, null), false, con, false);
 							ImageFileManager.setImageFile(new ImageFileEntity(privateImage.getId(), ImageEnum.UNAVAILABLE, null, null, null, null, null, null, null, null), false, con, false);
 						}
 						else 
-							ImageFileManager.setImageFile(new ImageFileEntity(privateImage.getId(), ImageEnum.AVAILABLE, null, null, null, null, null, mainFile, null, null), false, con, false);
+							ImageFileManager.setImageFile(new ImageFileEntity(privateImage.getId(), ImageEnum.AVAILABLE, null, null, null, null, null, newFile.getExecutableFile().getAbsolutePath(), null, null), false, con, false);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -227,8 +231,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 				}
 				if (image != null) {
 					try {
-						//FIXME torrent path should be stored in some entity, or at least extension
-						TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"));
+						TorrentTracker.getInstance().removeTorrent(image.getFileConversor().getTorrentFile());
 						FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());
 					} catch (Exception e) {
 						System.err.println("original image files can't be deleted " + image.getMainFile());
@@ -281,7 +284,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 					if (images != null) {
 						for (ImageFileEntity image : images) {						
 							try {
-								TorrentTracker.getInstance().removeTorrent(new java.io.File(image.getMainFile() + ".zip.torrent"));
+								TorrentTracker.getInstance().removeTorrent(image.getFileConversor().getTorrentFile());
 								FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());																
 							} catch (Exception e) {
 								System.err.println("original image files can't be deleted " + image.getMainFile());

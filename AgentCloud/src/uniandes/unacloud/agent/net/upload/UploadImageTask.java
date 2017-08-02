@@ -12,6 +12,7 @@ import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
+import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -60,8 +61,7 @@ public class UploadImageTask implements Runnable {
 			
 			System.out.println("Unregister execution: " + machineExecution.getId());
 			PersistentExecutionManager.unregisterExecution(machineExecution.getId());
-			
-			
+						
 			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 			final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
 			
@@ -71,12 +71,12 @@ public class UploadImageTask implements Runnable {
 			long fileSize = 0;
 			try {				
 				//TODO: If virtual machine requires some external folder it will be deleted. Take care when a new platform will be added
-				for (File f: machineExecution.getImage().getMainFile().getParentFile().listFiles())
-					if (f.isDirectory() || f.getName().endsWith(".zip"))
+				for (File f: machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().listFiles())
+					if (f.isDirectory() || f.getName().equals(machineExecution.getImage().getMainFile().getZipFile().getName()))
 						FileProcessor.deleteFileSync(f.getAbsolutePath());
 					else
 						fileSize += f.length();
-				zip = FileProcessor.zipFileSync(machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
+				zip = FileProcessor.zipFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -131,11 +131,14 @@ public class UploadImageTask implements Runnable {
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, UnaCloudConstants.ERROR_MESSAGE + " copying images to server " + e.getMessage());
 			}
 			
-			System.out.println("Delete Image " + machineExecution.getImage().getMainFile().getParentFile().getAbsolutePath());
+			System.out.println("Delete Image " + machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 			PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
-			if (machineExecution.getImage().getMainFile().getParentFile().getName().equals("base"))
+			//Change base
+			if (machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getName().equals("base")) {
 				ImageCacheManager.deleteImage(machineExecution.getImageId());
-			PersistentExecutionManager.cleanDir(machineExecution.getImage().getMainFile().getParentFile());
+				TorrentClient.getInstance().removeTorrent(machineExecution.getImage().getMainFile().getTorrentFile());
+			}
+			PersistentExecutionManager.cleanDir(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile());
 				
 		} catch (Exception e) {
 			e.printStackTrace();
