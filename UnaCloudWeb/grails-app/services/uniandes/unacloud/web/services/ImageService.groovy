@@ -127,15 +127,17 @@ class ImageService {
 	 * @param image image to be removed
 	 * @return true in case image has been deleted, false in case not
 	 */	
-	def deleteImage(User user,Image image){		
+	def deleteImage(User user, Image image){		
 		def clusteres = Cluster.where{images{id == image.id;}}.findAll();
 		if (clusteres && clusteres.size() > 0)
 			return false;
-		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id", [id : image.id]);
+		DeployedImage.executeUpdate("UPDATE DeployedImage di SET di.image = null WHERE di.image.id = :id", [id : image.id]);
 		if (image.mainFile) {
 			image.freeze()
-			QueueTaskerFile.deleteImage(image, user)				
-		} else {
+			QueueTaskerFile.deleteImage(image, user)
+			QueueTaskerControl.clearCache(image, image.owner);				
+		} 
+		else {
 			user.images.remove(image)
 			user.save()
 			image.delete()
@@ -194,10 +196,14 @@ class ImageService {
 	 * @param user owner user
 	 * @return token to validates image
 	 */	
-	def updateFiles(Image image) {		
+	def updateFiles(Image image) {	
+		def clusteres = Cluster.where{images{id == image.id;}}.findAll();
+		if (clusteres && clusteres.size() > 0)
+			throw new Exception("The image is being used in a cluster")
 		String token = HashGenerator.hashSha256(image.getName() + new Date().getTime())
 		image.putAt("token", token)
 		image.putAt("state", ImageEnum.UNAVAILABLE)
+		QueueTaskerControl.clearCache(image, image.owner);
 		return token
 	}
 	

@@ -56,8 +56,8 @@ class ClusterService {
 		if (cluster.isDeployed())
 			throw new Exception("The cluster is currently deployed")
 		else if (!cluster.user.id.equals(user.id))
-			throw new Exception("Forbidden action: you can not delete this cluster")
-		Deployment.executeUpdate("update Deployment dc set dc.cluster=null where dc.cluster.id= :id", [id : cluster.id]);	
+			throw new Exception("Forbidden action: you cannot delete this cluster")
+		Deployment.executeUpdate("UPDATE Deployment dc SET dc.cluster = null WHERE dc.cluster.id = :id", [id : cluster.id]);	
 		cluster.delete()
 	}
 }
