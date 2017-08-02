@@ -73,6 +73,9 @@ public class FileManager extends ProjectManager {
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{
+				UnaCloudConstants.FILE_SERVER_TORRENT_PORT,
+				UnaCloudConstants.FILE_SERVER_IP,
+				UnaCloudConstants.TORRENT_CLIENT_PORTS,
 				UnaCloudConstants.MAIN_REPOSITORY,
 				UnaCloudConstants.VERSION_MANAGER_PORT,
 				UnaCloudConstants.FILE_SERVER_PORT,

@@ -10,6 +10,7 @@ import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
+import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
@@ -121,6 +122,17 @@ public class InitialPoint {
 		}
         
         AgentManager.sendInitialMessage();
+        
+        int[] ports = null;
+		String portString = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS);
+		if (portString != null) {
+			String [] data = portString.split(",");
+			ports = new int[data.length];
+			for (int i = 0; i < data.length; i++)
+				ports[i] = Integer.parseInt(data[i]);
+		}
+        
+        TorrentClient.getInstance().startService(ports);
   
     }
 }
