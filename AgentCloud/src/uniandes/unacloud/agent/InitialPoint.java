@@ -22,8 +22,10 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  */
 public class InitialPoint {
 	
-	
-	private static final int threads = 10;
+	/**
+	 * Number of threads to attend messages from server
+	 */
+	private static final int THREADS = 10;
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -115,7 +117,7 @@ public class InitialPoint {
         	System.out.println("Start reporter");        	
             PhysicalMachineStateReporter.getInstance().start();            
            //Attend messages from server
-			new ClouderClientAttention(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), threads).start();
+			new ClouderClientAttention(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), THREADS).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
