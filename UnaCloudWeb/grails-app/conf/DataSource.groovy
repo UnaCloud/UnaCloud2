@@ -54,8 +54,8 @@ environments {
         dataSource {
 			username = reader.getStringVariable(UnaCloudConstants.DB_USERNAME);
 			password = reader.getStringVariable(UnaCloudConstants.DB_PASS);
-            dbCreate = "update";
-            url = 'jdbc:mysql://'+reader.getStringVariable(UnaCloudConstants.DB_IP)+':'+reader.getStringVariable(UnaCloudConstants.DB_PORT)+'/'+reader.getStringVariable(UnaCloudConstants.DB_NAME)+'?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
+            dbCreate = "create-drop";
+            url = 'jdbc:mysql://' + reader.getStringVariable(UnaCloudConstants.DB_IP) + ':' + reader.getStringVariable(UnaCloudConstants.DB_PORT) + '/' + reader.getStringVariable(UnaCloudConstants.DB_NAME) + '?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
             pooled = true
             properties {
                maxActive = -1

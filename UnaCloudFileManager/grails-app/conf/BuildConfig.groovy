@@ -65,6 +65,6 @@ grails.project.dependency.resolution = {
 
         // plugins needed at runtime but not for compilation
 		runtime ":cors:1.3.0"
-		compile ":jaxrs:0.11"
+		//compile ":jaxrs:0.11"
     }
 }

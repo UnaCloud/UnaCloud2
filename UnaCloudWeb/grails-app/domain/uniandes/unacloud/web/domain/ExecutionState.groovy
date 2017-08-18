@@ -8,7 +8,6 @@ import uniandes.unacloud.share.enums.ExecutionStateEnum
  * @author CesarF
  *
  */
-@Immutable
 class ExecutionState {
 	
 	/**
@@ -34,7 +33,7 @@ class ExecutionState {
 	/**
 	 * Time out in state
 	 */
-	long controlTime 
+	Long controlTime 
 	
 	/**
 	 * Message in case control time out is reached
@@ -43,7 +42,17 @@ class ExecutionState {
 
     static constraints = {		
 		nextRequested nullable: true
+		controlMessage nullable: true
+		controlTime nullable: true
 		state nullable: false
 		state unique: true
     }
+	
+	/**
+	 * Returns database id
+	 * @return Long id
+	 */
+	def Long getDatabaseId() {
+		return id;
+	}
 }
