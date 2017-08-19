@@ -41,6 +41,7 @@ environments {
 				url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
 	        }
 	    }
+	}
 	    test {
 	        dataSource {
 				username = reader.getStringVariable("test_username");
@@ -49,12 +50,12 @@ environments {
 	            url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
 	        }
 	    }
-	}
+	
     production {
         dataSource {
 			username = reader.getStringVariable(UnaCloudConstants.DB_USERNAME);
 			password = reader.getStringVariable(UnaCloudConstants.DB_PASS);
-            dbCreate = "create-drop";
+            dbCreate = "update";
             url = 'jdbc:mysql://' + reader.getStringVariable(UnaCloudConstants.DB_IP) + ':' + reader.getStringVariable(UnaCloudConstants.DB_PORT) + '/' + reader.getStringVariable(UnaCloudConstants.DB_NAME) + '?useUnicode=yes&characterEncoding=UTF-8&autoReconnect=true'
             pooled = true
             properties {

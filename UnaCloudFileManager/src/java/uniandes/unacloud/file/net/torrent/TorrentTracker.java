@@ -93,7 +93,7 @@ public class TorrentTracker {
 	 */
 	public void startService(int port, String ip, String sourcePath, int[] clientPorts) throws Exception {
 		if (tracker != null) return;
-		System.out.println("Configure tracker");
+		System.out.println("Configure tracker " + ip + ":" + port);
 		tracker_url = "http://" + ip + ":" + port;
 		IPAddress = ip;
 		tracker = new Tracker(new InetSocketAddress(port));

@@ -13,15 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
-	<classpathentry kind="lib" path="lib/com.mysql.jdbc_5.1.5.jar"/>
-	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
-	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
-	<classpathentry kind="lib" path="lib/ttorrent-core-1.6_cesarf.jar"/>
-	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
 	<classpathentry excluding="BuildConfig.groovy|*DataSource.groovy|UrlMappings.groovy|Config.groovy|BootStrap.groovy|spring/resources.groovy" kind="src" path=".link_to_grails_plugins/asset-pipeline-1.9.6/grails-app/conf">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
@@ -108,7 +99,17 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.grails.ide.eclipse.core.CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/com.mysql.jdbc_5.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/commons-dbcp2-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/commonshares.jar"/>
+	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
+	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
 	<classpathentry kind="lib" path="lib/servershares.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-core-1.6_cesarf.jar"/>
+	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6_cesarf.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>
