@@ -46,7 +46,8 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	@Override
 	public void processMessage(Socket socket) throws Exception {
 		try (Socket s = socket; ObjectInputStream ois = new ObjectInputStream(socket.getInputStream()); ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
-        	UnaCloudMessage clouderServerRequest = (UnaCloudMessage) ois.readObject();
+			UnaCloudMessage clouderServerRequest = new UnaCloudMessage();
+			clouderServerRequest.setMessageByString((String)ois.readObject());
             System.out.println("message: " + clouderServerRequest);
             if (clouderServerRequest.getType().equals(TCPMessageEnum.EXECUTION_OPERATION.name()))
 		        oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest, ois, oos));
@@ -145,7 +146,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
                 PhysicalMachineTurnOnMessage turnOn = (PhysicalMachineTurnOnMessage) message;                
                 return new UnaCloudResponse(OSFactory.getOS().turnOnMachines(turnOn.getMacs()), ExecutionProcessEnum.SUCCESS);          
             default:
-                return new UnaCloudResponse(ERROR_MESSAGE + "The server physical machine operation request is invalid: " + message.getTask(), ExecutionProcessEnum.FAIL);
+                return new UnaCloudResponse(ERROR_MESSAGE + " The server physical machine operation request is invalid: " + message.getTask(), ExecutionProcessEnum.FAIL);
     		}
 		} catch (Exception e) {
 			e.printStackTrace();

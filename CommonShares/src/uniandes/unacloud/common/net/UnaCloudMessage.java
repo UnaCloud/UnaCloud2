@@ -146,12 +146,17 @@ public class UnaCloudMessage implements Serializable {
 	 * @param format
 	 */
 	public void setMessageByString(String format) {
-		JSONObject json;
-		json = new JSONObject(format);		
-		this.host = json.getString(TAG_HOST);
-		this.ip = json.getString(TAG_IP);
-		this.port = json.getInt(TAG_PORT);
-		this.type = json.getString(TAG_TYPE_MESSAGE);
-		this.message = json.getJSONObject(TAG_MESSAGE);		
+		try {
+			JSONObject json;
+			json = new JSONObject(format);		
+			this.host = json.getString(TAG_HOST);
+			this.ip = json.getString(TAG_IP);
+			this.port = json.getInt(TAG_PORT);
+			this.type = json.getString(TAG_TYPE_MESSAGE);
+			this.message = json.getJSONObject(TAG_MESSAGE);		
+		} catch (Exception e) {
+			System.err.println("F: " + format);
+			throw e;
+		}		
 	}
 }

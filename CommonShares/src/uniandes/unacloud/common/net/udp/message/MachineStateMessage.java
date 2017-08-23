@@ -59,7 +59,7 @@ public class MachineStateMessage extends UnaCloudMessage {
 		super(ip, port, host, UDPMessageEnum.STATE_PM.name());
 
 		JSONArray arrayExecutions = new JSONArray();
-		if(executions!=null) {
+		if (executions != null) {
 			for (int i = 0; i < executions.length; i++) {
 				arrayExecutions.put(executions[i]);
 			}

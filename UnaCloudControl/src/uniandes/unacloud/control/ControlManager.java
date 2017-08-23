@@ -74,7 +74,7 @@ public class ControlManager extends ProjectManager {
 	}	
 	
 	/**
-	 * Returns the agent port configured for communication
+	 * Returns the configured communication agent port
 	 * @return agent port
 	 * @throws Exception 
 	 */

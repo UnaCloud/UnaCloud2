@@ -8,7 +8,7 @@ import java.net.SocketException;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
 
-public class UDPReceiver implements Closeable{
+public class UDPReceiver implements Closeable {
 	
 	/**
 	 * Socket to receive message
@@ -34,20 +34,16 @@ public class UDPReceiver implements Closeable{
 	/**
 	 * Receives a message by UDP port
 	 * @return udp message
+	 * @throws IOException 
 	 */
-	public UnaCloudMessage getMessage() {
-		try {
-			DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-			udpReceiver.receive(request);	
-			UnaCloudMessage udpMessage = new UnaCloudMessage();
-			udpMessage.setMessageByBytes(request.getData());
-			udpMessage.setIp(request.getAddress().getHostAddress());
-			udpMessage.setPort(0);
-			return udpMessage;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}     
+	public UnaCloudMessage getMessage() throws IOException {
+		DatagramPacket request = new DatagramPacket(buffer, buffer.length);
+		udpReceiver.receive(request);	
+		UnaCloudMessage udpMessage = new UnaCloudMessage();
+		udpMessage.setMessageByBytes(request.getData());
+		udpMessage.setIp(request.getAddress().getHostAddress());
+		udpMessage.setPort(0);
+		return udpMessage;
 	}
 
 

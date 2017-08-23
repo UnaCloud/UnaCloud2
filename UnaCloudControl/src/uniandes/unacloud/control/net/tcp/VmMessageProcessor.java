@@ -27,7 +27,8 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 	public void processMessage(Socket socket) throws Exception {
 			
 		ObjectInputStream ios = new ObjectInputStream(socket.getInputStream());
-		UnaCloudMessage uMessage = (UnaCloudMessage) ios.readObject();
+		UnaCloudMessage uMessage = new UnaCloudMessage();
+		uMessage.setMessageByString((String)ios.readObject());
 		System.out.println(uMessage.getMessage());
 		if (uMessage.getMessage() != null) {
 			if (uMessage.getType().equals(UDPMessageEnum.STATE_EXE)) {

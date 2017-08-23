@@ -104,6 +104,7 @@ class PhysicalMachine {
 		name unique:true
 		lastReport nullable:true
 		ip nullable:true
+		agentVersion nullable:true
 	}
 	
 	//-----------------------------------------------------------------

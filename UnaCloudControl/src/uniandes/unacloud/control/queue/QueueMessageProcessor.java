@@ -121,10 +121,10 @@ public class QueueMessageProcessor implements QueueReader {
 			if (machines.size() > 0) {
 				
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
-				for (int i = 0, j = 0; i < machines.size() ; i++, j++) {
+				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
 					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, imageId, machines.get(i).getId()));
 					
-					if (j >= messagesByThread) {
+					if (j >= messagesByThread || j >= machines.size()) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -151,7 +151,7 @@ public class QueueMessageProcessor implements QueueReader {
 								
 							}
 						}));
-						j = 0;
+						j = 1;
 						messageList = new ArrayList<UnaCloudMessage>();
 					}					
 				}	
@@ -191,12 +191,12 @@ public class QueueMessageProcessor implements QueueReader {
 		}
 		if (machines != null) {
 			try {
-				System.out.println("Sending message to " + machines.size());
+				System.out.println("Send message to " + machines.size());
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
-				for (int i = 0, j = 0; i < machines.size() ; i++, j++) {
+				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
 					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
 					
-					if (j >= messagesByThread) {
+					if (j >= messagesByThread || j >= machines.size()) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -205,6 +205,7 @@ public class QueueMessageProcessor implements QueueReader {
 								UnaCloudResponse resp = (UnaCloudResponse) response;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									PhysicalMachineEntity pm = null;
+									System.out.println(mss.getTask() + "  -  " + mss.getPmId());
 									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
@@ -230,7 +231,7 @@ public class QueueMessageProcessor implements QueueReader {
 								}							
 							}
 						}));
-						j = 0;
+						j = 1;
 						messageList = new ArrayList<UnaCloudMessage>();
 					}		
 				}	
@@ -284,7 +285,7 @@ public class QueueMessageProcessor implements QueueReader {
 						
 						messageList.add(vmsm);
 						
-						if (j >= messagesByThread) {
+						if (j >= messagesByThread || j >= image.getExecutions().size()) {
 													
 							threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 								
@@ -366,7 +367,7 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getNode().getId(),
 							execution.getId());
 					messageList.add(vmsm);
-					if (j >= messagesByThread) {
+					if (j >= messagesByThread || j >= executions.size()) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -450,7 +451,7 @@ public class QueueMessageProcessor implements QueueReader {
 					
 					messageList.add(vmsm);
 					
-					if (j >= messagesByThread) {
+					if (j >= messagesByThread || j >= executions.size()) {
 												
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							

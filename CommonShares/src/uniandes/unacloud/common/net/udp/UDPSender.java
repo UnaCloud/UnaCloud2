@@ -31,7 +31,7 @@ public class UDPSender {
 			DatagramSocket socketUDP = new DatagramSocket();
 			byte[] messageBytes = message.generateByteMessage();			
 			InetAddress host = InetAddress.getByName(message.getIp());			
-			DatagramPacket packg = new DatagramPacket(messageBytes, messageBytes.length, host, message.getPort());
+			DatagramPacket packg = new DatagramPacket(messageBytes, 1024*100, host, message.getPort());
 			socketUDP.send(packg);
 			socketUDP.close();
 			System.out.println("Send message to: " + message.getIp() + ":" + message.getPort() + " - " + message.getType() + ":" + message.getMessage());

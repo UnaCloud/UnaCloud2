@@ -24,7 +24,7 @@ public class PmMessageProcessor extends AbstractUDPReceiverProcessor {
 
 	@Override
 	public void processMessage(UnaCloudMessage uMessage) throws Exception {
-		if (uMessage.getMessage() != null && uMessage.getType().equals(UDPMessageEnum.STATE_PM)) {
+		if (uMessage.getMessage() != null && uMessage.getType()!= null && uMessage.getType().equals(UDPMessageEnum.STATE_PM.name())) {
 			List<Long> idsToStop = null;
 			try (Connection con = ControlManager.getInstance().getDBConnection();) {
 				MachineStateMessage message = new MachineStateMessage(uMessage);
@@ -45,8 +45,8 @@ public class PmMessageProcessor extends AbstractUDPReceiverProcessor {
 				ControlManager.getInstance().sendStopMessageExecutions(idsLong);
 			}
 		}
-		else{
-			System.err.println("ERROR in message: " + uMessage.getIp() + "-" + uMessage.getHost() + "-" + uMessage.getPort() + " " + (uMessage.getMessage() != null ? uMessage.getMessage().toString() : null));
+		else {
+			System.err.println("ERROR in message: " + uMessage.getIp() + " - " + uMessage.getHost() + " - " + uMessage.getStringMessage() );
 		}
 	}
 }

@@ -47,7 +47,7 @@ public class TCPMultipleSender extends Thread {
 			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-			oos.writeObject(message);
+			oos.writeObject(message.getStringMessage());
 			oos.flush();
 			if (processor != null)
 				try {
@@ -60,7 +60,7 @@ public class TCPMultipleSender extends Thread {
 			s.close();
 		} catch(Exception e) {
 			e.printStackTrace();
-			System.out.println("Error connectiong to " + message.getIp());		
+			System.out.println("Error connecting to " + message.getIp());		
 			if (processor != null)
 				processor.attendError(message, e.getMessage());				
 		}
