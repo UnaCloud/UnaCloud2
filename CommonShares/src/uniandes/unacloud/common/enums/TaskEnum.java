@@ -1,4 +1,4 @@
-package uniandes.unacloud.share.enums;
+package uniandes.unacloud.common.enums;
 
 import uniandes.unacloud.common.net.tcp.message.AgentMessage;
 

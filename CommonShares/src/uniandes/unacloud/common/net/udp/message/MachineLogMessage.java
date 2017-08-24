@@ -6,7 +6,7 @@ import uniandes.unacloud.common.net.UnaCloudMessage;
 
 /**
  * Class to represent an UDP Message Type Log Physical Machine
- * @author cdsbarrera
+ * @author cdsbarrera, CesarF
  *
  */
 public class MachineLogMessage extends UnaCloudMessage {
@@ -19,13 +19,16 @@ public class MachineLogMessage extends UnaCloudMessage {
 	/**
 	 * Tag to keep information about executions
 	 */
-	public static final String TAG_COMPONENT = "component";
+	private static final String TAG_COMPONENT = "component";
 	
 	/**
 	 * Tag to keep Host User
 	 */
-	public static final String TAG_LOG_MESSAGE = "log_message";
+	private static final String TAG_LOG_MESSAGE = "log_message";
 	
+	private String component;
+	
+	private String logMessage;
 	
 	public MachineLogMessage() {
 		
@@ -34,16 +37,12 @@ public class MachineLogMessage extends UnaCloudMessage {
 	public MachineLogMessage(String ip, int port, String host, String component, String logMessage) {
 		super(ip, port, host, UDPMessageEnum.LOG_PM.name());
 		
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TAG_COMPONENT, component);
-		tempMessage.put(TAG_LOG_MESSAGE, logMessage);
-		this.setMessage(tempMessage);
-		
+		this.component = component;
+		this.logMessage = logMessage;		
 	}
 	
-	public MachineLogMessage(UnaCloudMessage message) {
-		super(message.getIp(), message.getPort(), message.getHost(), message.getType());
-		this.setMessage(message.getMessage());	
+	public MachineLogMessage(MachineLogMessage message) {
+		setMessageByStringJson(message.getStringMessage());
 	}
 	
 	/**
@@ -51,7 +50,7 @@ public class MachineLogMessage extends UnaCloudMessage {
 	 * @return String Component
 	 */
 	public String getComponent() {
-		return this.getMessage().getString(TAG_COMPONENT);
+		return component;
 	}
 	
 	/**
@@ -59,12 +58,24 @@ public class MachineLogMessage extends UnaCloudMessage {
 	 * @return String Log Message
 	 */
 	public String getLogMessage() {
-		try {
-			return this.getMessage().getString(TAG_LOG_MESSAGE);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
+		return logMessage;
+	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.component = json.getString(TAG_COMPONENT);
+		this.logMessage = json.getString(TAG_LOG_MESSAGE);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(TAG_COMPONENT, component);
+		obj.put(TAG_LOG_MESSAGE, logMessage);
+		return obj;
 	}
 	
 }

@@ -15,12 +15,12 @@ public class ClearImageFromCacheMessage extends AgentMessage {
 	private static final long serialVersionUID = 524061116935661249L;
 	
 	private static final String CLEAR_IMAGE_ID = "clear_image_id";
+	
+	private long imageId;
 
 	public ClearImageFromCacheMessage(String ip, int port, String host, long pmId, long imageId) {
 		super(ip, port, host, AgentMessage.CLEAR_IMAGE_FROM_CACHE, pmId);
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(CLEAR_IMAGE_ID, imageId);
-		this.setMessage(tempMessage);		
+		this.imageId = imageId;	
 	}
 	
 	/**
@@ -28,6 +28,22 @@ public class ClearImageFromCacheMessage extends AgentMessage {
 	 * @return String Component
 	 */
 	public long getImageId() {
-		return this.getMessage().getLong(CLEAR_IMAGE_ID);
+		return imageId;
 	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.imageId = json.getLong(CLEAR_IMAGE_ID);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(CLEAR_IMAGE_ID, imageId);
+		return obj;
+	}
+	
 }

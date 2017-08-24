@@ -24,10 +24,10 @@ public class PmMessageProcessor extends AbstractUDPReceiverProcessor {
 
 	@Override
 	public void processMessage(UnaCloudMessage uMessage) throws Exception {
-		if (uMessage.getMessage() != null && uMessage.getType()!= null && uMessage.getType().equals(UDPMessageEnum.STATE_PM.name())) {
+		if (uMessage.getType() != null && uMessage.getType().equals(UDPMessageEnum.STATE_PM.name())) {
 			List<Long> idsToStop = null;
-			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				MachineStateMessage message = new MachineStateMessage(uMessage);
+			MachineStateMessage message = (MachineStateMessage)uMessage;
+			try (Connection con = ControlManager.getInstance().getDBConnection();) {				
 				if (PhysicalMachineManager.updatePhysicalMachine(message.getHost(), message.getHostUser(), 
 						message.getIp(), message.getFreeSpace(), message.getDataSpace(), message.getVersion(), con)) {
 					Long[] ids = message.getExecutions();	

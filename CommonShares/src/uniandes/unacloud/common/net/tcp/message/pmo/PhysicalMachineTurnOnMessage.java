@@ -15,16 +15,31 @@ public class PhysicalMachineTurnOnMessage extends PhysicalMachineOperationMessag
 	
 	private static final long serialVersionUID = -7026046062306316388L;
 	
-	public static final String MACS = "macs";
+	private static final String MACS = "macs";
+	
+	private String[] macs;
 	
 	public PhysicalMachineTurnOnMessage(String ip, int port, String host, String[] macs, long pmId) {
 		super(ip, port, host, PhysicalMachineOperationMessage.PM_TURN_ON, pmId);
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(MACS, macs);
-		this.setMessage(tempMessage);	
+		this.macs = macs;
 	}
 	
 	public String[] getMacs() {
-		return (String[]) this.getMessage().get(MACS);
+		return macs;
+	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.macs = (String[])json.get(MACS);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(MACS, macs);
+		return obj;
 	}
 }

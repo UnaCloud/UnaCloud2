@@ -14,22 +14,27 @@ public class AgentMessage extends ClientMessage {
 	 * Request to update agent files in physical machine
 	 */
 	public static final int UPDATE_OPERATION = 4;
+	
 	/**
 	 * Request to stop agent 
 	 */
 	public static final int STOP_CLIENT = 6;
+	
 	/**
 	 * Request to return version of agent
 	 */
 	public static final int GET_VERSION = 7;
+	
 	/**
 	 * Request to clear data path 
 	 */
 	public static final int CLEAR_CACHE = 8;
+	
 	/**
 	 * Request to delete one image form data path
 	 */
 	public static final int CLEAR_IMAGE_FROM_CACHE = 9;
+	
 	/**
 	 * Request free space in data path
 	 */
@@ -41,18 +46,6 @@ public class AgentMessage extends ClientMessage {
 	 */
 	public AgentMessage(String ip, int port, String host, int task, long pmId) {
 		super(ip, port, host, TCPMessageEnum.AGENT_OPERATION.name(), task, pmId);			
-	}
-	
-	/**
-	 * Return the task number
-	 * @return String Component
-	 */
-	public int getTask() {
-		return this.getMessage().getInt(TYPE_TASK);
-	}
-	
-	public long getPmId() {
-		return this.getMessage().getLong(PM_ID);
-	}
+	}	
 	
 }

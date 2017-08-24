@@ -11,7 +11,7 @@ import uniandes.unacloud.share.queue.messages.MessageIdOfImage;
 import uniandes.unacloud.share.queue.messages.MessageStopExecutions;
 import uniandes.unacloud.share.queue.messages.MessageTaskMachines;
 import uniandes.unacloud.share.enums.QueueMessageType;
-import uniandes.unacloud.share.enums.TaskEnum;
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.PhysicalMachine;

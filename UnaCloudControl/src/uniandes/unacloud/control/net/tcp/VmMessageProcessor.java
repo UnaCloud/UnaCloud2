@@ -4,7 +4,6 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.sql.Connection;
 
-import uniandes.unacloud.common.net.UnaCloudMessage;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.common.net.tcp.message.ExecutionStateMessage;
 import uniandes.unacloud.common.net.udp.message.UDPMessageEnum;
@@ -27,21 +26,18 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 	public void processMessage(Socket socket) throws Exception {
 			
 		ObjectInputStream ios = new ObjectInputStream(socket.getInputStream());
-		UnaCloudMessage uMessage = new UnaCloudMessage();
-		uMessage.setMessageByString((String)ios.readObject());
-		System.out.println(uMessage.getMessage());
-		if (uMessage.getMessage() != null) {
-			if (uMessage.getType().equals(UDPMessageEnum.STATE_EXE)) {
-				try (Connection con = ControlManager.getInstance().getDBConnection();) {
-					ExecutionStateMessage message = new ExecutionStateMessage(uMessage);
-					System.out.println("Report EXE: " + message.getHost() + " - ");
-					ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(),  message.getExecutionMessage());
-					ExecutionManager.updateExecution(exe, null, con);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}			 
-			}
+		ExecutionStateMessage uMessage = (ExecutionStateMessage)ios.readObject();
+		System.out.println(uMessage.getStringMessage());
+		if (uMessage.getType() != null && uMessage.getType().equals(UDPMessageEnum.STATE_EXE)) {
+			try (Connection con = ControlManager.getInstance().getDBConnection();) {
+				ExecutionStateMessage message = new ExecutionStateMessage(uMessage);
+				System.out.println("Report EXE: " + message.getHost() + " - ");
+				ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(), message.getExecutionMessage());
+				ExecutionManager.updateExecution(exe, null, con);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			 
 		}
-	}
+	}	
 
 }

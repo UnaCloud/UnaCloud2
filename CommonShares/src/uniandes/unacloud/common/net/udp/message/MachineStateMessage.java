@@ -1,6 +1,5 @@
 package uniandes.unacloud.common.net.udp.message;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
@@ -20,28 +19,38 @@ public class MachineStateMessage extends UnaCloudMessage {
 	/**
 	 * Tag to keep information about executions
 	 */
-	public static final String TAG_EXECUTIONS = "list_executions";
+	private static final String TAG_EXECUTIONS = "list_executions";
 
 	/**
 	 * Tag to keep Host User
 	 */
-	public static final String TAG_HOST_USER = "host_user";
+	private static final String TAG_HOST_USER = "host_user";
 	
 	/**
 	 * Tag to keep information about dataSpace
 	 */
-	public static final String TAG_DATA_SPACE = "data_space";
+	private static final String TAG_DATA_SPACE = "data_space";
 	
 	/**
 	 * Tag to keep information about freeSpace
 	 */
-	public static final String TAG_FREE_SPACE = "data_space";
+	private static final String TAG_FREE_SPACE = "data_space";
 	
 	/**
 	 * Tag to keep information about current agent version
 	 */
-	public static final String TAG_VERSION = "version";
-
+	private static final String TAG_VERSION = "version";
+	
+	
+	private Long[] executions; 
+	
+	private String hostUser;
+	
+	private Long freeSpace;
+	
+	private Long dataSpace;
+	
+	private String version;
 
 	public MachineStateMessage(){
 
@@ -58,17 +67,8 @@ public class MachineStateMessage extends UnaCloudMessage {
 	public MachineStateMessage(String ip, int port, String host, String hostUser, Long[] executions) {
 		super(ip, port, host, UDPMessageEnum.STATE_PM.name());
 
-		JSONArray arrayExecutions = new JSONArray();
-		if (executions != null) {
-			for (int i = 0; i < executions.length; i++) {
-				arrayExecutions.put(executions[i]);
-			}
-		}
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TAG_EXECUTIONS, arrayExecutions);
-		tempMessage.put(TAG_HOST_USER,hostUser);
-		this.setMessage(tempMessage);
-
+		this.executions = executions;		
+		this.hostUser = hostUser;
 	}
 	
 	/**
@@ -84,23 +84,18 @@ public class MachineStateMessage extends UnaCloudMessage {
 	public MachineStateMessage(String ip, int port, String host, String hostUser, Long freeSpace, Long dataSpace, String version) {
 		super(ip, port, host, UDPMessageEnum.STATE_PM.name());
 
-		JSONObject tempMessage = this.getMessage();
-		if (version != null) 
-			tempMessage.put(TAG_VERSION, version);
-		tempMessage.put(TAG_HOST_USER,hostUser);
-		tempMessage.put(TAG_DATA_SPACE,dataSpace);
-		tempMessage.put(TAG_FREE_SPACE,freeSpace);
-		this.setMessage(tempMessage);
-
+		this.freeSpace = freeSpace;		
+		this.dataSpace = dataSpace;
+		this.version = version;
+		this.hostUser = hostUser;	
 	}
 
 	/**
 	 * Creates a new UDP Message using a not null unacloud udp message
 	 * @param message
 	 */
-	public MachineStateMessage(UnaCloudMessage message) {
-		super(message.getIp(), message.getPort(), message.getHost(), message.getType());
-		this.setMessage(message.getMessage());		
+	public MachineStateMessage(MachineStateMessage message) {
+		setMessageByStringJson(message.getStringMessage());
 	}
 
 	/**
@@ -108,17 +103,7 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * @return Long[] Executions
 	 */
 	public Long[] getExecutions() {
-		JSONObject temp = this.getMessage();
-		try {
-			JSONArray array = temp.getJSONArray(TAG_EXECUTIONS);
-			Long[] toReturn = new Long[array.length()];
-			for (int i = 0; i < array.length(); i++) {
-				toReturn[i] = array.getLong(i);
-			}
-			return toReturn;
-		} catch (Exception e) {
-			return null;
-		}	
+		return executions;
 	}
 
 	/**
@@ -126,11 +111,7 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * @return String HostUser
 	 */
 	public String getHostUser() {
-		try{
-			return this.getMessage().getString(TAG_HOST_USER);
-		} catch(Exception e){
-			return null;
-		}
+		return hostUser;
 	}
 	
 	/**
@@ -138,11 +119,7 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * @return dataSpace in bytes
 	 */
 	public Long getDataSpace() {
-		try {
-			return this.getMessage().getLong(TAG_DATA_SPACE);
-		} catch(Exception e) {
-			return null;
-		}
+		return dataSpace;
 	}
 	
 	/**
@@ -150,11 +127,7 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * @return freeSpace in bytes
 	 */
 	public Long getFreeSpace() {
-		try {
-			return this.getMessage().getLong(TAG_FREE_SPACE);
-		} catch(Exception e) {
-			return null;
-		}
+		return freeSpace;
 	}
 	
 	/**
@@ -162,10 +135,29 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * @return current agent version
 	 */
 	public String getVersion() {
-		try {
-			return this.getMessage().getString(TAG_VERSION);
-		} catch(Exception e) {
-			return null;
-		}
+		return version;
+	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);	
+		this.freeSpace = json.getLong(TAG_FREE_SPACE);		
+		this.dataSpace = json.getLong(TAG_DATA_SPACE);
+		this.version = json.getString(TAG_VERSION);
+		this.hostUser = json.getString(TAG_HOST_USER);
+		this.executions = (Long[]) json.get(TAG_EXECUTIONS);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(TAG_EXECUTIONS, executions);
+		obj.put(TAG_HOST_USER, hostUser);
+		obj.put(TAG_VERSION, version);
+		obj.put(TAG_DATA_SPACE, dataSpace);
+		obj.put(TAG_FREE_SPACE, freeSpace);
+		return obj;
 	}
 }

@@ -3,8 +3,8 @@ package uniandes.unacloud.share.queue.messages;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.share.enums.QueueMessageType;
-import uniandes.unacloud.share.enums.TaskEnum;
 
 /**
  * Class used to represent the message of Task in a list of Machines. 

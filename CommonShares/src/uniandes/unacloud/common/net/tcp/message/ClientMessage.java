@@ -8,9 +8,13 @@ public class ClientMessage extends UnaCloudMessage {
 	
 	private static final long serialVersionUID = 457883070963170385L;
 
-	public static final String TYPE_TASK = "task";
+	private static final String TYPE_TASK = "task";
 	
-	public static final String PM_ID = "pm_id";
+	private static final String PM_ID = "pm_id";
+	
+	private int task;
+	
+	private long pmId;
 	
 	/**
 	 * Creates a new Agent message
@@ -18,10 +22,8 @@ public class ClientMessage extends UnaCloudMessage {
 	 */
 	public ClientMessage (String ip, int port, String host, String type, int task, long pmId) {
 		super(ip, port, host, type);	
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TYPE_TASK, task);
-		tempMessage.put(PM_ID, pmId);
-		this.setMessage(tempMessage);		
+		this.task = task;
+		this.pmId = pmId;	
 	}
 	
 	/**
@@ -29,11 +31,32 @@ public class ClientMessage extends UnaCloudMessage {
 	 * @return String Component
 	 */
 	public int getTask() {
-		return this.getMessage().getInt(TYPE_TASK);
+		return task;
 	}
 	
+	/**
+	 * Returns physical machine id
+	 * @return
+	 */
 	public long getPmId() {
-		return this.getMessage().getLong(PM_ID);
+		return pmId;
+	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.task = json.getInt(TYPE_TASK);
+		this.pmId = json.getLong(PM_ID);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(TYPE_TASK, task);
+		obj.put(PM_ID, pmId);
+		return obj;
 	}
 
 }

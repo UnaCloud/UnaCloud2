@@ -22,35 +22,37 @@ public class ExecutionStateMessage extends UnaCloudMessage {
 	/**
 	 * Tag ID of Execution
 	 */
-	public static final String TAG_EXECUTION_CODE = "execution_code";
+	private static final String TAG_EXECUTION_CODE = "execution_code";
 	
 	/**
 	 * Tag State of the Message
 	 */
-	public static final String TAG_STATE = "state";
+	private static final String TAG_STATE = "state";
 	
 	/**
 	 * Tag Message of the Execution
 	 */
-	public static final String TAG_EXECUTION_MESSAGE = "message_execution";
+	private static final String TAG_EXECUTION_MESSAGE = "message_execution";
 	
+	private long executionCode;
+	
+	private String state;
+	
+	private String messageExecution;
 	
 	public ExecutionStateMessage() {
 		
 	}
 	
 	public ExecutionStateMessage(String ip, int port, String host, long executionCode, ExecutionProcessEnum state, String messageExecution) {
-		super(ip, port, host, UDPMessageEnum.STATE_EXE.name());				
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(TAG_EXECUTION_CODE, executionCode);
-		tempMessage.put(TAG_STATE, state.name());
-		tempMessage.put(TAG_EXECUTION_MESSAGE, messageExecution == null ? "None" : messageExecution);
-		this.setMessage(tempMessage);		
+		super(ip, port, host, UDPMessageEnum.STATE_EXE.name());			
+		this.executionCode = executionCode;
+		this.state = state.name();
+		this.messageExecution = messageExecution;		
 	}
 	
-	public ExecutionStateMessage(UnaCloudMessage message) {
-		super(message.getIp(), message.getPort(), message.getHost(), message.getType());
-		this.setMessage(message.getMessage());		
+	public ExecutionStateMessage(ExecutionStateMessage message) {
+		this.setMessageByStringJson(message.getStringMessage());		
 	}
 	
 	/**
@@ -58,7 +60,7 @@ public class ExecutionStateMessage extends UnaCloudMessage {
 	 * @return ExecutionStateEnum State
 	 */
 	public ExecutionProcessEnum getState() {
-		return ExecutionProcessEnum.getEnum(this.getMessage().getString(TAG_STATE));
+		return ExecutionProcessEnum.getEnum(state);
 	}
 	
 	/**
@@ -66,12 +68,7 @@ public class ExecutionStateMessage extends UnaCloudMessage {
 	 * @return long Execution Code
 	 */
 	public Long getExecutionCode() {
-		try {
-			return this.getMessage().getLong(TAG_EXECUTION_CODE);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
+		return executionCode;
 	}
 	
 	/**
@@ -79,11 +76,25 @@ public class ExecutionStateMessage extends UnaCloudMessage {
 	 * @return String Message
 	 */
 	public String getExecutionMessage() {
-		try {
-			return this.getMessage().getString(TAG_EXECUTION_MESSAGE);
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			return null;
-		}
+		return messageExecution;
+	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.messageExecution = json.getString(TAG_EXECUTION_MESSAGE) == "None"? null : json.getString(TAG_EXECUTION_MESSAGE);
+		this.executionCode = json.getLong(TAG_EXECUTION_CODE);
+		this.state = json.getString(TAG_STATE);
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(TAG_EXECUTION_CODE, executionCode);
+		obj.put(TAG_STATE, state);
+		obj.put(TAG_EXECUTION_MESSAGE, messageExecution == null ? "None" : messageExecution);
+		return obj;
 	}
 }

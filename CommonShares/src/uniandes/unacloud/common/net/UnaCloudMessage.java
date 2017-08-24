@@ -15,15 +15,13 @@ public class UnaCloudMessage implements Serializable {
 	
 	private static final long serialVersionUID = -8785226165731609571L;
 	
-	public static final String TAG_HOST = "host";
+	private static final String TAG_HOST = "host";
 	
-	public static final String TAG_IP = "ip";
+	private static final String TAG_IP = "ip";
 	
-	public static final String TAG_PORT = "port";
+	private static final String TAG_PORT = "port";
 	
-	public static final String TAG_TYPE_MESSAGE = "type_message";
-	
-	public static final String TAG_MESSAGE = "message";
+	private static final String TAG_TYPE_MESSAGE = "type_message";
 	
 	private String host;
 	
@@ -33,7 +31,6 @@ public class UnaCloudMessage implements Serializable {
 	
 	private String type;
 	
-	private JSONObject message; 	
 	
 	/**
 	 * Creates an empty UDP message
@@ -50,14 +47,12 @@ public class UnaCloudMessage implements Serializable {
 		this.port = message.getPort();
 		this.host = message.getHost();
 		this.type = message.getType();
-		this.message = message.getMessage();	
 	}
 	
 	/**
 	 * Creates a new message with data from IP, port, host and message type
 	 */
 	public UnaCloudMessage(String ip, int port, String host, String type) {
-		this.message = new JSONObject();
 		this.ip = ip;
 		this.port = port;
 		this.host = host;
@@ -72,14 +67,6 @@ public class UnaCloudMessage implements Serializable {
 		this.host = host;
 	}
 	
-	public JSONObject getMessage() {
-		return message;
-	}
-
-	public void setMessage(JSONObject message) {
-		this.message = message;
-	}
-
 	public String getIp() {
 		return ip;
 	}
@@ -105,23 +92,6 @@ public class UnaCloudMessage implements Serializable {
 	}
 	
 	/**
-	 * Return the String of JSON Message
-	 * @return String
-	 */
-	public String getStringMessage() {
-		JSONObject total = new JSONObject();		
-		total.put(TAG_HOST, this.host);
-		total.put(TAG_IP, this.ip);
-		total.put(TAG_PORT, this.port);
-		total.put(TAG_TYPE_MESSAGE, this.type);
-		total.put(TAG_MESSAGE, this.message);
-		StringWriter out = new StringWriter();
-		total.write(out);		
-		String jsonText = out.toString();
-		return jsonText;		
-	}
-	
-	/**
 	 * generates a byte array to send message based in components in message
 	 * @return byte array
 	 * @throws UnsupportedEncodingException 
@@ -132,31 +102,49 @@ public class UnaCloudMessage implements Serializable {
 	}
 	
 	/**
+	 * Return the String of JSON Message
+	 * @return String
+	 */
+	public String getStringMessage() {		
+		StringWriter out = new StringWriter();
+		getJsonMessage().write(out);		
+		String jsonText = out.toString();
+		return jsonText;		
+	}
+	
+	/**
+	 * Return a json object with all attributes
+	 * @return
+	 */
+	protected JSONObject getJsonMessage(){
+		JSONObject total = new JSONObject();		
+		total.put(TAG_HOST, this.host);
+		total.put(TAG_IP, this.ip);
+		total.put(TAG_PORT, this.port);
+		total.put(TAG_TYPE_MESSAGE, this.type);
+		return total;
+	}
+	
+	/**
 	 * Transforms a byte array in parts of message (JSON Format)
 	 * @param bytes
 	 * @throws UnsupportedEncodingException
 	 */
 	public void setMessageByBytes(byte[] bytes) throws UnsupportedEncodingException {
 		String tempMessage = new String(bytes, "UTF-8");
-		this.setMessageByString(tempMessage);
+		this.setMessageByStringJson(tempMessage);
 	}
 
 	/**
 	 * Reads the String of a message and set with the variables.
 	 * @param format
 	 */
-	public void setMessageByString(String format) {
-		try {
-			JSONObject json;
-			json = new JSONObject(format);		
-			this.host = json.getString(TAG_HOST);
-			this.ip = json.getString(TAG_IP);
-			this.port = json.getInt(TAG_PORT);
-			this.type = json.getString(TAG_TYPE_MESSAGE);
-			this.message = json.getJSONObject(TAG_MESSAGE);		
-		} catch (Exception e) {
-			System.err.println("F: " + format);
-			throw e;
-		}		
+	public void setMessageByStringJson(String format) {
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.host = json.getString(TAG_HOST);
+		this.ip = json.getString(TAG_IP);
+		this.port = json.getInt(TAG_PORT);
+		this.type = json.getString(TAG_TYPE_MESSAGE);
 	}
 }

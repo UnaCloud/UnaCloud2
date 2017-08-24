@@ -19,19 +19,33 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	
 	private static final long serialVersionUID = -5116988985857543662L;
 	
-	public static final String IMAGE = "image_id";
+	private static final String IMAGE = "image_id";
 	
-	public static final String VM_CORES = "vm_cores";
+	private static final String VM_CORES = "vm_cores";
 	
-	public static final String VM_MEMORY = "vm_memory";
+	private static final String VM_MEMORY = "vm_memory";
 	
-	public static final String EXE_TIME = "exe_time";
+	private static final String EXE_TIME = "exe_time";
 
-	public static final String VM_HOST_NAME = "vm_host_name";
+	private static final String VM_HOST_NAME = "vm_host_name";
 	
-	public static final String NET_INTERFACE = "net_interface";
+	private static final String NET_INTERFACE = "net_interface";
 	
-	public static final String TRANSMISSION_TYPE = "transmission_type";
+	private static final String TRANSMISSION_TYPE = "transmission_type";
+	
+	private long imageId;
+	
+	private int vmCores;
+	
+	private int vmMemory;
+	
+	private Time exeTime;
+	
+	private String vmHostName;
+	
+	private String protocolType;
+	
+	private List<ImageNetInterfaceComponent> interfaces;
     
 	/**
 	 * 
@@ -48,33 +62,28 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	 * @param type
 	 * @param interfaces
 	 */
-	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, Time exeTime, String vmHostName, TransmissionProtocolEnum type, List<ImageNetInterfaceComponent> interfaces) {
-		super(ip, port, host, ImageOperationMessage.VM_START, pmId, executionId);		
-		JSONObject tempMessage = this.getMessage();
-		tempMessage.put(IMAGE, imageId);
-		tempMessage.put(VM_CORES, vmCores);
-		tempMessage.put(VM_MEMORY, vmMemory);
-		tempMessage.put(EXE_TIME, exeTime);
-		tempMessage.put(VM_HOST_NAME, vmHostName);
-		tempMessage.put(TRANSMISSION_TYPE, type.name());
-		JSONArray array = new JSONArray();
-		if (interfaces != null)
-			for (ImageNetInterfaceComponent interf: interfaces)
-				array.put(interf);
-		tempMessage.put(NET_INTERFACE, array);
-		this.setMessage(tempMessage);	
+	public ExecutionStartMessage(String ip, int port, String host, long executionId, long pmId, long imageId, int vmCores, int vmMemory, 
+			Time exeTime, String vmHostName, TransmissionProtocolEnum type, List<ImageNetInterfaceComponent> interfaces) {
+		super(ip, port, host, ImageOperationMessage.VM_START, pmId, executionId);
+		this.imageId = imageId;		
+		this.vmCores = vmCores;
+		this.vmMemory = vmMemory;		
+		this.exeTime = exeTime;		
+		this.vmHostName = vmHostName;		
+		this.protocolType = type.name();
+		this.interfaces = interfaces;		
 	}
     
 	public int getVmCores() {
-		return this.getMessage().getInt(VM_CORES);
+		return vmCores;
 	}
 	
 	public int getVmMemory() {
-		return this.getMessage().getInt(VM_MEMORY);
+		return vmMemory;
 	}
 	
 	public Time getExecutionTime() {
-		return (Time) this.getMessage().get(EXE_TIME);
+		return exeTime;
 	}
 	
 	@Override
@@ -83,23 +92,18 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	}
 		
 	public String getHostname() {
-		return this.getMessage().getString(VM_HOST_NAME);
+		return vmHostName;
 	}
 	
 	public long getImageId() {
-		return this.getMessage().getLong(IMAGE);
+		return imageId;
 	}
 	
 	public TransmissionProtocolEnum getTransmissionType() {
-		return TransmissionProtocolEnum.getEnum(this.getMessage().getString(TRANSMISSION_TYPE));
+		return TransmissionProtocolEnum.getEnum(protocolType);
 	}
 			
-	public List<ImageNetInterfaceComponent> getInterfaces() {
-		JSONObject temp = this.getMessage();
-		JSONArray list = temp.getJSONArray(NET_INTERFACE);
-		List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
-		for (int i = 0; i < list.length(); i++)
-			interfaces.add((ImageNetInterfaceComponent)list.get(i));		
+	public List<ImageNetInterfaceComponent> getInterfaces() {			
 		return interfaces;
 	}
 	
@@ -107,5 +111,40 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public String toString() {
 		return super.toString() + " executionTime: " + getExecutionTime();
 	}
+	
+	@Override
+	public void setMessageByStringJson(String format) {
+		super.setMessageByStringJson(format);
+		JSONObject json;
+		json = new JSONObject(format);		
+		this.imageId = json.getLong(IMAGE);		
+		this.vmCores = json.getInt(VM_CORES);
+		this.vmMemory = json.getInt(VM_MEMORY);		
+		this.exeTime = (Time) json.get(EXE_TIME);		
+		this.vmHostName = json.getString(VM_HOST_NAME);		
+		this.protocolType = json.getString(TRANSMISSION_TYPE);
+		JSONArray array = json.getJSONArray(NET_INTERFACE);
+		this.interfaces = new ArrayList<ImageNetInterfaceComponent>();
+		for (int i = 0; i < array.length(); i++)
+			interfaces.add((ImageNetInterfaceComponent) array.get(i));
+		
+	}
+	
+	@Override
+	protected JSONObject getJsonMessage() {
+		JSONObject obj = super.getJsonMessage();
+		obj.put(IMAGE, imageId);
+		obj.put(VM_CORES, vmCores);
+		obj.put(VM_MEMORY, vmMemory);
+		obj.put(EXE_TIME, exeTime);
+		obj.put(VM_HOST_NAME, vmHostName);
+		obj.put(TRANSMISSION_TYPE, protocolType);
+		JSONArray array = new JSONArray();
+		if (interfaces != null)
+			for (ImageNetInterfaceComponent interf: interfaces)
+				array.put(interf);
+		obj.put(NET_INTERFACE, array);
+		return obj;
+	}	
 	
 }

@@ -4,7 +4,7 @@ import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.UserGroupService;
 import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.share.enums.TaskEnum;
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.web.domain.IPPool;
 import uniandes.unacloud.web.domain.Laboratory;
 import uniandes.unacloud.web.domain.OperatingSystem;

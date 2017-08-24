@@ -16,8 +16,8 @@ import uniandes.unacloud.agent.execution.task.StopExecutionTask;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
-import uniandes.unacloud.common.net.UnaCloudMessage;
 import uniandes.unacloud.common.net.tcp.message.AgentMessage;
+import uniandes.unacloud.common.net.tcp.message.ClientMessage;
 import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
 import uniandes.unacloud.common.net.tcp.message.PhysicalMachineOperationMessage;
 import uniandes.unacloud.common.net.tcp.message.TCPMessageEnum;
@@ -46,8 +46,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	@Override
 	public void processMessage(Socket socket) throws Exception {
 		try (Socket s = socket; ObjectInputStream ois = new ObjectInputStream(socket.getInputStream()); ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
-			UnaCloudMessage clouderServerRequest = new UnaCloudMessage();
-			clouderServerRequest.setMessageByString((String)ois.readObject());
+			ClientMessage clouderServerRequest = (ClientMessage) ois.readObject();
             System.out.println("message: " + clouderServerRequest);
             if (clouderServerRequest.getType().equals(TCPMessageEnum.EXECUTION_OPERATION.name()))
 		        oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest, ois, oos));
