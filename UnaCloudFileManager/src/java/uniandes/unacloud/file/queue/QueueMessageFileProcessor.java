@@ -178,15 +178,16 @@ public class QueueMessageFileProcessor implements QueueReader {
 					if (publicImage != null && publicImage.isPublic()) {
 						
 						File original = new File (publicImage.getMainFile());		
-						System.out.println(original);
+						System.out.println("Original: " + original);
 						
 						FileConverter publicFile = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + publicImage.getName() + File.separator + original.getName() );
-						System.out.println(publicFile);
+						System.out.println("Public file: " + publicFile.getFilePath());
 						
 						if (publicFile.getZipFile().exists()) {
-							newFile = new FileConverter(user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName());
-							
-							System.out.println(newFile.getZipFile());
+							File fileCopy = new File(user.getRepository().getRoot() + privateImage.getName() + "_" + user.getUsername() + File.separator + original.getName());
+							fileCopy.mkdirs();
+							newFile = new FileConverter(fileCopy.getAbsolutePath());
+							System.out.println("New file: " + newFile.getZipFile());
 							FileProcessor.copyFileSync(publicFile.getZipFile().getAbsolutePath(), newFile.getZipFile().getAbsolutePath());	
 							//Announce in torrent
 							TorrentTracker.getInstance().publishFile(newFile);

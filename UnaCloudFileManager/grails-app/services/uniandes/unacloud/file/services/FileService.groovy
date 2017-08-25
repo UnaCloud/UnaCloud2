@@ -8,6 +8,7 @@ import org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext;
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
+import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.db.StorageManager;
@@ -202,11 +203,12 @@ class FileService implements ApplicationContextAware {
 						ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, image.isPublic(), null, image.getMainFile(), null, null), false, con, true)
 						FileProcessor.deleteFilesFolder(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath(), ".*zip\$")
 						if (image.isPublic()) {
-							File newFile = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName())
-							newFile.mkdirs()
-							FileProcessor.copyFileSync(zip.getAbsolutePath(), newFile.getAbsolutePath() + File.separator + zip.getName());
+							File newFolder = new File(main.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName())
+							newFolder.mkdirs()
+							FileProcessor.copyFileSync(zip.getAbsolutePath(), newFolder.getAbsolutePath() + File.separator + zip.getName());
 						}					
-						TorrentTracker.getInstance().publishFile(zip);
+						FileConverter converter = new FileConverter(zip);
+						TorrentTracker.getInstance().publishFile(converter);
 					}					
 					else {
 						println '\t deleting ' + image.getId()

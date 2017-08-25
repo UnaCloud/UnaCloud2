@@ -74,9 +74,9 @@ class PhysicalMachineAllocatorService {
 		def sql = new Sql(dataSource)
 		
 		sql.eachRow('SELECT execution_node_id, count(*) AS vms, sum(ram) AS ram, sum(cores) AS cores ' + 
-					+ 'FROM execution JOIN hardware_profile ON execution.hardware_profile_id = hardware_profile.id ' +
-					+ 'JOIN execution_state ON execution_state.id = execution.state_id ' 
-					+ 'WHERE execution_state.state != \''+ExecutionStateEnum.FINISHED+'\' AND execution_node_id in (' + listId + ') group by execution_node_id') { row ->
+					'FROM execution JOIN hardware_profile ON execution.hardware_profile_id = hardware_profile.id ' +
+					'JOIN execution_state ON execution_state.id = execution.state_id ' +
+					'WHERE execution_state.state != \'' + ExecutionStateEnum.FINISHED + '\' AND execution_node_id in (' + listId + ') group by execution_node_id') { row ->
 			if(row.execution_node_id != null)
 				pmDescriptions.put(row.execution_node_id, new PhysicalMachineAllocationDescription(row.execution_node_id, row.cores.toInteger(), row.ram.toInteger(), row.vms.toInteger()));
 		}
