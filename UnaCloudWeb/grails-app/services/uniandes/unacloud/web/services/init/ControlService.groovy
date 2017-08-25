@@ -47,9 +47,9 @@ class ControlService {
 		def executions = deploymentService.getActiveExecutions();
 		def sql = new Sql(dataSource)
 		def dbTime = sql.rows("SELECT CURRENT_TIMESTAMP")		
-		println dbTime
+		println "Rub job: " + dbTime[0].get("CURRENT_TIMESTAMP")
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)		
-		Date current = format.parse(dbTime)
+		Date current = format.parse(dbTime[0].get("CURRENT_TIMESTAMP").toString())
 		
 		executions.each {
 			

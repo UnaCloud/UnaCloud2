@@ -66,7 +66,7 @@ class FileService implements ApplicationContextAware {
 			}		
 			
 			if (image) {
-				
+				println 'Image: ' + image
 				boolean isValid = true;
 				files.each {
 					def fileName = it.getOriginalFilename().trim()
@@ -189,7 +189,7 @@ class FileService implements ApplicationContextAware {
 	 *
 	 */
 	private void shareFile(final ImageFileEntity image, final RepositoryEntity main) {
-		FileProcessor.zipFileAsync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath(), new Observer() {				
+		FileProcessor.zipFileAsync(image.getMainFile(), new Observer() {				
 			@Override
 			public void update(Observable o, Object arg) {
 				Connection con = null;

@@ -135,7 +135,7 @@ class ImageService {
 		if (image.mainFile) {
 			image.freeze()
 			QueueTaskerFile.deleteImage(image, user)
-			QueueTaskerControl.clearCache(image, image.owner);				
+			QueueTaskerControl.clearImageFromCache(image, image.owner);				
 		} 
 		else {
 			user.images.remove(image)
@@ -151,7 +151,7 @@ class ImageService {
 	 */
 	def clearCache(Image image) {
 		image.freeze()
-		QueueTaskerControl.clearCache(image, image.owner);		
+		QueueTaskerControl.clearImageFromCacheAndUpdate(image, image.owner);		
 	}
 	
 	/**
@@ -203,7 +203,7 @@ class ImageService {
 		String token = HashGenerator.hashSha256(image.getName() + new Date().getTime())
 		image.putAt("token", token)
 		image.putAt("state", ImageEnum.UNAVAILABLE)
-		QueueTaskerControl.clearCache(image, image.owner);
+		QueueTaskerControl.clearImageFromCacheAndUpdate(image, image.owner);
 		return token
 	}
 	

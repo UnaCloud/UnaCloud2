@@ -44,7 +44,17 @@ public class QueueTaskerControl {
 	 * @param image that will be removed from cache
 	 * @param user who asks the task
 	 */
-	public static void clearCache(Image image, User user) {
+	public static void clearImageFromCacheAndUpdate(Image image, User user) {
+		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CLEAR_CACHE_UPDATE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
+		controlQueue.sendMessage(message);
+	}	
+	
+	/**
+	 * Puts a task to Remove an image from all connected machines 
+	 * @param image that will be removed from cache
+	 * @param user who asks the task
+	 */
+	public static void clearImageFromCache(Image image, User user) {
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CLEAR_CACHE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}	

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import uniandes.unacloud.share.enums.QueueMessageType;
 
-public class MessageIdOfImage extends QueueMessage{
+public class MessageIdOfImage extends QueueMessage {
 
 	private static final String TAG_ID_IMAGE = "id_image";
 	

@@ -77,7 +77,10 @@ public class QueueMessageProcessor implements QueueReader {
 		System.out.println("Receive message " + message.getMessage());
 		switch (message.getType()) {
 		case CLEAR_CACHE:
-			clearCache(new MessageIdOfImage(message));
+			removeImageFromCache(new MessageIdOfImage(message));
+			break;
+		case CLEAR_CACHE_UPDATE:
+			removeImageFromCacheAndUpdate(new MessageIdOfImage(message));
 			break;
 		case SEND_TASK:	
 			sendTaskToAgents(new MessageTaskMachines(message));
@@ -103,20 +106,14 @@ public class QueueMessageProcessor implements QueueReader {
 	 * Receives image id and process request to remove the image from agents cache
 	 * @param message
 	 */
-	private void clearCache(MessageIdOfImage message) {
-		
-		boolean update = false;
-		MessageIdOfImage messageId = (MessageIdOfImage) message;
-		final Long imageId =  messageId.getIdImage();
-		ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.REMOVING_CACHE, null);
+	private void removeImageFromCache(MessageIdOfImage message) {
+		final Long imageId =  message.getIdImage();
 		List<PhysicalMachineEntity> machines = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {
-			ImageManager.setImage(image, con);
 			machines = PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-						
 		try {			
 			if (machines.size() > 0) {
 				
@@ -129,49 +126,50 @@ public class QueueMessageProcessor implements QueueReader {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
-								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-									ImageManager.setImage(image, con2);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
+								
 							}
 							
 							@Override
 							public void attendError(Object error, String message) {
 								ClearImageFromCacheMessage mss = (ClearImageFromCacheMessage) error;
-								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-									ImageManager.setImage(image, con2);
+								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {									
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getImageId(), PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 								} catch (Exception e) {
 									e.printStackTrace();
-								}
-								
+								}								
 							}
 						}));
 						j = 1;
 						messageList = new ArrayList<UnaCloudMessage>();
 					}					
-				}	
-				
-				
-			} else
-				update = true;
+				}					
+			} 
 						
 		} catch (Exception e) {
 			e.printStackTrace();
-			update = true;
 		}
-		
-		if (update) {
-			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				image.setState(ImageEnum.AVAILABLE);
-				ImageManager.setImage(image, con);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+	}
+	
+	/**
+	 * Receives image id and process request to remove the image from agents cache, 
+	 * This method changes image state to REMOVING_CACHE and after process to AVAILABLE
+	 * @param message
+	 */
+	private void removeImageFromCacheAndUpdate(MessageIdOfImage message) {
+		ImageEntity image = new ImageEntity(message.getIdImage(), null, null, ImageEnum.REMOVING_CACHE, null);		
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			ImageManager.setImage(image, con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		removeImageFromCache(message);
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			image.setState(ImageEnum.AVAILABLE);
+			ImageManager.setImage(image, con);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
