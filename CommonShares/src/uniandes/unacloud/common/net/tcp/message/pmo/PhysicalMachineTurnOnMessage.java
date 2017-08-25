@@ -1,7 +1,5 @@
 package uniandes.unacloud.common.net.tcp.message.pmo;
 
-import org.json.JSONObject;
-
 import uniandes.unacloud.common.net.tcp.message.PhysicalMachineOperationMessage;
 
 
@@ -14,9 +12,7 @@ public class PhysicalMachineTurnOnMessage extends PhysicalMachineOperationMessag
 	
 	
 	private static final long serialVersionUID = -7026046062306316388L;
-	
-	private static final String MACS = "macs";
-	
+		
 	private String[] macs;
 	
 	public PhysicalMachineTurnOnMessage(String ip, int port, String host, String[] macs, long pmId) {
@@ -28,18 +24,4 @@ public class PhysicalMachineTurnOnMessage extends PhysicalMachineOperationMessag
 		return macs;
 	}
 	
-	@Override
-	public void setMessageByStringJson(String format) {
-		super.setMessageByStringJson(format);
-		JSONObject json;
-		json = new JSONObject(format);		
-		this.macs = (String[])json.get(MACS);
-	}
-	
-	@Override
-	protected JSONObject getJsonMessage() {
-		JSONObject obj = super.getJsonMessage();
-		obj.put(MACS, macs);
-		return obj;
-	}
 }

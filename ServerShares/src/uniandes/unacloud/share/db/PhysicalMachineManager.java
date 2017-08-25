@@ -198,7 +198,6 @@ public class PhysicalMachineManager {
 					+ (freeSpace != null ? ", pm.free_space = ?" : "")
 					+ (version != null ? ", pm.agent_version = ?" : "")
 					+ " WHERE pm.name = ? AND pm.ip_id = (SELECT id FROM ip AS i WHERE i.ip = ?)"; PreparedStatement ps = con.prepareStatement(query);
-			System.out.println(query);
 			int pos = 1;
 			ps.setBoolean(pos++, (hostUser != null && !hostUser.isEmpty() && !(hostUser.replace(">","").replace(" ","")).equals("null")));
 			if (dataSpace != null) ps.setLong(pos++, dataSpace);

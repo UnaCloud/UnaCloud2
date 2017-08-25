@@ -1,7 +1,9 @@
 package uniandes.unacloud.common.net.udp;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -35,12 +37,12 @@ public class UDPReceiver implements Closeable {
 	 * Receives a message by UDP port
 	 * @return udp message
 	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public UnaCloudMessage getMessage() throws IOException {
+	public UnaCloudMessage getMessage() throws IOException, ClassNotFoundException {
 		DatagramPacket request = new DatagramPacket(buffer, buffer.length);
 		udpReceiver.receive(request);	
-		UnaCloudMessage udpMessage = new UnaCloudMessage();
-		udpMessage.setMessageByBytes(request.getData());
+		UnaCloudMessage udpMessage = deserialize(request.getData());
 		udpMessage.setIp(request.getAddress().getHostAddress());
 		udpMessage.setPort(0);
 		return udpMessage;
@@ -52,4 +54,9 @@ public class UDPReceiver implements Closeable {
 		udpReceiver.close();
 	}
 
+	private static UnaCloudMessage deserialize(byte[] data) throws IOException, ClassNotFoundException {
+	    ByteArrayInputStream in = new ByteArrayInputStream(data);
+	    ObjectInputStream is = new ObjectInputStream(in);
+	    return (UnaCloudMessage) is.readObject();
+	}
 }

@@ -47,7 +47,7 @@ public class TCPSender {
 			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-			oos.writeObject(message.getStringMessage());
+			oos.writeObject(message);
 			oos.flush();
 			if (processor != null)
 				try {

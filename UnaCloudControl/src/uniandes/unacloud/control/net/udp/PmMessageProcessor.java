@@ -46,7 +46,7 @@ public class PmMessageProcessor extends AbstractUDPReceiverProcessor {
 			}
 		}
 		else {
-			System.err.println("ERROR in message: " + uMessage.getIp() + " - " + uMessage.getHost() + " - " + uMessage.getStringMessage() );
+			System.err.println("ERROR in message: " + uMessage.getIp() + " - " + uMessage.getHost() + " - " + uMessage.toString() );
 		}
 	}
 }

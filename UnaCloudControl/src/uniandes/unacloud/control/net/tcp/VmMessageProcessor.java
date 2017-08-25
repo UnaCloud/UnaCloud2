@@ -27,10 +27,10 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 			
 		ObjectInputStream ios = new ObjectInputStream(socket.getInputStream());
 		ExecutionStateMessage uMessage = (ExecutionStateMessage)ios.readObject();
-		System.out.println(uMessage.getStringMessage());
+		System.out.println(uMessage.toString());
 		if (uMessage.getType() != null && uMessage.getType().equals(UDPMessageEnum.STATE_EXE)) {
 			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				ExecutionStateMessage message = new ExecutionStateMessage(uMessage);
+				ExecutionStateMessage message = (ExecutionStateMessage) uMessage;
 				System.out.println("Report EXE: " + message.getHost() + " - ");
 				ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(), message.getExecutionMessage());
 				ExecutionManager.updateExecution(exe, null, con);

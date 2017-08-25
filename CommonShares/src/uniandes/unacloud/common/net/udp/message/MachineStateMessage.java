@@ -1,6 +1,7 @@
 package uniandes.unacloud.common.net.udp.message;
 
-import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
 
@@ -15,32 +16,6 @@ public class MachineStateMessage extends UnaCloudMessage {
 	 * Serial Version UID Serialize 
 	 */
 	private static final long serialVersionUID = -414908833924500630L;
-
-	/**
-	 * Tag to keep information about executions
-	 */
-	private static final String TAG_EXECUTIONS = "list_executions";
-
-	/**
-	 * Tag to keep Host User
-	 */
-	private static final String TAG_HOST_USER = "host_user";
-	
-	/**
-	 * Tag to keep information about dataSpace
-	 */
-	private static final String TAG_DATA_SPACE = "data_space";
-	
-	/**
-	 * Tag to keep information about freeSpace
-	 */
-	private static final String TAG_FREE_SPACE = "data_space";
-	
-	/**
-	 * Tag to keep information about current agent version
-	 */
-	private static final String TAG_VERSION = "version";
-	
 	
 	private Long[] executions; 
 	
@@ -91,14 +66,6 @@ public class MachineStateMessage extends UnaCloudMessage {
 	}
 
 	/**
-	 * Creates a new UDP Message using a not null unacloud udp message
-	 * @param message
-	 */
-	public MachineStateMessage(MachineStateMessage message) {
-		setMessageByStringJson(message.getStringMessage());
-	}
-
-	/**
 	 * Return the executions
 	 * @return Long[] Executions
 	 */
@@ -137,27 +104,12 @@ public class MachineStateMessage extends UnaCloudMessage {
 	public String getVersion() {
 		return version;
 	}
-	
+
 	@Override
-	public void setMessageByStringJson(String format) {
-		super.setMessageByStringJson(format);
-		JSONObject json;
-		json = new JSONObject(format);	
-		this.freeSpace = json.getLong(TAG_FREE_SPACE);		
-		this.dataSpace = json.getLong(TAG_DATA_SPACE);
-		this.version = json.getString(TAG_VERSION);
-		this.hostUser = json.getString(TAG_HOST_USER);
-		this.executions = (Long[]) json.get(TAG_EXECUTIONS);
-	}
+	public String toString() {
+		return "MachineStateMessage [executions=" + Arrays.toString(executions)
+				+ ", hostUser=" + hostUser + ", freeSpace=" + freeSpace
+				+ ", dataSpace=" + dataSpace + ", version=" + version + " - " + super.toString() + "]";
+	}	
 	
-	@Override
-	protected JSONObject getJsonMessage() {
-		JSONObject obj = super.getJsonMessage();
-		obj.put(TAG_EXECUTIONS, executions);
-		obj.put(TAG_HOST_USER, hostUser);
-		obj.put(TAG_VERSION, version);
-		obj.put(TAG_DATA_SPACE, dataSpace);
-		obj.put(TAG_FREE_SPACE, freeSpace);
-		return obj;
-	}
 }

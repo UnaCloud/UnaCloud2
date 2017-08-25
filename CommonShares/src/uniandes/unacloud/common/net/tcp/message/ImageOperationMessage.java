@@ -1,7 +1,5 @@
 package uniandes.unacloud.common.net.tcp.message;
 
-import org.json.JSONObject;
-
 /**
  * Represents kind of execution operation message sent to agents
  * @author CesarF
@@ -36,20 +34,5 @@ public class ImageOperationMessage extends ClientMessage {
 	
 	public long getExecutionId() {
 		return this.executionId;
-	}
-	
-	@Override
-	public void setMessageByStringJson(String format) {
-		super.setMessageByStringJson(format);
-		JSONObject json;
-		json = new JSONObject(format);		
-		this.executionId = json.getLong(EXECUTION);
-	}
-	
-	@Override
-	protected JSONObject getJsonMessage() {
-		JSONObject obj = super.getJsonMessage();
-		obj.put(EXECUTION, executionId);
-		return obj;
 	}
 }
