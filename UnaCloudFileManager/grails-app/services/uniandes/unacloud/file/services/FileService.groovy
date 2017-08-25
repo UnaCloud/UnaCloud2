@@ -25,7 +25,7 @@ import grails.transaction.Transactional
 
 /**
  * This service contains all methods to manage files: saves files for a new image or update files for a current image.
- * This class not use hibernate connection to database is using UnaCloud pool database connection library
+ * This class not use hibernate connection to database, it uses UnaCloud pool database connection library
  * @author CesarF
  *
  */

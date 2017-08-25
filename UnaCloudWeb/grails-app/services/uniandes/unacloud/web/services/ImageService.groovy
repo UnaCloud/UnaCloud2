@@ -203,7 +203,7 @@ class ImageService {
 		String token = HashGenerator.hashSha256(image.getName() + new Date().getTime())
 		image.putAt("token", token)
 		image.putAt("state", ImageEnum.UNAVAILABLE)
-		QueueTaskerControl.clearImageFromCacheAndUpdate(image, image.owner);
+		QueueTaskerControl.clearImageFromCache(image, image.owner);
 		return token
 	}
 	
