@@ -66,7 +66,7 @@ class Execution {
 	/**
 	 * Last report of execution
 	 */
-	Date lastReport
+	Date lastReport = new Date()
 		
 	/**
 	 * Duration of execution in milliseconds
