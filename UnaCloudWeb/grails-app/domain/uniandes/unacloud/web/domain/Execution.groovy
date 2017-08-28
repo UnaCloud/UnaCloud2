@@ -46,7 +46,7 @@ class Execution {
 	/**
 	 * Actual state , by default is requested
 	 */
-	ExecutionState state
+	ExecutionState state 
 	
 	/**
 	 * Execution last message

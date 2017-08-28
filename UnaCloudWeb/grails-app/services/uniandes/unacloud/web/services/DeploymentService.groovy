@@ -13,6 +13,7 @@ import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
 import uniandes.unacloud.web.domain.Deployment;
+import uniandes.unacloud.web.domain.ExecutionState;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Execution;
@@ -114,7 +115,8 @@ class DeploymentService {
 					name: request.hostname, 
 					message: "Initializing", 
 					hardwareProfile: request.hp, 
-					duration: time,					
+					duration: time,		
+					state: ExecutionState.findByState(ExecutionStateEnum.REQUESTED),			
 					interfaces: []))
 			}
 			depImage.executions = executions
@@ -190,6 +192,7 @@ class DeploymentService {
 				message: "Adding Instance",
 				hardwareProfile: requestOptions.hp,
 				duration: time,
+				state: ExecutionState.findByState(ExecutionStateEnum.REQUESTED),
 				interfaces: []))			
 		}
 		
