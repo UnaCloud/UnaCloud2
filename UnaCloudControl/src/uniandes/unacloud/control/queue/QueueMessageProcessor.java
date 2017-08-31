@@ -266,7 +266,6 @@ public class QueueMessageProcessor implements QueueReader {
 						List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
 						for (NetInterfaceEntity interf: execution.getInterfaces())
 							interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
-						System.out.println(execution.getTimeInHours());
 						ExecutionStartMessage vmsm = new ExecutionStartMessage(
 								execution.getNode().getIp(), 
 								ControlManager.getInstance().getPort(), 
@@ -280,7 +279,7 @@ public class QueueMessageProcessor implements QueueReader {
 								execution.getHostName(),
 								message.getTypeTransmission(),
 								interfaces);
-						System.out.println("Execution from " + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
+						System.out.println("Execution from " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
 						
 						messageList.add(vmsm);
 						

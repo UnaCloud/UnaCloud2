@@ -185,7 +185,7 @@ class BootStrap {
 		try {
 			String drop = "DROP TRIGGER IF EXISTS save_request_events"		
 			String trigger = "CREATE TRIGGER " +
-							 "save_request_events AFTER UPDATE ON execution " +
+							 "save_request_events BEFORE UPDATE ON execution " +
 							 "FOR EACH ROW BEGIN " +
 								"IF NEW.state_id <> OLD.state_id THEN " +
 									"SELECT CURRENT_TIMESTAMP INTO @current; " +

@@ -90,6 +90,7 @@ public class ExecutionEntity {
 		this.hostName = hostName;
 		interfaces = new ArrayList<NetInterfaceEntity>();
 		this.message = message;
+		this.duration = duration;
 	}
 	
 	public Date getLastUpdate() {

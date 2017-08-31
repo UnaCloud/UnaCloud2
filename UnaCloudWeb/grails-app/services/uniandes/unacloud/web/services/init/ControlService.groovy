@@ -67,6 +67,7 @@ class ControlService {
 			}
 			
 			if (exe.isControlExceeded(current)) {		
+				println "Control time exceeded, exe " + exe.id + ": " + exe.state.state + " --> " + exe.state.nextControl.state
 				exe.goNextControl()
 				exe.save(flush: true, failOnError: true)
 			}		
