@@ -3,7 +3,6 @@ package uniandes.unacloud.share.db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,12 +34,12 @@ public class ExecutionManager {
 					+ "JOIN execution_state exest "
 					+ "ON vme.state_id = exest.id " 
 					+ "SET "+
-			(execution.getStartTime() != null? ", vme.start_time = ? " : "") +
-			(execution.getStopTime() != null? ", vme.stop_time = ? " : "") +
+			(execution.getDuration() != null? ", vme.duration = ? " : "") +
 			(execution.getMessage() != null? ", vme.message = ? " : "");
 			if (execution.getState() != null) {
 				String state = null;
-				if (query.contains(",")) query = query.replaceFirst(",", "");
+				if (query.contains(",")) 
+					query = query.replaceFirst(",", "");
 				if (execution.getState() == ExecutionProcessEnum.FAIL)
 					state = "exest.next_control_id";
 				else if (execution.getState() == ExecutionProcessEnum.REQUEST)
@@ -57,11 +56,13 @@ public class ExecutionManager {
 						+ "AND " + state + " IS NOT NULL;"; 
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;
-				if (execution.getStartTime() != null) ps.setTimestamp(id++, new Timestamp(execution.getStartTime().getTime()));
-				if (execution.getStopTime() != null) ps.setTimestamp(id++,  new Timestamp(execution.getStopTime().getTime()));
-				if (execution.getMessage() != null) ps.setString(id++, execution.getMessage());
+				if (execution.getDuration() != null)
+					ps.setLong(id++, execution.getDuration());
+				if (execution.getMessage() != null)
+					ps.setString(id++, execution.getMessage());
 				ps.setLong(id, execution.getId());
-				if (execution.getNode() != null && execution.getNode().getHost() != null) ps.setString(id++, execution.getNode().getHost());
+				if (execution.getNode() != null && execution.getNode().getHost() != null) 
+					ps.setString(id++, execution.getNode().getHost());
 				
 				System.out.println(ps.toString() + " change " + ps.executeUpdate() + " lines");				
 				try {

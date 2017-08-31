@@ -250,7 +250,7 @@ class DeploymentService {
 			if(vm.state.state.equals(ExecutionStateEnum.DEPLOYED))
 				executionsToStop.add(vm)
 			vm.goNext("Finish execution")
-			vm.save()
+			vm.save(flush:true, failOnError)
 		}
 		if (executionsToStop.size() > 0) 
 			QueueTaskerControl.stopExecutions(executionsToStop, requester)

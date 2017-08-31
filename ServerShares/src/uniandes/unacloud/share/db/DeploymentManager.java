@@ -37,7 +37,7 @@ public class DeploymentManager {
 		try {
 			DeploymentEntity deploy = null;
 			PreparedStatement ps = con.prepareStatement(
-					"SELECT dp.id, dp.start_time, dp.stop_time, dp.status "
+					"SELECT dp.id, dp.start_time, dp.status "
 					+ "FROM deployment dp "
 					+ "WHERE dp.status = ? AND dp.id = ?;");
 			ps.setString(1, DeploymentStateEnum.ACTIVE.name());
@@ -48,7 +48,6 @@ public class DeploymentManager {
 				deploy = new DeploymentEntity();
 				deploy.setId(rs.getLong(1));
 				deploy.setStartTime(new java.util.Date(rs.getTimestamp(2).getTime()));
-				deploy.setStopTime(new java.util.Date(rs.getTimestamp(3).getTime()));
 				deploy.setState(DeploymentStateEnum.ACTIVE);
 			}
 			try {
@@ -59,7 +58,7 @@ public class DeploymentManager {
 			}
 			if (deploy != null) {
 				ps = con.prepareStatement(
-						"SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token "
+						"SELECT vme.id, hp.cores, hp.ram, vme.duration, vme.execution_node_id, vme.name, vmi.id, vmi.user, vmi.password, vmi.state, vme.message, vmi.token "
 						+ "FROM execution vme "
 							+ "INNER JOIN hardware_profile hp "
 								+ "ON vme.hardware_profile_id = hp.id "
@@ -76,31 +75,31 @@ public class DeploymentManager {
 				System.out.println(ps.toString());
 				TreeMap<Long, DeployedImageEntity> executions = new TreeMap<Long, DeployedImageEntity>();
 				while (rs.next()) {
-					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(6), PhysicalMachineStateEnum.ON, con);
+					PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(5), PhysicalMachineStateEnum.ON, con);
 					if (pm == null){
-						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
 						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
 					}
 					else {
-						ExecutionEntity vme = new ExecutionEntity(rs.getLong(1), 
+						ExecutionEntity vme = new ExecutionEntity(
+								rs.getLong(1), 
 								rs.getInt(2), 
 								rs.getInt(3),
-								new java.util.Date(rs.getTimestamp(4).getTime()), 
-								new java.util.Date(rs.getTimestamp(5).getTime()), 
+								rs.getLong(4), 
 								pm, 
-								rs.getString(7),
-								rs.getString(13));
-						if (executions.get(rs.getLong(8)) == null)
-							executions.put(rs.getLong(8), 
+								rs.getString(6),
+								rs.getString(11));
+						if (executions.get(rs.getLong(7)) == null)
+							executions.put(rs.getLong(7), 
 									new DeployedImageEntity(
 											new ImageEntity(
-													rs.getLong(8), 
+													rs.getLong(7), 
+													rs.getString(8), 
 													rs.getString(9), 
-													rs.getString(10), 
-													ImageEnum.getEnum(rs.getString(11)), 
-													rs.getString(13)), 
+													ImageEnum.getEnum(rs.getString(10)), 
+													rs.getString(12)), 
 											new ArrayList<ExecutionEntity>()));
-						executions.get(rs.getLong(8)).getExecutions().add(vme);						
+						executions.get(rs.getLong(7)).getExecutions().add(vme);						
 					}
 				}
 				try {
@@ -177,7 +176,7 @@ public class DeploymentManager {
 				for(@SuppressWarnings("unused") ExecutionStateEnum id: states)
 					builderS.append("?,");
 			
-			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, ex.state, vme.execution_node_id, vme.name, vme.message "
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.duration, ex.state, vme.execution_node_id, vme.name, vme.message "
 							+ "FROM execution vme "
 								+ "INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
 								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
@@ -197,28 +196,27 @@ public class DeploymentManager {
 			ResultSet rs = ps.executeQuery();
 			List<ExecutionEntity> executions = new ArrayList<ExecutionEntity>();
 			while (rs.next()) {
-				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
+				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(6), PhysicalMachineStateEnum.ON, con);
 				if (pm == null) {
-					ExecutionStateEnum state = ExecutionStateEnum.getEnum(rs.getString(6));
+					ExecutionStateEnum state = ExecutionStateEnum.getEnum(rs.getString(5));
 					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
-						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
 						ExecutionManager.updateExecution(exe, ExecutionStateEnum.DEPLOYED, con);
 					}			
 					if(state.equals(ExecutionStateEnum.REQUESTED))	{
-						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
 						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
-					}
-					
-				} else {
+					}					
+				} 
+				else {
 					ExecutionEntity vme = new ExecutionEntity(
 							rs.getLong(1), 
 							rs.getInt(2), 
 							rs.getInt(3), 
-							new java.util.Date(rs.getTimestamp(4).getTime()),
-							new java.util.Date(rs.getTimestamp(5).getTime()),
+							rs.getLong(4), 
 							pm, 
-							rs.getString(8), 
-							rs.getString(9));
+							rs.getString(7), 
+							rs.getString(8));
 					executions.add(vme);		
 				}
 			}		
@@ -247,7 +245,7 @@ public class DeploymentManager {
 	 */
 	public static ExecutionEntity getExecution(Long id, ExecutionStateEnum state, Connection con) {
 		try {			
-			String query = "SELECT vme.id, hp.cores, hp.ram, vme.start_time, vme.stop_time, exe.state, vme.execution_node_id, vme.name, vme.message "
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.duration, exe.state, vme.execution_node_id, vme.name, vme.message "
 							+ "FROM execution vme "
 								+ "INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
 								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
@@ -260,14 +258,14 @@ public class DeploymentManager {
 			ExecutionEntity execution = null;
 			
 			if (rs.next()) {
-				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(7), PhysicalMachineStateEnum.ON, con);
+				PhysicalMachineEntity pm = PhysicalMachineManager.getPhysicalMachine(rs.getLong(6), PhysicalMachineStateEnum.ON, con);
 				if (pm == null) {
-					if(state.equals(ExecutionStateEnum.DEPLOYED)) {
-						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
+					if (state.equals(ExecutionStateEnum.DEPLOYED)) {
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Connection lost in server");
 						ExecutionManager.updateExecution(exe, ExecutionStateEnum.DEPLOYED, con);
 					}			
-					if(state.equals(ExecutionStateEnum.REQUESTED))	{
-						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
+					if (state.equals(ExecutionStateEnum.REQUESTED))	{
+						ExecutionEntity exe = new ExecutionEntity(rs.getLong(1), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Communication error");
 						ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con);
 					}
 				} 
@@ -276,11 +274,10 @@ public class DeploymentManager {
 							rs.getLong(1), 
 							rs.getInt(2), 
 							rs.getInt(3), 
-							new java.util.Date(rs.getTimestamp(4).getTime()), 
-							new java.util.Date(rs.getTimestamp(5).getTime()), 
+							rs.getLong(4),  
 							pm, 
-							rs.getString(8), 
-							rs.getString(9));
+							rs.getString(7), 
+							rs.getString(8));
 				}
 			}	
 			try {

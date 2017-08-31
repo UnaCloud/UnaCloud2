@@ -17,18 +17,16 @@ public class DeploymentEntity {
 	
 	private Date startTime;
 	
-	private Date stopTime;
 	
 	private DeploymentStateEnum state;
 	
 	private List<DeployedImageEntity> images;
 	
-	public DeploymentEntity(Long id, Date startTime, Date stopTime,
+	public DeploymentEntity(Long id, Date startTime,
 			DeploymentStateEnum state, List<DeployedImageEntity> images) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
-		this.stopTime = stopTime;
 		this.state = state;
 		this.images = images;
 	}
@@ -51,14 +49,6 @@ public class DeploymentEntity {
 
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
-	}
-
-	public Date getStopTime() {
-		return stopTime;
-	}
-
-	public void setStopTime(Date stopTime) {
-		this.stopTime = stopTime;
 	}
 
 	public DeploymentStateEnum getState() {

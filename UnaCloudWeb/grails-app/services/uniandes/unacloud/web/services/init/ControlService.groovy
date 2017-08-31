@@ -47,33 +47,30 @@ class ControlService {
 		def executions = deploymentService.getActiveExecutions();
 		def sql = new Sql(dataSource)
 		def dbTime = sql.rows("SELECT CURRENT_TIMESTAMP")		
-		println "Rub job: " + dbTime[0].get("CURRENT_TIMESTAMP")
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)		
 		Date current = format.parse(dbTime[0].get("CURRENT_TIMESTAMP").toString())
 		
-		executions.each {
-			
-			Execution exe = it
-			
+		for (Execution exe: executions) {			
 			//Validates if agent has send a report after lost connection
 			if (exe.state.state == ExecutionStateEnum.RECONNECTING) {
 				ExecutionHistory history = exe.getHistoryStatus(ExecutionStateEnum.RECONNECTING)
 				if (history != null && exe.lastReport.after(history.changeTime)) {
 					exe.goNext("Reconnection succesful")
-					exe.save()
+					exe.save(flush: true, failOnError: true)
 				}
 			}
 			else if (exe.state.state == ExecutionStateEnum.DEPLOYED) {
 				if (exe.stopTime.before(current) ) {
 					exe.goNext("Finishing execution")
-					exe.save()
+					exe.save(flush: true, failOnError: true)
 				}
 			}
 			
-			if (exe.isControlExceeded(current)) {				
+			if (exe.isControlExceeded(current)) {		
 				exe.goNextControl()
-				exe.save()
+				exe.save(flush: true, failOnError: true)
 			}		
-		}		
+		}	
+		sql.close()	
 	}	
 }

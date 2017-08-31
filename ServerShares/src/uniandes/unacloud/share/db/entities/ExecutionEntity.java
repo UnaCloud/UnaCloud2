@@ -19,10 +19,6 @@ public class ExecutionEntity {
 	
 	private int ram;
 	
-	private Date startTime;
-	
-	private Date stopTime;
-	
 	private PhysicalMachineEntity node;
 	
 	private ExecutionProcessEnum state;
@@ -37,6 +33,8 @@ public class ExecutionEntity {
 	
 	private Date lastReport;
 	
+	private Long duration;
+	
 	/**
 	 * Emptty constructor, all attributes have default value
 	 */
@@ -49,27 +47,26 @@ public class ExecutionEntity {
 	 * @param id
 	 * @param cores
 	 * @param ram
-	 * @param startTime
-	 * @param stopTime
+	 * @param duration
 	 * @param node
 	 * @param state
 	 * @param hostName
 	 * @param message
 	 */
-	public ExecutionEntity(Long id, int cores, int ram, Date startTime,
-			Date stopTime, PhysicalMachineEntity node,
+	public ExecutionEntity(Long id, int cores, int ram, 
+			Long duration,
+			PhysicalMachineEntity node,
 			ExecutionProcessEnum state, String hostName, String message) {
 		super();
 		this.id = id;
 		this.cores = cores;
 		this.ram = ram;
-		this.startTime = startTime;
-		this.stopTime = stopTime;
 		this.node = node;
 		this.state = state;
 		this.hostName = hostName;
 		interfaces = new ArrayList<NetInterfaceEntity>();
 		this.message = message;
+		this.duration = duration;
 	}
 	
 	/**
@@ -77,20 +74,18 @@ public class ExecutionEntity {
 	 * @param id
 	 * @param cores
 	 * @param ram
-	 * @param startTime
-	 * @param stopTime
+	 * @param duration
 	 * @param node
 	 * @param hostName
 	 * @param message
 	 */
-	public ExecutionEntity(Long id, int cores, int ram, Date startTime,
-			Date stopTime, PhysicalMachineEntity node, String hostName, String message) {
+	public ExecutionEntity(Long id, int cores, int ram, 
+			Long duration,
+			PhysicalMachineEntity node, String hostName, String message) {
 		super();
 		this.id = id;
 		this.cores = cores;
 		this.ram = ram;
-		this.startTime = startTime;
-		this.stopTime = stopTime;
 		this.node = node;
 		this.hostName = hostName;
 		interfaces = new ArrayList<NetInterfaceEntity>();
@@ -136,23 +131,7 @@ public class ExecutionEntity {
 	public void setRam(int ram) {
 		this.ram = ram;
 	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getStopTime() {
-		return stopTime;
-	}
-
-	public void setStopTime(Date stopTime) {
-		this.stopTime = stopTime;
-	}
-
+	
 	public PhysicalMachineEntity getNode() {
 		return node;
 	}
@@ -198,15 +177,14 @@ public class ExecutionEntity {
 	 * @return execution time in hours
 	 */
 	public Long getTimeInHours() {
-		long millisTime = (stopTime.getTime() - startTime.getTime());
-		return (millisTime / 1000 / 60 / 60);
+		return (duration / 1000 / 60 / 60);
 	}
 	
 	/**
 	 * Returns time execution in milliseconds
 	 * @return execution time in milliseconds
 	 */
-	public Long getTime() {
-		return stopTime.getTime() - startTime.getTime();
+	public Long getDuration() {
+		return duration;
 	}
 }

@@ -183,59 +183,50 @@ class BootStrap {
 			e.printStackTrace()
 		}
 		try {
-			String drop = "DROP TRIGGER IF EXISTS save_request_events"
-			String dropPr = "DROP PROCEDURE IF EXISTS sp_check_vm"
-			String procedure = "CREATE PROCEDURE sp_check_vm(new_state_id BIGINT(20), new_id BIGINT(20), new_message VARCHAR(255), new_duration BIGINT(20), old_state_id BIGINT(20), old_copy_to BIGINT(20)) BEGIN " +
-									"SELECT @current := CURRENT_TIMESTAMP; " +
-									"INSERT INTO execution_history (state_id, change_time, execution_id, version, message) VALUES (new_state_id, @current, new_id, 1, new_message); " +
-																	
-									"SELECT @failed := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.FAILED.name() + "\"; " +
-									"SELECT @finished := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.FINISHED.name() + "\"; " +
-									"SELECT @request_copy := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.REQUEST_COPY.name() + "\"; " +
-									"SELECT @copying := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.COPYING.name() + "\"; " +
-									"SELECT @deployed := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.DEPLOYED.name() + "\"; " +
-									"SELECT @finishing := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.FINISHING.name() + "\"; " +
-									"SELECT @reconnecting := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.RECONNECTING.name() + "\"; " +
-									"SELECT @deploying := id FROM execution_state WHERE state = \"" + ExecutionStateEnum.DEPLOYING.name() + "\"; " +
-									//If execution has finished all ips must be released
-									"IF new_state_id = @failed OR (new_state_id = @finished AND old_state_id <> @failed) THEN " +
-										"UPDATE ip SET state = \"" + IPEnum.AVAILABLE.name() + "\" " +
-											"WHERE id IN (SELECT ip_id FROM net_interface WHERE execution_id = new_id) " +
-												"AND id > 0; " +
-									//If copy image to server failed copy should be deleted
-									"ELSEIF old_state_id = @request_copy AND new_state_id = @deployed THEN " +
-										"DELETE FROM image WHERE id = old_copy_to; " +
-									//If copy image to server failed copy should be disable to avoid other fails
-									"ELSEIF old_state_id = @copying AND new_state_id = @failed THEN " +
-										"UPDATE image SET state = \"" + ImageEnum.UNAVAILABLE.name() + "\" " +
-											"WHERE id = old_copy_to; " +
-									"END IF; " +
-									//If execution start process to finish all stop time must be set
-									"IF (old_state_id = @reconnecting AND new_state_id = @failed) OR (old_state_id = @request_copy AND new_state_id = @copying) OR (old_state_id = @deployed AND new_state_id = @finishing) THEN " +
-										"UPDATE execution SET stop_time = @current, last_report = @current " +
-											"WHERE id = new_id; " +
-									//If execution has been started
-									"ELSEIF old_state_id = @deploying AND new_state_id = @deployed THEN " +
-										"UPDATE execution SET start_time = @current, stop_time = DATE_ADD(@current, INTERVAL new_duration/1000 SECOND), last_report = @current " +
-											"WHERE id = new_id; " +
-									"ELSE " +
-										"UPDATE execution SET last_report = @current " +
-											"WHERE id = new_id; " +
-									"END IF; " +
-								"END"
+			String drop = "DROP TRIGGER IF EXISTS save_request_events"		
 			String trigger = "CREATE TRIGGER " +
 							 "save_request_events AFTER UPDATE ON execution " +
 							 "FOR EACH ROW BEGIN " +
 								"IF NEW.state_id <> OLD.state_id THEN " +
-									"CALL sp_check_vm(NEW.state_id, NEW.id, NEW.message, NEW.duration, OLD.state_id, OLD.copy_to); "	+
+									"SELECT CURRENT_TIMESTAMP INTO @current; " +
+									"INSERT INTO execution_history (state_id, change_time, execution_id, version, message) VALUES (NEW.state_id, @current, NEW.id, 1, NEW.message); " +
+									"SELECT id INTO @failed FROM execution_state WHERE state = \"" + ExecutionStateEnum.FAILED.name() + "\"; " +
+									"SELECT id INTO @finished FROM execution_state WHERE state = \"" + ExecutionStateEnum.FINISHED.name() + "\"; " +
+									"SELECT id INTO @request_copy FROM execution_state WHERE state = \"" + ExecutionStateEnum.REQUEST_COPY.name() + "\"; " +
+									"SELECT id INTO @copying FROM execution_state WHERE state = \"" + ExecutionStateEnum.COPYING.name() + "\"; " +
+									"SELECT id INTO @deployed FROM execution_state WHERE state = \"" + ExecutionStateEnum.DEPLOYED.name() + "\"; " +
+									"SELECT id INTO @finishing FROM execution_state WHERE state = \"" + ExecutionStateEnum.FINISHING.name() + "\"; " +
+									"SELECT id INTO @reconnecting FROM execution_state WHERE state = \"" + ExecutionStateEnum.RECONNECTING.name() + "\"; " +
+									"SELECT id INTO @deploying FROM execution_state WHERE state = \"" + ExecutionStateEnum.DEPLOYING.name() + "\"; " +
+									//If execution has finished all ips must be released
+									"IF NEW.state_id = @failed OR (NEW.state_id = @finished AND OLD.state_id <> @failed) THEN " +
+										"UPDATE ip SET state = \"" + IPEnum.AVAILABLE.name() + "\" " +
+											"WHERE id IN (SELECT ip_id FROM net_interface WHERE execution_id = NEW.id) " +
+												"AND id > 0; " +
+									//If copy image to server failed copy should be deleted
+									"ELSEIF OLD.state_id = @request_copy AND NEW.state_id = @deployed THEN " +
+										"DELETE FROM image WHERE id = OLD.copy_to; " +
+									//If copy image to server failed copy should be disable to avoid other fails
+									"ELSEIF OLD.state_id = @copying AND NEW.state_id = @failed THEN " +
+										"UPDATE image SET state = \"" + ImageEnum.UNAVAILABLE.name() + "\" " +
+											"WHERE id = OLD.copy_to; " +
+									"END IF; " +
+									//If execution start process to finish all stop time must be set
+									"IF (OLD.state_id = @reconnecting AND NEW.state_id = @failed) OR (OLD.state_id = @request_copy AND NEW.state_id = @copying) OR (OLD.state_id = @deployed AND NEW.state_id = @finishing) THEN " +
+										"SET NEW.stop_time = @current; " +
+										"SET NEW.last_report = @current;" +
+									//If execution has been started
+									"ELSEIF OLD.state_id = @deploying AND NEW.state_id = @deployed THEN " +
+										"SET NEW.start_time = @current; " +
+										"SET NEW.stop_time = DATE_ADD(@current, INTERVAL NEW.duration/1000 SECOND); "+
+										"SET NEW.last_report = @current; " +
+									"ELSE " +
+										"SET NEW.last_report = @current; " +
+									"END IF; " +
 								"END IF; " +
 							 "END"
 			println "EXE: " + drop
 			sql.execute (drop)
-			println "EXE: " + dropPr
-			sql.execute (dropPr)
-			println "EXE: " + procedure
-			sql.execute (procedure)
 			println "EXE: " + trigger
 			sql.execute (trigger)
 		} catch(Exception e) {

@@ -121,11 +121,11 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 				if (zip != null) {
 					ImageFileManager.setImageFile(new ImageFileEntity(image.getId(), ImageEnum.AVAILABLE, null, null, null, null, fileSize, zip.getExecutableFile().getAbsolutePath(), null, null), false, con, true);
 					System.out.println("Status changed, process closed");
-					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.SUCCESS, null, message);
+					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, message);
 					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);
 				} else {						
 					System.out.println("Error in process, all files must be deleted");
-					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, null, ExecutionProcessEnum.FAIL, null, message);
+					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, ExecutionProcessEnum.FAIL, null, message);
 					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);
 				}
 				

@@ -32,7 +32,7 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 			try (Connection con = ControlManager.getInstance().getDBConnection();) {
 				ExecutionStateMessage message = (ExecutionStateMessage) uMessage;
 				System.out.println("Report EXE: " + message.getHost() + " - ");
-				ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, null, message.getState(), message.getHost(), message.getExecutionMessage());
+				ExecutionEntity exe = new ExecutionEntity(message.getExecutionCode(), 0, 0, null, null, message.getState(), message.getHost(), message.getExecutionMessage());
 				ExecutionManager.updateExecution(exe, null, con);
 			} catch (Exception e) {
 				e.printStackTrace();

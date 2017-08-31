@@ -84,6 +84,7 @@ class Execution {
 		stopTime nullable: true 
 		startTime nullable: true
 		lastReport nullable: false
+		duration nullable: false
 	}
 	
 	//-----------------------------------------------------------------
@@ -177,13 +178,13 @@ class Execution {
 	 */
 	def goNextControl() {
 		if (state.nextControl != null) {
-			state = state.nextControl
-			message = state.controlMessage
+			if(state.controlMessage != null)
+				message = state.controlMessage
+			state = state.nextControl			
 		}
 	}
 	
 	def isControlExceeded(Date current) {
-		println current.getTime() - lastReport.getTime() + " - " + state.controlTime
 		if (state.nextControl != null)
 			return current.getTime() - lastReport.getTime() > state.controlTime
 		return false
