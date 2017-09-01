@@ -39,7 +39,7 @@ public class AgentManager {
         }
         new Thread() {
         	public void run() {
-        		SystemUtils.sleep(1000);
+        		SystemUtils.sleep(5000);
         		System.exit(6);
         	};
         }.start();
@@ -53,7 +53,7 @@ public class AgentManager {
 	public static UnaCloudResponse stopAgent() {
          new Thread() {
          	public void run() {
-         		SystemUtils.sleep(1000);
+         		SystemUtils.sleep(5000);
          		System.exit(0);
          	};
          }.start();

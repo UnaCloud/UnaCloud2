@@ -44,7 +44,7 @@ public class TCPSender {
 	 */
 	private void sendMessage(UnaCloudMessage message, TCPResponseProcessor processor) {
 		try (Socket s =  new Socket(message.getIp(), message.getPort())) {
-			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
+			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort() + " message: " + message);
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 			oos.writeObject(message);
@@ -60,7 +60,7 @@ public class TCPSender {
 			s.close();
 		} catch(Exception e) {
 			e.printStackTrace();
-			System.out.println("Error connectiong to " + message.getIp());		
+			System.out.println("Error connecting to " + message.getIp());		
 			if (processor != null)
 				processor.attendError(e, e.getMessage());				
 		}

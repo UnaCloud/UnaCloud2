@@ -10,10 +10,13 @@ import uniandes.unacloud.common.enums.ExecutionProcessEnum;
  *
  */
 public class UnaCloudResponse implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5067050448735691520L;
 
-	private static final long serialVersionUID = 3900739048594542173L;
-
-	private ExecutionProcessEnum state;
+	private String state;
 	
 	private String message;
 	
@@ -26,11 +29,11 @@ public class UnaCloudResponse implements Serializable {
 	}
 	
 	public UnaCloudResponse(ExecutionProcessEnum state) {
-		this.state = state;	
+		this.state = state.name();	
 	}
 	
 	public UnaCloudResponse(String message, ExecutionProcessEnum state) {
-		this.state = state;	
+		this.state = state.name();	
 		this.message = message;		
 	}
 	
@@ -39,7 +42,7 @@ public class UnaCloudResponse implements Serializable {
 	}
 	
 	public ExecutionProcessEnum getState() {
-		return state;
+		return ExecutionProcessEnum.getEnum(state);
 	}
 	
 	public void setMessage(String message) {
@@ -47,6 +50,6 @@ public class UnaCloudResponse implements Serializable {
 	}
 	
 	public void setState(ExecutionProcessEnum state) {
-		this.state = state;
+		this.state = state.name();
 	}
 }

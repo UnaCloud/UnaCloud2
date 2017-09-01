@@ -39,11 +39,10 @@ public class StartExecutionTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println("Start Execution");
+		System.out.println("Start Execution " + machineExecution.getId());
 		try {
 			//get image 
 			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), transmissionType);
-			System.out.println("Get Image");
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");

@@ -56,8 +56,7 @@ public class TCPMultipleSender extends Thread {
 					System.out.println("Error in machine response; " + message.getIp() );	
 					e.printStackTrace();
 					processor.attendError(message, e.getMessage());
-				}				
-			s.close();
+				}		
 		} catch(Exception e) {
 			e.printStackTrace();
 			System.out.println("Error connecting to " + message.getIp());		

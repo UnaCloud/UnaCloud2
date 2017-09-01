@@ -1,6 +1,8 @@
 package uniandes.unacloud.common.net.tcp.message.exe;
 
+import java.io.Serializable;
 import java.util.List;
+
 
 
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
@@ -12,7 +14,7 @@ import uniandes.unacloud.common.utils.Time;
  * @author CesarF
  *
  */
-public class ExecutionStartMessage extends ImageOperationMessage implements Comparable<ExecutionStartMessage> {
+public class ExecutionStartMessage extends ImageOperationMessage implements Comparable<ExecutionStartMessage>, Serializable {
 	
 	private static final long serialVersionUID = -5116988985857543662L;
 	
@@ -89,10 +91,14 @@ public class ExecutionStartMessage extends ImageOperationMessage implements Comp
 	public List<ImageNetInterfaceComponent> getInterfaces() {			
 		return interfaces;
 	}
-	
+
 	@Override
 	public String toString() {
-		return super.toString() + " executionTime: " + getExecutionTime();
+		return "ExecutionStartMessage [imageId=" + imageId + ", vmCores="
+				+ vmCores + ", vmMemory=" + vmMemory + ", exeTime=" + exeTime
+				+ ", vmHostName=" + vmHostName + ", protocolType="
+				+ protocolType + ", interfaces=" + interfaces + "]" + super.toString();
 	}
 	
+		
 }

@@ -52,7 +52,7 @@ public class QueueMessageProcessor implements QueueReader {
 	/**
 	 * Quantity of messages send in each thread
 	 */
-	private int messagesByThread;
+	private final int messagesByThread;
 		
 	/**
 	 * Pool of threads to attend messages
@@ -203,7 +203,7 @@ public class QueueMessageProcessor implements QueueReader {
 								UnaCloudResponse resp = (UnaCloudResponse) response;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									PhysicalMachineEntity pm = null;
-									System.out.println(mss.getTask() + "  -  " + mss.getPmId());
+									System.out.println("Message process: " + mss.getTask() + "  -  " + mss.getPmId() + " - " + resp.getMessage());
 									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
@@ -221,6 +221,7 @@ public class QueueMessageProcessor implements QueueReader {
 							@Override
 							public void attendError(Object error, String message) {
 								AgentMessage mss = (AgentMessage) error;
+								System.out.println("Error: " + message + " - " + mss);
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
@@ -279,7 +280,7 @@ public class QueueMessageProcessor implements QueueReader {
 								execution.getHostName(),
 								message.getTypeTransmission(),
 								interfaces);
-						System.out.println("Execution from " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
+						System.out.println("Execution " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
 						
 						messageList.add(vmsm);
 						
@@ -296,6 +297,7 @@ public class QueueMessageProcessor implements QueueReader {
 								@Override
 								public void attendError(Object error, String message) {
 									ExecutionStartMessage mss = (ExecutionStartMessage) error;
+									System.out.println("Error: " + error + " - " + message);
 									try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 										PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), null, null, PhysicalMachineStateEnum.OFF, null);
 										PhysicalMachineManager.setPhysicalMachine(pm, con2);
@@ -347,7 +349,7 @@ public class QueueMessageProcessor implements QueueReader {
 					ExecutionStateEnum.FINISHING,
 					ExecutionStateEnum.FAILED
 			};
-			executions = DeploymentManager.getExecutions(ids, false, states, con);
+			executions = ExecutionManager.getExecutions(ids, false, states, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -419,7 +421,7 @@ public class QueueMessageProcessor implements QueueReader {
 			ExecutionStateEnum[] states = new ExecutionStateEnum[] {
 					ExecutionStateEnum.REQUESTED
 			};
-			executions = DeploymentManager.getExecutions(ids, true, states, con);
+			executions = ExecutionManager.getExecutions(ids, true, states, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -495,7 +497,7 @@ public class QueueMessageProcessor implements QueueReader {
 		ExecutionEntity execution = null;
 		ImageEntity image = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
-			execution = DeploymentManager.getExecution(executionId, ExecutionStateEnum.REQUEST_COPY, con);
+			execution = ExecutionManager.getExecution(executionId, ExecutionStateEnum.REQUEST_COPY, con);
 			image = ImageManager.getImage(newImageId, ImageEnum.COPYING, con);
 		} catch (Exception e) {
 			e.printStackTrace();

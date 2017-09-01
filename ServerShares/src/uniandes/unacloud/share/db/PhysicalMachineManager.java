@@ -150,7 +150,10 @@ public class PhysicalMachineManager {
 		try {
 			String query = "UPDATE physical_machine pm SET"; 
 			int parameters = 0;
-			if (machine.getStatus() != null) query += " pm.state = ? ";
+			if (machine.getStatus() != null) {
+				parameters++;
+				query += " pm.state = ? ";
+			}
 			if (machine.getLastReport() != null) query += (parameters++ > 0 ? "," : "") + " pm.last_report = ? ";
 			if (machine.getFreeSpace() != null) query += (parameters++ > 0 ? "," : "") + " pm.free_space = ? ";
 			if (machine.getVersion() != null) query += (parameters++ > 0 ? "," : "") + " pm.agent_version = ? ";

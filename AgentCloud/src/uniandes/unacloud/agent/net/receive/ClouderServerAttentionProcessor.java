@@ -45,18 +45,18 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 
 	@Override
 	public void processMessage(Socket socket) throws Exception {
-		try (Socket s = socket; ObjectInputStream ois = new ObjectInputStream(socket.getInputStream()); ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream())) {
+		try (Socket s = socket; ObjectInputStream ois = new ObjectInputStream(s.getInputStream()); ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream())) {
 			ClientMessage clouderServerRequest = (ClientMessage) ois.readObject();
-            System.out.println("message: " + clouderServerRequest);
+            System.out.println("I received message: " + clouderServerRequest);
             if (clouderServerRequest.getType().equals(TCPMessageEnum.EXECUTION_OPERATION.name()))
-		        oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest, ois, oos));
+		        oos.writeObject(attendExecutionOperation((ImageOperationMessage) clouderServerRequest));
             else if (clouderServerRequest.getType().equals(TCPMessageEnum.PHYSICAL_MACHINE_OPERATION.name()))
 		        oos.writeObject(attendPhysicalMachineOperation((PhysicalMachineOperationMessage) clouderServerRequest));
 		    else if (clouderServerRequest.getType().equals(TCPMessageEnum.AGENT_OPERATION.name()))
 		        oos.writeObject(attendAgentOperation((AgentMessage) clouderServerRequest));
 		    else
 	            oos.writeObject(new UnaCloudResponse("Operation " + clouderServerRequest.getType() + " is invalid as main operation.", ExecutionProcessEnum.FAIL));
-	          
+	        oos.flush();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -68,7 +68,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
      * Method responsible for attending requests for operations on executions
      * @param clouderServerRequestSplitted Server request
      */
-    private UnaCloudResponse attendExecutionOperation(ImageOperationMessage message, ObjectInputStream ois, ObjectOutputStream pw) {
+    private UnaCloudResponse attendExecutionOperation(ImageOperationMessage message) {
 	    try {
 	    	switch (message.getTask()) {
 	            case ImageOperationMessage.VM_START:

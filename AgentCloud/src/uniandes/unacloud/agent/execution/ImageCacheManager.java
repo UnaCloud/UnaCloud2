@@ -55,12 +55,12 @@ public class ImageCacheManager {
 	 * @return image available copy
 	 */
 	public static ImageCopy getFreeImageCopy(long imageId, TransmissionProtocolEnum type) throws ExecutionException {
-		System.out.println("getFreeImageCopy " + imageId);
+		System.out.println("\tgetFreeImageCopy " + imageId);
 		Image vmi = getImage(imageId);
 		ImageCopy source;
 		ImageCopy dest;
 		synchronized (vmi) {
-			System.out.println("has " + vmi.getImageCopies().size() + " copies");
+			System.out.println("\thas " + vmi.getImageCopies().size() + " copies");
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {

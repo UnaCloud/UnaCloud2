@@ -1,11 +1,13 @@
 package uniandes.unacloud.common.net.tcp.message;
 
+import java.io.Serializable;
+
 /**
  * Represents kinf of physical machine operation message sent to agents
  * @author CesarF
  *
  */
-public class PhysicalMachineOperationMessage extends ClientMessage {
+public class PhysicalMachineOperationMessage extends ClientMessage implements Serializable {
 	
 	private static final long serialVersionUID = 6749899457514674239L;
 	

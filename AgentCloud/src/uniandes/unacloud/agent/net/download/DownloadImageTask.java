@@ -43,45 +43,45 @@ public class DownloadImageTask {
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 		final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
-		System.out.println("Connecting to " + ip + ":" + puerto);
+		System.out.println("Connecting to " + ip + ":" + puerto + " to download: " + image.getId());
 		
 		try (Socket s = new Socket(ip, puerto); DataOutputStream ds = new DataOutputStream(s.getOutputStream())) {
 			
 			//Sends operation type ID
-			System.out.println("Successful connection");
-			System.out.println("Operation type 1");
+			System.out.println("\tSuccessful connection");
+			System.out.println("\tOperation type " + UnaCloudConstants.REQUEST_IMAGE);
 			ds.writeInt(UnaCloudConstants.REQUEST_IMAGE);
 			ds.flush();
 			
 			//sends image id
-			System.out.println("send ID " + image.getId());
+			System.out.println("\tsend ID " + image.getId());
 			ds.writeLong(image.getId());
 			ds.flush();
 			
-			System.out.println("Transmission protocol:" + type);
+			System.out.println("\tTransmission protocol:" + type);
 			ds.writeUTF(type.name());
 			ds.flush();
 			
 			//Receives zip elements
 			try (ZipInputStream zis = new ZipInputStream(s.getInputStream())) {
-				System.out.println("Zip open");
+				System.out.println("\tZip open");
 				byte[] buffer = new byte[1024 * 100];
 				for (ZipEntry entry; (entry = zis.getNextEntry()) != null;) {
 					if (entry.getName().equals("unacloudinfo")) {						
 						BufferedReader br = new BufferedReader(new InputStreamReader(zis));
 						image.setPlatformId(br.readLine());
-						System.out.println("Platform: " + image.getPlatformId());
+						System.out.println("\tPlatform: " + image.getPlatformId());
 						String mainFile = br.readLine();
 						if (mainFile == null)
 							throw new ExecutionException(UnaCloudConstants.ERROR_MESSAGE + " image mainFile is null");		
 						copy.setMainFile(new File(root, mainFile));
-						System.out.println("Main: " + mainFile);
+						System.out.println("\tMain: " + mainFile);
 						image.setPassword(br.readLine());
 						image.setUsername(br.readLine());
 						copy.setStatus(ImageStatus.LOCK);
 						/*copy.setVirtualMachineName();*/br.readLine();
 						image.setConfiguratorClass(br.readLine());
-						System.out.println("config: " + image.getConfiguratorClass());						
+						System.out.println("\tconfig: " + image.getConfiguratorClass());						
 					} 
 					else {
 						try (FileOutputStream fos = new FileOutputStream(new File(root, entry.getName()))) {

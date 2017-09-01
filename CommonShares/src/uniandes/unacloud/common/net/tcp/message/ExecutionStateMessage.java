@@ -57,4 +57,13 @@ public class ExecutionStateMessage extends UnaCloudMessage {
 	public String getExecutionMessage() {
 		return messageExecution;
 	}
+
+	@Override
+	public String toString() {
+		return "ExecutionStateMessage [executionCode=" + executionCode
+				+ ", state=" + state + ", messageExecution=" + messageExecution
+				+ "] " + super.toString();
+	}
+	
+	
 }

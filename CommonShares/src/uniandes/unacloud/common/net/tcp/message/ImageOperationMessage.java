@@ -1,5 +1,6 @@
 package uniandes.unacloud.common.net.tcp.message;
 
+
 /**
  * Represents kind of execution operation message sent to agents
  * @author CesarF
@@ -35,4 +36,11 @@ public class ImageOperationMessage extends ClientMessage {
 	public long getExecutionId() {
 		return this.executionId;
 	}
+
+	@Override
+	public String toString() {
+		return "ImageOperationMessage [executionId = " + executionId + "] " + super.toString();
+	}
+	
+	
 }

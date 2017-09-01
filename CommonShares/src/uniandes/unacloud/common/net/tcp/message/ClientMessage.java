@@ -2,9 +2,15 @@ package uniandes.unacloud.common.net.tcp.message;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
 
+/**
+ * 
+ * @author CesarF
+ *
+ */
 public class ClientMessage extends UnaCloudMessage {
 	
 	private static final long serialVersionUID = 457883070963170385L;
+	
 	private int task;
 	
 	private long pmId;
@@ -33,6 +39,11 @@ public class ClientMessage extends UnaCloudMessage {
 	 */
 	public long getPmId() {
 		return pmId;
+	}
+
+	@Override
+	public String toString() {
+		return "ClientMessage [task=" + task + ", pmId=" + pmId + "]" + super.toString();
 	}
 
 }
