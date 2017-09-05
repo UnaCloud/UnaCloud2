@@ -136,11 +136,11 @@ public class TorrentTracker {
 	public void publishFile(FileConverter file) throws Exception {
 
 		//---------------------------------------------------------------------
-		System.out.println("Parent Directory: " + file);
+		System.out.println("Parent Directory: " + file.getExecutableFile().getParentFile().getAbsolutePath());
 		//---------------------------------------------------------------------
 		
 		if (!file.getTorrentFile().exists())
-			createTorrent(file.getTorrentFile(), file.getExecutableFile(), tracker_url);
+			createTorrent(file.getTorrentFile(), file.getZipFile(), tracker_url);
 		shareTorrent(file.getTorrentFile());		
 	}
 	
@@ -174,8 +174,8 @@ public class TorrentTracker {
 	public void removeTorrent(File torrentFile) throws Exception {
 		Client client = localClients.get(torrentFile.getAbsolutePath());
 		if (client != null) {
-			tracker.remove(client.getTorrent(), 1000);
-			client.stop();
+			tracker.remove(client.getTorrent());
+			client.stop(false);
 			localClients.remove(torrentFile.getAbsolutePath());
 		}		
 	}

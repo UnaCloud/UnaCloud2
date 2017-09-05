@@ -38,7 +38,7 @@ environments {
 				username = reader.getStringVariable("dev_username");
 				password = reader.getStringVariable("dev_password");
 				dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
-				url = reader.getStringVariable("dev_url")!=null?reader.getStringVariable("dev_url").replace('\\', ''):'';
+				url = reader.getStringVariable("dev_url") != null ? reader.getStringVariable("dev_url").replace('\\', ''):'';
 	        }
 	    }
 	}
@@ -47,7 +47,7 @@ environments {
 				username = reader.getStringVariable("test_username");
 				password = reader.getStringVariable("test_password");
 	            dbCreate = "update"
-	            url = reader.getStringVariable("test_url")!=null?reader.getStringVariable("test_url").replace('\\', ''):'';
+	            url = reader.getStringVariable("test_url") != null ? reader.getStringVariable("test_url").replace('\\', ''):'';
 	        }
 	    }
 	
