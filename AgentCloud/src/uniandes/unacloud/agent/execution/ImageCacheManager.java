@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.exceptions.ExecutionException;
+import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.Image;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.execution.domain.ImageStatus;
@@ -54,9 +55,9 @@ public class ImageCacheManager {
 	 * @param imageId image Id 
 	 * @return image available copy
 	 */
-	public static ImageCopy getFreeImageCopy(long imageId, TransmissionProtocolEnum type) throws ExecutionException {
-		System.out.println("\tgetFreeImageCopy " + imageId);
-		Image vmi = getImage(imageId);
+	public static ImageCopy getFreeImageCopy(Execution execution, TransmissionProtocolEnum type) throws ExecutionException {
+		System.out.println("\tgetFreeImageCopy " + execution.getImageId());
+		Image vmi = getImage(execution.getImageId());
 		ImageCopy source;
 		ImageCopy dest;
 		synchronized (vmi) {
@@ -64,7 +65,7 @@ public class ImageCacheManager {
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {
-					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
+					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
 					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
@@ -90,7 +91,7 @@ public class ImageCacheManager {
 				dest = new ImageCopy();
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
-				File root = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId + OperatingSystem.PATH_SEPARATOR + vmName);
+				File root = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + vmi.getId() + OperatingSystem.PATH_SEPARATOR + vmName);
 				if (source.getMainFile().getExecutableFile().getName().contains(".")) {
 					String[] fileParts = source.getMainFile().getExecutableFile().getName().split("\\.");
 					dest.setMainFile(new File(root, vmName + "." + fileParts[fileParts.length-1]));

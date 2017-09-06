@@ -31,7 +31,7 @@ public class VmMessageProcessor extends AbstractTCPSocketProcessor {
 		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 		ExecutionStateMessage uMessage = (ExecutionStateMessage)ios.readObject();
 		System.out.println("Receive VM message: " + uMessage.toString());
-		if (uMessage.getType() != null && uMessage.getType().equals(UDPMessageEnum.STATE_EXE)) {
+		if (uMessage.getType() != null && uMessage.getType().equals(UDPMessageEnum.STATE_EXE.name())) {
 			try (Connection con = ControlManager.getInstance().getDBConnection();) {
 				ExecutionStateMessage message = (ExecutionStateMessage) uMessage;
 				System.out.println("Report EXE: " + message.getHost() + " - ");

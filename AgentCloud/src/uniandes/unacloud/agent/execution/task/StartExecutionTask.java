@@ -42,7 +42,7 @@ public class StartExecutionTask implements Runnable {
 		System.out.println("Start Execution " + machineExecution.getId());
 		try {
 			//get image 
-			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId(), transmissionType);
+			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution, transmissionType);
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");
