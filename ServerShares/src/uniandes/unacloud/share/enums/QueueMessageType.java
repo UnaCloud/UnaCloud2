@@ -74,6 +74,7 @@ public enum QueueMessageType {
 	 */
 	public static QueueMessageType getType(String name){
 		if (name.equals(CLEAR_CACHE.name())) return CLEAR_CACHE;
+		if (name.equals(CLEAR_CACHE_UPDATE.name())) return CLEAR_CACHE_UPDATE;
 		if (name.equals(DELETE_USER.name())) return DELETE_USER;
 		if (name.equals(SEND_TASK.name())) return SEND_TASK;
 		if (name.equals(DEPLOY_CLUSTER.name())) return DEPLOY_CLUSTER;

@@ -290,8 +290,8 @@ public class QueueMessageProcessor implements QueueReader {
 								
 								@Override
 								public void attendResponse(Object response, Object message) {
-									//ExecutionStartMessage mss = (ExecutionStartMessage) message;
-									
+									UnaCloudResponse resp = (UnaCloudResponse) response;
+									System.out.println("Response: " + resp);
 								}
 								
 								@Override

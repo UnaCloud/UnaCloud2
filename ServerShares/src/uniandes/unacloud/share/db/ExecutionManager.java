@@ -64,7 +64,8 @@ public class ExecutionManager {
 				if (execution.getNode() != null && execution.getNode().getHost() != null) 
 					ps.setString(id++, execution.getNode().getHost());
 				
-				System.out.println(ps.toString() + " change " + ps.executeUpdate() + " lines");				
+				System.out.println(ps.toString());
+				System.out.println("\t change " + ps.executeUpdate() + " lines");				
 				try {
 					ps.close();
 				} catch(Exception e) {

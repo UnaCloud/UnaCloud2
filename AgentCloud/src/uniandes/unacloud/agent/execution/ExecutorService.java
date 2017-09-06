@@ -23,7 +23,9 @@ public class ExecutorService {
 	/**
      * A pool of threads used to attend UnaCloud server requests
      */
-    private static Executor requestPool,backPool;
+    private static Executor requestPool;
+    
+    private static Executor backPool;
     
     /**
      * Executes a new runnable entity 

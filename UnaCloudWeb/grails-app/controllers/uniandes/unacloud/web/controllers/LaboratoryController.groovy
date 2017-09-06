@@ -289,11 +289,11 @@ class LaboratoryController {
 					redirect(uri:"/admin/lab/" + lab.id, absolute:true)
 				} catch(Exception e) {
 					flash.message = "Error: " + e.message
-					redirect(uri:"/admin/lab/" + lab.id+"/pool/new", absolute:true)
+					redirect(uri:"/admin/lab/" + lab.id + "/pool/new", absolute:true)
 				}				
 			} else {
 				flash.message = "All fields are required"
-				redirect(uri:"/admin/lab/" + lab.id+"/pool/new", absolute:true)
+				redirect(uri:"/admin/lab/" + lab.id + "/pool/new", absolute:true)
 			}
 		} else 
 			redirect(uri:"/admin/lab/list", absolute:true)		

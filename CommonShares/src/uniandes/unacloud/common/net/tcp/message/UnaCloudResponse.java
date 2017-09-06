@@ -52,4 +52,11 @@ public class UnaCloudResponse implements Serializable {
 	public void setState(ExecutionProcessEnum state) {
 		this.state = state.name();
 	}
+
+	@Override
+	public String toString() {
+		return "UnaCloudResponse [state=" + state + ", message=" + message
+				+ "]";
+	}
+	
 }

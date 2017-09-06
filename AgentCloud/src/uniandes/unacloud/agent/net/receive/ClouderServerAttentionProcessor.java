@@ -78,7 +78,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	            	return resp;
 	            case ImageOperationMessage.VM_STOP:
 	            	ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
-	                return new UnaCloudResponse("Starting execution...", ExecutionProcessEnum.SUCCESS);
+	                return new UnaCloudResponse("Stopping execution...", ExecutionProcessEnum.SUCCESS);
 	            case ImageOperationMessage.VM_RESTART:
 	            	//TODO Unused
 	                return PersistentExecutionManager.restartMachine(message.getExecutionId());
