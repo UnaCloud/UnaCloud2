@@ -54,8 +54,9 @@ public class ImageCacheManager {
 	 * Returns a free copy of the image
 	 * @param imageId image Id 
 	 * @return image available copy
+	 * @throws Exception 
 	 */
-	public static ImageCopy getFreeImageCopy(Execution execution, TransmissionProtocolEnum type) throws ExecutionException {
+	public static ImageCopy getFreeImageCopy(Execution execution, TransmissionProtocolEnum type) throws Exception {
 		System.out.println("\tgetFreeImageCopy " + execution.getImageId());
 		Image vmi = getImage(execution.getImageId());
 		ImageCopy source;
@@ -76,6 +77,7 @@ public class ImageCacheManager {
 					throw new ExecutionException("Error downloading image " + ex.getMessage(), ex);
 				}
 				System.out.println(" downloaded");
+				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				return copy;
 			} 
 			else {
@@ -83,6 +85,7 @@ public class ImageCacheManager {
 					if (copy.getStatus() == ImageStatus.FREE) {
 						copy.setStatus(ImageStatus.LOCK);
 						System.out.println(" Using free");
+						ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 						return copy;
 					}
 				}
@@ -100,12 +103,8 @@ public class ImageCacheManager {
 					dest.setMainFile(new File(root, vmName));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
-				SystemUtils.sleep(2000);
-			}
-			try {
 				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
-			} catch (Exception e) {
-				e.printStackTrace();
+				SystemUtils.sleep(2000);
 			}
 		}
 		System.out.println(" clonning");

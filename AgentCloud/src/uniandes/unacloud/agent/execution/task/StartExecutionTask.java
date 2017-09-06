@@ -1,6 +1,5 @@
 package uniandes.unacloud.agent.execution.task;
 
-import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
@@ -46,7 +45,7 @@ public class StartExecutionTask implements Runnable {
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");
-		} catch (ExecutionException ex) {
+		} catch (Exception ex) {
 			try {
 				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, ex.getMessage());
 			} catch (Exception e) {

@@ -153,8 +153,8 @@
 			                                  <td><small>${pool.mask}</small></td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
+					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
 					                              </div>
 											  </td>
 			                              </tr>

@@ -169,11 +169,11 @@ class LaboratoryService {
 	 * @param ip to be removed
 	 */
 	def deleteIP(Laboratory lab, ip) {
-		ExecutionIP executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		ExecutionIP executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
 		if (executionIp.ipPool.ips.size() == 1)
 			throw new Exception("IP range must have one IP address at least")
 		if (executionIp && (executionIp.state == IPEnum.AVAILABLE || executionIp.state == IPEnum.DISABLED)) {	
-			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id", [id : executionIp.id]);
+			NetInterface.executeUpdate("update NetInterface net set net.ip = null where net.ip.id = :id", [id : executionIp.id]);
 			IPPool pool = executionIp.ipPool
 			pool.removeFromIps(executionIp)
 			executionIp.delete()
@@ -186,7 +186,7 @@ class LaboratoryService {
 	 * @param ip IP to be modified
 	 */
 	def setStatusIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		def executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
 		if (executionIp && (executionIp.state.equals(IPEnum.AVAILABLE) || executionIp.state.equals(IPEnum.DISABLED))) {
 			if (executionIp.state == IPEnum.AVAILABLE)
 				executionIp.putAt("state", IPEnum.DISABLED)
@@ -203,7 +203,7 @@ class LaboratoryService {
 	 */
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
-		if (ipPool&&ipPool.getUsedIpsQuantity() == 0) {
+		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
 			for (ExecutionIP ip : ipPool.ips)
 				deleteIP(lab, ip.id)
 			ipPool.delete()

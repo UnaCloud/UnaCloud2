@@ -207,7 +207,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if (lab && params.ip && params.pool) {
 			try {
-				laboratoryService.deleteIP(lab,params.ip)
+				laboratoryService.deleteIP(lab, Long.parseLong(params.ip))
 				flash.message = "Your IP has been removed"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id + "/pool/" + params.pool, absolute:true)
@@ -228,7 +228,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if (lab && params.ip) {
 			try {
-				laboratoryService.setStatusIP(lab,params.ip)
+				laboratoryService.setStatusIP(lab, Long.parseLong(params.ip))
 				flash.message = "Your IP has been modified"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id + '/pool/' + params.pool, absolute:true)
@@ -250,7 +250,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if ( lab && params.pool) {
 			try {
-				laboratoryService.deletePool(lab,params.pool)
+				laboratoryService.deletePool(lab, params.pool)
 				flash.message = "Your IP Pool has been removed"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id, absolute:true)
