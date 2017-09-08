@@ -445,7 +445,7 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getRam(), 
 							new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
 							execution.getHostName(),
-							null,
+							message.getTypeTransmission(),
 							interfaces);
 					System.out.println("Execution from " + execution.getTimeInHours() + " - " + execution.getDuration());
 					

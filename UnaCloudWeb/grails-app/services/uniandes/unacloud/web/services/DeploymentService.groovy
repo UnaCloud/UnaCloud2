@@ -210,7 +210,7 @@ class DeploymentService {
 		image.executions.addAll(executions)
 		image.save(failOnError:true, flush:true)
 		if (!Environment.isDevelopmentMode()) {
-			QueueTaskerControl.addInstancesToDeploy(executions.sort(), user, image)
+			QueueTaskerControl.addInstancesToDeploy(executions.sort(), user, image, TransmissionProtocolEnum.getEnum(serverVariableService.getTransmissionProtocol()))
 		}
 		
 	}

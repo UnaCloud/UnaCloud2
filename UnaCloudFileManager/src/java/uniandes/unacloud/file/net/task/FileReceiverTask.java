@@ -43,8 +43,9 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 	@Override
 	public void processMessage(Socket s) throws Exception {
 		
-		File temp = null;
+		FileConverter zip = null;
 		ImageFileEntity image = null;
+		String mainFolder = null;
 		UserEntity user = null;
 		Long execution = null;
 		Long fileSize = null;
@@ -68,21 +69,21 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 			System.out.println("\tImage requested " + image);	
 			
 			if (image != null) {
-								
+				mainFolder = image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator;
 				try (ZipInputStream zis = new ZipInputStream(is)) {
 					
 					System.out.println("\tZip open");
 					final byte[] buffer = new byte[1024 * 100];
 					ZipEntry entry = zis.getNextEntry();
 					System.out.println("\t\tFile: " + entry.getName());
-					
-					temp = File.createTempFile(entry.getName(), null);
-					try (FileOutputStream fos = new FileOutputStream(temp)) {
+					new File(mainFolder).mkdirs();
+					File fileFromAgent = new File(mainFolder + entry.getName());
+					try (FileOutputStream fos = new FileOutputStream(fileFromAgent)) {
 						for (int n; (n = zis.read(buffer)) != -1;)
-							fos.write(buffer, 0, n);
-							
+							fos.write(buffer, 0, n);							
 					}	
-					System.out.println("Reception finished " + temp);
+					System.out.println("Reception finished " + fileFromAgent);
+					zip = new FileConverter(fileFromAgent);
 					zis.closeEntry();				
 							
 				} catch (Exception e) {		
@@ -96,14 +97,9 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 		if (image != null && execution != null) {
 			// Save file in path
 			String message = null;
-			FileConverter zip = null;
-			if (temp != null) {
-				try {
-					String mainFolder = image.getRepository().getRoot() + image.getName() + "_" + user.getUsername() + File.separator;
-					System.out.println("save in path: " + mainFolder);
-					FileProcessor.deleteFileSync(mainFolder);		
-					new File(mainFolder).mkdirs();
-					zip = new FileConverter(FileProcessor.copyFileSync(temp.getAbsolutePath(), mainFolder + temp.getName()));
+			
+			if (zip != null) {
+				try {					
 					//Announce in torrent
 					TorrentTracker.getInstance().publishFile(zip);
 					message = "Copying process has been successful";
@@ -111,10 +107,11 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 					e.printStackTrace();
 					message = e.getMessage();
 				}
-				temp.delete();
 			}
-			else 
+			else {
+				FileProcessor.deleteFileSync(mainFolder);	
 				message = "Error receiving file from agent. Check logs";		
+			}
 			
 			//Modifying data
 			try (Connection con = FileManager.getInstance().getDBConnection();) {
@@ -123,7 +120,8 @@ public class FileReceiverTask extends AbstractTCPSocketProcessor {
 					System.out.println("Status changed, process closed");
 					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, message);
 					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);
-				} else {						
+				} 
+				else {						
 					System.out.println("Error in process, all files must be deleted");
 					ExecutionEntity exe = new ExecutionEntity(execution, 0, 0, null, null, ExecutionProcessEnum.FAIL, null, message);
 					ExecutionManager.updateExecution(exe, ExecutionStateEnum.COPYING, con);

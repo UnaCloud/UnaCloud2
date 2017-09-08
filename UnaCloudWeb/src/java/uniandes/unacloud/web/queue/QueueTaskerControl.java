@@ -103,12 +103,12 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image) {
+	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image, TransmissionProtocolEnum transmissionType) {
 		Long[] listIds = new Long[executions.size()];
 		for (int i = 0; i < executions.size(); i++)
 			listIds[i] = executions.get(i).getDatabaseId();
 		
-		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), ((Image)image.getImage()).getDatabaseId(), listIds);
+		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), ((Image)image.getImage()).getDatabaseId(), listIds, transmissionType);
 		controlQueue.sendMessage(message);
 	}
 	

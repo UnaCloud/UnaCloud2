@@ -52,7 +52,7 @@ public class ExecutionManager {
 				if (execution.getNode() != null && execution.getNode().getHost() != null) 
 					query += "AND vme.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?) ";
 				if (currentState != null)
-					query += "AND exest.state == \'" + currentState.name() + "\' ";
+					query += "AND exest.state = \'" + currentState.name() + "\' ";
 				query += "AND vme.id > 0 AND " + state + " IS NOT NULL;"; 
 				PreparedStatement ps = con.prepareStatement(query);
 				int id = 1;

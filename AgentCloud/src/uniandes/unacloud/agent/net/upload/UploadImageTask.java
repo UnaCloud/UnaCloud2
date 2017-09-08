@@ -76,7 +76,7 @@ public class UploadImageTask implements Runnable {
 						FileProcessor.deleteFileSync(f.getAbsolutePath());
 					else
 						fileSize += f.length();
-				zip = FileProcessor.zipFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
+				zip = FileProcessor.zipFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getAbsolutePath());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -105,7 +105,7 @@ public class UploadImageTask implements Runnable {
 				
 				System.out.println("\tSending " + machineExecution.getId());
 				final byte[] buffer = new byte[1024 * 100];
-				System.out.println("\tSending files" + machineExecution.getImage().getMainFile());
+				System.out.println("\tSending files" + machineExecution.getImage().getMainFile().getExecutableFile().getAbsolutePath());
 				
 				try {										
 					System.out.println("\tSending: " + zip.getName());
