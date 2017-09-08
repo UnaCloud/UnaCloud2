@@ -174,7 +174,7 @@ public class ImageCopy implements Serializable {
 	 */
 	public synchronized ImageCopy cloneCopy(ImageCopy dest) {
 		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
-		platform.cloneImage(this,dest);
+		platform.cloneImage(this, dest);
 		return dest;
 	}
 	

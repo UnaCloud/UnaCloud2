@@ -107,7 +107,7 @@ public class ImageCacheManager {
 				SystemUtils.sleep(2000);
 			}
 		}
-		System.out.println(" clonning");
+		System.out.println("\tclonning");
 		return source.cloneCopy(dest);
 	}
 	/**
@@ -133,6 +133,7 @@ public class ImageCacheManager {
 	 */
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy) {
 		vmiCopy.setStatus(ImageStatus.FREE);
+		saveImages();
 	}
 		
 	/**
