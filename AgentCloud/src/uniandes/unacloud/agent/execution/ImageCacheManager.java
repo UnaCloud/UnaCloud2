@@ -77,7 +77,7 @@ public class ImageCacheManager {
 					throw new ExecutionException("Error downloading image " + ex.getMessage(), ex);
 				}
 				System.out.println("\t\t downloaded");
-				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				return copy;
 			} 
 			else {
@@ -85,7 +85,7 @@ public class ImageCacheManager {
 					if (copy.getStatus() == ImageStatus.FREE) {
 						copy.setStatus(ImageStatus.LOCK);
 						System.out.println("\t Using free");
-						ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
+						ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 						return copy;
 					}
 				}
@@ -103,7 +103,7 @@ public class ImageCacheManager {
 					dest.setMainFile(new File(root, vmName));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
-				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				SystemUtils.sleep(2000);
 			}
 		}
