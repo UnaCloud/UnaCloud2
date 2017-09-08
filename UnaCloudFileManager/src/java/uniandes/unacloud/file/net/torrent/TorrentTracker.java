@@ -94,7 +94,7 @@ public class TorrentTracker {
 	public void startService(int port, String ip, String sourcePath, int[] clientPorts) throws Exception {
 		if (tracker != null) return;
 		System.out.println("Configure tracker " + ip + ":" + port);
-		tracker_url = "http://" + ip + ":" + port;
+		tracker_url = "http://" + ip + ":" + port + "/announce";
 		IPAddress = ip;
 		tracker = new Tracker(new InetSocketAddress(port));
 		tracker.start();
@@ -136,7 +136,7 @@ public class TorrentTracker {
 	public void publishFile(FileConverter file) throws Exception {
 
 		//---------------------------------------------------------------------
-		System.out.println("Parent Directory: " + file.getExecutableFile().getParentFile().getAbsolutePath());
+		System.out.println("Parent Directory: " + file.getZipFile());
 		//---------------------------------------------------------------------
 		
 		if (!file.getTorrentFile().exists())
@@ -161,7 +161,7 @@ public class TorrentTracker {
 		System.out.println("Loading torrent from " + torrentFile.getName());
 		tracker.announce(TrackedTorrent.load(torrentFile));
 		 
-		System.out.printf("Inet Address: " + ip + " File: " + torrentFile + " Shared: " + torrentFile.getParent());
+		System.out.println("Inet Address: " + ip + " File: " + torrentFile + " Shared: " + torrentFile.getParent());
 		client.share();
 		localClients.put(torrentFile.getAbsolutePath(), client);
 	}
@@ -199,7 +199,7 @@ public class TorrentTracker {
 		metainfo.put("info", info);
 		OutputStream out = new FileOutputStream(file);
 		encodeMap(metainfo, out);
-		out.close();
+		out.close();		
 	}
 	
 	/**

@@ -108,8 +108,8 @@
 	<classpathentry kind="lib" path="lib/json-20160212.jar"/>
 	<classpathentry kind="lib" path="lib/rabbitmq-client.jar"/>
 	<classpathentry kind="lib" path="lib/servershares.jar"/>
-	<classpathentry kind="lib" path="lib/ttorrent-core-1.6_cesarf.jar"/>
 	<classpathentry kind="lib" path="lib/UAUtils.jar"/>
-	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6_cesarf.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT_cesarf.jar"/>
+	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-shaded_cesarf.jar"/>
 	<classpathentry kind="output" path="target-eclipse/classes"/>
 </classpath>

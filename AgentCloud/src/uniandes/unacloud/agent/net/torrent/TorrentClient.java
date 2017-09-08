@@ -96,8 +96,7 @@ public class TorrentClient {
 		System.out.println("Torrent: " + torrentFile);
 		InetAddress ip = InetAddress.getLocalHost();
 		System.out.printf("Inet Address: " + ip + "\n\tFile: " + torrentFile);
-		Client client = new Client(ip, 
-				SharedTorrent.fromFile(torrentFile, torrentFile.getParentFile()), listPorts);
+		Client client = new Client(ip, SharedTorrent.fromFile(torrentFile, torrentFile.getParentFile()), listPorts);
 		client.setMaxDownloadRate(500000.0);
 		client.setMaxUploadRate(500000.0);
 		if (download)
@@ -121,7 +120,7 @@ public class TorrentClient {
 			public void update(Observable o, Object arg) {
 				 Client client = (Client) o;
 				 float progress = client.getTorrent().getCompletion();
-				 System.out.println("**** Process torrent: " + client.getTorrent().getName()+ " --> "+progress);
+				 System.out.println("**** Process torrent: " + client.getTorrent().getName() + " --> " + progress);
 			}
 		});
 		
