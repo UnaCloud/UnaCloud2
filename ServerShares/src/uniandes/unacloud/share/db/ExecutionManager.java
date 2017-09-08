@@ -169,7 +169,7 @@ public class ExecutionManager {
 								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
 							+ "WHERE vme.id IN (" + builder.deleteCharAt( builder.length() -1 ).toString() + ") ";
 			if (states != null && states.length > 0)
-				query += " AND exe.state IN (" + builder.deleteCharAt( builderS.length() -1 ).toString() + ")";
+				query += " AND ex.state IN (" + builderS.deleteCharAt( builderS.length() -1 ).toString() + ")";
 			query += ";";
 			PreparedStatement ps = con.prepareStatement(query);
 		
@@ -233,11 +233,11 @@ public class ExecutionManager {
 	 */
 	public static ExecutionEntity getExecution(Long id, ExecutionStateEnum state, Connection con) {
 		try {			
-			String query = "SELECT vme.id, hp.cores, hp.ram, vme.duration, exe.state, vme.execution_node_id, vme.name, vme.message "
+			String query = "SELECT vme.id, hp.cores, hp.ram, vme.duration, ex.state, vme.execution_node_id, vme.name, vme.message "
 							+ "FROM execution vme "
 								+ "INNER JOIN hardware_profile hp ON vme.hardware_profile_id = hp.id "
 								+ "INNER JOIN execution_state ex ON ex.id = vme.state_id "
-							+ "WHERE exe.state = ? AND vme.id = ?;";
+							+ "WHERE ex.state = ? AND vme.id = ?;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
