@@ -8,7 +8,7 @@ import uniandes.unacloud.share.enums.IPEnum;
  * 
  * @author CesarF
  */
-class ExecutionIP extends IP{
+class ExecutionIP extends IP {
 	
 	//-----------------------------------------------------------------
 	// Properties

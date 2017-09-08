@@ -66,10 +66,10 @@ class LaboratoryService {
 		if (ips.size() == 0) 
 			throw new Exception("IP range invalid")
 		//TODO save lab after validate each IP
-		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability, networkQuality: netConfig, ipPools:[], physicalMachines:[]).save();
-		def ipPool = new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
+		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability, networkQuality: netConfig, ipPools: [], physicalMachines: []).save();
+		def ipPool = new IPPool(privateNet :privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()		
 		for (String ipFind: ips)
-			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()			
+			new ExecutionIP(ip: ipFind, ipPool: ipPool).save()			
 	}
 	
 	/**
@@ -85,8 +85,8 @@ class LaboratoryService {
 	 */
 	
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
-		def physicalMachine = new PhysicalMachine(name:name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
-			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip:ip), platforms: [])
+		def physicalMachine = new PhysicalMachine(name: name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
+			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [])
 		if (plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
 		else
@@ -226,7 +226,7 @@ class LaboratoryService {
 			throw new Exception("IP range invalid")
 		def ipPool = new IPPool(privateNet:privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()
 		for (String ipFind : ips) 
-			new ExecutionIP(ip : ipFind, ipPool : ipPool).save()		
+			new ExecutionIP(ip : ipFind, ipPool : ipPool).save()
 	}
 	
 	/**

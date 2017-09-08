@@ -1,12 +1,19 @@
 package uniandes.unacloud.agent.execution.domain;
 
+import java.io.Serializable;
+
 /**
  * Class to represent a net interface in image execution
  * @author CesarF
  *
  */
-public class NetInterface {
+public class NetInterface implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -816110117889129324L;
+
 	/**
 	 * Net interface name
 	 */

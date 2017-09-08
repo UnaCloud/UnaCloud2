@@ -76,7 +76,7 @@ public class ImageCacheManager {
 					ex.printStackTrace();
 					throw new ExecutionException("Error downloading image " + ex.getMessage(), ex);
 				}
-				System.out.println(" downloaded");
+				System.out.println("\t\t downloaded");
 				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				return copy;
 			} 
@@ -84,7 +84,7 @@ public class ImageCacheManager {
 				for (ImageCopy copy : vmi.getImageCopies()) {
 					if (copy.getStatus() == ImageStatus.FREE) {
 						copy.setStatus(ImageStatus.LOCK);
-						System.out.println(" Using free");
+						System.out.println("\t Using free");
 						ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 						return copy;
 					}

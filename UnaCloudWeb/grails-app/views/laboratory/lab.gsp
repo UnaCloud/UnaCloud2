@@ -145,7 +145,7 @@
 			                              </tr>
 			                          </thead>
 			                          <tbody>
-			                          <g:each in="${lab.ipPools}" status="i" var="pool"> 
+			                          <g:each in="${lab.getPools()}" status="i" var="pool"> 
 			                              <tr>
 			                              	  <td><small>${pool.first().ip}</small></td>
 			                                  <td><small>${pool.last().ip}</small></td>
