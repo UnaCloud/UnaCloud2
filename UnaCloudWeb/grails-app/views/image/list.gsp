@@ -59,16 +59,19 @@
 	                                  <g:elseif test="${image.state.equals(ImageEnum.IN_QUEUE)}">
 	                                  	<span class="label label-warning">${image.state.name}</span>
 	                                  </g:elseif>
+	                                  <g:elseif test="${image.state.equals(ImageEnum.PROCESSING)}">
+	                                  	<span class="label label-primary">${image.state.name}</span>
+	                                  </g:elseif>
                                   </td>
-                                  <td class="column-center">                                   
-                                 	 <div class="btn-group">
-                                 	 <g:if test="${image.state.equals(ImageEnum.AVAILABLE)}">
-                                 	 	<a title="Delete" class="delete_images btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
-                                   	 	<a title="Edit" href="${createLink(uri: '/services/image/edit/'+image.id, absolute: true)}" class="btn btn-default" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
-                                    	<a title="Remove from cache" class="clear_image btn btn-default" data-id="${image.id}" href="${createLink(uri: '/services/image/clear/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-eraser'></i></a>  
+                                  <td class = "column-center">                                   
+                                 	 <div class = "btn-group">
+                                 	 <g:if test = "${image.state.equals(ImageEnum.AVAILABLE)}">
+                                 	 	<a title = "Delete" class = "delete_images btn btn-default" data-id = "${image.id}" href = "${createLink(uri: '/services/image/delete/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-trash-o' ></i></a>
+                                   	 	<a title = "Edit" href = "${createLink(uri: '/services/image/edit/' + image.id, absolute: true)}" class = "btn btn-default" data-toggle="tooltip"><i class = "fa fa-pencil-square" ></i></a>
+                                    	<a title = "Remove from cache" class = "clear_image btn btn-default" data-id = "${image.id}" href = "${createLink(uri: '/services/image/clear/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-eraser'></i></a>  
                                     </g:if> 
-                                     <g:if test="${image.state.equals(ImageEnum.AVAILABLE)||image.state.equals(ImageEnum.UNAVAILABLE)}">
-                                        <a title="Update" href="${createLink(uri: '/services/image/update/'+image.id, absolute: true)}" class="btn btn-default"  data-toggle="tooltip"><i class="fa fa-upload"></i></a>
+                                     <g:if test = "${image.state.equals(ImageEnum.AVAILABLE)||image.state.equals(ImageEnum.UNAVAILABLE)}">
+                                        <a title = "Update" href = "${createLink(uri: '/services/image/update/' + image.id, absolute: true)}" class = "btn btn-default"  data-toggle = "tooltip"><i class = "fa fa-upload"></i></a>
 									 </g:if>
                                      </div>                                  
 								  </td>

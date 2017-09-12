@@ -1,11 +1,11 @@
 package uniandes.unacloud.agent.execution.task;
 
-import uniandes.unacloud.agent.exceptions.ExecutionException;
 import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 
 /**
  * Task to start an execution
@@ -14,14 +14,23 @@ import uniandes.unacloud.common.enums.ExecutionStateEnum;
  */
 public class StartExecutionTask implements Runnable {
 	
-	Execution machineExecution;
+	/**
+	 * Machine execution
+	 */
+	private Execution machineExecution;
+	
+	/**
+	 * Transmission type to request image
+	 */
+	private TransmissionProtocolEnum transmissionType;
 	
 	/**
 	 * class constructor
 	 * @param machineExecution Execution instance to be started
 	 */
-	public StartExecutionTask(Execution machineExecution) {
+	public StartExecutionTask(Execution machineExecution, TransmissionProtocolEnum trans) {
 		this.machineExecution = machineExecution;
+		this.transmissionType = trans;
 	}
 	
 	/**
@@ -29,17 +38,16 @@ public class StartExecutionTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println("Start Execution");
+		System.out.println("Start Execution " + machineExecution.getId());
 		try {
 			//get image 
-			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution.getImageId());
-			System.out.println("Get Image");
+			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution, transmissionType);
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);
 			System.out.println("endStartExecution");
-		} catch(ExecutionException ex) {
+		} catch (Exception ex) {
 			try {
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, ex.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -1,12 +1,11 @@
 package uniandes.unacloud.web.controllers
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.web.services.DeploymentService;
 import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.UserRestrictionService;
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
@@ -60,7 +59,7 @@ class DeploymentController {
 		def user = User.get(session.user.id)
 		session.user.refresh(user)
 		if (!user.status.equals(UserStateEnum.AVAILABLE)) {
-			flash.message="You don\'t have permissions to do this action"
+			flash.message = "You don\'t have permissions to do this action"
 			redirect(uri:"/", absolute:true)
 			return false
 		}
@@ -93,7 +92,7 @@ class DeploymentController {
 						HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
 						requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
 					}		
-					deploymentService.deploy(cluster, user, params.time.toLong()*60*60*1000, requests)
+					deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
 					redirect(uri:"/services/deployment/list", absolute:true)
 					return
 					
@@ -106,7 +105,8 @@ class DeploymentController {
 					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 					return
 				}
-			} else {
+			} 
+			else {
 				flash.message = 'You don\'t have permissions to deploy this cluster or cluster is not available'
 				redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
 				return
@@ -127,7 +127,7 @@ class DeploymentController {
 			[myDeployments: user.getActiveDeployments()]		
 		else {	
 			def deployments = deploymentService.getActiveDeployments(user)	
-			[myDeployments: user.getActiveDeployments(),deployments: deployments]
+			[myDeployments: user.getActiveDeployments(), deployments: deployments]
 		}
 	}
 	
@@ -137,14 +137,14 @@ class DeploymentController {
 	 * stopped. Redirects to index when the operation is finished.
 	 */
 	
-	def stop(){
+	def stop() {
 		def user= User.get(session.user.id)
 		List<Execution> executions = new ArrayList<>();
 		params.each {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
-					if (vm != null && (vm.status.equals(ExecutionStateEnum.DEPLOYED) || vm.status.equals(ExecutionStateEnum.FAILED))) {
+					if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
@@ -154,7 +154,8 @@ class DeploymentController {
 			flash.message = 'Your request has been processed'
 			flash.type = 'info'
 			deploymentService.stopExecutions(executions,user)
-		} else 
+		} 
+		else 
 			flash.message = 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
@@ -175,7 +176,7 @@ class DeploymentController {
 				def allowedLabs = userRestrictionService.getAllowedLabs(image.deployment.user)
 				def quantitiesTree = new TreeMap<String, Integer>()
 				allowedLabs.each {
-					def results = laboratoryService.calculateDeploys(it,allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
+					def results = laboratoryService.calculateDeploys(it, allowedHwdProfiles, image.highAvaliavility, image.image.platform)					
 					for (HardwareProfile hwd in allowedHwdProfiles) {
 						if (!quantitiesTree.get(hwd.name))
 							quantitiesTree.put(hwd.name,results.get(hwd.name))
@@ -193,7 +194,8 @@ class DeploymentController {
 				flash.message = 'You don\'t have privileges to add instances to this deployment'
 				redirect(uri:"/services/deployment/list", absolute:true)
 			}
-		} else
+		} 
+		else
 			redirect(uri:"/services/deployment/list", absolute:true)
 		
 	}
@@ -208,7 +210,7 @@ class DeploymentController {
 			if (image.deployment.user == user || user.isAdmin()) {
 				try {
 					//validates if cluster is good configured
-					def request = new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(), params.get('instances_'+image.id).toInteger(), image.getDeployedHostname(), image.highAvaliavility);
+					def request = new ImageRequestOptions(image.image, image.getDeployedHarwdProfile(), params.get('instances_' + image.id).toInteger(), image.getDeployedHostname(), image.highAvaliavility);
 				
 					deploymentService.addInstances(image, user, params.time.toLong() * 60 * 60 * 1000, request)
 					redirect(uri:"/services/deployment/list", absolute:true)
@@ -220,7 +222,7 @@ class DeploymentController {
 						flash.message = e.getCause()
 					else
 						flash.message = e.message
-					redirect(uri:"/services/deployment/"+image.id+'/add', absolute:true)
+					redirect(uri:"/services/deployment/" + image.id + '/add', absolute:true)
 				}
 				
 			} else {

@@ -21,9 +21,9 @@ public class ImageManager {
 	 * @param con Database Connection
 	 * @return image, could return null
 	 */
-	public static ImageEntity getImage(Long id, ImageEnum state,Connection con) {
+	public static ImageEntity getImage(Long id, ImageEnum state, Connection con) {
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM image vm WHERE vm.state = ? and vm.id = ?;");
+			PreparedStatement ps = con.prepareStatement("SELECT vm.id, vm.user, vm.password, vm.token FROM image vm WHERE vm.state = ? AND vm.id = ?;");
 			ps.setString(1, state.name());
 			ps.setLong(2, id);
 			System.out.println(ps.toString());
@@ -55,7 +55,7 @@ public class ImageManager {
 		if (image.getId() == null || image.getId() < 1)
 			return false;
 		try {
-			String query = "update image vm set vm.state = ? where vm.id = ? and vm.id > 0;";
+			String query = "UPDATE image vm SET vm.state = ? WHERE vm.id = ? AND vm.id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());
@@ -78,12 +78,13 @@ public class ImageManager {
 	 * @param image to be deleted
 	 * @param con Database Connection
 	 * @return true in case entity was deleted, false in case not
+	 * TODO
 	 */
-	public static boolean deleteImage(ImageEntity image,Connection con) {
+	public static boolean deleteImage(ImageEntity image, Connection con) {
 		if (image.getId() == null || image.getId() < 1)
 			return false;
 		try {
-			String query = "delete from image where state = ? and id = ? and id > 0;";
+			String query = "DELETE FROM image WHERE state = ? AND id = ? AND id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, image.getState().name());
 			ps.setLong(2, image.getId());

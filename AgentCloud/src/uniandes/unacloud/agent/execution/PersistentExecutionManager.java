@@ -20,14 +20,10 @@ import uniandes.unacloud.agent.execution.domain.ImageStatus;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.net.upload.UploadImageTask;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.net.messages.InvalidOperationResponse;
-import uniandes.unacloud.common.net.messages.UnaCloudAbstractResponse;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionAddTimeMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionRestartMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageResponse;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStartResponse.ExecutionState;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionAddTimeMessage;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageMessage;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -106,19 +102,24 @@ public class PersistentExecutionManager {
      * Restarts the given execution
      * @return response to server
      */
-    public static UnaCloudAbstractResponse restartMachine(ExecutionRestartMessage restartMessage) {
-    	Execution execution = executionList.get(restartMessage.getExecutionId());
+    public static UnaCloudResponse restartMachine(long executionId) {
+    	UnaCloudResponse response = new UnaCloudResponse();
+    	Execution execution = executionList.get(executionId);
         try {
         	execution.getImage().restartExecution();
+        	response.setMessage(UnaCloudConstants.SUCCESSFUL_OPERATION);
+        	response.setState(ExecutionProcessEnum.SUCCESS);
         } catch (PlatformOperationException ex) {
             try {
-				ServerMessageSender.reportExecutionState(restartMessage.getExecutionId(), ExecutionStateEnum.FAILED, ex.getMessage());
+				ServerMessageSender.reportExecutionState(executionId, ExecutionProcessEnum.FAIL, ex.getMessage());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+            response.setMessage(ex.getMessage());
+        	response.setState(ExecutionProcessEnum.FAIL);
         }
         saveData();
-        return null;
+        return response;
     }
 
     /**
@@ -131,7 +132,7 @@ public class PersistentExecutionManager {
     	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.DEPLOYING, "Starting execution");
+	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
 	            if (!started) 
 	            	execution.getImage().startExecution();
 	            executionList.put(execution.getId(),execution);
@@ -142,7 +143,7 @@ public class PersistentExecutionManager {
 	        } catch (PlatformOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
-	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionStateEnum.FAILED, e.getMessage());
+	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.FAIL, e.getMessage());
 	            return ERROR_MESSAGE + e.getMessage();
 	        }
         } catch (Exception e) {
@@ -159,13 +160,13 @@ public class PersistentExecutionManager {
      * @param timeMessage message with execution id and time to be modified
      * @return unacloud response
      */
-    public static UnaCloudAbstractResponse extendsVMTime(ExecutionAddTimeMessage timeMessage) {
+    public static UnaCloudResponse extendsVMTime(ExecutionAddTimeMessage timeMessage) {
     	Execution execution = executionList.get(timeMessage.getExecutionId());
     	execution.setExecutionTime(timeMessage.getExecutionTime());
     	execution.setShutdownTime(System.currentTimeMillis() + timeMessage.getExecutionTime().toMillis());
     	timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
     	saveData();
-        return null;
+        return new UnaCloudResponse (UnaCloudConstants.SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);
     }
     
     /**
@@ -241,22 +242,22 @@ public class PersistentExecutionManager {
      * @param message
      * @return unacloud response
      */
-    public static UnaCloudAbstractResponse sendImageCopy(ExecutionSaveImageMessage message) {
+    public static UnaCloudResponse sendImageCopy(ExecutionSaveImageMessage message) {
     	try {
     		Execution execution = executionList.get(message.getExecutionId());
-    		ExecutionSaveImageResponse response = new ExecutionSaveImageResponse();
+    		UnaCloudResponse response = new UnaCloudResponse();
     		if (execution != null && execution.getImageId() == message.getImageId()) {
     			System.out.println("Start copy service with token " + message.getTokenCom());
 				response.setMessage("Copying image");
-				response.setState(ExecutionState.COPYNG);
-				ExecutorService.executeBackgroundTask(new UploadImageTask(execution,message.getTokenCom()));
+				response.setState(ExecutionProcessEnum.SUCCESS);
+				ExecutorService.executeBackgroundTask(new UploadImageTask(execution, message.getTokenCom()));
             } else {
 				response.setMessage(UnaCloudConstants.ERROR_MESSAGE + " Execution doesn't exist");
-				response.setState(ExecutionState.FAILED);
+				response.setState(ExecutionProcessEnum.FAIL);
 			}
     		return response;
 		} catch (Exception e) {			
-			return new InvalidOperationResponse(UnaCloudConstants.ERROR_MESSAGE + e);
+			return new UnaCloudResponse(UnaCloudConstants.ERROR_MESSAGE + e, ExecutionProcessEnum.FAIL);
 		}       
     }
 }

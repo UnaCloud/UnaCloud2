@@ -15,9 +15,15 @@ import java.util.Enumeration;
  */
 public class AddressUtility {
 	
-	private String ip,netmask;
+	private String ip;
+	
+	private String netmask;
     
-    private String network,broadcast,gateway;
+    private String network;
+    
+    private String broadcast;
+    
+    private String gateway;
     
     /**
      * Class constructor

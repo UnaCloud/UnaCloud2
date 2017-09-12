@@ -5,7 +5,7 @@ package uniandes.unacloud.agent.exceptions;
  * @author CesarF
  *
  */
-public class UnsupportedCommandException extends Exception{
+public class UnsupportedCommandException extends Exception {
 
 	/**
 	 * 
@@ -17,8 +17,8 @@ public class UnsupportedCommandException extends Exception{
 	 * @param command
 	 * @param osVersion
 	 */
-	public UnsupportedCommandException(String command, String osVersion){
-		super("Command "+command+" is not supported by agent in os "+osVersion);
+	public UnsupportedCommandException(String command, String osVersion) {
+		super("Command " + command + " is not supported by agent in os " + osVersion);
 	}
 
 }

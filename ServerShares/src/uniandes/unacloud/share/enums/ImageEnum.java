@@ -19,6 +19,11 @@ public enum ImageEnum {
 	DISABLE("DISABLE"),
 	
 	/**
+	 * Image is been processing 
+	 */
+	PROCESSING("PROCESSING"),
+	
+	/**
 	 * Image is ready to be deployed
 	 */
 	AVAILABLE("AVAILABLE"),
@@ -38,8 +43,15 @@ public enum ImageEnum {
 	 */
 	IN_QUEUE("QUEUED");
 	
-	String name;
+	/**
+	 * Name of enum
+	 */
+	private String name;
 	
+	/**
+	 * Construct a new Enum
+	 * @param name
+	 */
 	private ImageEnum(String name) {
 		this.name = name;
 	}	
@@ -51,6 +63,7 @@ public enum ImageEnum {
 	 */
 	public static ImageEnum getEnum(String name) {
 		if (UNAVAILABLE.name().equals(name)) return UNAVAILABLE;
+		if (PROCESSING.name().equals(name)) return PROCESSING;
 		if (DISABLE.name().equals(name)) return DISABLE;
 		if (AVAILABLE.name().equals(name)) return AVAILABLE;
 		if (REMOVING_CACHE.name().equals(name)) return REMOVING_CACHE;
@@ -59,6 +72,10 @@ public enum ImageEnum {
 		return null;
 	}
 	
+	/**
+	 * Returns enum value name
+	 * @return enum name
+	 */
 	public String getName() {
 		return this.name;
 	}

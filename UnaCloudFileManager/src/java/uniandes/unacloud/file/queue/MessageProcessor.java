@@ -9,7 +9,7 @@ import uniandes.unacloud.share.queue.messages.QueueMessage;
  * @author CesarF
  *
  */
-public abstract class MessageProcessor extends Thread{	
+public abstract class MessageProcessor extends Thread {	
 	
 	private QueueMessage message;
 	

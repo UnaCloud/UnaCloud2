@@ -11,7 +11,8 @@ import uniandes.unacloud.agent.execution.configuration.AbstractExecutionConfigur
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -27,7 +28,7 @@ public class ImageCopy implements Serializable {
 	/**
 	 * executable file name
 	 */
-	private File mainFile;
+	private FileConverter mainFile;
 	
 	/**
 	 * Original image
@@ -47,16 +48,17 @@ public class ImageCopy implements Serializable {
 	/**
 	 * Get main file
 	 */
-	public File getMainFile() {
+	public FileConverter getMainFile() {
 		return mainFile;
 	}
 	
+	
 	/**
-	 * Update main file
+	 * Update main file using file
 	 * @param mainFile
 	 */
 	public void setMainFile(File mainFile) {
-		this.mainFile = mainFile;
+		this.mainFile = new FileConverter(mainFile.getAbsolutePath());
 	}
 	
 	/**
@@ -64,9 +66,9 @@ public class ImageCopy implements Serializable {
 	 * @return image name
 	 */
 	public String getImageName() {
-		if (mainFile == null) 
+		if (mainFile == null || mainFile.getFilePath() == null) 
 			return "null";
-		String h = mainFile.getName();
+		String h = mainFile.getExecutableFile().getName();
 		int l = h.lastIndexOf(".");
 		if (l == -1) 
 			return h;
@@ -150,13 +152,13 @@ public class ImageCopy implements Serializable {
 	    			System.out.println("image config " + new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
 				} else {
-					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Invalid execution configurator.");
+					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Invalid execution configurator.");
 					status = ImageStatus.FREE;
 				}
 				
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionStateEnum.FAILED, "Configurator class error: " + e.getMessage());
+				ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Configurator class error: " + e.getMessage());
 				status = ImageStatus.FREE;
 			}
 		} catch (Exception e) {
@@ -172,7 +174,7 @@ public class ImageCopy implements Serializable {
 	 */
 	public synchronized ImageCopy cloneCopy(ImageCopy dest) {
 		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
-		platform.cloneImage(this,dest);
+		platform.cloneImage(this, dest);
 		return dest;
 	}
 	
@@ -201,7 +203,7 @@ public class ImageCopy implements Serializable {
 	 */
 	public synchronized void deleteSnapshot() throws ExecutionException, PlatformOperationException {
 		Platform platform = PlatformFactory.getPlatform(this.getImage().getPlatformId());
-		platform.deleteExecutionSnapshot(this,UnaCloudConstants.DEFAULT_IMG_NAME);		
+		platform.deleteExecutionSnapshot(this, UnaCloudConstants.DEFAULT_IMG_NAME);		
 	}
 
 	

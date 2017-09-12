@@ -3,6 +3,7 @@ package uniandes.unacloud.web.services
 import org.springframework.aop.ThrowsAdvice;
 
 import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
@@ -16,7 +17,6 @@ import uniandes.unacloud.web.domain.PhysicalIP;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Platform;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
 import uniandes.unacloud.common.utils.Ip4Validator
 import grails.transaction.Transactional
 
@@ -66,10 +66,10 @@ class LaboratoryService {
 		if (ips.size() == 0) 
 			throw new Exception("IP range invalid")
 		//TODO save lab after validate each IP
-		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability, networkQuality: netConfig, ipPools:[], physicalMachines:[]).save();
-		def ipPool = new IPPool(privateNet:privateNet,gateway: netGateway, mask: netMask, laboratory: lab).save()		
+		Laboratory lab = new Laboratory (name: name, highAvailability: highAvailability, networkQuality: netConfig, ipPools: [], physicalMachines: []).save();
+		def ipPool = new IPPool(privateNet :privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()		
 		for (String ipFind: ips)
-			new ExecutionIP(ip:ipFind,ipPool:ipPool).save()			
+			new ExecutionIP(ip: ipFind, ipPool: ipPool).save()			
 	}
 	
 	/**
@@ -85,8 +85,8 @@ class LaboratoryService {
 	 */
 	
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
-		def physicalMachine = new PhysicalMachine(name:name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
-			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip:ip), platforms: [])
+		def physicalMachine = new PhysicalMachine(name: name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
+			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [])
 		if (plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
 		else
@@ -169,11 +169,11 @@ class LaboratoryService {
 	 * @param ip to be removed
 	 */
 	def deleteIP(Laboratory lab, ip) {
-		ExecutionIP executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		ExecutionIP executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
 		if (executionIp.ipPool.ips.size() == 1)
 			throw new Exception("IP range must have one IP address at least")
 		if (executionIp && (executionIp.state == IPEnum.AVAILABLE || executionIp.state == IPEnum.DISABLED)) {	
-			NetInterface.executeUpdate("update NetInterface net set net.ip=null where net.ip.id= :id", [id : executionIp.id]);
+			NetInterface.executeUpdate("update NetInterface net set net.ip = null where net.ip.id = :id", [id : executionIp.id]);
 			IPPool pool = executionIp.ipPool
 			pool.removeFromIps(executionIp)
 			executionIp.delete()
@@ -186,7 +186,7 @@ class LaboratoryService {
 	 * @param ip IP to be modified
 	 */
 	def setStatusIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id == Long.parseLong(ip) && ipPool in lab.ipPools}.find()
+		def executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
 		if (executionIp && (executionIp.state.equals(IPEnum.AVAILABLE) || executionIp.state.equals(IPEnum.DISABLED))) {
 			if (executionIp.state == IPEnum.AVAILABLE)
 				executionIp.putAt("state", IPEnum.DISABLED)
@@ -203,7 +203,7 @@ class LaboratoryService {
 	 */
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
-		if (ipPool&&ipPool.getUsedIpsQuantity() == 0) {
+		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
 			for (ExecutionIP ip : ipPool.ips)
 				deleteIP(lab, ip.id)
 			ipPool.delete()
@@ -226,7 +226,7 @@ class LaboratoryService {
 			throw new Exception("IP range invalid")
 		def ipPool = new IPPool(privateNet:privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()
 		for (String ipFind : ips) 
-			new ExecutionIP(ip : ipFind, ipPool : ipPool).save()		
+			new ExecutionIP(ip : ipFind, ipPool : ipPool).save()
 	}
 	
 	/**
@@ -238,10 +238,10 @@ class LaboratoryService {
 	def deleteHost(Laboratory lab, host) {
 		PhysicalMachine hostMachine = PhysicalMachine.where{id == host && laboratory == lab}.find()
 		if (hostMachine) {			
-			if (Execution.where {executionNode == hostMachine && status != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
+			if (Execution.where {executionNode == hostMachine && state.state != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
 				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
 			def executions = Execution.where{
-					executionNode == hostMachine && status == ExecutionStateEnum.FINISHED}.findAll()
+					executionNode == hostMachine && state.state == ExecutionStateEnum.FINISHED}.findAll()
 			for (Execution exe in executions)
 					exe.putAt("executionNode", null)			
 			hostMachine.delete()			

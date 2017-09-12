@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  * @author Clouder
   
  */
-public class Time implements Serializable{
+public class Time implements Serializable {
 	
 	private static final long serialVersionUID = 4915716311965511894L;
 	

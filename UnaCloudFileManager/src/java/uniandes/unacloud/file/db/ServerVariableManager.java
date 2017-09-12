@@ -25,7 +25,9 @@ public class ServerVariableManager {
 	public static List<ServerVariableEntity> getAllVariablesForAgent(Connection con) {
 		try {
 			List<ServerVariableEntity> list = new ArrayList<ServerVariableEntity>();	
-			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list FROM server_variable sv WHERE sv.server_only = 0;";
+			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list "
+							+ "FROM server_variable sv "
+							+ "WHERE sv.server_only = 0;";
 			PreparedStatement ps = con.prepareStatement(query);		
 			ResultSet rs = ps.executeQuery();		
 			while (rs.next())
@@ -53,7 +55,9 @@ public class ServerVariableManager {
 	
 		try {
 			ServerVariableEntity variable = null;
-			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list FROM server_variable sv WHERE sv.name = ?;";
+			String query = "SELECT sv.name, sv.variable, sv.server_variable_type, sv.is_list "
+							+ "FROM server_variable sv "
+							+ "WHERE sv.name = ?;";
 			PreparedStatement ps = con.prepareStatement(query);		
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();		

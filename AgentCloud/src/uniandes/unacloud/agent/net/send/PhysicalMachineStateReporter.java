@@ -29,6 +29,7 @@ public class PhysicalMachineStateReporter extends Thread {
 			instance = new PhysicalMachineStateReporter();
 		return instance;
 	}
+	
     /**
      * Constructs a physical machine reporter
      * @param id Id to be used to report this physical machine, It corresponds to the physical machine name

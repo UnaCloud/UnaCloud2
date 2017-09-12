@@ -1,5 +1,6 @@
 package uniandes.unacloud.file.db.entities;
 
+import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.share.db.entities.RepositoryEntity;
 import uniandes.unacloud.share.db.entities.ImageEntity;
@@ -12,7 +13,7 @@ import uniandes.unacloud.share.enums.ImageEnum;
  * @author CesarF
  *
  */
-public class ImageFileEntity extends ImageEntity{
+public class ImageFileEntity extends ImageEntity {
 	
 	private RepositoryEntity repository;
 	
@@ -108,5 +109,9 @@ public class ImageFileEntity extends ImageEntity{
 	
 	public PlatformEntity getPlatform() {
 		return platform;
+	}
+	
+	public FileConverter getFileConversor() {
+		return new FileConverter(mainFile);
 	}
 }

@@ -3,6 +3,7 @@ package uniandes.unacloud.file.net;
 import java.io.DataInputStream;
 import java.net.Socket;
 
+import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.file.net.task.FileReceiverTask;
 import uniandes.unacloud.file.net.task.FileTransferTask;
@@ -12,8 +13,13 @@ import uniandes.unacloud.file.net.task.FileTransferTask;
  * Sends or receives files from agents.
  * @author CesarF
  */
-public class FileServerSocket extends AbstractServerSocket {	
+public class FileServerSocket extends AbstractTCPServerSocket {	
 	
+	/**
+	 * Construct a new File Server socket
+	 * @param listenPort
+	 * @param threads
+	 */
 	public FileServerSocket(int listenPort, int threads) {
 		super(listenPort, threads);		
 	}

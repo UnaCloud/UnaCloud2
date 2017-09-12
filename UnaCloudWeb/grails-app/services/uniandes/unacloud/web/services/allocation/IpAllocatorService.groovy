@@ -1,13 +1,12 @@
 package uniandes.unacloud.web.services.allocation
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import grails.transaction.Transactional
 import uniandes.unacloud.web.domain.DeployedImage
 import uniandes.unacloud.web.domain.ExecutionIP
 import uniandes.unacloud.web.domain.NetInterface
 import uniandes.unacloud.web.domain.Execution
 import uniandes.unacloud.web.pmallocators.AllocatorException
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
@@ -31,7 +30,7 @@ class IpAllocatorService {
 	//TODO manage net interfaces configuration	
 	def allocateIPAddresses(executions){		
 		for (Execution vme in executions) {
-			if (vme.status.equals(ExecutionStateEnum.QUEUED)) {
+			if (vme.state.state.equals(ExecutionStateEnum.REQUESTED)) {
 				List <ExecutionIP> ips = vme.executionNode.laboratory.getAvailableIps()
 				for (ip in ips) {
 					if (ip.state == IPEnum.AVAILABLE) {
@@ -45,7 +44,7 @@ class IpAllocatorService {
 				}
 				if (vme.interfaces.size() == 0) { 
 					for (Execution vm in executions)
-						if (vme.status.equals(ExecutionStateEnum.QUEUED))
+						if (vme.state.state.equals(ExecutionStateEnum.REQUESTED))
 							for (NetInterface net in vme.interfaces)
 								net.ip.putAt('state',IPEnum.AVAILABLE)					
 					throw new AllocatorException("Not enough IPs for this deployment")

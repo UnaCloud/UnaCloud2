@@ -10,6 +10,7 @@ import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
+import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
@@ -20,6 +21,11 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  *
  */
 public class InitialPoint {
+	
+	/**
+	 * Number of threads to attend messages from server
+	 */
+	private static final int THREADS = 10;
 	
 	//-----------------------------------------------------------------
 	// Methods
@@ -88,6 +94,7 @@ public class InitialPoint {
     	}    
 		if (args != null && args.length > 0 && !args[0].matches("[0-9]+"))
 			mainCase = Integer.parseInt(args[0]);
+		
 	    if (mainCase == UnaCloudConstants.TEST) {
 	    	try {
 				ServerMessageSender.reportPhyisicalMachine(null);
@@ -110,13 +117,24 @@ public class InitialPoint {
         	System.out.println("Start reporter");        	
             PhysicalMachineStateReporter.getInstance().start();            
            //Attend messages from server
-			ClouderClientAttention.getInstance().start();
+			new ClouderClientAttention(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), THREADS).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
         
         AgentManager.sendInitialMessage();
+        
+        int[] ports = null;
+		String portString = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS);
+		if (portString != null) {
+			String [] data = portString.split(",");
+			ports = new int[data.length];
+			for (int i = 0; i < data.length; i++)
+				ports[i] = Integer.parseInt(data[i]);
+		}
+        
+        TorrentClient.getInstance().startService(ports);
   
     }
 }

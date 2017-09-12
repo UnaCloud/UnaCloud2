@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
-import uniandes.unacloud.utils.LocalProcessExecutor;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 
 /**
  * This class is responsible for checking if an execution has been correctly deployed. That is, if the execution has started and if it has well configured its IP address
@@ -16,8 +14,14 @@ import uniandes.unacloud.utils.LocalProcessExecutor;
  */
 public class ExecutionStateViewer {
 	
+	/**
+	 * Execution ID
+	 */
 	private long executionCode;
 	
+	/**
+	 * IP to be check
+	 */
 	private String vmIP;
 	
 	/**
@@ -25,9 +29,9 @@ public class ExecutionStateViewer {
 	 * @param executionCode The execution id to make the execution status report to the server
      * @param vmIP The IP address to check if the execution is accessible
 	 */
-	public ExecutionStateViewer(long executionCode,String vmIP){
-		this.executionCode=executionCode;
-		this.vmIP=vmIP;
+	public ExecutionStateViewer(long executionCode,String vmIP) {
+		this.executionCode = executionCode;
+		this.vmIP = vmIP;
 	}
 
     /**
@@ -43,12 +47,12 @@ public class ExecutionStateViewer {
             	 SystemUtils.sleep(30000);        
         try {
         	if (red) {
-        		ServerMessageSender.reportExecutionState(executionCode, ExecutionStateEnum.DEPLOYED, "Execution is running");
+        		ServerMessageSender.reportExecutionState(executionCode, ExecutionProcessEnum.SUCCESS, "Execution is running");
         		return true;
         	}
             else {
                 PersistentExecutionManager.removeExecution(executionCode, false);
-                ServerMessageSender.reportExecutionState(executionCode, ExecutionStateEnum.FAILED, "Network error, execution initial ping doesn't respond");
+                ServerMessageSender.reportExecutionState(executionCode, ExecutionProcessEnum.FAIL, "Network error, execution initial ping doesn't respond");
             }
 		} catch (Exception e) {
 			PersistentExecutionManager.removeExecution(executionCode, false);

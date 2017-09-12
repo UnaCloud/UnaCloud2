@@ -54,7 +54,15 @@ public class UserManager {
 	 */
 	public static UserEntity getUserWithRepository(Long id, Connection con) {
 		try {
-			PreparedStatement ps = con.prepareStatement("SELECT u.id, u.username, usr.val, u.status FROM user u LEFT JOIN (SELECT uur.user_restrictions_id as id, ur.value as val from user_user_restriction uur INNER JOIN user_restriction ur ON uur.user_restriction_id = ur.id WHERE ur.name = ? AND uur.user_restrictions_id = ?) usr ON u.id = usr.id WHERE u.id = ? ;");
+			PreparedStatement ps = con.prepareStatement(
+					"SELECT u.id, u.username, usr.val, u.status "
+					+ "FROM user u "
+					+ "LEFT JOIN ("
+						+ "SELECT uur.user_restrictions_id as id, ur.value as val from user_user_restriction uur "
+						+ "INNER JOIN user_restriction ur ON uur.user_restriction_id = ur.id "
+						+ "WHERE ur.name = ? AND uur.user_restrictions_id = ?) usr "
+					+ "ON u.id = usr.id "
+					+ "WHERE u.id = ? ;");
 			ps.setString(1, UserRestrictionEnum.REPOSITORY.name());
 			ps.setLong(2, id);
 			ps.setLong(3, id);
@@ -90,7 +98,7 @@ public class UserManager {
 		if (user.getId() == null || user.getId() < 1)
 			return;
 		try {
-			String query = "delete from user where status = ? and id = ? and id > 0;";
+			String query = "DELETE FROM user WHERE status = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());
 			ps.setLong(2, user.getId());

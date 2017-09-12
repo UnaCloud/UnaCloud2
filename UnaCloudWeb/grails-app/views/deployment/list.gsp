@@ -1,4 +1,4 @@
-<%@page import="uniandes.unacloud.common.enums.ExecutionStateEnum"%>
+<%@page import="uniandes.unacloud.share.enums.ExecutionStateEnum"%>
 <html>
    <head>
       <meta name="layout" content="main"/>
@@ -71,12 +71,12 @@
 								      		<td><small>${deployment.cluster.name}</small></td>
 								      		<td><small>${image.image.name}</small> <a title="Add executions" class="add_execution" href="${createLink(uri: '/services/deployment/'+image.id+'/add', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-plus-square' ></i></a>		                									</td>
 								      		<td><small>${image.image.accessProtocol}</small></td>
-								       		<td style="padding:0px !important">
-		                                  	 	<table class="table insert-table embeded_table">
+								       		<td style = "padding:0px !important">
+		                                  	 	<table class = "table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
-			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 			                                  		    <tr>			                                  		   
-				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
+				                                  			<g:if test="${index == 0}"><td class = "insert-row"></g:if><g:else><td></g:else>
 				                                  			<input type="checkbox" name="execution_${execution.id}" class="all image_${image.id}"/> 
 					                                  		<small>${execution.name}</small></td>					                                  	
 				                                  		</tr>
@@ -84,32 +84,36 @@
 			                                  		</tbody>
 		                                  	 	</table>
 		                                	 </td>
-		                                	 <td style="padding:0px !important">
-		                                  	 	<table class="table insert-table  embeded_table">
+		                                	 <td style = "padding:0px !important">
+		                                  	 	<table class = "table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
-			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var = "execution">
 			                                  		    <tr>
-			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-			                                  			   <g:if test="${execution.status.equals(ExecutionStateEnum.QUEUED)
-																 ||execution.status.equals(ExecutionStateEnum.REQUEST_COPY)
-																 ||execution.status.equals(ExecutionStateEnum.RECONNECTING)
-																 ||execution.status.equals(ExecutionStateEnum.DOWNLOADING)}">
-						                                 	 <span class="label label-warning">${execution.status.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+			                                  			   <g:if test = "${index == 0}"><td class = "insert-row"></g:if><g:else><td></g:else>
+			                                  			   <g:if test = "${		
+																    execution.state.state.equals(ExecutionStateEnum.TRANSMITTING)
+																 || execution.state.state.equals(ExecutionStateEnum.REQUEST_COPY)
+																 || execution.state.state.equals(ExecutionStateEnum.RECONNECTING)
+																 || execution.state.state.equals(ExecutionStateEnum.COPYING)
+																 }">
+						                                 	 <span class="label label-warning">${execution.state.state.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:if>
-						                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.CONFIGURING)
-															    ||execution.status.equals(ExecutionStateEnum.DEPLOYING)
-						                                   		||execution.status.equals(ExecutionStateEnum.FINISHING)
-																||execution.status.equals(ExecutionStateEnum.COPYING)}">
-						                                  	 <span class="label label-primary">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+						                                   <g:elseif test="${
+															   	    execution.state.state.equals(ExecutionStateEnum.REQUESTED)
+															     || execution.state.state.equals(ExecutionStateEnum.CONFIGURING)
+															     || execution.state.state.equals(ExecutionStateEnum.DEPLOYING)
+						                                   		 || execution.state.state.equals(ExecutionStateEnum.FINISHING)
+																}">
+						                                  	 <span class="label label-primary">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
-						                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.DEPLOYED)}">
-						                                  	 <span class="label label-success">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+						                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.DEPLOYED)}">
+						                                  	 <span class="label label-success">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
-						                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.FAILED)}">
-						                                  	 <span class="label label-danger">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+						                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.FAILED)}">
+						                                  	 <span class="label label-danger">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
-						                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.FINISHED)}">
-						                                  	 <span class="label label-default">${execution.status.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+						                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.FINISHED)}">
+						                                  	 <span class="label label-default">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:elseif>
 														   </td>
 				                                  		</tr>
@@ -120,7 +124,7 @@
 		                                 	 <td style="padding:0px !important">
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
-			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 			                                  		    <tr>			                                  		    
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 					                                  			<g:if test="${execution.showDetails()}"><small>${execution.remainingTime()}</small></g:if>
@@ -133,7 +137,7 @@
 		                                	<td style="padding:0px !important">
 		                                  		<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
-			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 			                                  		    <tr>
 				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 					                                  			<small>${execution.mainIp().ip}</small>
@@ -148,8 +152,8 @@
 			                                  		<tbody> 				                                 				                                  	
 			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
 			                                  		    <tr>			                                  		    
-				                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-					                                  		<g:if test="${execution.status==ExecutionStateEnum.DEPLOYED}"><a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a></g:if>	
+				                                  			<g:if test="${index == 0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  		<g:if test="${execution.state.state == ExecutionStateEnum.DEPLOYED}"><a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a></g:if>	
 		                									</td>		                								
 				                                  		</tr>
 			                                  			</g:each> 
@@ -199,7 +203,7 @@
 			                              	</tr>
 			                          	</thead>
 			                          	<tbody>
-			                          	<g:each in="${deployments}" status="i" var="deployment"> 
+			                          	<g:each in="${deployments}" status = "i" var="deployment"> 
 			                              	<g:each in="${deployment.images}" var="image"> 
 			                              	<g:if test="${image.getActiveExecutions().size()>0}">
 			                              	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
@@ -214,7 +218,7 @@
 									       		<td style="padding:0px !important">
 			                                  	 	<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 				                                  		    <tr>
 					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 					                                  			<input type="checkbox" name="execution_${execution.id}" class="all"/> 
@@ -227,28 +231,33 @@
 			                                	 <td style="padding:0px !important">
 			                                  	 	<table class="table insert-table  embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 				                                  		    <tr>
 				                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-				                                  			   <g:if test="${execution.status.equals(ExecutionStateEnum.QUEUED)
-																 ||execution.status.equals(ExecutionStateEnum.REQUEST_COPY)
-																 ||execution.status.equals(ExecutionStateEnum.RECONNECTING)}">
-							                                 	 <span class="label label-warning">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+				                                  			   <g:if test = "${		
+																   	   execution.state.state.equals(ExecutionStateEnum.TRANSMITTING)
+																 	|| execution.state.state.equals(ExecutionStateEnum.REQUEST_COPY)
+																 	|| execution.state.state.equals(ExecutionStateEnum.RECONNECTING)
+																 	|| execution.state.state.equals(ExecutionStateEnum.COPYING)
+																 	}">
+						                                 	   <span class="label label-warning">${execution.state.state.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:if>
-							                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.CONFIGURING)
-															    ||execution.status.equals(ExecutionStateEnum.DEPLOYING)
-						                                   		||execution.status.equals(ExecutionStateEnum.FINISHING)
-																||execution.status.equals(ExecutionStateEnum.COPYING)}">
-							                                  	 <span class="label label-primary">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+							                                   <g:elseif test="${
+																   	    execution.state.state.equals(ExecutionStateEnum.REQUESTED)
+																     || execution.state.state.equals(ExecutionStateEnum.CONFIGURING)
+																     || execution.state.state.equals(ExecutionStateEnum.DEPLOYING)
+							                                   		 || execution.state.state.equals(ExecutionStateEnum.FINISHING)
+																	}">
+							                                  	 <span class="label label-primary">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
-							                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.DEPLOYED)}">
-							                                  	 <span class="label label-success">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+							                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.DEPLOYED)}">
+							                                  	 <span class="label label-success">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
-							                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.FAILED)}">
-							                                  	 <span class="label label-danger">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+							                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.FAILED)}">
+							                                  	 <span class="label label-danger">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
-							                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.FINISHED)}">
-							                                  	 <span class="label label-default">${execution.status.toString()}</span><i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
+							                                   <g:elseif test="${execution.state.state.equals(ExecutionStateEnum.FINISHED)}">
+							                                  	 <span class="label label-default">${execution.state.state.name}</span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 							                                   </g:elseif>
 															   </td>
 					                                  		</tr>
@@ -259,7 +268,7 @@
 			                                 	 <td style="padding:0px !important">
 			                                  	 	<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 				                                  		    <tr>
 					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 						                                  			<small>${execution.remainingTime()}</small>
@@ -272,7 +281,7 @@
 			                                	<td style="padding:0px !important">
 			                                  		<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status =" index" var="execution">
 				                                  		    <tr>
 					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 						                                  			<small>${execution.mainIp().ip}</small>
@@ -285,7 +294,7 @@
 			                                 	<td style="padding:0px !important">
 			                                  		<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
 				                                  		    <tr>
 					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 						                                  		<a title="Download" class="download_image btn btn-default" data-id="${execution.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>

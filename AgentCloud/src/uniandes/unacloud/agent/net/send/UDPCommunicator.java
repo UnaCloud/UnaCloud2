@@ -1,11 +1,9 @@
 package uniandes.unacloud.agent.net.send;
 
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.net.messages.udp.UDPMessageLogPM;
-import uniandes.unacloud.common.net.messages.udp.UDPMessageStateEXE;
-import uniandes.unacloud.common.net.messages.udp.UDPMessageStatePM;
-import uniandes.unacloud.common.net.udp.UnaCloudDataSenderUDP;
+import uniandes.unacloud.common.net.udp.UDPSender;
+import uniandes.unacloud.common.net.udp.message.MachineLogMessage;
+import uniandes.unacloud.common.net.udp.message.MachineStateMessage;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -19,7 +17,7 @@ public class UDPCommunicator {
 	/**
 	 * Object to send udp messages
 	 */
-	private UnaCloudDataSenderUDP sender;
+	private UDPSender sender;
 	
 	/**
 	 * Singleton instance
@@ -40,7 +38,7 @@ public class UDPCommunicator {
 	 * Constructor method
 	 */
 	private UDPCommunicator() {
-		sender = new UnaCloudDataSenderUDP();
+		sender = new UDPSender();
 	}
 	
 	/**
@@ -51,10 +49,10 @@ public class UDPCommunicator {
 	 * @return true if message was sent, false in case not
 	 * @throws Exception 
 	 */
-	public boolean pushInfoPM(String hostName, String userName, Long[] executions) throws Exception {
+	public synchronized boolean pushInfoPM(String hostName, String userName, Long[] executions) throws Exception {
 		String serverIP = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
-		UDPMessageStatePM message = new UDPMessageStatePM (serverIP, serverPort, hostName, userName, executions);		
+		MachineStateMessage message = new MachineStateMessage (serverIP, serverPort, hostName, userName, executions);		
 		return sender.sendMessage(message);
 	}
 	
@@ -68,28 +66,12 @@ public class UDPCommunicator {
 	 * @return true if message was sent, false in case not
 	 * @throws Exception 
 	 */
-	public boolean pushInfoPM(String hostName, String userName, Long freeSpace, Long dataSpace, String version) throws Exception {
+	public synchronized boolean pushInfoPM(String hostName, String userName, Long freeSpace, Long dataSpace, String version) throws Exception {
 		String serverIP=VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort =VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT);
-		UDPMessageStatePM message = new UDPMessageStatePM(serverIP, serverPort, hostName, userName, freeSpace, dataSpace, version);		
+		MachineStateMessage message = new MachineStateMessage(serverIP, serverPort, hostName, userName, freeSpace, dataSpace, version);		
 		return sender.sendMessage(message);
-	}
-	
-	/**
-	 * Push info by UDP protocol to server port for executions reports
-	 * @param hostName : current hostname
-	 * @param executionCode : execution code in server
-	 * @param state : last state for execution
-	 * @param messageExecution : Short message with description about state
-	 * @return Starts and configures an execution. This method must be used by other methods to configure, start and schedule an execution
-	 * @throws Exception 
-	 */
-	public boolean pushInfoEXE(String hostName, long executionCode, ExecutionStateEnum state, String messageExecution) throws Exception {		
-		String serverIP = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
-		int serverPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
-		UDPMessageStateEXE message = new UDPMessageStateEXE(serverIP, serverPort, hostName, executionCode, state, messageExecution);
-		return sender.sendMessage(message);
-	}
+	}	
 	
 	/**
 	 * Push Info by UDP Protocol to server port for Log in Physical Machines
@@ -99,10 +81,10 @@ public class UDPCommunicator {
 	 * @return true if message was sent, false in case not
 	 * @throws Exception
 	 */
-	public boolean pushInfoLogPM(String hostName, String component, String logMessage) throws Exception {
+	public synchronized boolean pushInfoLogPM(String hostName, String component, String logMessage) throws Exception {
 		String serverIP = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.CONTROL_SERVER_IP);
 		int serverPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT);
-		UDPMessageLogPM message = new UDPMessageLogPM(serverIP, serverPort, hostName, component, logMessage);
+		MachineLogMessage message = new MachineLogMessage(serverIP, serverPort, hostName, component, logMessage);
 		return sender.sendMessage(message);
 	}
 	

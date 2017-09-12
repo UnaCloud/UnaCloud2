@@ -5,7 +5,7 @@ package uniandes.unacloud.agent.exceptions;
  * @author CesarF
  *
  */
-public class UnsupportedOSException extends Exception{
+public class UnsupportedOSException extends Exception {
 
 	/**
 	 * Serial version for this class
@@ -17,7 +17,7 @@ public class UnsupportedOSException extends Exception{
 	 * @param version
 	 */
 	public UnsupportedOSException(String version){
-		super("UnaCloud doesn't support "+version+" in this moment");
+		super("UnaCloud doesn't support " + version + " in this moment");
 	}
 
 }

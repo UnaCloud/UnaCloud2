@@ -1,12 +1,10 @@
 package uniandes.unacloud.web.services
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
-import uniandes.unacloud.web.utils.java.Hasher;
+import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.UserGroup;
 import uniandes.unacloud.web.domain.UserRestriction;
-
 import grails.transaction.Transactional
 
 /**
@@ -37,7 +35,7 @@ class UserGroupService {
 	 * @param group to add user
 	 * @param user 
 	 */
-	def addToGroup(UserGroup group, User user){
+	def addToGroup(UserGroup group, User user) {
 		if (!group.users)
 			group.users = []
 		group.users.add(user)
@@ -103,7 +101,7 @@ class UserGroupService {
 	 */
 	def addGroup(name, users){
 		Date d = new Date()
-		def group = new UserGroup(visualName: name, name: "userg" + d.getDate() + "_" + Hasher.randomString(10));		
+		def group = new UserGroup(visualName: name, name: "userg" + d.getDate() + "_" + HashGenerator.randomString(10));		
 		group.users = []
 		if (users.getClass().equals(String))
 			group.users.add(User.get(users))

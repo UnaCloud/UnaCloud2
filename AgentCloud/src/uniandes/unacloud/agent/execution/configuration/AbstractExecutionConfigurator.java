@@ -31,6 +31,7 @@ public abstract class AbstractExecutionConfigurator {
 	public void setExecution(Execution execution) {
 		this.execution = execution;
 	}
+	
 	/**
 	 * generates a random file
 	 * @return file created

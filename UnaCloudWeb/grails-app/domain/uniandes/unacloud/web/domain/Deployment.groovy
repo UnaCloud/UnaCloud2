@@ -1,8 +1,5 @@
 package uniandes.unacloud.web.domain
 
-import uniandes.unacloud.common.utils.CalendarUtils;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
@@ -25,12 +22,12 @@ class Deployment {
 	/**
 	 * start time of the deployment
 	 */
-	Date startTime
+	Date startTime = new Date()
 	
 	/**
-	 * stop time of the deployment
+	 * Duration of execution
 	 */
-	Date stopTime
+	long duration
 	
 	/**
 	 * represent status of the deployment (ACTIVE, FINISHED)
@@ -52,7 +49,6 @@ class Deployment {
 	 * cluster could be deleted but deployment history not
 	 */
 	static constraints = {	
-		stopTime nullable:true 
 		cluster nullable:true
     }
 	
@@ -91,7 +87,7 @@ class Deployment {
 		for (DeployedImage image: images) {
 			image.executions.each {
 				def exec = it
-				ExecutionRequest.where{execution == exec}.list().each {
+				ExecutionHistory.where{execution == exec}.list().each {
 					it.delete();
 				}
 				exec.delete();

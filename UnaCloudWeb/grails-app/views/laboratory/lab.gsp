@@ -105,7 +105,7 @@
 				                                  		<g:if test = "${machine.getUsedPercentage() > 70}"> "text-danger" </g:if>
 				                                  		<g:elseif test = "${machine.getUsedPercentage() > 50}"> "text-warning" </g:elseif>
 				                                  		<g:else> "text-success" </g:else>>
-				                                  		${machine.getUsedPercentage()} %
+				                                  		<g:formatNumber number="${machine.getUsedPercentage()}" format="###,##" />%
 				                                  		<i class="fa fa-info-circle text-info" data-toggle="tooltip" title="T: ${machine.getTotalDiskSize()} - F: ${machine.getAvailableDisk()}"></i>
 				                                  	</small>
 				                                  </td>
@@ -145,7 +145,7 @@
 			                              </tr>
 			                          </thead>
 			                          <tbody>
-			                          <g:each in="${lab.ipPools}" status="i" var="pool"> 
+			                          <g:each in="${lab.getPools()}" status="i" var="pool"> 
 			                              <tr>
 			                              	  <td><small>${pool.first().ip}</small></td>
 			                                  <td><small>${pool.last().ip}</small></td>
@@ -153,8 +153,8 @@
 			                                  <td><small>${pool.mask}</small></td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
+					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
 					                              </div>
 											  </td>
 			                              </tr>

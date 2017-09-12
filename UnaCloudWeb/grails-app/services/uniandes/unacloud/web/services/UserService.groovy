@@ -4,9 +4,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import uniandes.unacloud.share.enums.UserRestrictionEnum;
 import uniandes.unacloud.share.enums.UserStateEnum;
+import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.queue.QueueTaskerFile;
-import uniandes.unacloud.web.utils.java.Hasher;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.UserRestriction;
 
@@ -40,7 +40,7 @@ class UserService {
 	 * @return
 	 */
 	def User getUser(String username, String password){
-		return User.findWhere(username: username, password: Hasher.hashSha256(password));
+		return User.findWhere(username: username, password: HashGenerator.hashSha256(password));
 	}
 	/**
 	 * Adds a new user
@@ -54,7 +54,7 @@ class UserService {
 	   String charset = (('A'..'Z') + ('0'..'9')).join()
 	   Integer length = 32
 	   String randomString = RandomStringUtils.random(length, charset.toCharArray())
-	   def user= new User(username: username, name: name, description: description, password: Hasher.hashSha256(password), apiKey: randomString, registerDate: new Date(), email: email)
+	   def user= new User(username: username, name: name, description: description, password: HashGenerator.hashSha256(password), apiKey: randomString, registerDate: new Date(), email: email)
 	   user.images = []
 	   user.restrictions = []
 	   user.userClusters = []
@@ -78,7 +78,7 @@ class UserService {
 	 * Creates an apikey for user
 	 * @return
 	 */
-	def designAPIKey(){
+	def designAPIKey() {
 		String charset = (('A'..'Z') + ('0'..'9')).join()
 		Integer length = 32
 		return RandomStringUtils.random(length, charset.toCharArray())
@@ -116,7 +116,7 @@ class UserService {
 		user.setUsername(username)
 		user.setEmail(email)
 		if (password)		
-			user.setPassword( Hasher.hashSha256(password))		
+			user.setPassword( HashGenerator.hashSha256(password))		
 		user.save(failOnError:true)
 		return user
 	}
@@ -165,9 +165,9 @@ class UserService {
 	 * @param newPassword new Password
 	 */
 	def changePassword(User user, String password, String newPassword) {
-		if (!user.password.equals(Hasher.hashSha256(password)))
+		if (!user.password.equals(HashGenerator.hashSha256(password)))
 			throw new Exception('Current Password is invalid')
-		user.setPassword(Hasher.hashSha256(newPassword))
+		user.setPassword(HashGenerator.hashSha256(newPassword))
 		user.save(failOnError:true)
 	}
 	

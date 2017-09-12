@@ -2,35 +2,26 @@ package uniandes.unacloud.control.queue;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.net.messages.InvalidOperationResponse;
-import uniandes.unacloud.common.net.messages.UnaCloudAbstractMessage;
-import uniandes.unacloud.common.net.messages.UnaCloudAbstractResponse;
-import uniandes.unacloud.common.net.messages.agent.AgentMessage;
-import uniandes.unacloud.common.net.messages.agent.ClearImageFromCacheMessage;
-import uniandes.unacloud.common.net.messages.agent.ClearVMCacheMessage;
-import uniandes.unacloud.common.net.messages.agent.GetDataSpaceMessage;
-import uniandes.unacloud.common.net.messages.agent.GetVersionMessage;
-import uniandes.unacloud.common.net.messages.agent.InformationResponse;
-import uniandes.unacloud.common.net.messages.agent.StopAgentMessage;
-import uniandes.unacloud.common.net.messages.agent.UpdateAgentMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionSaveImageResponse;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStartMessage;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStopMessage;
-import uniandes.unacloud.common.net.messages.exeo.ImageNetInterfaceComponent;
-import uniandes.unacloud.common.net.messages.exeo.ExecutionStartResponse.ExecutionState;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.net.UnaCloudMessage;
+import uniandes.unacloud.common.net.tcp.TCPMultipleSender;
+import uniandes.unacloud.common.net.tcp.TCPResponseProcessor;
+import uniandes.unacloud.common.net.tcp.message.AgentMessage;
+import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.common.net.tcp.message.agent.ClearImageFromCacheMessage;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageMessage;
+import uniandes.unacloud.common.net.tcp.message.exe.ExecutionStartMessage;
+import uniandes.unacloud.common.net.tcp.message.exe.ImageNetInterfaceComponent;
 import uniandes.unacloud.common.utils.Time;
 import uniandes.unacloud.control.ControlManager;
-import uniandes.unacloud.control.net.tcp.sender.MessageSender;
-import uniandes.unacloud.control.net.udp.processor.AbstractResponseProcessor;
 import uniandes.unacloud.share.db.DeploymentManager;
+import uniandes.unacloud.share.db.ExecutionManager;
 import uniandes.unacloud.share.db.PhysicalMachineManager;
 import uniandes.unacloud.share.db.ImageManager;
 import uniandes.unacloud.share.db.entities.DeployedImageEntity;
@@ -39,9 +30,8 @@ import uniandes.unacloud.share.db.entities.ExecutionEntity;
 import uniandes.unacloud.share.db.entities.ImageEntity;
 import uniandes.unacloud.share.db.entities.NetInterfaceEntity;
 import uniandes.unacloud.share.db.entities.PhysicalMachineEntity;
-import uniandes.unacloud.share.enums.IPEnum;
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.share.enums.TaskEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.share.queue.QueueReader;
 import uniandes.unacloud.share.queue.messages.MessageAddInstances;
@@ -57,12 +47,12 @@ import uniandes.unacloud.share.queue.messages.QueueMessage;
  * @author CesarF
  *
  */
-public class QueueMessageProcessor implements QueueReader{
+public class QueueMessageProcessor implements QueueReader {
 	
 	/**
 	 * Quantity of messages send in each thread
 	 */
-	private int messagesByThread;
+	private final int messagesByThread;
 		
 	/**
 	 * Pool of threads to attend messages
@@ -87,7 +77,10 @@ public class QueueMessageProcessor implements QueueReader{
 		System.out.println("Receive message " + message.getMessage());
 		switch (message.getType()) {
 		case CLEAR_CACHE:
-			clearCache(new MessageIdOfImage(message));
+			removeImageFromCache(new MessageIdOfImage(message));
+			break;
+		case CLEAR_CACHE_UPDATE:
+			removeImageFromCacheAndUpdate(new MessageIdOfImage(message));
 			break;
 		case SEND_TASK:	
 			sendTaskToAgents(new MessageTaskMachines(message));
@@ -113,62 +106,70 @@ public class QueueMessageProcessor implements QueueReader{
 	 * Receives image id and process request to remove the image from agents cache
 	 * @param message
 	 */
-	private void clearCache(MessageIdOfImage message) {
-		
-		boolean update = false;
-		MessageIdOfImage messageId = (MessageIdOfImage) message;
-		final Long imageId =  messageId.getIdImage();
-		ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.REMOVING_CACHE, null);
+	private void removeImageFromCache(MessageIdOfImage message) {
+		final Long imageId =  message.getIdImage();
 		List<PhysicalMachineEntity> machines = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {
-			ImageManager.setImage(image, con);
 			machines = PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-						
-		try {				
-			
+		try {			
 			if (machines.size() > 0) {
-				for (int i = 0; i < machines.size() ; i += messagesByThread) {
-					threadPool.submit(new MessageSender(machines.subList(i, i + messagesByThread > machines.size() ? machines.size() : i + messagesByThread), new ClearImageFromCacheMessage(imageId), new AbstractResponseProcessor() {			
-						@Override
-						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-								ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-								ImageManager.setImage(image, con2);
-							} catch (Exception e) {
-								e.printStackTrace();
+				
+				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
+					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, imageId, machines.get(i).getId()));
+					
+					if (j >= messagesByThread || j >= machines.size()) {
+						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+							
+							@Override
+							public void attendResponse(Object response, Object message) {
+								
 							}
-						}
-						@Override
-						public void attendError(String message, Long id) {
-							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-								ImageEntity image = new ImageEntity(imageId, null, null, ImageEnum.AVAILABLE, null);
-								ImageManager.setImage(image, con2);
-								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
-								PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							} catch (Exception e) {
-								e.printStackTrace();
+							
+							@Override
+							public void attendError(Object error, String message) {
+								ClearImageFromCacheMessage mss = (ClearImageFromCacheMessage) error;
+								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {									
+									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getImageId(), PhysicalMachineStateEnum.OFF);
+									PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}								
 							}
-						}
-					}));
-				}	
-			} else
-				update = true;
+						}));
+						j = 1;
+						messageList = new ArrayList<UnaCloudMessage>();
+					}					
+				}					
+			} 
 						
 		} catch (Exception e) {
 			e.printStackTrace();
-			update = true;
 		}
-		
-		if (update) {
-			try (Connection con = ControlManager.getInstance().getDBConnection();) {
-				image.setState(ImageEnum.AVAILABLE);
-				ImageManager.setImage(image, con);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+	}
+	
+	/**
+	 * Receives image id and process request to remove the image from agents cache, 
+	 * This method changes image state to REMOVING_CACHE and after process to AVAILABLE
+	 * @param message
+	 */
+	private void removeImageFromCacheAndUpdate(MessageIdOfImage message) {
+		ImageEntity image = new ImageEntity(message.getIdImage(), null, null, ImageEnum.REMOVING_CACHE, null);		
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			ImageManager.setImage(image, con);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		removeImageFromCache(message);
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			image.setState(ImageEnum.AVAILABLE);
+			ImageManager.setImage(image, con);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -178,7 +179,7 @@ public class QueueMessageProcessor implements QueueReader{
 	 */
 	private void sendTaskToAgents(MessageTaskMachines messageTask) {		
 			
-		final TaskEnum task = messageTask.getTask();
+		int task = messageTask.getTask().getId();
 		Long[] ids = messageTask.getIdMachines();
 		List<PhysicalMachineEntity> machines = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
@@ -187,55 +188,60 @@ public class QueueMessageProcessor implements QueueReader{
 			e.printStackTrace();		
 		}
 		if (machines != null) {
-			System.out.println("Sending message to " + machines.size());
-			for (int i = 0; i < machines.size() ; i += messagesByThread) {
-				UnaCloudAbstractMessage absMessage = getMessage(task);
-				threadPool.submit(new MessageSender(machines.subList(i, i + messagesByThread > machines.size() ? machines.size() : i + messagesByThread), 
-						absMessage, new AbstractResponseProcessor() {			
-					@Override
-					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-							PhysicalMachineEntity pm = null;
-							InformationResponse resp = (InformationResponse) response;
-							if (task.equals(TaskEnum.STOP) || task.equals(TaskEnum.UPDATE)) pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
-							else if (task.equals(TaskEnum.DATA_SPACE)) pm = new PhysicalMachineEntity(id, null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON);
-							else if (task.equals(TaskEnum.VERSION)) pm = new PhysicalMachineEntity(id, null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON);
-							else pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.ON);
-							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					@Override
-					public void attendError(String message, Long id) {
-						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}));
-			}	
+			try {
+				System.out.println("Send message to " + machines.size());
+				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
+					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
+					
+					if (j >= messagesByThread || j >= machines.size()) {
+						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+							
+							@Override
+							public void attendResponse(Object response, Object message) {
+								AgentMessage mss = (AgentMessage) message;
+								UnaCloudResponse resp = (UnaCloudResponse) response;
+								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+									PhysicalMachineEntity pm = null;
+									System.out.println("Message process: " + mss.getTask() + "  -  " + mss.getPmId() + " - " + resp.getMessage());
+									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
+										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
+									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON, null);
+									else if (mss.getTask() == AgentMessage.GET_VERSION) 
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON, null);
+									else 
+										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.ON);
+									PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+							
+							@Override
+							public void attendError(Object error, String message) {
+								AgentMessage mss = (AgentMessage) error;
+								System.out.println("Error: " + message + " - " + mss);
+								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
+									PhysicalMachineManager.setPhysicalMachine(pm, con2);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}							
+							}
+						}));
+						j = 1;
+						messageList = new ArrayList<UnaCloudMessage>();
+					}		
+				}	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}
-	
-	/**
-	 * Returns kind of object message to be sent to agent
-	 * @param task enum 
-	 * @return agent message
-	 * @throws Exception in case task is not valid
-	 */
-	private AgentMessage getMessage(TaskEnum task) throws IllegalArgumentException {
-		if (task.equals(TaskEnum.UPDATE)) new UpdateAgentMessage();
-		if (task.equals(TaskEnum.CACHE)) return new ClearVMCacheMessage();
-		if (task.equals(TaskEnum.STOP)) new StopAgentMessage();
-		if (task.equals(TaskEnum.DATA_SPACE)) new GetDataSpaceMessage();
-		if (task.equals(TaskEnum.VERSION)) new GetVersionMessage();	
-		throw new IllegalArgumentException();
-	}
-	
+			
 	/**
 	 * Sends message to agents to start deploy in physical machines
 	 * @param message
@@ -251,51 +257,65 @@ public class QueueMessageProcessor implements QueueReader{
 			e.printStackTrace();
 		}			
 		if (deploy != null) {
-			System.out.println("Deploy " + deploy.getId());
-			for (DeployedImageEntity image : deploy.getImages()) {
-				for (final ExecutionEntity execution : image.getExecutions()) {
-					
-					ExecutionStartMessage vmsm = new ExecutionStartMessage();
-					System.out.println("Execution from " + execution.getStartTime() + " to: "+execution.getStopTime() + " - " + execution.getTimeInHours() + " - " + execution.getTime());
-					vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
-					vmsm.setHostname(execution.getHostName());
-					vmsm.setVmCores(execution.getCores());
-					vmsm.setVmMemory(execution.getRam());
-					vmsm.setExecutionId(execution.getId());
-					vmsm.setImageId(image.getImage().getId());
-					
-					List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
-					for (NetInterfaceEntity interf: execution.getInterfaces())
-						interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
-					vmsm.setInterfaces(interfaces);						
-					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
-					machines.add(execution.getNode());
-					
-					threadPool.submit(new MessageSender(machines, 
-							vmsm, new AbstractResponseProcessor() {			
-						@Override
-						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-								Date stopTime = new Date();
-								stopTime.setTime(stopTime.getTime() + execution.getTime());
-								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, null, null, "Sent message"), con2);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+			try {
+				System.out.println("Deploy " + deploy.getId());
+				for (DeployedImageEntity image : deploy.getImages()) {
+					List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+					int j = 0;
+					for (ExecutionEntity execution : image.getExecutions()) {	
+						j++;
+						List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
+						for (NetInterfaceEntity interf: execution.getInterfaces())
+							interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
+						ExecutionStartMessage vmsm = new ExecutionStartMessage(
+								execution.getNode().getIp(), 
+								ControlManager.getInstance().getPort(), 
+								null, 
+								execution.getId(), 
+								execution.getNode().getId(),
+								image.getImage().getId(), 
+								execution.getCores(), 
+								execution.getRam(), 
+								new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
+								execution.getHostName(),
+								message.getTypeTransmission(),
+								interfaces);
+						System.out.println("Execution " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
+						
+						messageList.add(vmsm);
+						
+						if (j >= messagesByThread || j >= image.getExecutions().size()) {
+													
+							threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+								
+								@Override
+								public void attendResponse(Object response, Object message) {
+									UnaCloudResponse resp = (UnaCloudResponse) response;
+									System.out.println("Response: " + resp);
+								}
+								
+								@Override
+								public void attendError(Object error, String message) {
+									ExecutionStartMessage mss = (ExecutionStartMessage) error;
+									System.out.println("Error: " + error + " - " + message);
+									try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+										PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), null, null, PhysicalMachineStateEnum.OFF, null);
+										PhysicalMachineManager.setPhysicalMachine(pm, con2);
+										ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Communication error " + message);
+										ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con2);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}						
+								}
+							}));
+							j = 0;
+							messageList = new ArrayList<UnaCloudMessage>();
 						}
-						@Override
-						public void attendError(String message, Long id) {
-							try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-								PhysicalMachineEntity pm = new PhysicalMachineEntity(id, null, null, PhysicalMachineStateEnum.OFF);
-								PhysicalMachineManager.setPhysicalMachine(pm, con2);
-								DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error " + message), con2);
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}));
-				}
-			}				
+					}					
+				}		
+			} catch (Exception e) {
+				e.printStackTrace();
+			}					
 		}
 	
 	}
@@ -310,7 +330,7 @@ public class QueueMessageProcessor implements QueueReader{
 			System.out.println("\t Stop: " + executionIds[i]);
 		
 		MessageStopExecutions message = new MessageStopExecutions("0", executionIds);
-		stopDeploy(message,"Execution is not running in server");
+		stopDeploy(message, "Execution is not running in server");
 	}
 	
 	/**
@@ -323,48 +343,66 @@ public class QueueMessageProcessor implements QueueReader{
 		Long[] ids = message.getIdExecutions();
 		
 		List<ExecutionEntity> executions = null;
-		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
-			executions = DeploymentManager.getExecutions(ids, null, false, con);
+		try (Connection con = ControlManager.getInstance().getDBConnection();) {
+			ExecutionStateEnum[] states = new ExecutionStateEnum[] {
+					ExecutionStateEnum.FINISHED,
+					ExecutionStateEnum.FINISHING,
+					ExecutionStateEnum.FAILED
+			};
+			executions = ExecutionManager.getExecutions(ids, false, states, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (executions != null) {
-			for (final ExecutionEntity execution : executions)
-				if(execution.getState().equals(ExecutionStateEnum.FINISHED)
-						||execution.getState().equals(ExecutionStateEnum.FINISHING)
-							||execution.getState().equals(ExecutionStateEnum.FAILED)) {
-					ExecutionStopMessage vmsm=new ExecutionStopMessage();
-					vmsm.setExecutionId(execution.getId());
-					List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
-					machines.add(execution.getNode());
-					threadPool.submit(new MessageSender(machines, 
-							vmsm, new AbstractResponseProcessor() {			
-						@Override
-						public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-							if (!execution.getState().equals(ExecutionStateEnum.FAILED)) {
+			try {
+				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+				int j = 0;
+				for (ExecutionEntity execution : executions) {	
+					j++;
+					ImageOperationMessage vmsm  = new ImageOperationMessage(
+							execution.getNode().getIp(), 
+							ControlManager.getInstance().getPort(), 
+							null,  
+							ImageOperationMessage.VM_STOP, 
+							execution.getNode().getId(),
+							execution.getId());
+					messageList.add(vmsm);
+					if (j >= messagesByThread || j >= executions.size()) {
+						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+							
+							@Override
+							public void attendResponse(Object response, Object message) {
+								ImageOperationMessage mss = (ImageOperationMessage) message;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, new Date(), null, ExecutionStateEnum.FINISHED, null, text), con2);
-									DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, "Execution finished");
+									ExecutionManager.updateExecution(exe, null, con2);
+									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
 							}
-						}
-						@Override
-						public void attendError(String message, Long id) {
-							if (!execution.getState().equals(ExecutionStateEnum.FAILED)) {
+							
+							@Override
+							public void attendError(Object error, String message) {
+								ImageOperationMessage mss = (ImageOperationMessage) error;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									PhysicalMachineEntity pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
+									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
-									DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FINISHED, null, "Connection lost with agent, execution will be removed when it reconnects"), con2);
-									DeploymentManager.breakFreeInterfaces(execution.getId(), con2, IPEnum.AVAILABLE);
+									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, "Connection lost with agent, execution will be removed when it reconnects");
+									ExecutionManager.updateExecution(exe, null, con2);
+									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
 							}
-						}
-					}));
+						}));
+						j = 0;
+						messageList = new ArrayList<UnaCloudMessage>();
+					}				
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}			
 		
 	}
@@ -380,49 +418,69 @@ public class QueueMessageProcessor implements QueueReader{
 		
 		List<ExecutionEntity> executions = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
-			executions = DeploymentManager.getExecutions(ids, ExecutionStateEnum.QUEUED, true, con);
+			ExecutionStateEnum[] states = new ExecutionStateEnum[] {
+					ExecutionStateEnum.REQUESTED
+			};
+			executions = ExecutionManager.getExecutions(ids, true, states, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (executions != null) {
-			for (final ExecutionEntity execution : executions) {
-				ExecutionStartMessage vmsm = new ExecutionStartMessage();
-				vmsm.setExecutionTime(new Time(execution.getTimeInHours(), TimeUnit.HOURS));
-				vmsm.setHostname(execution.getHostName());
-				vmsm.setVmCores(execution.getCores());
-				vmsm.setVmMemory(execution.getRam());
-				vmsm.setExecutionId(execution.getId());
-				vmsm.setImageId(imageId);
-				List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
-				for(NetInterfaceEntity interf: execution.getInterfaces())
-					interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
-				vmsm.setInterfaces(interfaces);						
-				List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
-				machines.add(execution.getNode());
-				threadPool.submit(new MessageSender(machines, 
-						vmsm, new AbstractResponseProcessor() {			
-					@Override
-					public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-							Date stopTime = new Date();
-							stopTime.setTime(stopTime.getTime() + execution.getTime());
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, new Date(), stopTime, null, ExecutionStateEnum.CONFIGURING, null, "Initializing"), con2);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+			try {
+				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+				int j = 0;
+				for (ExecutionEntity execution : executions) {	
+					j++;
+					List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
+					for (NetInterfaceEntity interf: execution.getInterfaces())
+						interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
+					ExecutionStartMessage vmsm = new ExecutionStartMessage(
+							execution.getNode().getIp(), 
+							ControlManager.getInstance().getPort(), 
+							null, 
+							execution.getId(), 
+							execution.getNode().getId(),
+							imageId, 
+							execution.getCores(), 
+							execution.getRam(), 
+							new Time(execution.getTimeInHours(), TimeUnit.HOURS), 
+							execution.getHostName(),
+							message.getTypeTransmission(),
+							interfaces);
+					System.out.println("Execution from " + execution.getTimeInHours() + " - " + execution.getDuration());
+					
+					messageList.add(vmsm);
+					
+					if (j >= messagesByThread || j >= executions.size()) {
+												
+						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+							
+							@Override
+							public void attendResponse(Object response, Object message) {
+								//ExecutionStartMessage mss = (ExecutionStartMessage) message;
+								
+							}
+							
+							@Override
+							public void attendError(Object error, String message) {
+								ExecutionStartMessage mss = (ExecutionStartMessage) error;
+								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+									PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), null, null, PhysicalMachineStateEnum.OFF, null);
+									PhysicalMachineManager.setPhysicalMachine(pm, con2);
+									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Communication error " + message);
+									ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUESTED, con2);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}));
+						j = 0;
+						messageList = new ArrayList<UnaCloudMessage>();
 					}
-					@Override
-					public void attendError(String message, Long id) {
-						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-							PhysicalMachineEntity pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
-							PhysicalMachineManager.setPhysicalMachine(pm, con2);
-							DeploymentManager.setExecution(new ExecutionEntity(execution.getId(), 0, 0, null, null, null, ExecutionStateEnum.FAILED, null, "Communication error " + message), con2);
-						}catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}));
-			}
+				}	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}				
 		}		
 	}
 	
@@ -439,53 +497,55 @@ public class QueueMessageProcessor implements QueueReader{
 		ExecutionEntity execution = null;
 		ImageEntity image = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {	
-			execution = DeploymentManager.getExecution(executionId, ExecutionStateEnum.REQUEST_COPY, con);
+			execution = ExecutionManager.getExecution(executionId, ExecutionStateEnum.REQUEST_COPY, con);
 			image = ImageManager.getImage(newImageId, ImageEnum.COPYING, con);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}			
 		
 		if (execution != null && image != null) {
-			ExecutionSaveImageMessage vmsim = new ExecutionSaveImageMessage();
-			vmsim.setTokenCom(image.getToken());
-			vmsim.setImageId(oldImageId);
-			vmsim.setExecutionId(execution.getId());
-			List<PhysicalMachineEntity> machines = new ArrayList<PhysicalMachineEntity>();
-			machines.add(execution.getNode());
-			final ExecutionEntity exe = execution;
-			final ImageEntity img = image;
-			threadPool.submit(new MessageSender(machines, 
-					vmsim, new AbstractResponseProcessor() {			
-				@Override
-				public void attendResponse(UnaCloudAbstractResponse response, Long id) {
-					try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-						if (response instanceof ExecutionSaveImageResponse) {
-							if (((ExecutionSaveImageResponse)response).getState().equals(ExecutionState.COPYNG)) {
-								DeploymentManager.setExecution(new ExecutionEntity(exe.getId(), 0, 0, null, null, null, ExecutionStateEnum.COPYING, null, null), con2);
-							} else {
-								DeploymentManager.setExecution(new ExecutionEntity(exe.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, ((ExecutionSaveImageResponse)response).getMessage()), con2);
-								ImageManager.deleteImage(img, con2);
-							}
-						} else {
-							DeploymentManager.setExecution(new ExecutionEntity(exe.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, ((InvalidOperationResponse)response).getMessage()), con2);
-							ImageManager.deleteImage(img, con2);
+			try {
+				ExecutionSaveImageMessage vmsim = new ExecutionSaveImageMessage(
+						execution.getNode().getIp(), 
+						ControlManager.getInstance().getPort(), 
+						null, 
+						executionId, 
+						execution.getNode().getId(),
+						image.getToken(), 
+						oldImageId);
+				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
+				messageList.add(vmsim);
+				
+				threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+					
+					@Override
+					public void attendResponse(Object response, Object message) {
+						ExecutionSaveImageMessage mss = (ExecutionSaveImageMessage) message;
+						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+							UnaCloudResponse resp = (UnaCloudResponse) response;
+							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, resp.getState(), null, "Client: " + resp.getMessage());
+							ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUEST_COPY, con2);							
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
-				}
-				@Override
-				public void attendError(String message, Long id) {
-					try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-						PhysicalMachineEntity pm = new PhysicalMachineEntity(id, PhysicalMachineStateEnum.OFF);
-						PhysicalMachineManager.setPhysicalMachine(pm,con2);
-						DeploymentManager.setExecution(new ExecutionEntity(exe.getId(), 0, 0, null, null, null, ExecutionStateEnum.DEPLOYED, null, "Error copying image " + message), con2);
-						ImageManager.deleteImage(img, con2);
-					} catch (Exception e) {
-						e.printStackTrace();
+					
+					@Override
+					public void attendError(Object error, String message) {
+						ExecutionStartMessage mss = (ExecutionStartMessage) error;
+						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
+							PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
+							PhysicalMachineManager.setPhysicalMachine(pm,con2);
+							ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.FAIL, null, "Error copying image " + message);
+							ExecutionManager.updateExecution(exe, ExecutionStateEnum.REQUEST_COPY, con2);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-				}
-			}));
+				}));	
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}	
 	}
 }

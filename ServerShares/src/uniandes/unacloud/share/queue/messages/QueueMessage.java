@@ -12,11 +12,11 @@ import org.json.*;
  */
 public class QueueMessage {
 
-	public static final String TYPE_MESSAGE="Type";
+	public static final String TYPE_MESSAGE = "Type";
 	
-	public static final String REQUESTER_MESSAGE="Requester";
+	public static final String REQUESTER_MESSAGE = "Requester";
 	
-	public static final String CONTENT_MESSAGE="Content";
+	public static final String CONTENT_MESSAGE = "Content";
 	
 	/**
 	 * Message type

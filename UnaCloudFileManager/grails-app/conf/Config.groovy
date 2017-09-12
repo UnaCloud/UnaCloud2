@@ -68,7 +68,6 @@ grails {
     }
 }
 
-
 grails.converters.encoding = "UTF-8"
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
@@ -95,9 +94,7 @@ grails.hibernate.pass.readonly = false
 grails.hibernate.osiv.readonly = false
 
 //cors.url.pattern = ['/upload/*', '/update/*','/file/*']
-ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath()+UnaCloudConstants.FILE_CONFIG)
-String path = reader.getStringVariable("WEB_SERVER_URL")
-cors.headers = ['Access-Control-Allow-Origin': path.substring(0,path.lastIndexOf("/"))]
+cors.headers = ['Access-Control-Allow-Origin': '*']
 
 environments {
     development {
@@ -105,17 +102,11 @@ environments {
     }
     production {
         grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
     }
 }
 
 // log4j configuration
 log4j.main = {
-    // Example of changing the log pattern for the default console appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
 
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP

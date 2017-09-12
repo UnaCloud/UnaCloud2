@@ -106,8 +106,19 @@ class Laboratory {
 	 */
 	def List <ExecutionIP> getAvailableIps() {
 		List <ExecutionIP> ips = new ArrayList<>()
-		for(IPPool pool : ipPools)
+		for (IPPool pool : ipPools)
 		    ips.addAll(pool.ips.findAll{it.state == IPEnum.AVAILABLE}.sort())
 		return ips
 	}
-}
+	
+	
+	def List <IPPool> getPools() {
+		List <IPPool> pools = new ArrayList<>()
+		for (IPPool pool : ipPools)
+			if (pool.ips.size() == 0)
+				pool.delete()
+			else 
+				pools.add(pool)
+		return pools
+	}
+} 

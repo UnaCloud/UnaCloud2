@@ -4,8 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-
+import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 
 /**
@@ -45,9 +44,9 @@ class Execution {
 	Date stopTime
 	
 	/**
-	 * Actual node state  (QUEUED,COPYING,CONFIGURING,DEPLOYING,DEPLOYED,FAILED,FINISHING,FINISHED,REQUEST_COPY,RECONNECTING)
+	 * Actual state , by default is requested
 	 */
-	ExecutionStateEnum status
+	ExecutionState state 
 	
 	/**
 	 * Execution last message
@@ -58,12 +57,7 @@ class Execution {
 	 * Physical machine where the node is or was deployed
 	 */
 	PhysicalMachine executionNode
-	
-	/**
-	 * Last update in graph state
-	 */
-	Date lastUpdate = new Date();
-		
+			
 	/**
 	 * deployed Image 
 	 */
@@ -72,15 +66,25 @@ class Execution {
 	/**
 	 * Last report of execution
 	 */
-	Date lastReport
+	Date lastReport = new Date()
+		
+	/**
+	 * Duration of execution in milliseconds
+	 */
+	long duration
 	
+	/**
+	 * Image id where files of this instance will be saved
+	 * This id is optional
+	 */
+	long copyTo	
 	
 	static constraints = {
 		executionNode nullable: true
 		stopTime nullable: true 
-		startTime nullable:true
-		lastReport nullable:true
-		lastUpdate nullable:true
+		startTime nullable: true
+		lastReport nullable: false
+		duration nullable: false
 	}
 	
 	//-----------------------------------------------------------------
@@ -92,7 +96,7 @@ class Execution {
 	 * @return formated remaining time
 	 */
 	def remainingTime() {
-		if (stopTime == null || status != ExecutionStateEnum.DEPLOYED) 
+		if (stopTime == null || state.state != ExecutionStateEnum.DEPLOYED) 
 			return '--'
 		long millisTime = (stopTime.getTime() - System.currentTimeMillis()) / 1000
 		String s = "" + millisTime % 60;
@@ -102,37 +106,18 @@ class Execution {
         if (m.length() == 1) m = "0" + m;
         return h + "h:" + m + "m:" + s + "s"
 	}
-	
-	/**
-	 * Calculates and returns the remaining execution time in hours
-	 * @return hours of execution remaining
-	 */
-	int runningTimeInHours() {
-		long millisTime = (stopTime.getTime() - startTime.getTime()) / 1000
-		return (millisTime / 60 / 60) + 1
-	}
-	
+		
 	/**
 	 * Saves entity with net interfaces
 	 */
 	def saveExecution() {		
 		this.save(failOnError: true, flush: true)
 		for (NetInterface netInterface in interfaces) {
-			netInterface.ip.putAt('state',IPEnum.USED)
-			netInterface.save(failOnerror:true, flush:true)
+			netInterface.ip.putAt('state', IPEnum.USED)
+			netInterface.save(failOnerror: true, flush:true)
 		}
 	}
-	
-	/**
-	 * Sets status to finished and breaks free IP from net interfaces.
-	 */
-	def finishExecution() {
-		this.putAt("status", ExecutionStateEnum.FINISHED)
-		this.putAt("stopTime", new Date())
-		for (NetInterface netinterface in interfaces)
-			netinterface.ip.putAt("state", IPEnum.AVAILABLE)
-	}
-	
+		
 	/**
 	 * Returns main IP configured in Net interfaces
 	 * currently is number one
@@ -156,7 +141,7 @@ class Execution {
 	 * 
 	 */
 	def boolean showDetails() {
-		return status.equals(ExecutionStateEnum.DEPLOYED) || status.equals(ExecutionStateEnum.RECONNECTING) || status.equals(ExecutionStateEnum.FAILED)
+		return state.state.equals(ExecutionStateEnum.DEPLOYED) || state.state.equals(ExecutionStateEnum.RECONNECTING) || state.state.equals(ExecutionStateEnum.FAILED)
 	}
 	
 	/**
@@ -165,15 +150,53 @@ class Execution {
 	 */
 	def getDeployedImage() {
 		return deployImage;
-	}
-	
+	}	
 	
 	/**
-	 * Validates if current state time is above of a certain date given as parameter
-	 * @param date to compare
-	 * @return true in case current state time is above of a certain date, false otherwise
-	 */
-	def isAboveStateTime(Date date) {
-		return date.getTime() - lastUpdate.getTime() > status.getTime();
+	 * Changes current execution state to next one
+	 */	
+	//TODO date should be from database
+	def goNext(String newMessage) {
+		if (state.next != null) {
+			state = state.next
+			message = newMessage
+		}
 	}
+	
+	/**
+	 * Changes current execution state to requested next one if exits
+	 */
+	def goNextRequested	(String newMessage) {
+		if (state.nextRequested != null) {
+			state = state.nextRequested
+			message = newMessage
+		}
+	}
+	
+	/**
+	 * Changes current execution state to control next one if exits
+	 */
+	def goNextControl() {
+		if (state.nextControl != null) {
+			if(state.controlMessage != null)
+				message = state.controlMessage
+			state = state.nextControl			
+		}
+	}
+	
+	def isControlExceeded(Date current) {
+		if (state.nextControl != null)
+			return current.getTime() - lastReport.getTime() > state.controlTime
+		return false
+	}
+	
+	/**
+	 * Returns execution history based in one state
+	 * @param state to search history for execution
+	 * @return history status 
+	 */
+	def getHistoryStatus(ExecutionStateEnum searchState) {
+		return ExecutionHistory.where{state.state == searchState && execution == this}.find()
+	}
+	
 }

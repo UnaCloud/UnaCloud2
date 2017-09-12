@@ -5,8 +5,8 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
 
+import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ServerVariableManager;
 import uniandes.unacloud.file.db.entities.ServerVariableEntity;
@@ -17,16 +17,15 @@ import uniandes.unacloud.file.files.AgentFileManager;
  * @author CesarF
  *
  */
-public class AgentProcessorTask implements Runnable {
+public class AgentProcessorTask extends AbstractTCPSocketProcessor {
 	
-	private Socket socket;
 	
 	public AgentProcessorTask(Socket s) {
-		this.socket = s;
+		super(s);
 	}
 
 	@Override
-	public void run() {
+	public void processMessage(Socket socket) throws Exception {
 		try (Socket ss = socket; DataOutputStream out = new DataOutputStream(socket.getOutputStream()); DataInputStream is = new DataInputStream(socket.getInputStream());) {
 			if (is.readInt() == UnaCloudConstants.REQUEST_AGENT_VERSION) {
 				ServerVariableEntity variable = null;

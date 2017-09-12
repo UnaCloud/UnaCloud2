@@ -11,38 +11,52 @@ public enum QueueMessageType {
 	 * Remove an image from all physical machines
 	 */
 	CLEAR_CACHE,
+	
+	/**
+	 * Remove an image from all physical machines and update state
+	 */
+	CLEAR_CACHE_UPDATE,
+	
 	/**
 	 * Delete an user an all images belonged
 	 */
 	DELETE_USER,
+	
 	/**
 	 * Send task to agent
 	 */
 	SEND_TASK,
+	
 	/**
 	 * Deploy executions in physical machines
 	 */
 	DEPLOY_CLUSTER,
+	
 	/**
 	 * Stop deployments
 	 */
 	STOP_DEPLOYS,
+	
 	/**
 	 * Add instances to deployment
 	 */
 	ADD_INSTANCES,
+	
 	/**
 	 * Create a copy from a current execution deployed
 	 */
 	CREATE_COPY,
+	
 	/**
 	 * Create a public image from private one
 	 */
 	CREATE_PUBLIC_IMAGE,
+	
 	/**
 	 * create a private image from public one
 	 */
 	CREATE_COPY_FROM_PUBLIC,
+	
 	/**
 	 * Delete image in repositories
 	 */
@@ -60,6 +74,7 @@ public enum QueueMessageType {
 	 */
 	public static QueueMessageType getType(String name){
 		if (name.equals(CLEAR_CACHE.name())) return CLEAR_CACHE;
+		if (name.equals(CLEAR_CACHE_UPDATE.name())) return CLEAR_CACHE_UPDATE;
 		if (name.equals(DELETE_USER.name())) return DELETE_USER;
 		if (name.equals(SEND_TASK.name())) return SEND_TASK;
 		if (name.equals(DEPLOY_CLUSTER.name())) return DEPLOY_CLUSTER;

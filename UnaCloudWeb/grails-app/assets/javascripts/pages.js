@@ -265,7 +265,7 @@ function redirectConfirm(data, href, name){
 }
 function sendConfirm(message,href,data){
 	showConfirm('Confirm',message, function(){		
-		window.location.href = href+data;
+		window.location.href = href + data;
 	});
 }
 

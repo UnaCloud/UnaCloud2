@@ -12,18 +12,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import uniandes.unacloud.agent.exceptions.ExecutionException;
+import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.domain.Image;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.execution.domain.ImageStatus;
 import uniandes.unacloud.agent.net.download.DownloadImageTask;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
-import uniandes.unacloud.agent.platform.Platform;
+import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
-import uniandes.unacloud.common.utils.RandomUtils;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
+import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.utils.security.HashGenerator;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
 /**
@@ -35,74 +38,76 @@ public class ImageCacheManager {
 	/**
 	 * Path of current image repository
 	 */
-	private static String machineRepository = VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
+	private static final String machineRepository = VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
 	
 	/**
 	 * Represents file where image list is stored
 	 */
-	private static File imageListFile = new File("imageList");
+	private static final File imageListFile = new File("imageList");
 	
 	/**
 	 * Represents list of images currently stored in repository
 	 */
-	private static Map<Long,Image> imageList = null;
+	private static Map<Long, Image> imageList = null;
 	
 	/**
 	 * Returns a free copy of the image
 	 * @param imageId image Id 
 	 * @return image available copy
+	 * @throws Exception 
 	 */
-	public static ImageCopy getFreeImageCopy(long imageId) throws ExecutionException {
-		System.out.println("getFreeImageCopy " + imageId);
-		Image vmi = getImage(imageId);
-		ImageCopy source,dest;
+	public static ImageCopy getFreeImageCopy(Execution execution, TransmissionProtocolEnum type) throws Exception {
+		System.out.println("\tgetFreeImageCopy " + execution.getImageId());
+		Image vmi = getImage(execution.getImageId());
+		ImageCopy source;
+		ImageCopy dest;
 		synchronized (vmi) {
-			System.out.println("has " + vmi.getImageCopies().size() + " copies");
+			System.out.println("\thas " + vmi.getImageCopies().size() + " copies");
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
 				try {
-					ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.DOWNLOADING, "Start downloading");
-					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository);
+					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
+					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
+					ex.printStackTrace();
 					throw ex;
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					throw new ExecutionException("Error downloading image", ex);
+					throw new ExecutionException("Error downloading image " + ex.getMessage(), ex);
 				}
-				System.out.println(" downloaded");
+				System.out.println("\t\t downloaded");
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				return copy;
-			} else {
+			} 
+			else {
 				for (ImageCopy copy : vmi.getImageCopies()) {
 					if (copy.getStatus() == ImageStatus.FREE) {
 						copy.setStatus(ImageStatus.LOCK);
-						System.out.println(" Using free");
+						System.out.println("\t Using free");
+						ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 						return copy;
 					}
 				}
 				source = vmi.getImageCopies().get(0);
-				final String vmName = "v" + RandomUtils.generateRandomString(9);
+				final String vmName = "v" + HashGenerator.randomString(9);
 				dest = new ImageCopy();
 				dest.setImage(vmi);
 				vmi.getImageCopies().add(dest);
-				File root = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId+OperatingSystem.PATH_SEPARATOR + vmName);
-				if (source.getMainFile().getName().contains(".")) {
-					String[] fileParts = source.getMainFile().getName().split("\\.");
+				File root = new File(machineRepository + OperatingSystem.PATH_SEPARATOR + vmi.getId() + OperatingSystem.PATH_SEPARATOR + vmName);
+				if (source.getMainFile().getExecutableFile().getName().contains(".")) {
+					String[] fileParts = source.getMainFile().getExecutableFile().getName().split("\\.");
 					dest.setMainFile(new File(root, vmName + "." + fileParts[fileParts.length-1]));
 				}
 				else
-					dest.setMainFile(new File(root,vmName));
+					dest.setMainFile(new File(root, vmName));
 				dest.setStatus(ImageStatus.LOCK);
 				saveImages();
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Start configuring");
 				SystemUtils.sleep(2000);
 			}
-			try {
-				ServerMessageSender.reportExecutionState(vmi.getId(), ExecutionStateEnum.CONFIGURING, "Start configuring");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		}
-		System.out.println(" clonning");
+		System.out.println("\tclonning");
 		return source.cloneCopy(dest);
 	}
 	/**
@@ -128,6 +133,7 @@ public class ImageCacheManager {
 	 */
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy) {
 		vmiCopy.setStatus(ImageStatus.FREE);
+		saveImages();
 	}
 		
 	/**
@@ -142,18 +148,20 @@ public class ImageCacheManager {
 	}
 	
 	/**
-	 * Removes all images for physical machine disk
+	 * Removes all images from physical machine disk
 	 * @return operation confirmation
 	 */
-	public static synchronized String clearCache() {
+	public static synchronized UnaCloudResponse clearCache() {
 		System.out.println("clearCache");
 		loadImages();
 		imageList.clear();
 		try {	
 			try {				
-				for(Image image: imageList.values())
-					for(ImageCopy copy: image.getImageCopies())
-						PlatformFactory.getPlatform(image.getPlatformId()).unregisterImage(copy);
+				for (Image image: imageList.values())
+					for (ImageCopy copy: image.getImageCopies()) {
+						PlatformFactory.getPlatform(image.getPlatformId()).stopAndUnregister(copy);
+						TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
+					}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}					
@@ -163,7 +171,7 @@ public class ImageCacheManager {
 			ex.printStackTrace();
 		}
 		saveImages();
-		return SUCCESSFUL_OPERATION;
+		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	
 	
@@ -171,15 +179,15 @@ public class ImageCacheManager {
 	 * Removes an image from cache in repository
 	 * @return response
 	 */
-	public static synchronized String clearImageFromCache(Long imageId) {
+	public static synchronized UnaCloudResponse clearImageFromCache(Long imageId) {
 		System.out.println("clearCache for machine " + imageId);
 		loadImages();
 		Image vmi = imageList.get(imageId);		
 		if (vmi != null) {
 			try {
 				for (ImageCopy copy : vmi.getImageCopies()) {
-					Platform platform = PlatformFactory.getPlatform(vmi.getPlatformId());
-					platform.unregisterImage(copy);
+					PlatformFactory.getPlatform(vmi.getPlatformId()).stopAndUnregister(copy);
+					TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 				}				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -192,7 +200,7 @@ public class ImageCacheManager {
 		if (folder.exists())
 			for (File root : new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId).listFiles())
 				cleanDir(root);
-		return SUCCESSFUL_OPERATION;
+		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	
 	/**
