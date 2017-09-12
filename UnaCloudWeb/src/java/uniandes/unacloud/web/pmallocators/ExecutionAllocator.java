@@ -1,6 +1,5 @@
 package uniandes.unacloud.web.pmallocators;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -54,13 +53,14 @@ public abstract class ExecutionAllocator{
 	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
 	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
-		System.out.println("Requires: "+((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform().getName());
-		if(!isSupportedPlatform(((Image)((DeployedImage)vme.getDeployedImage()).getImage()).getPlatform(), pm))return false;
-		System.out.println("Required: exe cores"+vme.getHardwareProfile().getCores()+" exe ram"+ vme.getHardwareProfile().getRam()+" pm cores"+pm.getCores()+"pm ram"+ pm.getRam());	
+		System.out.println("Requires: " + ( (Image) ( (DeployedImage) vme.getDeployedImage() ).getImage()).getPlatform().getName());
+		if (!isSupportedPlatform( ( (Image) ( (DeployedImage ) vme.getDeployedImage() ).getImage() ).getPlatform(), pm))
+			return false;
+		System.out.println("Required: exe cores" + vme.getHardwareProfile().getCores() + " exe ram" +  vme.getHardwareProfile().getRam() + " pm cores" + pm.getCores() + "pm ram" + pm.getRam());	
 		System.out.println("Used "+pmad);
 		if (pmad == null && vme.getHardwareProfile().getCores() <= pm.getCores() && vme.getHardwareProfile().getRam() <= pm.getRam())
 			return isThereEnoughIps(pm);
-		else if (pmad!= null && pmad.getCores() + vme.getHardwareProfile().getCores() <= pm.getCores()&& pmad.getRam() + vme.getHardwareProfile().getRam() <= pm.getRam() && pmad.getVms()+1 <= pm.getpCores())
+		else if (pmad != null && pmad.getCores() + vme.getHardwareProfile().getCores() <= pm.getCores() && pmad.getRam() + vme.getHardwareProfile().getRam() <= pm.getRam() && pmad.getVms() + 1 <= pm.getpCores())
 			return isThereEnoughIps(pm);
 		else return false;
 	}
@@ -71,9 +71,10 @@ public abstract class ExecutionAllocator{
 	 */
 	private boolean isThereEnoughIps(PhysicalMachine pm){
 		Integer ips = ipsNeeded.get(pm.getLaboratory().getDatabaseId());		
-		if(ips==null)ipsNeeded.put(pm.getLaboratory().getDatabaseId(), 1);
-		else ipsNeeded.put(pm.getLaboratory().getDatabaseId(), ips+1);			
-		if(ipsNeeded.get(pm.getLaboratory().getDatabaseId())>pm.getLaboratory().getAvailableIps().size())
+		if (ips == null)
+			ipsNeeded.put(pm.getLaboratory().getDatabaseId(), 1);
+		else ipsNeeded.put(pm.getLaboratory().getDatabaseId(), ips + 1);			
+		if (ipsNeeded.get(pm.getLaboratory().getDatabaseId()) > pm.getLaboratory().getAvailableIps().size())
 			return false;
 		else 
 			return true;
@@ -85,8 +86,8 @@ public abstract class ExecutionAllocator{
 	 * @return true if platform is supported else false
 	 */
 	private boolean isSupportedPlatform(Platform platform, PhysicalMachine pm){
-		for(Platform plat: pm.getAllPlatforms()){
-			if(plat.getDatabaseId()==platform.getDatabaseId())
+		for (Platform plat : pm.getAllPlatforms()) {
+			if (plat.getDatabaseId() == platform.getDatabaseId())
 				return true;
 		}
 		return false;

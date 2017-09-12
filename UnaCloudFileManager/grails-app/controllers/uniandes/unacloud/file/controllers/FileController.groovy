@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import uniandes.unacloud.share.entities.PlatformEntity;
+import uniandes.unacloud.share.db.entities.PlatformEntity;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.UserManager;
 import uniandes.unacloud.file.db.entities.UserEntity;
@@ -51,42 +51,44 @@ class FileController {
 	 * files are not valid.
 	 *
 	 */
-	def upload(){
+	def upload() {
 		def resp		
-		if(params.token&&!params.token.empty){
-			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){				
+		if (params.token && !params.token.empty) {
+			if (request.multiFileMap && request.multiFileMap.files && request.multiFileMap.files.size() > 0) {				
 				def files = request.multiFileMap.files
 				boolean validate=true
-				try{
+				try {
 					files.each {
-						if(validate){
-							if(it.isEmpty()){
-								resp = [success:false,'message':'File cannot be empty.'];
+						if (validate) {
+							if (it.isEmpty()) {
+								resp = [success:false, 'message':'File cannot be empty.'];
 								validate= false;
 							}													
 						}					
 					}
-				}catch(Exception e) {
-					validate=false;
-					resp = [success:false,'message':e.message]
+				} catch(Exception e) {
+					validate = false;
+					resp = [success:false, 'message':e.message]
 				}
-				if(validate){
+				if (validate) {
 					try{
 						def createPublic = fileService.upload(files, params.token)
-						if(createPublic == null){
-							resp = [success:false,'message':'Invalid file type.']
+						if (createPublic == null) {
+							resp = [success:false, 'message':'Invalid file type.']
 						}
-						else if(createPublic == true){
-							resp = [success:true,'redirect':'list','cPublic':createPublic];
+						else if (createPublic == true) {
+							resp = [success:true, 'redirect':'list', 'cPublic':createPublic];
 						}else 
-							resp = [success:true,'redirect':'list'];
+							resp = [success:true, 'redirect':'list'];
 					}
 					catch(Exception e) {
-						resp = [success:false,'message':e.message]
+						resp = [success:false, 'message':e.message]
 					}
 				}
-			}else resp = [success:false,'message':'File(s) to upload is/are missing.'];
-		}else resp = [success:false,'message':'All fields are required'];
+			} else 
+				resp = [success:false, 'message':'File(s) to upload is/are missing.'];
+		} else 
+			resp = [success:false, 'message':'All fields are required'];
 		render resp as JSON
 	}
 	
@@ -95,41 +97,40 @@ class FileController {
 	 * Validates file parameters are correct and save new files for image.
 	 * Redirects to index when finished or renders an error message if uploaded
 	 * files are not valid.
-	 */
-	
-	def updateFiles(){
+	 */	
+	def updateFiles() {
 		def resp
-		if(params.token&&!params.token.empty){
-			if(request.multiFileMap&&request.multiFileMap.files&&request.multiFileMap.files.size()>0){
+		if (params.token && !params.token.empty) {
+			if (request.multiFileMap && request.multiFileMap.files && request.multiFileMap.files.size() > 0) {
 				def files = request.multiFileMap.files
 				println 'valid files'
-				boolean validate=true
-				try{
+				boolean validate = true
+				try {
 					files.each {
-						if(validate){
-							if(it.isEmpty()){
-								resp = [success:false,'message':'File cannot be empty.'];
+						if( validate) {
+							if (it.isEmpty()) {
+								resp = [success:false, 'message':'File cannot be empty.'];
 								validate= false;
 							}							
 						}					
 					}
-				}catch(Exception e) {
+				} catch(Exception e) {
 					e.printStackTrace()
-					validate=false;
+					validate = false;
 					resp = [success:false,'message':e.message]
 				}
-				if(validate){
-					def update = fileService.updateFiles(files,params.token)
-					if(update == null){
-						resp = [success:false,'message':'Invalid file type.']
-					}else 
-						resp = [success:true,'redirect':'../list']
+				if (validate) {
+					def update = fileService.updateFiles(files, params.token)
+					if (update == null) {
+						resp = [success:false, 'message':'Invalid file type.']
+					} else 
+						resp = [success:true, 'redirect':'../list']
 				}
-			}else{
-				resp = [success:false,'message':'File(s) to upload is/are missing.'];		
+			} else {
+				resp = [success:false, 'message':'File(s) to upload is/are missing.'];		
 			}
-		}else{
-			resp = [success:false,'message':'Error! image does not exist.'];	
+		} else {
+			resp = [success:false, 'message':'Error! image does not exist.'];	
 		}
 		render resp as JSON
 	}

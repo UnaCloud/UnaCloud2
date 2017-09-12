@@ -92,7 +92,8 @@
 			                                  			   <g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 			                                  			   <g:if test="${execution.status.equals(ExecutionStateEnum.QUEUED)
 																 ||execution.status.equals(ExecutionStateEnum.REQUEST_COPY)
-																 ||execution.status.equals(ExecutionStateEnum.RECONNECTING)}">
+																 ||execution.status.equals(ExecutionStateEnum.RECONNECTING)
+																 ||execution.status.equals(ExecutionStateEnum.DOWNLOADING)}">
 						                                 	 <span class="label label-warning">${execution.status.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.message}"></i>
 						                                   </g:if>
 						                                   <g:elseif test="${execution.status.equals(ExecutionStateEnum.CONFIGURING)

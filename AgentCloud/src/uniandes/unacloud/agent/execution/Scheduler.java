@@ -24,8 +24,8 @@ public class Scheduler extends TimerTask {
 	/**
      * Responsible for un-deploying an execution in an executionTime
      */
-    public void run(){
-    	System.out.println("Schedule turning off  "+executionId);
-    	PersistentExecutionManager.removeExecution(executionId,true);
+    public void run() {
+    	System.out.println("Schedule turning off  " + executionId);
+    	PersistentExecutionManager.removeExecution(executionId, true);
     }
 }

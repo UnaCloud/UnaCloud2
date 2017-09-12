@@ -11,18 +11,21 @@ public enum ServerVariableTypeEnum {
 	 * To manage integer type
 	 */
 	INT("Integer"),
+	
 	/**
 	 * To manage String type
 	 */
 	STRING("String"),
+	
 	/**
 	 * To manage Boolean type
 	 */
 	BOOLEAN("Boolean");
 	
 	String type; 
-	private ServerVariableTypeEnum(String typeString){
-		type=typeString;
+	
+	private ServerVariableTypeEnum(String typeString) {
+		type = typeString;
 	}
 	
 	/**
@@ -30,10 +33,10 @@ public enum ServerVariableTypeEnum {
 	 * @param type of server variable
 	 * @return Server Variable type
 	 */
-	public static ServerVariableTypeEnum getEnum(String type){
-		if(type.equals(INT.name()))return INT;
-		if(type.equals(STRING.name()))return STRING;
-		if(type.equals(BOOLEAN.name()))return BOOLEAN;
+	public static ServerVariableTypeEnum getEnum(String type) {
+		if (type.equals(INT.name())) return INT;
+		if (type.equals(STRING.name())) return STRING;
+		if (type.equals(BOOLEAN.name())) return BOOLEAN;
 		return null;
 	}
 }

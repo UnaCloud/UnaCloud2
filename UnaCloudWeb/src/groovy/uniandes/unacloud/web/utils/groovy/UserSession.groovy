@@ -13,13 +13,18 @@ import uniandes.unacloud.web.services.UserService
 class UserSession {
 	
 	long id
+	
 	String name
+	
 	String username
+	
 	String description
+	
 	String registerDate
+	
 	boolean isAdmin
 		
-	public UserSession(long id, String name, String username, String description, String registerDate, boolean admin){
+	public UserSession(long id, String name, String username, String description, String registerDate, boolean admin) {
 		this.id = id
 		this.name = name
 		this.username = username
@@ -31,7 +36,7 @@ class UserSession {
 	 * Validates in user group service if user in session is admin
 	 * @return
 	 */
-	public boolean isAdmin(){
+	public boolean isAdmin() {
 		return isAdmin
 	}
 
@@ -39,7 +44,7 @@ class UserSession {
 	 * Update this entity based in a user entity sent by parameters
 	 * @param user
 	 */
-	public void refresh(User user){
+	public void refresh(User user) {
 		this.name = user.name
 		this.username = user.username
 		this.description = user.description

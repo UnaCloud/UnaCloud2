@@ -41,8 +41,8 @@ class ImageController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){			
-			flash.message="You must log in first"
+		if (!session.user) {			
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
 		}
@@ -54,7 +54,7 @@ class ImageController {
 	 * Action by default
 	 * 
 	 */
-	def index(){
+	def index() {
 		redirect(uri:"/services/image/list", absolute:true)
 	}
 	
@@ -72,14 +72,14 @@ class ImageController {
 	 * New uploaded image form action
 	 * @return list of OS for user selection
 	 */
-	def newUploadImage(){
-		[oss: OperatingSystem.list(),plats:Platform.list()]
+	def newUploadImage() {
+		[oss: OperatingSystem.list(), plats:Platform.list()]
 	}
 	
 	/**
 	 * New Image from public one action
 	 */
-	def newFromPublic(){
+	def newFromPublic() {
 		[ publicImages: imageService.getAvailablePublicImages()]
 	}
 	
@@ -89,22 +89,21 @@ class ImageController {
 	def copyPublic(){
 		def resp
 		def user = User.get(session.user.id)
-		if(params.name&&!params.name.isEmpty()&&params.image){
+		if (params.name && !params.name.isEmpty() && params.image) {
 			try {
-				if(imageService.newPublic(params.name, params.image, user)){
-					redirect(uri:"/services/image/list", absolute:true)
-				}
-				else{
-					flash.message="Values are not correct"
+				if (imageService.newPublic(params.name, params.image, user))
+					redirect(uri:"/services/image/list", absolute:true)				
+				else {
+					flash.message = "Values are not correct"
 					redirect(uri:"/services/image/public", absolute:true)
 				}				
 			} catch (Exception e) {
 				e.printStackTrace()
-				flash.message="Error: "+e.message
+				flash.message = "Error: " + e.message
 				redirect(uri:"/services/image/public", absolute:true)
 			}
-		}else{
-			flash.message="All fields are mandatory"
+		} else {
+			flash.message = "All fields are mandatory"
 			redirect(uri:"/services/image/public", absolute:true)
 		}
 	}
@@ -114,18 +113,17 @@ class ImageController {
 	 * deposited and send deletion request. Redirects to index when finished or to
 	 * and error message if the validation processes failed
 	 */	
-	def delete(){
+	def delete() {
 		def image = Image.get(params.id)
-		if (!image||!image.state==ImageEnum.AVAILABLE)
+		if (!image || !image.state == ImageEnum.AVAILABLE)
 			redirect(uri:"/services/image/list", absolute:true)
 		else {	
-			def user= User.get(session.user.id)
-			if(imageService.deleteImage(user,image)){
-				flash.message="Your image has been disabled, it will be deleted in a few time";
-				flash.type="info";
-			}else{
-				flash.message="The image is being used in a cluster";
-			}	
+			def user = User.get(session.user.id)
+			if (imageService.deleteImage(user,image)) {
+				flash.message = "Your image has been disabled, it will be deleted in a few time";
+				flash.type = "info";
+			} else
+				flash.message = "The image is being used in a cluster";			
 			redirect(uri:"/services/image/list", absolute:true)		
 		}
 	}
@@ -134,15 +132,14 @@ class ImageController {
 	 * Requests delete image files from every ACTIVE physical machine
 	 * Verifies if image is AVAILABLE
 	 */	
-	def clearFromCache(){
+	def clearFromCache() {
 		Image image = Image.get(params.id);
-		if (image&&image.state==ImageEnum.AVAILABLE){	
-			if(image.owner.id==session.user.id){				
+		if (image && image.state == ImageEnum.AVAILABLE)	
+			if (image.owner.id == session.user.id) {				
 				imageService.clearCache(image);
-				flash.message="Your request has been sent, image will be deleted from physical machines in a few time";
-				flash.type="info";
-			}
-		}
+				flash.message = "Your request has been sent, image will be deleted from physical machines in a few time";
+				flash.type = "info";
+			}		
 		redirect(uri:"/services/image/list", absolute:true)
 	}
 	
@@ -151,48 +148,48 @@ class ImageController {
 	 */
 	def edit(){
 		Image image = Image.get(params.id);
-		if (image&&image.state==ImageEnum.AVAILABLE){
-			if(image.owner.id==session.user.id){	
-				[image: image,oss: OperatingSystem.list(),plats:Platform.list()]
-			}else{
-				flash.message="You are not authorized to edit that image";
+		if (image && image.state == ImageEnum.AVAILABLE) {
+			if (image.owner.id == session.user.id)	
+				[image: image, oss: OperatingSystem.list(), plats:Platform.list()]
+			else {
+				flash.message = "You are not authorized to edit that image";
 				redirect(uri:"/services/image/list", absolute:true)
 			}
-		}else
+		} else
 			redirect(uri:"/services/image/list", absolute:true)
 	}
 	
 	/**
 	 * Saves image information changes. Redirects to index when finished
 	 */	
-	def saveEdit(){
+	def saveEdit() {
 		
 		def image = Image.get(params.id)
-		if (image&&image.state==ImageEnum.AVAILABLE){
-			if(image.owner.id==session.user.id){
-				boolean toPublic = params.isPublic!=null;
+		if (image && image.state == ImageEnum.AVAILABLE) {
+			if (image.owner.id == session.user.id) {
+				boolean toPublic = params.isPublic != null;
 				def res = null;
-				try{
-					imageService.setValues(image,params.name,params.user,(params.password?params.password:image.password),params.osId,params.platId)
-					if(image.isPublic!=toPublic){				
-						imageService.alterImagePrivacy(toPublic,image)
-						flash.message="Image files will change its privacy, this will take a few minutes";
-					}else flash.message="Your changes has been saved";				
-				    flash.type="success";
+				try {
+					imageService.setValues(image, params.name, params.user, (params.password ? params.password : image.password), params.osId, params.platId)
+					if (image.isPublic != toPublic) {				
+						imageService.alterImagePrivacy(toPublic, image)
+						flash.message = "Image files will change its privacy, this will take a few minutes";
+					} else 
+						flash.message = "Your changes has been saved";				
+				    flash.type = "success";
 					redirect(uri:"/services/image/list/", absolute:true)
-				}
-				catch(Exception e) {
-					flash.type="info";
-					flash.message=e.message					
+				} catch(Exception e) {
+					flash.type = "info";
+					flash.message = e.message					
 					redirect(uri:"/services/image/list/", absolute:true)
 				}
 				
-			}else{
-				flash.message="You are not authorized to edit this image";
+			} else {
+				flash.message = "You are not authorized to edit this image";
 				redirect(uri:"/services/image/list", absolute:true)
 			}		
-		}else{ 		
-			flash.message="There was an error, check logs server";
+		} else { 		
+			flash.message = "There was an error, check logs server";
 			redirect(uri:"/services/image/list", absolute:true)
 		}
 	}
@@ -201,16 +198,18 @@ class ImageController {
 	 * Render image page, returns to list in case it does'nt exists
 	 * @return id of the image to be edited.
 	 */	
-	def update(){
+	def update() {
 		def image = Image.get(params.id)
-		if (image)	[image:image]
-		else redirect(uri:"/services/image/list", absolute:true)
+		if (image)	
+			[image:image]
+		else 
+			redirect(uri:"/services/image/list", absolute:true)
 	}
 	
 	/**
 	 * This action renders view to change the externalId reference in external cloud provider
 	 */
-	def external(){
+	def external() {
 		//TODO to be implemented
 	}
 	
@@ -224,21 +223,21 @@ class ImageController {
 	 * files are not valid.
 	 *
 	 */
-	def upload(){
+	def upload() {
 		def resp
-		if( params.name&&!params.name.empty&&params.protocol&&!params.protocol.empty&&
-			params.user&&!params.user.empty&&params.passwd&&!params.passwd.empty&&params.osId&&params.platId){	
-			def user= User.get(session.user.id)			
-			try{
-				def token = imageService.uploadImage(params.name, (params.isPublic!=null), params.protocol, params.osId, params.platId, params.user, params.passwd,user)
+		if( params.name && !params.name.empty && params.protocol && !params.protocol.empty && 
+			params.user && !params.user.empty && params.passwd && !params.passwd.empty && params.osId && params.platId) {	
+			def user = User.get(session.user.id)			
+			try {
+				def token = imageService.uploadImage(params.name, (params.isPublic != null), params.protocol, params.osId, params.platId, params.user, params.passwd,user)
 				def url = serverVariableService.getUrlFileManager()
-				resp = [success:true,'token':token,'url':url+"/upload"];				
-			}
-			catch(Exception e) {
+				resp = [success:true,'token':token,'url': url + "/upload"];				
+			} catch (Exception e) {
 				e.printStackTrace()
-				resp = [success:false,'message':e.message]
+				resp = [success:false, 'message':e.message]
 			}		
-		}else resp = [success:false,'message':'All fields are required'];
+		} else 
+			resp = [success:false,'message':'All fields are required'];
 		render resp as JSON
 	}
 	
@@ -248,21 +247,20 @@ class ImageController {
 	 * Redirects to index when finished or renders an error message if uploaded
 	 * files are not valid.
 	 */	
-	def updateFiles(){
+	def updateFiles() {
 		def resp
-		Image image= Image.get(params.id)
-		if (image!= null&&image.owner.id==session.user.id){	
-			try{
+		Image image = Image.get(params.id)
+		if (image != null && image.owner.id == session.user.id) {	
+			try {
 				def token = imageService.updateFiles(image)
 				def url = serverVariableService.getUrlFileManager()
-				resp = [success:true,'token':token,'url':url+"/update"]
-			}
-			catch(Exception e) {
+				resp = [success:true, 'token':token, 'url': url + "/update"]
+			} catch(Exception e) {
 				e.printStackTrace()
 				resp = [success:false,'message':e.message]
 			}
-		}else{
-			resp = [success:false,'message':'Error! image does not exist.'];	
+		} else {
+			resp = [success: false, 'message': 'Error! image does not exist.'];	
 		}
 		render resp as JSON
 	}

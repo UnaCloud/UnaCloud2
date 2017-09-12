@@ -11,22 +11,21 @@ import uniandes.unacloud.share.enums.QueueMessageType;
  * @author cdsbarrera
  * 
  */
-public class MessageStopExecutions extends QueueMessage{
+public class MessageStopExecutions extends QueueMessage {
 
 	private final static String TAG_LIST_EXECUTIONS_ID = "list_executions";
 
-	public MessageStopExecutions(String requester, Long[] executions){
+	public MessageStopExecutions(String requester, Long[] executions) {
 		super(requester);
 		this.setType(QueueMessageType.STOP_DEPLOYS);
 
 		JSONObject temp = this.getMessageContent();
 
 		JSONArray array = new JSONArray();
-		if(executions!=null) {
-			for (int i = 0; i < executions.length; i++) {
+		if (executions != null)
+			for (int i = 0; i < executions.length; i++)
 				array.put(executions[i]);
-			}
-		}
+		
 		temp.put(TAG_LIST_EXECUTIONS_ID, array);
 
 		this.setMessageContent(temp);
@@ -46,9 +45,8 @@ public class MessageStopExecutions extends QueueMessage{
 		JSONObject temp = this.getMessageContent();
 		JSONArray list = temp.getJSONArray(TAG_LIST_EXECUTIONS_ID);
 		Long[] array = new Long[list.length()];
-		for (int i = 0; i < list.length(); i++) {
+		for (int i = 0; i < list.length(); i++)
 			array[i] = list.getLong(i);
-		}
 		return array;
 	}
 }

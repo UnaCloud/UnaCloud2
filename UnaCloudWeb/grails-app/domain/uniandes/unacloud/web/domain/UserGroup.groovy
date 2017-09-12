@@ -44,7 +44,7 @@ class UserGroup {
 	 * Validates if group is admin group
 	 * @return true if group is for administrators, false in case not
 	 */
-	def boolean isAdmin(){
+	def boolean isAdmin() {
 		return name.equals(UnaCloudConstants.ADMIN_GROUP)
 	}
 	
@@ -52,7 +52,7 @@ class UserGroup {
 	 * Validates if group is user default group
 	 * @return true if group is default group, false in case not
 	 */
-	def boolean isDefault(){
+	def boolean isDefault() {
 		return name.equals(UnaCloudConstants.USERS_GROUP)
 	}
 		
@@ -61,7 +61,7 @@ class UserGroup {
 	 * @param restriction to be search in group restriction list
 	 * @return a restriction of user, null if does not exist
 	 */
-	def getRestriction(UserRestrictionEnum restriction){
-		this.restrictions.find{it.name==restriction.toString()}
+	def getRestriction(UserRestrictionEnum restriction) {
+		this.restrictions.find{it.name == restriction.toString()}
 	}
 }

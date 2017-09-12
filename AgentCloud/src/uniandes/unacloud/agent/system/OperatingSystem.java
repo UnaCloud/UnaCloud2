@@ -3,7 +3,8 @@ package uniandes.unacloud.agent.system;
 import java.io.File;
 
 import uniandes.unacloud.agent.exceptions.UnsupportedCommandException;
-import uniandes.unacloud.common.utils.LocalProcessExecutor;
+import uniandes.unacloud.agent.utils.SystemUtils;
+import uniandes.unacloud.utils.LocalProcessExecutor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
@@ -15,7 +16,7 @@ public abstract class OperatingSystem {
 	
 
     public static final String PATH_SEPARATOR = File.separator;
-    public static final String BIN="bin";
+    public static final String BIN = "bin";
 
     @SuppressWarnings("unused")
 	private String operatingSystemName = getOperatingSystemName();
@@ -30,10 +31,10 @@ public abstract class OperatingSystem {
      */
     public String turnOff() throws UnsupportedCommandException{
     	new Thread(){
-         	public void run() {
+         	public void run() {         		
          		try {
-					Thread.sleep(1000);
-		            LocalProcessExecutor.executeCommand(getTurnOffCommand());
+         			SystemUtils.sleep(1000);
+            		LocalProcessExecutor.executeCommand(getTurnOffCommand());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,7 +58,7 @@ public abstract class OperatingSystem {
     	new Thread(){
          	public void run() {
          		try {
-					Thread.sleep(1000);
+         			SystemUtils.sleep(1000);
 					executeCommandOS(getRestartCommand());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -82,7 +83,7 @@ public abstract class OperatingSystem {
     	new Thread(){
          	public void run() {
          		try {
-					Thread.sleep(1000);
+         			SystemUtils.sleep(1000);
 					executeCommandOS(getLogOutCommand());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -145,8 +146,9 @@ public abstract class OperatingSystem {
      * @throws UnsupportedCommandException 
      */
     public String getHostname() throws UnsupportedCommandException {
-    	if(hostname!=null)return hostname;
-    	hostname=LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
+    	if (hostname != null)
+    		return hostname;
+    	hostname = LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
     	return hostname;
     }
     

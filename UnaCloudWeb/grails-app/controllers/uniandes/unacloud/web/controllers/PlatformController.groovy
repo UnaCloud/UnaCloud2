@@ -48,16 +48,16 @@ class PlatformController {
 	 */
 	
 	def beforeInterceptor = {
-		if(!session.user){
-			flash.message="You must log in first"
+		if (!session.user) {
+			flash.message = "You must log in first"
 			redirect(uri:"/login", absolute:true)
 			return false
 		}
-		else{
+		else {
 			def user = User.get(session.user.id)
 			session.user.refresh(user)
-			if(!userGroupService.isAdmin(user)){
-				flash.message="You must be administrator to see this content"
+			if (!userGroupService.isAdmin(user)) {
+				flash.message = "You must be administrator to see this content"
 				redirect(uri:"/error", absolute:true)
 				return false
 			}
@@ -75,7 +75,7 @@ class PlatformController {
 	/**
 	 * Creates platform form action
 	 */
-	def create(){
+	def create() {
 	}
 	
 	/**
@@ -84,16 +84,16 @@ class PlatformController {
 	 * @return
 	 */
 	def save(){
-		if(params.name&&params.vers&&params.ext&&params.cls){
-			try{
-				platformService.create(params.name,params.vers,params.ext,params.files_ext, params.cls)
+		if (params.name && params.vers && params.ex && params.cls) {
+			try {
+				platformService.create(params.name, params.vers, params.ext, params.files_ext, params.cls)
 				redirect(uri:"/admin/platform/list", absolute:true)
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 				redirect(uri:"/admin/platform/new", absolute:true)
 			}
-		}else{
-			flash.message="All fields are required"
+		} else {
+			flash.message = "All fields are required"
 			redirect(uri:"/admin/platform/new", absolute:true)
 		}
 	}
@@ -102,8 +102,8 @@ class PlatformController {
 	 * Edits platform form action.
 	 * @return platform selected by user
 	 */
-	def edit(){
-		def platform= Platform.get(params.id)
+	def edit() {
+		def platform = Platform.get(params.id)
 		if (!platform)
 			redirect(uri:"/admin/platform/list", absolute:true)
 		else
@@ -114,21 +114,21 @@ class PlatformController {
 	 * edits values action. Receives new platform information and sends it to service
 	 * Redirects to platform list when finished
 	 */
-	def saveEdit(){
-		if(params.name&&params.vers&&params.ext&&params.cls){
-			try{
+	def saveEdit() {
+		if (params.name && params.vers && params.ext && params.cls) {
+			try {
 				Platform platform = Platform.get(params.id)
-				if(Platform){
-					platformService.setValues(platform,params.name,params.vers,params.ext,params.files_ext,params.cls)
-					flash.message="Platform values have been modified"
-					flash.type="success"
+				if (Platform) {
+					platformService.setValues(platform, params.name, params.vers, params.ext, params.files_ext, params.cls)
+					flash.message = "Platform values have been modified"
+					flash.type = "success"
 				}	
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 			}
 			redirect(uri:"/admin/platform/list", absolute:true)
-		}else{
-			flash.message="All fields are required"
+		} else {
+			flash.message = "All fields are required"
 			redirect(uri:"/admin/platform/edit/"+params.id, absolute:true)
 		}
 	}
@@ -136,22 +136,22 @@ class PlatformController {
 	/**
 	 * Deletes platform action. Redirects to index when finished
 	 */	
-	def delete(){
+	def delete() {
 		def platform = Platform.get(params.id)
 		if (platform) {			
 			try{
 				def listImages = imageService.getListMachinesByPlatform(platform)
-				if(!listImages||listImages.size()==0){
+				if (!listImages || listImages.size() == 0) {
 					platformService.deletePlatform(platform)
-					flash.message="Your request has been processed"
-					flash.type="success"
+					flash.message = "Your request has been processed"
+					flash.type = "success"
 				}
-				else{
-					flash.message="Platform is being used in some images, please delete images first"
-					flash.type="success"
+				else {
+					flash.message = "Platform is being used in some images, please delete images first"
+					flash.type = "success"
 				}
-			}catch(Exception e){
-				flash.message=e.message
+			} catch(Exception e) {
+				flash.message = e.message
 			}
 		}
 		redirect(uri:"/admin/platform/list", absolute:true)

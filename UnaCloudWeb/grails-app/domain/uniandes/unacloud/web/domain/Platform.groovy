@@ -48,7 +48,7 @@ class Platform {
 	 * Responsible for returning database id
 	 * @return database id
 	 */
-	def long getDatabaseId(){
+	def long getDatabaseId() {
 		return id;
 	}
 }

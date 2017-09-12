@@ -34,7 +34,7 @@ public class QueueTaskerControl {
 	 * Sets the queue manager used to send task. This method should only be called one time.
 	 * @param newQueue
 	 */
-	public static void setQueueConnection(QueueTaskerConnection newQueue){
+	public static void setQueueConnection(QueueTaskerConnection newQueue) {
 		controlQueue = newQueue;
 	}
 
@@ -43,7 +43,7 @@ public class QueueTaskerControl {
 	 * @param image that will be removed from cache
 	 * @param user who asks the task
 	 */
-	public static void clearCache(Image image, User user){
+	public static void clearCache(Image image, User user) {
 		MessageIdOfImage message = new MessageIdOfImage(QueueMessageType.CLEAR_CACHE, String.valueOf(user.getDatabaseId()), image.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}	
@@ -55,11 +55,11 @@ public class QueueTaskerControl {
 	 * @param user
 	 * @throws Exception in case task is null or number of machines is 0
 	 */
-	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user){
+	public static void taskMachines(List<PhysicalMachine> machines, TaskEnum task, User user) {
 		long[] listIds = new long[machines.size()];
-		for (int i = 0; i < machines.size(); i++) {
+		for (int i = 0; i < machines.size(); i++)
 			listIds[i]=machines.get(i).getDatabaseId();
-		}
+		
 		String nameTask = task.getName();
 		
 		MessageTaskMachines message = new MessageTaskMachines(String.valueOf(user.getDatabaseId()), listIds, nameTask);
@@ -71,7 +71,7 @@ public class QueueTaskerControl {
 	 * @param deployment
 	 * @param user
 	 */
-	public static void deployCluster(Deployment deployment, User user){
+	public static void deployCluster(Deployment deployment, User user) {
 		MessageDeployCluster message = new MessageDeployCluster(String.valueOf(user.getDatabaseId()), deployment.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}
@@ -80,11 +80,11 @@ public class QueueTaskerControl {
 	 * Puts a task to stop deployments in array
 	 * @param deployments
 	 */
-	public static void stopExecutions(List<Execution> executions, User user){
+	public static void stopExecutions(List<Execution> executions, User user) {
 		Long[] idExecutions = new Long[executions.size()];
-		for (int i = 0; i < executions.size(); i++) {
+		for (int i = 0; i < executions.size(); i++)
 			idExecutions[i]=executions.get(i).getDatabaseId();
-		}
+		
 		MessageStopExecutions message = new MessageStopExecutions(String.valueOf(user.getDatabaseId()), idExecutions);
 		controlQueue.sendMessage(message);
 	}
@@ -94,11 +94,11 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image){
+	public static void addInstancesToDeploy(List<Execution> executions, User user, DeployedImage image) {
 		Long[] listIds = new Long[executions.size()];
-		for (int i = 0; i < executions.size(); i++) {
+		for (int i = 0; i < executions.size(); i++)
 			listIds[i]=executions.get(i).getDatabaseId();
-		}
+		
 		MessageAddInstances message = new MessageAddInstances(String.valueOf(user.getDatabaseId()), ((Image)image.getImage()).getDatabaseId(), listIds);
 		controlQueue.sendMessage(message);
 	}
@@ -109,7 +109,7 @@ public class QueueTaskerControl {
 	 * @param image
 	 * @param user
 	 */
-	public static void createCopyFromExecution(Execution execution, Image newImage, Image pastImage, User user){
+	public static void createCopyFromExecution(Execution execution, Image newImage, Image pastImage, User user) {
 		MessageCreateCopyFromExecution message = new MessageCreateCopyFromExecution(String.valueOf(user.getDatabaseId()), execution.getDatabaseId(), newImage.getDatabaseId(), pastImage.getDatabaseId());
 		controlQueue.sendMessage(message);
 	}

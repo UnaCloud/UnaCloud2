@@ -27,7 +27,7 @@ class ServerVariableService {
 	 * Returns the current web server file url
 	 * @return file manager url
 	 */
-	def getUrlFileManager(){
+	def getUrlFileManager() {
 		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable
 	}
 }

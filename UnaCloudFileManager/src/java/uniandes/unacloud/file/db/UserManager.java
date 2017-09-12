@@ -23,15 +23,21 @@ public class UserManager {
 	 * @param con Database Connection
 	 * @return User
 	 */
-	public static UserEntity getUser(Long id,Connection con){
+	public static UserEntity getUser(Long id, Connection con) {
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT u.id, u.username, u.status FROM user u WHERE u.id = ?;");
 			ps.setLong(1, id);
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();	
 			UserEntity user = null;
-			if(rs.next())user = new UserEntity(rs.getLong(1),rs.getString(2), UserStateEnum.getEnum(rs.getString(3)));
-			try{rs.close();ps.close();}catch(Exception e){}
+			if (rs.next())
+				user = new UserEntity(rs.getLong(1), rs.getString(2), UserStateEnum.getEnum(rs.getString(3)));
+			try {
+				rs.close();
+				ps.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 			return user;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -46,7 +52,7 @@ public class UserManager {
 	 * @return User Entity
 	 * 
 	 */
-	public static UserEntity getUserWithRepository(Long id,Connection con){
+	public static UserEntity getUserWithRepository(Long id, Connection con) {
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT u.id, u.username, usr.val, u.status FROM user u LEFT JOIN (SELECT uur.user_restrictions_id as id, ur.value as val from user_user_restriction uur INNER JOIN user_restriction ur ON uur.user_restriction_id = ur.id WHERE ur.name = ? AND uur.user_restrictions_id = ?) usr ON u.id = usr.id WHERE u.id = ? ;");
 			ps.setString(1, UserRestrictionEnum.REPOSITORY.name());
@@ -56,12 +62,17 @@ public class UserManager {
 			ResultSet rs = ps.executeQuery();
 			String repository = null;
 			UserEntity user = null;
-			if(rs.next()){
+			if (rs.next()) {
 				user= new UserEntity(rs.getLong(1),rs.getString(2), UserStateEnum.getEnum(rs.getString(4)));
 				repository = rs.getString(3);
 			}
-			try{rs.close();ps.close();}catch(Exception e){}
-			user.setRepository(StorageManager.getRepositoryByName(repository==null?UnaCloudConstants.MAIN_REPOSITORY:repository,con));
+			try {
+				rs.close();
+				ps.close();
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+			user.setRepository(StorageManager.getRepositoryByName(repository == null ? UnaCloudConstants.MAIN_REPOSITORY : repository , con));
 			
 			return user;
 		} catch (Exception e) {
@@ -75,15 +86,20 @@ public class UserManager {
 	 * @param user to be deleted
 	 * @param con Database Connection
 	 */
-	public static void deleteUser(UserEntity user,Connection con){
-		if(user.getId()==null||user.getId()<1)return;
+	public static void deleteUser(UserEntity user, Connection con) {
+		if (user.getId() == null || user.getId() < 1)
+			return;
 		try {
 			String query = "delete from user where status = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());
 			ps.setLong(2, user.getId());
-			System.out.println("Delete User "+ps.toString()+" - "+ps.executeUpdate()+" lines");
-			try{ps.close();}catch(Exception e){}
+			System.out.println("Delete User " + ps.toString() + " - " + ps.executeUpdate() + " lines");
+			try {
+				ps.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

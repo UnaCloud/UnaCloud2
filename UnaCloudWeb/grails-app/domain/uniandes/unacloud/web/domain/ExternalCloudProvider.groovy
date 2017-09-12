@@ -19,6 +19,7 @@ class ExternalCloudProvider {
 	 */
 	String name
 	
+	
 	String endpoint
 	
 	/**

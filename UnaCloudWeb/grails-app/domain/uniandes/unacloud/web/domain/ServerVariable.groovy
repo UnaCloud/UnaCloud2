@@ -60,7 +60,7 @@ class ServerVariable {
 	 * @return list of values
 	 */
 	def values(){
-		if(this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))
+		if (this.name.equals(UnaCloudConstants.VM_DEFAULT_ALLOCATOR))
 			return AllocatorEnum.getList()
 		else []
 	}

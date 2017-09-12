@@ -13,6 +13,7 @@ import uniandes.unacloud.share.enums.QueueMessageType;
 public class MessageCreateCopyFromPublic extends QueueMessage{
 	
 	private final static String TAG_ID_IMAGE = "id_image";
+	
 	private final static String TAG_ID_PUBLIC_IMAGE = "id_public_image";
 	
 	public MessageCreateCopyFromPublic(String requester, long idImage, long idPublicImage){
