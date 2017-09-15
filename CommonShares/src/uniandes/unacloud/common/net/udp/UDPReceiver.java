@@ -41,11 +41,16 @@ public class UDPReceiver implements Closeable {
 	 */
 	public UnaCloudMessage getMessage() throws IOException, ClassNotFoundException {
 		DatagramPacket request = new DatagramPacket(buffer, buffer.length);
-		udpReceiver.receive(request);	
-		UnaCloudMessage udpMessage = deserialize(request.getData());
-		udpMessage.setIp(request.getAddress().getHostAddress());
-		udpMessage.setPort(0);
-		return udpMessage;
+		try {
+			udpReceiver.receive(request);	
+			UnaCloudMessage udpMessage = deserialize(request.getData());
+			udpMessage.setIp(request.getAddress().getHostAddress());
+			udpMessage.setPort(0);
+			return udpMessage;
+		} catch (Exception e) {
+			System.out.println("\t Error in data: Message from " + request.getAddress().getHostName());
+			throw e;
+		}
 	}
 
 
