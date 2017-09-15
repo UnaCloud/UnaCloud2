@@ -48,9 +48,9 @@ class PhysicalMachineAllocatorService {
 	 * @param pmdDescriptions map with descriptions of executions to be deployed
 	 */
 	
-	def allocatePhysicalMachines(User user, List<Execution> vms,List<PhysicalMachine> pms, Map<Long,PhysicalMachineAllocationDescription> pmDescriptions) {
+	def allocatePhysicalMachines(User user, List<Execution> vms, List<PhysicalMachine> pms, Map<Long, PhysicalMachineAllocationDescription> pmDescriptions) {
 		AllocatorEnum allocator = userRestrictionService.getAllocator(user)	
-		allocator.getAllocator().startAllocation(vms,pms,pmDescriptions);
+		allocator.getAllocator().startAllocation(vms, pms, pmDescriptions);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class PhysicalMachineAllocatorService {
 		sql.eachRow('SELECT execution_node_id, count(*) AS vms, sum(ram) AS ram, sum(cores) AS cores ' + 
 					'FROM execution JOIN hardware_profile ON execution.hardware_profile_id = hardware_profile.id ' +
 					'JOIN execution_state ON execution_state.id = execution.state_id ' +
-					'WHERE execution_state.state != \'' + ExecutionStateEnum.FINISHED + '\' AND execution_node_id in (' + listId + ') group by execution_node_id') { row ->
+					'WHERE execution_state.state != \'' + ExecutionStateEnum.FINISHED + '\' AND execution_node_id in (' + listId + ') group by execution_node_id order by execution.name desc;') { row ->
 			if(row.execution_node_id != null)
 				pmDescriptions.put(row.execution_node_id, new PhysicalMachineAllocationDescription(row.execution_node_id, row.cores.toInteger(), row.ram.toInteger(), row.vms.toInteger()));
 		}

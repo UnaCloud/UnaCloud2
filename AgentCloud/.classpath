@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/UAutils.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CommonShares"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT_cesarf.jar"/>
-	<classpathentry kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-shaded_cesarf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT-shaded_cesarf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ttorrent-cli-1.6-SNAPSHOT_cesarf.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/UAutils.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CommonShares"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
