@@ -33,13 +33,13 @@ public class AgentManager {
 	 */
 	public static UnaCloudResponse updateAgent() {
 		try {
-			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY+""});
+			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY + ""});
 		} catch (Exception e) {
         	e.printStackTrace();
         }
         new Thread() {
         	public void run() {
-        		SystemUtils.sleep(5000);
+        		SystemUtils.sleep(2000);
         		System.exit(6);
         	};
         }.start();
