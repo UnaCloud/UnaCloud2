@@ -1,5 +1,8 @@
 package uniandes.unacloud.agent;
 
+import static uniandes.unacloud.common.utils.UnaCloudConstants.VM_REPO_PATH;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -45,6 +48,15 @@ public class InitialPoint {
     		System.out.println(UnaCloudConstants.DATA_PATH + " in local file is empty");
     		System.exit(0);
     	}
+    	String repoPath = VariableManager.getInstance().getLocal().getStringVariable(VM_REPO_PATH);
+    	if (repoPath == null || dataPath.isEmpty()) {
+    		System.out.println(UnaCloudConstants.VM_REPO_PATH + " in local file is empty");
+    		System.exit(0);
+    	}
+    	
+    	File repo = new File(repoPath);
+    	if (!repo.exists())
+    		System.out.println("Making folder repo " + repoPath + " " + repo.mkdirs());
 
         //Start log    
         try {

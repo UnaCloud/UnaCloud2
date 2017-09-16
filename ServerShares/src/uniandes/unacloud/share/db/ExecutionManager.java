@@ -106,10 +106,8 @@ public class ExecutionManager {
 											+ "OR exe.state = \'" + ExecutionStateEnum.FINISHING.name() + "\')";
 			PreparedStatement ps = con.prepareStatement(query);
 			int index = 1;
-			for (Long idvme : ids) {
-				ps.setLong(index, idvme);
-				index++;
-			}
+			for (Long idvme : ids)
+				ps.setLong(index++, idvme);
 			System.out.println(ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
@@ -127,10 +125,8 @@ public class ExecutionManager {
 							+ "AND vm.execution_node_id = (SELECT pm.id FROM physical_machine pm WHERE pm.name = ?)";
 			PreparedStatement ps2 = con.prepareStatement(update);
 			index = 1;
-			for (Long idvme : ids) {
-				ps2.setLong(index, idvme);
-				index++;
-			}
+			for (Long idvme : ids) 
+				ps2.setLong(index++, idvme);
 			ps2.setString(index, host);
 			System.out.println(ps2.toString() + " changes " + ps2.executeUpdate() + " lines ");
 			try {				

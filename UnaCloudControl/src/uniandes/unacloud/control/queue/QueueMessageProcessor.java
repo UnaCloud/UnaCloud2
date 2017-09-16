@@ -121,7 +121,7 @@ public class QueueMessageProcessor implements QueueReader {
 				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
 					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, imageId, machines.get(i).getId()));
 					
-					if (j >= messagesByThread || j >= machines.size()) {
+					if (j >= messagesByThread || i == machines.size()-1) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -140,7 +140,7 @@ public class QueueMessageProcessor implements QueueReader {
 								}								
 							}
 						}));
-						j = 1;
+						j = 0;
 						messageList = new ArrayList<UnaCloudMessage>();
 					}					
 				}					
@@ -194,7 +194,7 @@ public class QueueMessageProcessor implements QueueReader {
 				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
 					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
 					
-					if (j >= messagesByThread || j >= machines.size()) {
+					if (j >= messagesByThread || i == machines.size()-1) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -230,7 +230,7 @@ public class QueueMessageProcessor implements QueueReader {
 								}							
 							}
 						}));
-						j = 1;
+						j = 0;
 						messageList = new ArrayList<UnaCloudMessage>();
 					}		
 				}	
@@ -261,10 +261,9 @@ public class QueueMessageProcessor implements QueueReader {
 				System.out.println("Deploy " + deploy.getId());
 				for (DeployedImageEntity image : deploy.getImages()) {
 					List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
-					int j = 0;
-					for (ExecutionEntity execution : image.getExecutions()) {	
-						j++;
+					for (int i = 0, j = 1; i < image.getExecutions().size() ; i++, j++) {
 						List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
+						ExecutionEntity execution = image.getExecutions().get(i);
 						for (NetInterfaceEntity interf: execution.getInterfaces())
 							interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
 						ExecutionStartMessage vmsm = new ExecutionStartMessage(
@@ -283,8 +282,7 @@ public class QueueMessageProcessor implements QueueReader {
 						System.out.println("Execution " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
 						
 						messageList.add(vmsm);
-						
-						if (j >= messagesByThread || j >= image.getExecutions().size()) {
+						if (j >= messagesByThread || i == image.getExecutions().size()-1) {
 													
 							threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 								
@@ -356,9 +354,8 @@ public class QueueMessageProcessor implements QueueReader {
 		if (executions != null) {
 			try {
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
-				int j = 0;
-				for (ExecutionEntity execution : executions) {	
-					j++;
+				for (int i = 0, j = 1; i < executions.size() ; i++, j++) {
+					ExecutionEntity execution = executions.get(i);
 					ImageOperationMessage vmsm  = new ImageOperationMessage(
 							execution.getNode().getIp(), 
 							ControlManager.getInstance().getPort(), 
@@ -367,16 +364,15 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getNode().getId(),
 							execution.getId());
 					messageList.add(vmsm);
-					if (j >= messagesByThread || j >= executions.size()) {
+					if (j >= messagesByThread || i == executions.size()-1) {
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
 								ImageOperationMessage mss = (ImageOperationMessage) message;
 								try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
-									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, "Execution finished");
+									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, text);
 									ExecutionManager.updateExecution(exe, null, con2);
-									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -390,7 +386,6 @@ public class QueueMessageProcessor implements QueueReader {
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
 									ExecutionEntity exe = new ExecutionEntity(mss.getExecutionId(), 0, 0, null, null, ExecutionProcessEnum.SUCCESS, null, "Connection lost with agent, execution will be removed when it reconnects");
 									ExecutionManager.updateExecution(exe, null, con2);
-									//ExecutionManager.breakFreeInterfaces(mss.getExecutionId(), con2, IPEnum.AVAILABLE);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -428,9 +423,8 @@ public class QueueMessageProcessor implements QueueReader {
 		if (executions != null) {
 			try {
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
-				int j = 0;
-				for (ExecutionEntity execution : executions) {	
-					j++;
+				for (int i = 0, j = 1; i < executions.size() ; i++, j++) {
+					ExecutionEntity execution = executions.get(i);
 					List<ImageNetInterfaceComponent> interfaces = new ArrayList<ImageNetInterfaceComponent>();
 					for (NetInterfaceEntity interf: execution.getInterfaces())
 						interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
@@ -451,7 +445,7 @@ public class QueueMessageProcessor implements QueueReader {
 					
 					messageList.add(vmsm);
 					
-					if (j >= messagesByThread || j >= executions.size()) {
+					if (j >= messagesByThread || i == executions.size()-1) {
 												
 						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							

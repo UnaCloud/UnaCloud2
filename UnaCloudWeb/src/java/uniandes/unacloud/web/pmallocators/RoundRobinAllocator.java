@@ -23,7 +23,7 @@ public class RoundRobinAllocator extends ExecutionAllocator {
 	protected void allocateExecutions(List<Execution> executionList, List<PhysicalMachine> physicalMachines, Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException {
 		Collections.sort(physicalMachines, new Comparator<PhysicalMachine>() {
 			public int compare(PhysicalMachine p1, PhysicalMachine p2) {
-				return Long.compare(p1.getDatabaseId(), p2.getDatabaseId());
+				return p1.getName().compareTo(p2.getName());
 			}
 		});
 		ciclo1 : for (int nextVm = 0, lastNextVm = 0; nextVm < executionList.size();) {

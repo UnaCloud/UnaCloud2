@@ -95,8 +95,10 @@ public class TorrentClient {
 		
 		System.out.println("Torrent: " + torrentFile);
 		InetAddress ip = InetAddress.getLocalHost();
-		System.out.printf("Inet Address: " + ip + "\n\tFile: " + torrentFile);
+		System.out.println("\tInet Address: " + ip);
+		System.out.println("\t\t File: " + torrentFile);
 		Client client = new Client(ip, SharedTorrent.fromFile(torrentFile, torrentFile.getParentFile()), listPorts);
+		System.out.println("\t" + client);
 		client.setMaxDownloadRate(500000.0);
 		client.setMaxUploadRate(500000.0);
 		if (download)
