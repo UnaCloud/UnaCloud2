@@ -112,7 +112,7 @@ public class WindowsOS extends OperatingSystem{
 
 	@Override
 	public String getJavaCommand() throws UnsupportedCommandException {		
-		return "javaw";
+		return "java";
 	}
 
 	@Override
