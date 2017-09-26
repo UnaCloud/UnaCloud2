@@ -1,5 +1,6 @@
 package uniandes.unacloud.agent.net.receive;
 
+import java.io.IOException;
 import java.net.Socket;
 
 import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
@@ -19,5 +20,13 @@ public class ClouderClientAttention extends AbstractTCPServerSocket {
 	@Override
 	protected Runnable processSocket(Socket socket) throws Exception {
 		return new ClouderServerAttentionProcessor(socket);
+	}
+	
+	public void stopSocket(){
+		try {
+			super.ss.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
