@@ -24,6 +24,8 @@ public abstract class AbstractTCPServerSocket extends Thread {
 	 */
 	private int listenPort;
 	
+	public ServerSocket ss;
+	
 	/**
 	 * Creates a new TCP server socket
 	 * @param listenPort port 
@@ -37,7 +39,10 @@ public abstract class AbstractTCPServerSocket extends Thread {
 	@Override
 	public void run() {
 		System.out.println("starting ss on port " + listenPort);
-		try (ServerSocket ss = new ServerSocket(listenPort)) {
+		
+		try (ServerSocket ss2 = new ServerSocket(listenPort)) {
+			ss = ss2;
+			ss2.close();
 			while (true) {
 				Socket s = ss.accept();
 				try {		
