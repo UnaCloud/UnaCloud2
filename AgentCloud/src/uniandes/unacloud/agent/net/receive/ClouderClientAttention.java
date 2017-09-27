@@ -1,6 +1,5 @@
 package uniandes.unacloud.agent.net.receive;
 
-import java.io.IOException;
 import java.net.Socket;
 
 import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
@@ -12,14 +11,41 @@ import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
  */
 public class ClouderClientAttention extends AbstractTCPServerSocket {
 
+	/**
+	 * Singleton instance
+	 */
 	private static ClouderClientAttention instance;
     
+	/**
+	 * Creates a new clouder service with port and threads number
+	 * @param listenPort
+	 * @param threads
+	 */
 	public ClouderClientAttention(int listenPort, int threads) {
 		super(listenPort, threads);
 	}
 
+	/**
+	 * Return a new instance listening in port by parameters
+	 * @param listenPort
+	 * @param threads
+	 * @return instance
+	 * @throws Exception
+	 */
 	public synchronized static ClouderClientAttention getInstance(int listenPort, int threads) throws Exception {
-		if(instance==null)instance=new ClouderClientAttention(listenPort, threads);
+		if (instance == null)
+			instance = new ClouderClientAttention(listenPort, threads);
+		return instance;
+	}
+	
+	/**
+	 * Returns the current instance
+	 * @return instance
+	 * @throws Exception
+	 */
+	public static ClouderClientAttention getInstance() throws Exception {
+		if (instance == null) 
+			throw new Exception("Service is not running");
 		return instance;
 	}
 
@@ -27,14 +53,5 @@ public class ClouderClientAttention extends AbstractTCPServerSocket {
 	@Override
 	protected Runnable processSocket(Socket socket) throws Exception {
 		return new ClouderServerAttentionProcessor(socket);
-	}
-	
-	public void stopSocket(){
-		try {
-			super.stopService();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 	}
 }

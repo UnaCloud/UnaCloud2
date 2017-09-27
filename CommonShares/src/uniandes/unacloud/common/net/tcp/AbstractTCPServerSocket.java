@@ -19,11 +19,16 @@ public abstract class AbstractTCPServerSocket extends Thread {
 	 */
 	private ExecutorService threadPool;
 
+	/**
+	 * Server socket for service
+	 */
 	private ServerSocket ss ;
+	
 	/**
 	 * Port to listen
 	 */
 	private int listenPort;
+	
 	/**
 	 * Creates a new TCP server socket
 	 * @param listenPort port
@@ -33,6 +38,7 @@ public abstract class AbstractTCPServerSocket extends Thread {
 		this.listenPort = listenPort;
 		threadPool = Executors.newFixedThreadPool(threads);
 	}
+	
 	@Override
 	public void run() {
 		System.out.println("starting ss on port " + listenPort);
@@ -56,6 +62,10 @@ public abstract class AbstractTCPServerSocket extends Thread {
 		}
 	}
 
+	/**
+	 * Stop service if it is running
+	 * @throws IOException
+	 */
 	public void stopService() throws IOException {
 		if (ss != null)
 			ss.close();

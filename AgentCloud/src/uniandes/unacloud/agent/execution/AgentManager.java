@@ -35,11 +35,10 @@ public class AgentManager {
 	public static UnaCloudResponse updateAgent() {
 
 		try {
-			ClouderClientAttention.getInstance(0,0).stopSocket();
+			ClouderClientAttention.getInstance().stopService();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY + ""});
 		} catch (Exception e) {
