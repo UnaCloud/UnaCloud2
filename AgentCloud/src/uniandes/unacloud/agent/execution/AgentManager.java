@@ -58,6 +58,11 @@ public class AgentManager {
 	 * @return message 
 	 */
 	public static UnaCloudResponse stopAgent() {
+		try {
+			ClouderClientAttention.getInstance().stopService();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
          new Thread() {
          	public void run() {
          		SystemUtils.sleep(5000);

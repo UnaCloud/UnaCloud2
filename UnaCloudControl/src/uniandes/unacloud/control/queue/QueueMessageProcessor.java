@@ -107,7 +107,7 @@ public class QueueMessageProcessor implements QueueReader {
 	 * @param message
 	 */
 	private void removeImageFromCache(MessageIdOfImage message) {
-		final Long imageId =  message.getIdImage();
+		Long imageId =  message.getIdImage();
 		List<PhysicalMachineEntity> machines = null;
 		try (Connection con = ControlManager.getInstance().getDBConnection();) {
 			machines = PhysicalMachineManager.getAllPhysicalMachine(PhysicalMachineStateEnum.ON, con);	

@@ -144,7 +144,7 @@ public class ImageCopy implements Serializable {
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
 					platform.registerImage(this);
-	    			platform.restoreExecutionSnapshot(this,"unacloudbase");
+	    			platform.restoreExecutionSnapshot(this, "unacloudbase");
 	        		platform.configureExecutionHardware(machineExecution.getCores(), machineExecution.getMemory(), this);
 	    			platform.startExecution(this);
 	    			configurator.configureHostname();
