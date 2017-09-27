@@ -11,9 +11,16 @@ import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
  * @author Clouder
  */
 public class ClouderClientAttention extends AbstractTCPServerSocket {
+
+	private static ClouderClientAttention instance;
     
 	public ClouderClientAttention(int listenPort, int threads) {
 		super(listenPort, threads);
+	}
+
+	public synchronized static ClouderClientAttention getInstance(int listenPort, int threads) throws Exception {
+		if(instance==null)instance=new ClouderClientAttention(listenPort, threads);
+		return instance;
 	}
 
 	 
@@ -24,9 +31,10 @@ public class ClouderClientAttention extends AbstractTCPServerSocket {
 	
 	public void stopSocket(){
 		try {
-			super.ss.close();
+			super.stopService();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 }
