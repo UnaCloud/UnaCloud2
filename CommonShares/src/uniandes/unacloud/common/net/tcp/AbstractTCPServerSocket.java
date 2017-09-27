@@ -3,6 +3,7 @@ package uniandes.unacloud.common.net.tcp;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,50 +14,53 @@ import java.util.concurrent.Executors;
  *
  */
 public abstract class AbstractTCPServerSocket extends Thread {
-	
 	/**
 	 * Thread pool to process sockets in background
 	 */
 	private ExecutorService threadPool;
-	
+
+	private ServerSocket ss ;
 	/**
 	 * Port to listen
 	 */
 	private int listenPort;
-	
-	public ServerSocket ss;
-	
 	/**
 	 * Creates a new TCP server socket
-	 * @param listenPort port 
+	 * @param listenPort port
 	 * @param threads quantity
 	 */
 	public AbstractTCPServerSocket(int listenPort, int threads) {
 		this.listenPort = listenPort;
 		threadPool = Executors.newFixedThreadPool(threads);
 	}
-	
 	@Override
 	public void run() {
 		System.out.println("starting ss on port " + listenPort);
-		
-		try (ServerSocket ss2 = new ServerSocket(listenPort)) {
-			ss = ss2;
-			ss2.close();
+		try  {
+			ss = new ServerSocket(listenPort);
 			while (true) {
-				Socket s = ss.accept();
-				try {		
+				try {
+					Socket s = ss.accept();
 					threadPool.submit(processSocket(s));
-				} catch (Exception e) {
+				} catch (SocketException soe) {
+					ss.close();
+					soe.printStackTrace();
+					break;
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 				}
-						
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void stopService() throws IOException {
+		if (ss != null)
+			ss.close();
+	}
+
 	/**
 	 * Returns the runnable where socket is processed
 	 * @param socket
