@@ -21,7 +21,7 @@ public class ClouderClientAttention extends AbstractTCPServerSocket {
 	 * @param listenPort
 	 * @param threads
 	 */
-	public ClouderClientAttention(int listenPort, int threads) {
+	private ClouderClientAttention(int listenPort, int threads) {
 		super(listenPort, threads);
 	}
 

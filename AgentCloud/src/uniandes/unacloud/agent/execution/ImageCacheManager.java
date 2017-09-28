@@ -153,8 +153,7 @@ public class ImageCacheManager {
 	 */
 	public static synchronized UnaCloudResponse clearCache() {
 		System.out.println("clearCache");
-		loadImages();
-		imageList.clear();
+		loadImages();		
 		try {	
 			try {				
 				for (Image image: imageList.values())
@@ -170,6 +169,7 @@ public class ImageCacheManager {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
+		imageList.clear();
 		saveImages();
 		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
