@@ -73,16 +73,16 @@ public class UpdaterAgent {
 	    		ds.writeInt(UnaCloudConstants.GIVE_ME_FILES);
 	    		try (PrintWriter versionFile = new PrintWriter(new FileOutputStream(versions), false); 
 	    				ZipInputStream zis = new ZipInputStream(is);) {	    			
-    				byte[] buffer = new byte[100*1024];
+    				byte[] buffer = new byte[100 * 1024];
     				for (ZipEntry ze; (ze = zis.getNextEntry()) != null;) {
     					System.out.println(ze.getName());
     					versionFile.println(ze.getName());
     					File output = new File(ze.getName());
     					if (output.getParentFile() != null)
     						output.getParentFile().mkdirs();
-    					FileOutputStream fos=new FileOutputStream(output);
-    						for(int n; (n = zis.read(buffer)) != -1;)
-    							fos.write(buffer,0,n);
+    					FileOutputStream fos = new FileOutputStream(output);
+    					for(int n; (n = zis.read(buffer)) != -1;)
+    						fos.write(buffer, 0, n);
     					fos.close();
     				}
     				versionFile.println(versionServer);

@@ -53,7 +53,7 @@ public class InitialPoint {
         	System.out.println("executing Agent");
             Runtime.getRuntime().exec(new String[]{"java", "-jar", UnaCloudConstants.AGENT_JAR, opcion + ""});
         } catch (Throwable t) {
-            System.out.println("EXE: "+t.getMessage());
+            System.out.println("EXE: " + t.getMessage());
         }
     }
    

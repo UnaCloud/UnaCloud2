@@ -129,7 +129,7 @@ public class InitialPoint {
         	System.out.println("Start reporter");        	
             PhysicalMachineStateReporter.getInstance().start();            
            //Attend messages from server
-			new ClouderClientAttention(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), THREADS).start();
+			ClouderClientAttention.getInstance(VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT), THREADS).start();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

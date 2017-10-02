@@ -137,8 +137,17 @@ public class TorrentClient {
 	 */
 	public void removeTorrent(File torrentFile) throws Exception {
 		Client client = localClients.get(torrentFile.getAbsolutePath());
+		System.out.println("Remove torrent " + torrentFile.getAbsolutePath() + " client: " + client);
 		if (client != null) {
-			client.stop(false);
+			try {
+				client.getTorrent().stop();
+				client.getTorrent().close();
+				if (client.getTorrent().isComplete())
+					client.getTorrent().finish();
+				client.stop(false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 			localClients.remove(torrentFile.getAbsolutePath());
 		}		
 	}

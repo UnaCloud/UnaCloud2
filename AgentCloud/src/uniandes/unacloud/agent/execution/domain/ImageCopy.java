@@ -72,7 +72,7 @@ public class ImageCopy implements Serializable {
 		int l = h.lastIndexOf(".");
 		if (l == -1) 
 			return h;
-		return h.substring(0,l);
+		return h.substring(0, l);
 	}
 	
 	/**
@@ -144,12 +144,12 @@ public class ImageCopy implements Serializable {
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
 					platform.registerImage(this);
-	    			platform.restoreExecutionSnapshot(this,"unacloudbase");
+	    			platform.restoreExecutionSnapshot(this, "unacloudbase");
 	        		platform.configureExecutionHardware(machineExecution.getCores(), machineExecution.getMemory(), this);
 	    			platform.startExecution(this);
 	    			configurator.configureHostname();
 	    			configurator.configureIP();
-	    			System.out.println("image config " + new Date());
+	    			System.out.println("Execution config " + getImageName() + " - " + new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
 				} else {
 					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Invalid execution configurator.");
@@ -224,7 +224,7 @@ public class ImageCopy implements Serializable {
 	 */
     public void executeCommandOnExecution( String command, String...args) throws PlatformOperationException {
     	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
-    	platform.executeCommandOnExecution(this,command,args);
+    	platform.executeCommandOnExecution(this, command, args);
     }
     
     /**
@@ -235,7 +235,7 @@ public class ImageCopy implements Serializable {
      */
     public void copyFileOnExecution(String destinationRoute, File sourceFile) throws PlatformOperationException {
     	Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
-    	platform.copyFileOnExecution(this,destinationRoute,sourceFile);
+    	platform.copyFileOnExecution(this, destinationRoute, sourceFile);
     }
     
     /**
