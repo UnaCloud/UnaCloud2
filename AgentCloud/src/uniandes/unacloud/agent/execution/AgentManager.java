@@ -33,12 +33,7 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
-
-		try {
-			ClouderClientAttention.getInstance().stopService();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY + ""});
 		} catch (Exception e) {
@@ -46,7 +41,12 @@ public class AgentManager {
         }
         new Thread() {
         	public void run() {
-        		SystemUtils.sleep(2000);
+        		SystemUtils.sleep(3000);
+        		try {
+        			ClouderClientAttention.getInstance().stopService();
+        		} catch (Exception e) {
+        			e.printStackTrace();
+        		}
         		System.exit(6);
         	};
         }.start();
@@ -58,14 +58,15 @@ public class AgentManager {
 	 * @return message 
 	 */
 	public static UnaCloudResponse stopAgent() {
-		try {
-			ClouderClientAttention.getInstance().stopService();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		
          new Thread() {
          	public void run() {
          		SystemUtils.sleep(5000);
+         		try {
+        			ClouderClientAttention.getInstance().stopService();
+        		} catch (Exception e) {
+        			e.printStackTrace();
+        		}
          		System.exit(0);
          	};
          }.start();

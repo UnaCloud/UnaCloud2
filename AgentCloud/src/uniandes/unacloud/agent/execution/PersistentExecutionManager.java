@@ -1,7 +1,5 @@
 package uniandes.unacloud.agent.execution;
 
-import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -45,7 +43,7 @@ public class PersistentExecutionManager {
     /**
      * Execution hash map, contains list of execution
      */
-    private static final Map<Long,Execution> executionList = new TreeMap<>();
+    private static final Map<Long, Execution> executionList = new TreeMap<>();
         
     /**
      * Timer used to schedule shutdown events
@@ -128,14 +126,14 @@ public class PersistentExecutionManager {
      * @param started if execution should be started
      * @return result message
      */
-    public static String startUpMachine(Execution execution, boolean started) {
+    public static void startUpMachine(Execution execution, boolean started) {
     	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
 	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
 	            if (!started) 
 	            	execution.getImage().startExecution();
-	            executionList.put(execution.getId(),execution);
+	            executionList.put(execution.getId(), execution);
 	            timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
 	            
 	            if (new ExecutionStateViewer(execution.getId(), execution.getMainInterface().getIp()).check())
@@ -144,14 +142,12 @@ public class PersistentExecutionManager {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
 	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.FAIL, e.getMessage());
-	            return ERROR_MESSAGE + e.getMessage();
 	        }
         } catch (Exception e) {
 			e.printStackTrace();
 			execution.getImage().setStatus(ImageStatus.FREE);
 		}
         saveData();
-        return "";
     }
    
 

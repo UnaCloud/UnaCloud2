@@ -89,6 +89,7 @@ public class ImageCacheManager {
 						return copy;
 					}
 				}
+				System.out.println("\t No copy is free");
 				source = vmi.getImageCopies().get(0);
 				final String vmName = "v" + HashGenerator.randomString(9);
 				dest = new ImageCopy();
@@ -128,11 +129,16 @@ public class ImageCacheManager {
 	}
 	
 	/**
-	 * Unlocks a freed image
-	 * @param vmiCopy image to be freed
+	 * Unlocks an image copy
+	 * @param vmiCopy image copy to be free
 	 */
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy) {
-		vmiCopy.setStatus(ImageStatus.FREE);
+		System.out.println("\t break free " + vmiCopy.getMainFile().getFilePath());
+				
+		Image image = ImageCacheManager.getImage(vmiCopy.getImage().getId());
+		for (ImageCopy imC: image.getImageCopies())
+			if (imC.getImageName().equals(vmiCopy.getImageName()))
+				imC.setStatus(ImageStatus.FREE);
 		saveImages();
 	}
 		
