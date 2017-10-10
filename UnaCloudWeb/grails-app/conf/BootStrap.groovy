@@ -302,7 +302,7 @@ class BootStrap {
 			sql.execute ('INSERT INTO execution_state (id, state, next_id, next_control_id, control_message, control_time, next_requested_id, version) values (?, ?, ?, ?, ?, ?, ?, 1)',
 				[transmitting, ExecutionStateEnum.TRANSMITTING.name(), configuring, failed, 'Error transmitting file to agent', 1000 * 60 * 20, null])
 			sql.execute ('INSERT INTO execution_state (id, state, next_id, next_control_id, control_message, control_time, next_requested_id, version) values (?, ?, ?, ?, ?, ?, ?, 1)',
-				[requested, ExecutionStateEnum.REQUESTED.name(), configuring, failed, 'Task failed: agent does not respond', 1000 * 60 * 3, transmitting])
+				[requested, ExecutionStateEnum.REQUESTED.name(), configuring, failed, 'Task failed: agent does not respond', 1000 * 60 * 20, transmitting])
 			sql.execute ('UPDATE execution_state SET next_control_id = ?, next_requested_id = ? WHERE id = ? ',
 				[reconnecting, requestCopy, deployed])
 			
