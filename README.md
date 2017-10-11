@@ -13,6 +13,8 @@ In addition, UnaCloud executes instances as independent idle-priority processes 
 
 It is important to clarify that instead of volunteering their desktops, end-users in UnaCloud are unaware of the opportunistic use of machines available in computer laboratories. Indeed, UnaCloud is always ready to stealthily execute instances on demand. As a result, the design specifications of UnaCloud strongly consider slowdown, since it is executed on laboratories that are mainly used by university students working on their daily activities. The proposed solution was implemented and tested through the deployment of an opportunistic IaaS model, showing high efficiency in supporting academic and scientific projects.
 
+Among its feautres, UnaCloud allows the user to deploy a large number of instances (eg. 100) using one from two different available protocols, TCP or P2P.
+
 ## Requeriments
 #### UnaCloud Server
 
@@ -23,7 +25,7 @@ It is important to clarify that instead of volunteering their desktops, end-user
 | Memory | 4GB
 | Free Disk	| 1 GB for UnaCloud Server and at least 80 GB hard disk for image files
 | OS	| UnaCloud server has been mainly tested in Ubuntu Server (10 to 14) and Debian (6 to 8)
-| Supporting Features | Java JDK SE 7
+| Supporting Features | Java JDK SE 8
 
 #### UnaCloud Agents
 
@@ -33,7 +35,7 @@ It is important to clarify that instead of volunteering their desktops, end-user
 | Memory | At least 200 MB of free RAM.
 | Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for image files.
 | OS	| UnaCloud Agent has been tested mainly in Windows: XP, 7, 8 or 10. and Linux: Debian (6 to 8) and Ubuntu (10 to 14)
-| Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>
+| Supporting Features | <ul><li>Java JRE SE 8</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>
 
 ## Download
 The project can be downloaded from this repository in scripts/Install_packages folder or from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
@@ -65,6 +67,8 @@ Set following properties:
 *	FILE_SERVER_PORT: FileManager application port to receive requests from agents to send files. We recommend port range 10025 to 10035.
 *	FILE_SERVER_IP: FileManager application IP address. In case of Script-based use host IP address. In case of Vagrant-based installation use IP address defined for UnaCloud Server.
 *	VERSION_MANAGER_PORT: FileManager application port to receive messages from AgentUpdater application to manage update agent process. We recommend port range 10025 to 10035.
+*	TORRENT_CLIENT_PORTS: Five ports used by UnaCloud to share files using P2P protocol. We recommend port range 10025 to 10035. These ports should be delimited by commas (eg. 10031,10032,10033,10034,10035).
+*	FILE_SERVER_TORRENT_PORT: Is the port used by the agent to listen in case of a P2P deployment request.
 *	dev_url: this variable is used only in development environment, leave default value. 
 *	dev_username: this variable is used only in development environment, leave default value. 
 *	dev_password: this variable is used only in development environment, leave default value. 
@@ -87,7 +91,7 @@ This kind of installation is very fast and does not use distributed components. 
 bash install.sh
 ```
 * The script will install in machine:
-	* Java 7
+	* Java 8
 	* Apache Tomcat 8
 	* UnaCloud server components
 	* MySQL Database
@@ -112,7 +116,7 @@ vagrant up
 vagrant ssh
 ```
 * Vagrant will configure machine with:
-	* Java 7
+	* Java 8
 	* Apache Tomcat 8
 	* UnaCloud Server components
 	* MySQL Database
