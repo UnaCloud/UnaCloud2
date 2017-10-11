@@ -80,7 +80,7 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ### Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or later) or Debian (6 or later), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
@@ -130,6 +130,15 @@ This kind of installation package is designed to be distribuited and requires be
 
 #### Node for MySQL server
 * Install and configure MySQL server
+* Modify the `my.cnf` file in the route `/etc/mysql/my.cnf` commenting the line:
+```
+#bind-address = 127.0.0.1
+```
+* Enter the MySQL console and execute the following commands:
+```
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+ FLUSH PRIVILEGES;
+ ```
 * Validate communication with MySQL port.
 * Set database port in config.properties file.
 * Create a database.
@@ -144,7 +153,7 @@ This kind of installation package is designed to be distribuited and requires be
 * Set RabbitMQ port and user credentials in config.properties file.
 
 #### Node for CloudControl application
-* Install Java 7
+* Install Java 8
 * Allow communication by TCP and UDP in two different ports of your preference.
 * Set ports in config.properties file.
 * Allocate config.properties file in path of your preference.
@@ -157,7 +166,7 @@ java –jar CloudControl.jar
 * Configure application to run when machine starts.
 
 #### Node for FileManager application
-* Install Java 7
+* Install Java 8
 * Install and configure Tomcat 8
 * Allow communication by TCP in two different ports of your preference.
 * Allow communication by HTTP in configured port for Tomcat.
