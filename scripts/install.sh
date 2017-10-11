@@ -16,10 +16,9 @@ MYSQL_DB=`echo $MYSQL_DB | tr -d '\r'`
 apt-get -y update
 
 #Java
-apt-get -y install python-software-properties
 add-apt-repository ppa:webupd8team/java
 apt-get -y update
-apt-get -y install oracle-java7-installer
+apt-get -y install oracle-java8-installer
 
 #Rabbit
 apt-get -y install rabbitmq-server
@@ -35,7 +34,6 @@ invoke-rc.d rabbitmq-server start
 apt-get -y update
 
 #Tomcat
-apt-get -y install default-jre
 mkdir /opt/tomcat
 tar xvf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1
 rm apache-tomcat-8*tar.gz
@@ -49,7 +47,7 @@ mysql --user="$MYSQL_USER" --password="$MYSQL_PASS" --execute="CREATE DATABASE $
 #UnaCloud
 mkdir /opt/unacloud
 mkdir /opt/unacloud/repo
-export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 export CATALINA_HOME=/opt/tomcat
 export UNACLOUD_HOME=/opt/unacloud
 unset RABBIT_USER
@@ -59,5 +57,5 @@ unset MYSQL_PASS
 unset MYSQL_DB
 
 cp -f ${PATH_CONFIG}UnaCloud.war $CATALINA_HOME/webapps/
-cp -f ${PATH_CONFIG}FileManager.war $CATALINA_HOME/webapps/
 cp -f ${PATH_CONFIG}CloudControl.jar $UNACLOUD_HOME/
+cp -f ${PATH_CONFIG}FileManager.war $CATALINA_HOME/webapps/
