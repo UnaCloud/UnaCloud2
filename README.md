@@ -35,7 +35,7 @@ Among its feautres, UnaCloud allows the user to deploy a large number of instanc
 | Memory | At least 200 MB of free RAM.
 | Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for image files.
 | OS	| UnaCloud Agent has been tested mainly in Windows: XP, 7, 8 or 10. and Linux: Debian (6 to 8) and Ubuntu (10 to 14)
-| Supporting Features | <ul><li>Java JRE SE 8</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>. Unacloud has been mainly tested using <li>Oracle VM VirtualBox 4.2 and 5</li>.
+| Supporting Features | <ul><li>Java JRE SE 8</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>. Unacloud has been mainly tested using Oracle VM VirtualBox 4.2 and 5.
 
 ## Download
 The project can be downloaded from this repository in scripts/Install_packages folder or from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
