@@ -11,6 +11,13 @@ class UrlMappings {
 		"404"(controller:'error', action:"fourhundred")
 		"500"(controller:'error', action:"fivehundred")
 		
+		/**
+		 * API REST services
+		 */
+		group "/api", {
+			"/deployment/"(controller:'DeploymentAPI',action:"create", method:"POST")
+		}
+		
 		/** user**/
 		group "/user", {
 			"/login"(controller:'user',action:'login')
@@ -19,7 +26,6 @@ class UrlMappings {
 			"/profile/change"(controller:'user',action:'changePassword')
 			"/profile/change/save"(controller:'user',action:'savePassword')
 		}
-			
 	
 		group "/services", {
 			
@@ -149,13 +155,6 @@ class UrlMappings {
 			"/agent/version"(controller:'configuration',action:"setAgentVersion")
 			"/agent/download"(controller:'configuration',action:"downloadAgent")
 		}
-					
-		/**
-		 * API REST services
-		 */
-		group "/api", {
-			"/deployment/"(controller:'DeploymentAPI',action:"create", method:"POST")
-		}		
 		
 	}
 }
