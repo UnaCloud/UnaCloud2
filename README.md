@@ -80,7 +80,7 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ### Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or later) or Debian (6 or later), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (14 or later), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
