@@ -1,7 +1,7 @@
 #!/bin/sh
 pkill -f 'java -jar'
 export PATH_CONFIG=""
-export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 export CATALINA_HOME=/opt/tomcat
 export UNACLOUD_HOME=/opt/unacloud
 $CATALINA_HOME/bin/shutdown.sh

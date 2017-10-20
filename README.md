@@ -13,6 +13,8 @@ In addition, UnaCloud executes instances as independent idle-priority processes 
 
 It is important to clarify that instead of volunteering their desktops, end-users in UnaCloud are unaware of the opportunistic use of machines available in computer laboratories. Indeed, UnaCloud is always ready to stealthily execute instances on demand. As a result, the design specifications of UnaCloud strongly consider slowdown, since it is executed on laboratories that are mainly used by university students working on their daily activities. The proposed solution was implemented and tested through the deployment of an opportunistic IaaS model, showing high efficiency in supporting academic and scientific projects.
 
+Among its features, UnaCloud allows the user to deploy a large number of instances (eg. 100) using one from two different available protocols, TCP or P2P.
+
 ## Requeriments
 #### UnaCloud Server
 
@@ -22,8 +24,8 @@ It is important to clarify that instead of volunteering their desktops, end-user
 | CPU	| 2 Cores Machine
 | Memory | 4GB
 | Free Disk	| 1 GB for UnaCloud Server and at least 80 GB hard disk for image files
-| OS	| UnaCloud server has been mainly tested in Ubuntu Server (10 to 14) and Debian (6 to 8)
-| Supporting Features | Java JDK SE 7
+| OS	| UnaCloud server has been mainly tested in Ubuntu Server (14 to 16).
+| Supporting Features | Java JDK SE 8
 
 #### UnaCloud Agents
 
@@ -33,7 +35,7 @@ It is important to clarify that instead of volunteering their desktops, end-user
 | Memory | At least 200 MB of free RAM.
 | Free Disk	| 50 MB for UnaCloud client and at least 20 GB hard disk for image files.
 | OS	| UnaCloud Agent has been tested mainly in Windows: XP, 7, 8 or 10. and Linux: Debian (6 to 8) and Ubuntu (10 to 14)
-| Supporting Features | <ul><li>Java JRE SE 7</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.*</li></ul>
+| Supporting Features | <ul><li>Java JRE SE 8</li><li>At least one of the following platforms:  VMware Workstation 6 to 10 (if you use VMWare Player, you must install VMware Player and VMware VIX together)</li><li>Oracle VM VirtualBox 4.2, 4.3 or 5.* Unacloud has been mainly tested using Oracle VM VirtualBox 4.2 and 5.</li></ul>
 
 ## Download
 The project can be downloaded from this repository in scripts/Install_packages folder or from [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/). You can find three different options: Manual Installation, Script-based Installation (Ubuntu or Debian) or Vagrant Installation(VirtualBox).
@@ -65,6 +67,8 @@ Set following properties:
 *	FILE_SERVER_PORT: FileManager application port to receive requests from agents to send files. We recommend port range 10025 to 10035.
 *	FILE_SERVER_IP: FileManager application IP address. In case of Script-based use host IP address. In case of Vagrant-based installation use IP address defined for UnaCloud Server.
 *	VERSION_MANAGER_PORT: FileManager application port to receive messages from AgentUpdater application to manage update agent process. We recommend port range 10025 to 10035.
+*	TORRENT_CLIENT_PORTS: Five ports used by UnaCloud agents to share files using P2P protocol. We recommend port range 10025 to 10035. These ports should be delimited by commas (eg. 10031,10032,10033,10034,10035).
+*	FILE_SERVER_TORRENT_PORT: Is the port used by the UnaCloud server in case of a P2P deployment request.
 *	dev_url: this variable is used only in development environment, leave default value. 
 *	dev_username: this variable is used only in development environment, leave default value. 
 *	dev_password: this variable is used only in development environment, leave default value. 
@@ -76,7 +80,7 @@ Set following properties:
 Users can choose Quick or Manual Installation depending on their needs to install the environment.
 
 ### Quick Script-based Installation
-This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (11 or better) or Debian (6 or better), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
+This kind of installation is very fast and does not use distributed components. Download package for Script-based Installation, scripts are designed to run in Ubuntu (14 or later), don't forget to check system requeriments. In case of using a virtual machine in NAT don't forget to configure port forwarding using correct protocol (UDP for CONTROL ports).
 * Install SSH server to allow access to server
 * Unzip package in path of your preference.
 * Choose repository folder. We recommend a folder with restricted execution privileges.
@@ -87,7 +91,7 @@ This kind of installation is very fast and does not use distributed components. 
 bash install.sh
 ```
 * The script will install in machine:
-	* Java 7
+	* Java 8
 	* Apache Tomcat 8
 	* UnaCloud server components
 	* MySQL Database
@@ -112,7 +116,7 @@ vagrant up
 vagrant ssh
 ```
 * Vagrant will configure machine with:
-	* Java 7
+	* Java 8
 	* Apache Tomcat 8
 	* UnaCloud Server components
 	* MySQL Database
@@ -126,6 +130,15 @@ This kind of installation package is designed to be distribuited and requires be
 
 #### Node for MySQL server
 * Install and configure MySQL server
+* Modify the `my.cnf` file in the route `/etc/mysql/my.cnf` commenting the line:
+```
+#bind-address = 127.0.0.1
+```
+* Enter the MySQL console and execute the following commands:
+```
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+ FLUSH PRIVILEGES;
+ ```
 * Validate communication with MySQL port.
 * Set database port in config.properties file.
 * Create a database.
@@ -140,7 +153,7 @@ This kind of installation package is designed to be distribuited and requires be
 * Set RabbitMQ port and user credentials in config.properties file.
 
 #### Node for CloudControl application
-* Install Java 7
+* Install Java 8
 * Allow communication by TCP and UDP in two different ports of your preference.
 * Set ports in config.properties file.
 * Allocate config.properties file in path of your preference.
@@ -153,7 +166,7 @@ java –jar CloudControl.jar
 * Configure application to run when machine starts.
 
 #### Node for FileManager application
-* Install Java 7
+* Install Java 8
 * Install and configure Tomcat 8
 * Allow communication by TCP in two different ports of your preference.
 * Allow communication by HTTP in configured port for Tomcat.
