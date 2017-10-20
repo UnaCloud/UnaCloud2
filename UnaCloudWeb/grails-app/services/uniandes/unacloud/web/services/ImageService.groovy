@@ -2,9 +2,9 @@ package uniandes.unacloud.web.services
 
 import org.apache.commons.io.FileUtils
 
+import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
 import uniandes.unacloud.web.queue.QueueTaskerFile;
-import uniandes.unacloud.web.utils.java.Hasher;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
@@ -13,11 +13,10 @@ import uniandes.unacloud.web.domain.Platform
 import uniandes.unacloud.web.domain.Repository;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Image;
-
 import grails.transaction.Transactional
 
 /**
- * This service contains all methods to manage User Image: Crud methods, some methods send tasks in queue
+ * This service contains all methods to manage User Image: CRUD methods, some methods send tasks in queue
  * This class connects with database using hibernate
  * @author CesarF
  *
@@ -55,12 +54,24 @@ class ImageService {
 	 * @return token to validate image 
 	 */
 	def uploadImage(name, isPublic, accessProtocol, operatingSystemId, platformId, username, password, User user) {
-		if(user.existImage(name))throw new Exception('Currently you have an image with the same name.')
+		if (user.existImage(name))
+			throw new Exception('Currently you have an image with the same name.')
 		Repository repo = userRestrictionService.getRepository(user)
-		String token = Hasher.hashSha256(name + new Date().getTime())
-		def image = new Image(owner: user, repository: repo, name: name, lastUpdate: new Date(),
-			isPublic: isPublic, accessProtocol: accessProtocol , operatingSystem: OperatingSystem.get(operatingSystemId), 
-			platform: Platform.get(platformId), user: username, password: password, token: token, fixedDiskSize: 0, state: ImageEnum.UNAVAILABLE)	
+		String token = HashGenerator.hashSha256(name + new Date().getTime())
+		def image = new Image(
+			owner: user, 
+			repository: repo, 
+			name: name, 
+			lastUpdate: new Date(),
+			isPublic: isPublic, 
+			accessProtocol: accessProtocol, 
+			operatingSystem: OperatingSystem.get(operatingSystemId), 
+			platform: Platform.get(platformId), 
+			user: username, 
+			password: password, 
+			token: token, 
+			fixedDiskSize: 0, 
+			state: ImageEnum.UNAVAILABLE)	
 		image.save(failOnError: true)
 		return token;
     }
@@ -78,10 +89,21 @@ class ImageService {
 		def publicImage = Image.get(imageId)
 		if (publicImage) {
 			def repo = userRestrictionService.getRepository(user)
-			def image = new Image(state: ImageEnum.IN_QUEUE, fixedDiskSize: publicImage.fixedDiskSize, 
-				owner: user, repository: repo, name: name , avaliable: true, lastUpdate: new Date(), isPublic: false, imageVersion: 0,
-				accessProtocol: publicImage.accessProtocol , operatingSystem: publicImage.operatingSystem, user: publicImage.user, 
-				password: publicImage.password, platform: publicImage.platform)
+			def image = new Image(
+				state: ImageEnum.IN_QUEUE, 
+				fixedDiskSize: publicImage.fixedDiskSize, 
+				owner: user, 
+				repository: repo, 
+				name: name, 
+				avaliable: true, 
+				lastUpdate: new Date(), 
+				isPublic: false, 
+				imageVersion: 0,
+				accessProtocol: publicImage.accessProtocol, 
+				operatingSystem: publicImage.operatingSystem, 
+				user: publicImage.user, 
+				password: publicImage.password, 
+				platform: publicImage.platform)
 			image.save(failOnError:true)
 			QueueTaskerFile.createCopyFromPublic(publicImage, image, user)			
 			return true
@@ -105,15 +127,17 @@ class ImageService {
 	 * @param image image to be removed
 	 * @return true in case image has been deleted, false in case not
 	 */	
-	def deleteImage(User user,Image image){		
+	def deleteImage(User user, Image image){		
 		def clusteres = Cluster.where{images{id == image.id;}}.findAll();
 		if (clusteres && clusteres.size() > 0)
 			return false;
-		DeployedImage.executeUpdate("update DeployedImage di set di.image=null where di.image.id= :id",[id : image.id]);
+		DeployedImage.executeUpdate("UPDATE DeployedImage di SET di.image = null WHERE di.image.id = :id", [id : image.id]);
 		if (image.mainFile) {
 			image.freeze()
-			QueueTaskerFile.deleteImage(image, user)				
-		} else {
+			QueueTaskerFile.deleteImage(image, user)
+			QueueTaskerControl.clearImageFromCache(image, image.owner);				
+		} 
+		else {
 			user.images.remove(image)
 			user.save()
 			image.delete()
@@ -127,7 +151,7 @@ class ImageService {
 	 */
 	def clearCache(Image image) {
 		image.freeze()
-		QueueTaskerControl.clearCache(image, image.owner);		
+		QueueTaskerControl.clearImageFromCacheAndUpdate(image, image.owner);		
 	}
 	
 	/**
@@ -161,7 +185,7 @@ class ImageService {
 		image.freeze()
 		if (!toPublic && image.isPublic)
 			QueueTaskerFile.deletePublicImage(image, image.owner);
-		else if(toPublic && !image.isPublic)
+		else if (toPublic && !image.isPublic)
 			QueueTaskerFile.createPublicCopy(image, image.owner);				
 	}
 	
@@ -172,10 +196,14 @@ class ImageService {
 	 * @param user owner user
 	 * @return token to validates image
 	 */	
-	def updateFiles(Image image) {		
-		String token = Hasher.hashSha256(image.getName() + new Date().getTime())
-		image.putAt("token",token)
-		image.putAt("state",ImageEnum.UNAVAILABLE)
+	def updateFiles(Image image) {	
+		def clusteres = Cluster.where{images{id == image.id;}}.findAll();
+		if (clusteres && clusteres.size() > 0)
+			throw new Exception("The image is being used in a cluster")
+		String token = HashGenerator.hashSha256(image.getName() + new Date().getTime())
+		image.putAt("token", token)
+		image.putAt("state", ImageEnum.UNAVAILABLE)
+		QueueTaskerControl.clearImageFromCache(image, image.owner);
 		return token
 	}
 	
@@ -194,7 +222,7 @@ class ImageService {
 	 * @return void
 	 */
 	def removeUnavailableImages(User user) {		
-		for (Image im: user.getUnavailableImages())
+		for (Image im : user.getUnavailableImages())
 			if (!im.mainFile)
 				deleteImage(user, im)
 			else {

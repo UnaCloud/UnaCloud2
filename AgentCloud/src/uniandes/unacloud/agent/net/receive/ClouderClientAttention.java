@@ -1,82 +1,57 @@
 package uniandes.unacloud.agent.net.receive;
 
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
-import uniandes.unacloud.agent.execution.ExecutorService;
-import uniandes.unacloud.agent.utils.VariableManager;
-import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
 
 /**
  * Responsible for listening messages from Server
  * @author CesarF
  * @author Clouder
  */
-public class ClouderClientAttention {
-    
-	//-----------------------------------------------------------------
-	// Variables
-	//-----------------------------------------------------------------
+public class ClouderClientAttention extends AbstractTCPServerSocket {
 
-    private ServerSocket serverSocket;
-    /**
-     * Port where socket is listening
-     */
-    private static int localPort;
+	/**
+	 * Singleton instance
+	 */
+	private static ClouderClientAttention instance;
     
-    private static ClouderClientAttention instance;    
-	//-----------------------------------------------------------------
-	// Methods
-	//-----------------------------------------------------------------
+	/**
+	 * Creates a new clouder service with port and threads number
+	 * @param listenPort
+	 * @param threads
+	 */
+	private ClouderClientAttention(int listenPort, int threads) {
+		super(listenPort, threads);
+	}
 
-   
-    
-    public synchronized static ClouderClientAttention getInstance() throws Exception {
-        if (instance == null)
-        	instance = new ClouderClientAttention();
-        return instance;
-    }
-    
-    /**
-     * Responsible for obtaining data connection and listening to Server
-     * @throws Exception 
-     */
-    private ClouderClientAttention() throws Exception{
-        localPort = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.AGENT_PORT);      
-    }
+	/**
+	 * Return a new instance listening in port by parameters
+	 * @param listenPort
+	 * @param threads
+	 * @return instance
+	 * @throws Exception
+	 */
+	public synchronized static ClouderClientAttention getInstance(int listenPort, int threads) throws Exception {
+		if (instance == null)
+			instance = new ClouderClientAttention(listenPort, threads);
+		return instance;
+	}
+	
+	/**
+	 * Returns the current instance
+	 * @return instance
+	 * @throws Exception
+	 */
+	public static ClouderClientAttention getInstance() throws Exception {
+		if (instance == null) 
+			throw new Exception("Service is not running");
+		return instance;
+	}
 
-    /**
-     * Responsible for connecting with Server and start a communication thread
-     */
-    public final void start() {
-        try {
-			serverSocket = new ServerSocket(localPort);
-			System.out.println("Listening in "+localPort);
-	        while (true) {
-	        	try{
-	        		Socket s=serverSocket.accept();
-	        		ExecutorService.executeRequestTask(new ClouderServerAttentionThread(s));
-	            }catch(SocketException ex){
-	            	break;
-	            }catch (IOException ex) {
-	            	ex.printStackTrace();
-	            }
-	        }
-        } catch (IOException ex) {
-        	ex.printStackTrace();
-        }
-    }
-
-    /**
-     * Stops the request listening process
-     */
-    public static void close() {
-        try {
-            instance.serverSocket.close();
-        } catch (Exception e) {
-        	e.printStackTrace();
-        }
-    }
+	 
+	@Override
+	protected Runnable processSocket(Socket socket) throws Exception {
+		return new ClouderServerAttentionProcessor(socket);
+	}
 }

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import uniandes.unacloud.common.enums.ExecutionStateEnum;
+import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 
 /**
- * Class to represent a Execution entity 
+ * Class to represent a Execution entity
  * @author CesarF
  *
  */
@@ -19,13 +19,9 @@ public class ExecutionEntity {
 	
 	private int ram;
 	
-	private Date startTime;
-	
-	private Date stopTime;
-	
 	private PhysicalMachineEntity node;
 	
-	private ExecutionStateEnum state;
+	private ExecutionProcessEnum state;
 	
 	private String hostName;
 	
@@ -37,24 +33,64 @@ public class ExecutionEntity {
 	
 	private Date lastReport;
 	
+	private Long duration;
+	
+	/**
+	 * Emptty constructor, all attributes have default value
+	 */
 	public ExecutionEntity() {
 		
 	}
 
-	public ExecutionEntity(Long id, int cores, int ram, Date startTime,
-			Date stopTime, PhysicalMachineEntity node,
-			ExecutionStateEnum state, String hostName, String message) {
+	/**
+	 * Creates a new Execution Entity with all attributes
+	 * @param id
+	 * @param cores
+	 * @param ram
+	 * @param duration
+	 * @param node
+	 * @param state
+	 * @param hostName
+	 * @param message
+	 */
+	public ExecutionEntity(Long id, int cores, int ram, 
+			Long duration,
+			PhysicalMachineEntity node,
+			ExecutionProcessEnum state, String hostName, String message) {
 		super();
 		this.id = id;
 		this.cores = cores;
 		this.ram = ram;
-		this.startTime = startTime;
-		this.stopTime = stopTime;
 		this.node = node;
 		this.state = state;
 		this.hostName = hostName;
 		interfaces = new ArrayList<NetInterfaceEntity>();
 		this.message = message;
+		this.duration = duration;
+	}
+	
+	/**
+	 * Creates a new Execution Entity with all attributes
+	 * @param id
+	 * @param cores
+	 * @param ram
+	 * @param duration
+	 * @param node
+	 * @param hostName
+	 * @param message
+	 */
+	public ExecutionEntity(Long id, int cores, int ram, 
+			Long duration,
+			PhysicalMachineEntity node, String hostName, String message) {
+		super();
+		this.id = id;
+		this.cores = cores;
+		this.ram = ram;
+		this.node = node;
+		this.hostName = hostName;
+		interfaces = new ArrayList<NetInterfaceEntity>();
+		this.message = message;
+		this.duration = duration;
 	}
 	
 	public Date getLastUpdate() {
@@ -96,23 +132,7 @@ public class ExecutionEntity {
 	public void setRam(int ram) {
 		this.ram = ram;
 	}
-
-	public Date getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	public Date getStopTime() {
-		return stopTime;
-	}
-
-	public void setStopTime(Date stopTime) {
-		this.stopTime = stopTime;
-	}
-
+	
 	public PhysicalMachineEntity getNode() {
 		return node;
 	}
@@ -121,11 +141,11 @@ public class ExecutionEntity {
 		this.node = node;
 	}
 
-	public ExecutionStateEnum getState() {
+	public ExecutionProcessEnum getState() {
 		return state;
 	}
 
-	public void setState(ExecutionStateEnum state) {
+	public void setState(ExecutionProcessEnum state) {
 		this.state = state;
 	}
 
@@ -158,24 +178,14 @@ public class ExecutionEntity {
 	 * @return execution time in hours
 	 */
 	public Long getTimeInHours() {
-		long millisTime = (stopTime.getTime() - startTime.getTime());
-		return (millisTime / 1000 / 60 / 60);
+		return (duration / 1000 / 60 / 60);
 	}
 	
 	/**
 	 * Returns time execution in milliseconds
 	 * @return execution time in milliseconds
 	 */
-	public Long getTime() {
-		return stopTime.getTime() - startTime.getTime();
-	}
-	
-	/**
-	 * Validates if current state time is above of a certain date given as parameter
-	 * @param date to compare
-	 * @return true in case current state time is above of a certain date, false otherwise
-	 */
-	public boolean isAboveStateTime(Date date) {
-		return date.getTime() - lastUpdate.getTime() > state.getTime();
+	public Long getDuration() {
+		return duration;
 	}
 }

@@ -1,8 +1,8 @@
 package uniandes.unacloud.control;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-import uniandes.unacloud.control.net.udp.receiver.PmMessageReceiver;
-import uniandes.unacloud.control.net.udp.receiver.VmMessageReceiver;
+import uniandes.unacloud.control.net.tcp.VmMessageReceiver;
+import uniandes.unacloud.control.net.udp.PmMessageReceiver;
 import uniandes.unacloud.control.queue.QueueMessageProcessor;
 import uniandes.unacloud.share.db.DatabaseConnection;
 import uniandes.unacloud.share.manager.ProjectManager;
@@ -74,7 +74,7 @@ public class ControlManager extends ProjectManager {
 	}	
 	
 	/**
-	 * Returns the agent port configured for communication
+	 * Returns the configured communication agent port
 	 * @return agent port
 	 * @throws Exception 
 	 */
@@ -134,7 +134,7 @@ public class ControlManager extends ProjectManager {
 	 */
 	@Override
 	protected void startQueueService() throws Exception {
-		System.out.println("Start queue service " + reader.getStringVariable(UnaCloudConstants.QUEUE_IP));
+		System.out.println("Start queue service " + reader.getStringVariable(UnaCloudConstants.QUEUE_IP) + ":" + reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT));
 		QueueRabbitManager rabbitManager = new QueueRabbitManager(
 				reader.getStringVariable(UnaCloudConstants.QUEUE_USER),
 				reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), 

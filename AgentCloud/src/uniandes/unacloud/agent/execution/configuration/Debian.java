@@ -10,6 +10,7 @@ import uniandes.unacloud.agent.utils.AddressUtility;
  * Class responsible to implement methods to configure Debian execution
  */
 public class Debian extends AbstractExecutionConfigurator {
+	
 	@Override
 	public void configureHostname() throws PlatformOperationException {
 		File out=generateRandomFile();
@@ -22,6 +23,7 @@ public class Debian extends AbstractExecutionConfigurator {
 		execution.getImage().executeCommandOnExecution("/bin/hostname", execution.getHostname());
 		out.delete();
 	}
+	
     /**
      * Configures the IP address of the Debian managed execution
      * @throws PlatformOperationException 

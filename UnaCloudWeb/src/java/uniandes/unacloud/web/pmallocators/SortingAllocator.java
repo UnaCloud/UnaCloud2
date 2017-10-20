@@ -32,7 +32,8 @@ public class SortingAllocator extends ExecutionAllocator {
 		public int compare(PhysicalMachine p1, PhysicalMachine p2) {
 			PhysicalMachineAllocationDescription pmad1 = physicalMachineDescriptions.get(p1.getDatabaseId());
 			PhysicalMachineAllocationDescription pmad2 = physicalMachineDescriptions.get(p2.getDatabaseId());
-			int vmsAsignadas1 = pmad1 == null ? 0 : pmad1.getVms(), vmsAsignadas2 = pmad2 == null ? 0 : pmad2.getVms();
+			int vmsAsignadas1 = pmad1 == null ? 0 : pmad1.getVms();
+			int vmsAsignadas2 = pmad2 == null ? 0 : pmad2.getVms();
 			int vms = Integer.compare(vmsAsignadas2, vmsAsignadas1);
 			if (vms != 0)
 				return vms;
@@ -40,8 +41,9 @@ public class SortingAllocator extends ExecutionAllocator {
 				return -1;
 			else if(p2.getWithUser() && !p1.getWithUser()) 
 				return 1;
-			else{		
-				int coresUsados1 = pmad1 == null ? 0 : pmad1.getCores(), coresUsados2 = pmad2 == null ? 0 : pmad2.getCores();
+			else {		
+				int coresUsados1 = pmad1 == null ? 0 : pmad1.getCores();
+				int coresUsados2 = pmad2 == null ? 0 : pmad2.getCores();
 				int cores = Integer.compare(p1.getCores() - coresUsados1, p2.getCores() - coresUsados2);
 				return cores;					
 			}
@@ -59,8 +61,8 @@ public class SortingAllocator extends ExecutionAllocator {
 				return Integer.compare(v2.getHardwareProfile().getCores(), v1.getHardwareProfile().getCores());
 			}
 		});
-		vmCycle : for(Execution vme:executionList) {
-			for (PhysicalMachine pm:physicalMachines) {
+		vmCycle : for(Execution vme : executionList) {
+			for (PhysicalMachine pm : physicalMachines) {
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
 				if (fitEXonPM(vme, pm, pmad)) {
 					vme.setExecutionNode(pm);

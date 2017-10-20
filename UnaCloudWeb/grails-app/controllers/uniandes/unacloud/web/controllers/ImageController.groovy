@@ -206,12 +206,6 @@ class ImageController {
 			redirect(uri:"/services/image/list", absolute:true)
 	}
 	
-	/**
-	 * This action renders view to change the externalId reference in external cloud provider
-	 */
-	def external() {
-		//TODO to be implemented
-	}
 	
 	//-----------------------------------------------------------------
 	// Actions JSON

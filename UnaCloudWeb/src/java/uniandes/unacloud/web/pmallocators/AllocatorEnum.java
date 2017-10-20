@@ -6,34 +6,42 @@ package uniandes.unacloud.web.pmallocators;
  *
  */
 public enum AllocatorEnum {
+	
 	/**
 	 * Assigns an execution to a physical machine based in random number.
 	 */
 	RANDOM(new RandomAllocator(), "Random"),
+	
 	/**
 	 * Assigns an for each physical machine order by physical machine id
 	 */
 	ROUND_ROBIN(new RoundRobinAllocator(), "Round Robin"),
+	
 	/**
 	 * Unused
 	 */
 	//GREEN(null,"Green"),
+	
 	/**
 	 * Assigns all possible executions for each physical machine based in available resources
 	 */
 	FIRST_FIT(new FirstFitAllocator(), "First Fit"),
+	
 	/**
 	 * Sorts physical machines based in available resources, then assigns all possible executions for each physical machine in list
 	 */
 	FIRST_FIT_DECREASING(new FirstFitDecreasingAllocator(), "First Fit Decreasing"),
+	
 	/**
 	 * Sorts physical machines based in available resources, assigns an execution in first machine in list and sorts again.
 	 */
 	BEST_FIT(new BestFitAllocator(), "Best Fit"),
+	
 	/**
 	 * Extends BEST FIT algorithm adding user as a variable in sort process
 	 */
 	SORTING(new SortingAllocator(), "Sorting"),
+	
 	/**
 	 * Assigns only one execution for each physical machine
 	 */
@@ -43,15 +51,22 @@ public enum AllocatorEnum {
 	 * allocator class to execute algorithm
 	 */
 	private ExecutionAllocator allocator;
+	
 	/**
 	 * Name of allocator
 	 */
 	private String name;
 	
+	/**
+	 * Creates an allocator enum
+	 * @param allocator enum
+	 * @param name for enum
+	 */
 	private AllocatorEnum(ExecutionAllocator allocator, String name) {
 		this.allocator = allocator;
 		this.name = name;
 	}
+	
 	/**
 	 * Returns allocator class to execute algorithm
 	 * @return allocator class 
@@ -72,7 +87,7 @@ public enum AllocatorEnum {
 	 * Return a list of current types of allocator
 	 * @return
 	 */
-	public static String[] getList(){
+	public static String[] getList() {
 		return new String[]{
 				RANDOM.name,
 				ROUND_ROBIN.name,

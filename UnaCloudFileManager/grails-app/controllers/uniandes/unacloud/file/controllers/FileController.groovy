@@ -71,14 +71,13 @@ class FileController {
 					resp = [success:false, 'message':e.message]
 				}
 				if (validate) {
-					try{
+					try {
 						def createPublic = fileService.upload(files, params.token)
-						if (createPublic == null) {
+						if (createPublic == null)
 							resp = [success:false, 'message':'Invalid file type.']
-						}
-						else if (createPublic == true) {
-							resp = [success:true, 'redirect':'list', 'cPublic':createPublic];
-						}else 
+						else if (createPublic == true)
+							resp = [success:true, 'redirect':'list', 'cPublic':createPublic];						
+						else 
 							resp = [success:true, 'redirect':'list'];
 					}
 					catch(Exception e) {
@@ -107,7 +106,7 @@ class FileController {
 				boolean validate = true
 				try {
 					files.each {
-						if( validate) {
+						if (validate) {
 							if (it.isEmpty()) {
 								resp = [success:false, 'message':'File cannot be empty.'];
 								validate= false;
@@ -121,17 +120,17 @@ class FileController {
 				}
 				if (validate) {
 					def update = fileService.updateFiles(files, params.token)
-					if (update == null) {
+					if (update == null)
 						resp = [success:false, 'message':'Invalid file type.']
-					} else 
+					else 
 						resp = [success:true, 'redirect':'../list']
 				}
-			} else {
+			} else
 				resp = [success:false, 'message':'File(s) to upload is/are missing.'];		
-			}
-		} else {
+			
+		} else
 			resp = [success:false, 'message':'Error! image does not exist.'];	
-		}
+		
 		render resp as JSON
 	}
 }

@@ -11,6 +11,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
+import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.file.FileManager;
 import uniandes.unacloud.file.db.ImageFileManager;
 import uniandes.unacloud.file.db.entities.ImageFileEntity;
@@ -20,47 +22,50 @@ import uniandes.unacloud.file.db.entities.ImageFileEntity;
  * @author CesarF
  *
  */
-public class FileTransferTask implements Runnable {
-	
-	private Socket s;	
+public class FileTransferTask extends AbstractTCPSocketProcessor {
 	
 	public FileTransferTask(Socket s) {
+		super(s);
 		System.out.println("Working " + s.getRemoteSocketAddress());
-		this.s = s;
 	}
-	
+
 	@Override
-	public void run() {		
+	public void processMessage(Socket s) throws Exception {
 		try (Socket ss = s; DataInputStream ds = new DataInputStream(s.getInputStream()); OutputStream os = s.getOutputStream(); ) {			
 			
 			ZipOutputStream zos = new ZipOutputStream(os);
 			long imageId = ds.readLong();
-			System.out.println("\tWorking " + imageId);						
+			System.out.println("\tWorking " + imageId);	
+			
+			TransmissionProtocolEnum protocol = TransmissionProtocolEnum.getEnum(ds.readUTF());
+			
 			ImageFileEntity image = null;
 			try (Connection con = FileManager.getInstance().getDBConnection();) {
-				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false,true, con);
+				image = ImageFileManager.getImageWithFile(imageId, ImageEnum.AVAILABLE, false, true, con);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 						
 			if (image != null) {
-				
 				System.out.println(image + " - " + imageId + " - " + image.getState());
-				final byte[] buffer = new byte[1024*100];
+				final byte[] buffer = new byte[1024 * 100];
 				System.out.println("\t Sending files " + image.getMainFile());
+				File file = null;
 				
-				for (java.io.File f : new java.io.File(image.getMainFile()).getParentFile().listFiles())
-					if (f.isFile()) {					
-						System.out.println("\tprocessing: " + f.getName());
-						zos.putNextEntry(new ZipEntry(f.getName()));					
-						try (FileInputStream fis = new FileInputStream(f)) {
-							for (int n; (n = fis.read(buffer)) != -1;)
-								zos.write(buffer,0,n);
-						}
-						zos.closeEntry();
-					}
+				if (protocol == TransmissionProtocolEnum.TCP)	
+					file = image.getFileConversor().getZipFile();			
+				else if (protocol == TransmissionProtocolEnum.P2P)
+					file = image.getFileConversor().getTorrentFile();	
 				
+				System.out.println("\tprocessing: " + file.getName());
+				zos.putNextEntry(new ZipEntry(file.getName()));					
+				try (FileInputStream fis = new FileInputStream(file)) {
+					for (int n; (n = fis.read(buffer)) != -1;)
+						zos.write(buffer,0,n);
+				}
 				System.out.println("Files sent " + image.getMainFile());
+				zos.closeEntry();
+				
 				zos.putNextEntry(new ZipEntry("unacloudinfo"));
 				PrintWriter pw = new PrintWriter(zos);
 				pw.println(image.getPlatform().getConfigurer());
@@ -78,5 +83,6 @@ public class FileTransferTask implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 }

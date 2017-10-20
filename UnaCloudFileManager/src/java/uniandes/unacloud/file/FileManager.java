@@ -8,6 +8,7 @@ import uniandes.unacloud.share.db.DatabaseConnection;
 import uniandes.unacloud.share.manager.ProjectManager;
 import uniandes.unacloud.file.net.AgentServerSocket;
 import uniandes.unacloud.file.net.FileServerSocket;
+import uniandes.unacloud.file.net.torrent.TorrentTracker;
 import uniandes.unacloud.file.queue.QueueMessageFileProcessor;
 
 /**
@@ -72,6 +73,10 @@ public class FileManager extends ProjectManager {
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{
+				UnaCloudConstants.FILE_SERVER_TORRENT_PORT,
+				UnaCloudConstants.FILE_SERVER_IP,
+				UnaCloudConstants.TORRENT_CLIENT_PORTS,
+				UnaCloudConstants.MAIN_REPOSITORY,
 				UnaCloudConstants.VERSION_MANAGER_PORT,
 				UnaCloudConstants.FILE_SERVER_PORT,
 				UnaCloudConstants.QUEUE_USER,
@@ -116,9 +121,34 @@ public class FileManager extends ProjectManager {
 
 	@Override
 	protected void startCommunicationService() throws Exception {
+		
 		System.out.println("Start communication service");
-		new FileServerSocket(reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT), CONCURRENT_THREADS_FILE).start();
-		new AgentServerSocket(reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), CONCURRENT_THREADS_AGENT).start();
+		
+		new FileServerSocket(
+				reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT), 
+				CONCURRENT_THREADS_FILE).start();
+		
+		new AgentServerSocket(
+				reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 
+				CONCURRENT_THREADS_AGENT).start();
+		
+		int[] ports = null;
+		String portString = reader.getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS);
+		if (portString != null) {
+			String [] data = portString.split(",");
+			ports = new int[data.length];
+			for (int i = 0; i < data.length; i++)
+				ports[i] = Integer.parseInt(data[i]);
+		}
+		
+		//TODO path is taken from file not from database.
+		//TODO this service is not design to work when there are multiple nodes of File Manager
+		TorrentTracker.getInstance().startService(
+				reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), 
+				reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), 
+				reader.getStringVariable(UnaCloudConstants.MAIN_REPOSITORY),
+				ports);
+	
 	}
 
 }

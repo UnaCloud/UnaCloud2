@@ -18,8 +18,14 @@ import uniandes.unacloud.web.domain.Platform;
  */
 public abstract class ExecutionAllocator{
 	
+	/**
+	 * Required IPs for deployment
+	 */
 	private TreeMap<Long, Integer> ipsNeeded;
 	
+	/**
+	 * Creates an execution allocator
+	 */
 	public ExecutionAllocator() {
 		ipsNeeded = new TreeMap<Long, Integer>();
 	}
@@ -31,7 +37,7 @@ public abstract class ExecutionAllocator{
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	public synchronized void startAllocation(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
+	public synchronized void startAllocation(List<Execution> executionList, List<PhysicalMachine> physicalMachines, Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException{
 		ipsNeeded = new TreeMap<Long, Integer>();
 		allocateExecutions(executionList, physicalMachines, physicalMachineDescriptions);
 	}
@@ -43,7 +49,7 @@ public abstract class ExecutionAllocator{
 	 * @param physicalMachineDescriptions
 	 * @throws AllocatorException
 	 */
-	protected abstract void allocateExecutions(List<Execution> executionList,List<PhysicalMachine> physicalMachines,Map<Long,PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
+	protected abstract void allocateExecutions(List<Execution> executionList, List<PhysicalMachine> physicalMachines, Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
 	
 	/**
 	 * validates if an execution fits with resources of a physical machine
@@ -52,7 +58,7 @@ public abstract class ExecutionAllocator{
 	 * @param pmad
 	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
-	protected boolean fitEXonPM(Execution vme,PhysicalMachine pm,PhysicalMachineAllocationDescription pmad){
+	protected boolean fitEXonPM(Execution vme, PhysicalMachine pm, PhysicalMachineAllocationDescription pmad){
 		System.out.println("Requires: " + ( (Image) ( (DeployedImage) vme.getDeployedImage() ).getImage()).getPlatform().getName());
 		if (!isSupportedPlatform( ( (Image) ( (DeployedImage ) vme.getDeployedImage() ).getImage() ).getPlatform(), pm))
 			return false;
@@ -86,10 +92,10 @@ public abstract class ExecutionAllocator{
 	 * @return true if platform is supported else false
 	 */
 	private boolean isSupportedPlatform(Platform platform, PhysicalMachine pm){
-		for (Platform plat : pm.getAllPlatforms()) {
+		for (Platform plat : pm.getAllPlatforms())
 			if (plat.getDatabaseId() == platform.getDatabaseId())
 				return true;
-		}
+		
 		return false;
 	}
 }

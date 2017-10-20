@@ -56,13 +56,14 @@ public class ByteUtils {
      */
     public static String conversionUnitBytes (long bytes) {
     	DecimalFormat df = new DecimalFormat("#.00");
-    	long diskSize = bytes / 1024;
+    	double diskSize = bytes / 1024;
 		if (diskSize > 1) {
 			if (diskSize / 1024 > 1 ) {				
 				diskSize = diskSize / 1024;
 				if (diskSize / 1024 > 1)
-				return df.format(diskSize/1024) + " GB";
-				else return df.format(diskSize) + " MB";
+					return df.format(diskSize/1024) + " GB";
+				else 
+					return df.format(diskSize) + " MB";
 			}				
 			else return df.format(diskSize) + " KB";		
 		}

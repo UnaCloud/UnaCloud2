@@ -5,7 +5,7 @@ package uniandes.unacloud.agent.exceptions;
  * @author CesarF
  *
  */
-public class UnsupportedPlatformException extends Exception{
+public class UnsupportedPlatformException extends Exception {
 
 	/**
 	 * Serial version for this class
@@ -17,7 +17,7 @@ public class UnsupportedPlatformException extends Exception{
 	 * @param platform
 	 */
 	public UnsupportedPlatformException(String platform) {
-		super("UnaCloud doesn't support "+platform+" in this moment");
+		super("UnaCloud doesn't support " + platform + " in this moment");
 	}
 
 }

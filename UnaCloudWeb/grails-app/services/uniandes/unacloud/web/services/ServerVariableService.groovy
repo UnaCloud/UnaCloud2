@@ -30,4 +30,12 @@ class ServerVariableService {
 	def getUrlFileManager() {
 		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable
 	}
+	
+	/**
+	 * Returns the current transmission protocol configured
+	 * @return transmission protocol
+	 */
+	def getTransmissionProtocol() {
+		return ServerVariable.findByName(UnaCloudConstants.TRANSMISSION_PROTOCOL).variable
+	}
 }

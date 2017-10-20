@@ -97,7 +97,8 @@ class Laboratory {
 	 * @return list of Physical Machines
 	 */
 	def List <PhysicalMachine> getAvailableMachines(isHigh) {
-		return physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == isHigh}.sort()
+		def listMachines = physicalMachines.findAll{it.state == PhysicalMachineStateEnum.ON && it.highAvailability == isHigh}.sort()
+		return listMachines.sort{it.name}
 	}
 	
 	/**
@@ -106,8 +107,19 @@ class Laboratory {
 	 */
 	def List <ExecutionIP> getAvailableIps() {
 		List <ExecutionIP> ips = new ArrayList<>()
-		for(IPPool pool : ipPools)
+		for (IPPool pool : ipPools)
 		    ips.addAll(pool.ips.findAll{it.state == IPEnum.AVAILABLE}.sort())
 		return ips
 	}
-}
+	
+	
+	def List <IPPool> getPools() {
+		List <IPPool> pools = new ArrayList<>()
+		for (IPPool pool : ipPools)
+			if (pool.ips.size() == 0)
+				pool.delete()
+			else 
+				pools.add(pool)
+		return pools
+	}
+} 

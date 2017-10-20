@@ -23,7 +23,8 @@ public class BestFitAllocator extends ExecutionAllocator {
 	 * @author Clouder
 	 *
 	 */
-	public class PhysicalMachineComparator implements Comparator<PhysicalMachine>{
+	public class PhysicalMachineComparator implements Comparator<PhysicalMachine> {
+		
 		/**
 		 * Physical machines information
 		 */
@@ -43,7 +44,8 @@ public class BestFitAllocator extends ExecutionAllocator {
 		public int compare(PhysicalMachine p1, PhysicalMachine p2) {
 			PhysicalMachineAllocationDescription pmad1 = physicalMachineDescriptions.get(p1.getDatabaseId());
 			PhysicalMachineAllocationDescription pmad2 = physicalMachineDescriptions.get(p2.getDatabaseId());
-			int coresUsados1 = pmad1 == null ? 0 : pmad1.getCores(), coresUsados2 = pmad2 == null ? 0 : pmad2.getCores();
+			int coresUsados1 = pmad1 == null ? 0 : pmad1.getCores();
+			int coresUsados2 = pmad2 == null ? 0 : pmad2.getCores();
 			int cores = Integer.compare(p1.getCores() - coresUsados1, p2.getCores() - coresUsados2);
 			return cores;
 		}
@@ -60,8 +62,8 @@ public class BestFitAllocator extends ExecutionAllocator {
 				return Integer.compare(v2.getHardwareProfile().getCores(), v1.getHardwareProfile().getCores());
 			}
 		});
-		vmCycle : for(Execution vme:executionList) {
-			for (PhysicalMachine pm:physicalMachines) {
+		vmCycle : for(Execution vme : executionList) {
+			for (PhysicalMachine pm : physicalMachines) {
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
 				if (fitEXonPM(vme, pm, pmad)) {
 					vme.setExecutionNode(pm);

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.domain.Execution;
+import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
@@ -31,6 +32,7 @@ public abstract class AbstractExecutionConfigurator {
 	public void setExecution(Execution execution) {
 		this.execution = execution;
 	}
+	
 	/**
 	 * generates a random file
 	 * @return file created
@@ -38,7 +40,7 @@ public abstract class AbstractExecutionConfigurator {
 	public static File generateRandomFile(){
 		if (!new File(UnaCloudConstants.TEMP_FILE).exists())
 			new File(UnaCloudConstants.TEMP_FILE).mkdir();
-		return new File(UnaCloudConstants.TEMP_FILE + "/" + Math.abs(random.nextLong()) + UnaCloudConstants.FILE_EXTENSION);
+		return new File(UnaCloudConstants.TEMP_FILE + OperatingSystem.PATH_SEPARATOR + Math.abs(random.nextLong()) + UnaCloudConstants.FILE_EXTENSION);
 	}
 	
 	/**

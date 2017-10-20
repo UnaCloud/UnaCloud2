@@ -4,7 +4,7 @@ import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.UserGroupService;
 import uniandes.unacloud.web.domain.enums.NetworkQualityEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-import uniandes.unacloud.share.enums.TaskEnum;
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.web.domain.IPPool;
 import uniandes.unacloud.web.domain.Laboratory;
 import uniandes.unacloud.web.domain.OperatingSystem;
@@ -207,7 +207,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if (lab && params.ip && params.pool) {
 			try {
-				laboratoryService.deleteIP(lab,params.ip)
+				laboratoryService.deleteIP(lab, Long.parseLong(params.ip))
 				flash.message = "Your IP has been removed"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id + "/pool/" + params.pool, absolute:true)
@@ -228,7 +228,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if (lab && params.ip) {
 			try {
-				laboratoryService.setStatusIP(lab,params.ip)
+				laboratoryService.setStatusIP(lab, Long.parseLong(params.ip))
 				flash.message = "Your IP has been modified"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id + '/pool/' + params.pool, absolute:true)
@@ -250,7 +250,7 @@ class LaboratoryController {
 		def lab = Laboratory.get(params.id)
 		if ( lab && params.pool) {
 			try {
-				laboratoryService.deletePool(lab,params.pool)
+				laboratoryService.deletePool(lab, params.pool)
 				flash.message = "Your IP Pool has been removed"
 				flash.type = "success"
 				redirect(uri:"/admin/lab/" + lab.id, absolute:true)
@@ -289,11 +289,11 @@ class LaboratoryController {
 					redirect(uri:"/admin/lab/" + lab.id, absolute:true)
 				} catch(Exception e) {
 					flash.message = "Error: " + e.message
-					redirect(uri:"/admin/lab/" + lab.id+"/pool/new", absolute:true)
+					redirect(uri:"/admin/lab/" + lab.id + "/pool/new", absolute:true)
 				}				
 			} else {
 				flash.message = "All fields are required"
-				redirect(uri:"/admin/lab/" + lab.id+"/pool/new", absolute:true)
+				redirect(uri:"/admin/lab/" + lab.id + "/pool/new", absolute:true)
 			}
 		} else 
 			redirect(uri:"/admin/lab/list", absolute:true)		

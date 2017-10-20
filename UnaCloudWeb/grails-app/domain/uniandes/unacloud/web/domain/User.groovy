@@ -82,7 +82,7 @@ class User {
 	def boolean isAdmin() {
 		UserGroup group = UserGroup.findByName(UnaCloudConstants.ADMIN_GROUP);
 		if (group)
-			return group.users.find{it.id == this.id}?true:false;
+			return group.users.find{it.id == this.id} ? true : false;
 		return false
 	}
 	
@@ -200,7 +200,7 @@ class User {
 		restrictions = []
 		for (Deployment deploy in deployments)
 			deploy.deleteDeploy()
-		deployments=[]
+		deployments = []
 		for (Image image in images)
 			image.putAt("state", ImageEnum.IN_QUEUE)		
 		this.save()
