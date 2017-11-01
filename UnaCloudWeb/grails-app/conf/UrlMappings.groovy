@@ -8,14 +8,15 @@ class UrlMappings {
 		"/login"(view:"/index")		
 		"/logout"(controller:'user', action:"logout")
 		"/error"(controller:'error', action:"error")
-		"404"(controller:'error', action:"fourhundred")
-		"500"(controller:'error', action:"fivehundred")
+		//"404"(controller:'error', action:"fourhundred")
+		//"500"(controller:'error', action:"fivehundred")
 		
 		/**
 		 * API REST services
 		 */
 		group "/api", {
 			"/deployment/"(controller:'DeploymentAPI',action:"create", method:"POST")
+			"/deployment/"(controller:'DeploymentAPI',action:"list", method:"GET")
 		}
 		
 		/** user**/

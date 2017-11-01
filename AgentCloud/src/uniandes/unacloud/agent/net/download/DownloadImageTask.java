@@ -97,9 +97,8 @@ public class DownloadImageTask {
 			
 			if (type == TransmissionProtocolEnum.P2P) 
 				TorrentClient.getInstance().downloadAndAnnounceTorrent(copy.getMainFile().getTorrentFile());
-						
+					
 			Zipper.unzipIt(copy.getMainFile().getZipFile(), root.getAbsolutePath());
-			
 			copy.setImage(image);
 			image.getImageCopies().add(copy);
 			copy.init();
