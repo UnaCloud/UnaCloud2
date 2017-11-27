@@ -116,6 +116,9 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());
 	            case AgentMessage.GET_DATA_SPACE:
 	            	return new UnaCloudResponse(AgentManager.getFreeDataSpace() + "", ExecutionProcessEnum.SUCCESS);
+	            case AgentMessage.GLOBAL_SNAPSHOT:
+	            	
+	            	
 	        }
 	        return new UnaCloudResponse("Invalid operation: " + message.getTask(), ExecutionProcessEnum.FAIL);
 	    } catch (Exception e) {

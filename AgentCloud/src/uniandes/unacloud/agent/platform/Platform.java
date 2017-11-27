@@ -82,7 +82,7 @@ public abstract class Platform {
     public abstract void restoreExecutionSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
     
     public abstract boolean existsExecutionSnapshot(ImageCopy image,String snapshotname)throws PlatformOperationException;
-   
+       
     /**
      * writes a file on the execution file system
      * @param image where will be copied file

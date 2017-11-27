@@ -39,6 +39,7 @@ public class AgentManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		destroyProcess();
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY + ""});
 		} catch (Exception e) {
@@ -64,6 +65,7 @@ public class AgentManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		destroyProcess();
          new Thread() {
          	public void run() {
          		SystemUtils.sleep(2000);         		
@@ -132,6 +134,27 @@ public class AgentManager {
 	public static long getTotalDataSpace() {
 		String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
 		return new File(dataPath).getTotalSpace();
+	}
+	
+	public static Process p;
+	
+	public static void destroyProcess(){
+		try {			
+			if (p!= null)
+				p.destroy();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void startSnapshot() {		
+		try {
+			destroyProcess();
+            p = Runtime.getRuntime().exec("java -jar GS.jar");
+            
+        } catch(IOException ex) {
+            System.out.println("Error: Executable not found");
+        }
 	}
 	
 }

@@ -39,6 +39,8 @@ public class AgentMessage extends ClientMessage {
 	 * Request free space in data path
 	 */
 	public static final int GET_DATA_SPACE = 11;
+
+	public static final int GLOBAL_SNAPSHOT = 12;
 		
 	/**
 	 * Creates a new Agent message
