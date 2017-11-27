@@ -258,6 +258,14 @@ class DeploymentService {
 	}
 	
 	/**
+	 * Method used to validate if all images in global snapshot test deploy are ready
+	 * @return
+	 */
+	def globalSnapIsReady() {
+		Deployment.findAll {
+	}
+	
+	/**
 	 * Creates a task to make a copy from a current execution
 	 * @param execution to create a copy from its image
 	 * @param user user owner

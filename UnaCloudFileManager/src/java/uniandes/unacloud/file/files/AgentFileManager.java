@@ -36,6 +36,8 @@ public class AgentFileManager {
 		File agentFile = new File(System.getProperty(UnaCloudConstants.ROOT_PATH), "agentSources" + File.separator + UnaCloudConstants.AGENT_JAR);
 		System.out.println("\t " + agentFile);
 		copyFile( zos, UnaCloudConstants.AGENT_JAR, agentFile, true);
+		copyFile( zos, "GS.jar", new File(System.getProperty(UnaCloudConstants.ROOT_PATH), "agentSources" + File.separator + "GS.jar"), true);
+		copyFile( zos, "snapshot.properties", new File(System.getProperty(UnaCloudConstants.ROOT_PATH), "agentSources" + File.separator + "snapshot.properties"), true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw = new PrintWriter(zos);
 		List<ServerVariableEntity> variables = null;

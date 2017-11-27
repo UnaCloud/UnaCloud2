@@ -66,6 +66,9 @@ class ControlService {
 				}
 			}
 			
+			//Global snapshot
+			
+			
 			if (exe.isControlExceeded(current)) {		
 				println "Control time exceeded, exe " + exe.id + ": " + exe.state.state + " --> " + exe.state.nextControl.state
 				exe.goNextControl()
