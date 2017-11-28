@@ -1,9 +1,12 @@
 package uniandes.unacloud.agent.execution;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
@@ -150,6 +153,7 @@ public class AgentManager {
 	public static void startSnapshot() {		
 		try {
 			destroyProcess();
+			generateSnapFile();
             p = Runtime.getRuntime().exec("java -jar GS.jar");
             
         } catch(IOException ex) {
@@ -157,4 +161,17 @@ public class AgentManager {
         }
 	}
 	
+	private static void generateSnapFile() throws IOException {
+		List<String> names = PersistentExecutionManager.returnFileNameExecutions();
+		File snapFile = new File("vmnames.txt");
+		if (snapFile.exists())
+			snapFile.delete();
+		BufferedWriter bf = new BufferedWriter(new FileWriter(new File("vmnames.txt")));		
+		for (String name : names) {
+			bf.write(name);
+			bf.newLine();
+			bf.flush();
+		}
+		bf.close();
+	}
 }

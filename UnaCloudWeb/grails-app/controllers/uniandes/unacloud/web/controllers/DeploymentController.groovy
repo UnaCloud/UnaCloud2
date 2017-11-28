@@ -10,6 +10,7 @@ import uniandes.unacloud.share.enums.UserStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.web.domain.Cluster;
 import uniandes.unacloud.web.domain.DeployedImage;
+import uniandes.unacloud.web.domain.Deployment;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Execution;
@@ -159,6 +160,26 @@ class DeploymentController {
 			flash.message = 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED'
 		redirect(uri:"/services/deployment/list", absolute:true)
 	}
+	
+	/**
+	 * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
+	 * stopped. Redirects to index when the operation is finished.
+	 */
+	
+	def snap() {
+		def user = User.get(session.user.id)
+		def deployment = Deployment.get(params.id)
+		List<Execution> executions = new ArrayList<>();		
+		if (deployment != null && deployment.user.id == user.id) {
+			flash.message = 'Your request has been processed'
+			flash.type = 'info'
+			deploymentService.startGlobalSnapshot(deployment, user)
+		}
+		else
+			flash.message = 'You are not allowed to execute this task'
+		redirect(uri:"/services/deployment/list", absolute:true)
+	}
+	
 	
 	/**
 	 * Renders form to add instances to a current deployed image

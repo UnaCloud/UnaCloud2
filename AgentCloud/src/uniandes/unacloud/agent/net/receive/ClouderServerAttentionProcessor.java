@@ -117,7 +117,8 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	            case AgentMessage.GET_DATA_SPACE:
 	            	return new UnaCloudResponse(AgentManager.getFreeDataSpace() + "", ExecutionProcessEnum.SUCCESS);
 	            case AgentMessage.GLOBAL_SNAPSHOT:
-	            	
+	            	AgentManager.startSnapshot();
+	            	return new UnaCloudResponse(ExecutionProcessEnum.SUCCESS);
 	            	
 	        }
 	        return new UnaCloudResponse("Invalid operation: " + message.getTask(), ExecutionProcessEnum.FAIL);

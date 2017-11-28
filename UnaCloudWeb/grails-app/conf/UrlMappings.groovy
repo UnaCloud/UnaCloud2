@@ -42,6 +42,7 @@ class UrlMappings {
 		"/services/deployment/new"(controller:'Deployment',action:"deploy")
 		"/services/deployment/list"(controller:'Deployment',action:"list")
 		"/services/deployment/stop"(controller:'Deployment',action:"stop")
+		"/services/deployment/snap/$id"(controller:'Deployment',action:"snap")
 		"/services/deployment/$id/add"(controller:'Deployment',action:"addInstances")
 		"/services/deployment/$id/add/save"(controller:'Deployment',action:"saveInstances")
 		"/services/deployment/download/$id"(controller:'Deployment',action:"createCopy")

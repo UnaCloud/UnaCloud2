@@ -49,6 +49,7 @@
 									  	</tr>
 		                              	<tr>
 		                                	<th></th>
+		                                	<th></th>
 		                                  	<th>Cluster</th>
 		                                  	<th>Image</th>
 		                                  	<th>Access by</th>
@@ -64,7 +65,11 @@
 		                              	<g:each in="${deployment.images}" var="image"> 
 		                              	<g:if test="${image.getActiveExecutions().size()>0}">
 							           	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
-		                              	<tr>			                              	
+		                              	<tr>	
+		                              		<td class="column-center">	
+		                              			<a title="Global Snapshot" class="global_snapshot btn btn-default" data-id="${deployment.id}" href="${createLink(uri: '/services/deployment/snap', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-rocket' ></i></a>
+			                									
+								      		</td>		                              	
 		                              		<td class="column-center">	
 								      			<input data-id="${image.id}" type="checkbox" name="image_${image.id}" class="all image_check"/>  
 								      		</td>

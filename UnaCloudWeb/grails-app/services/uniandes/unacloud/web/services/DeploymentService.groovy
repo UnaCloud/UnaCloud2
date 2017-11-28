@@ -3,6 +3,7 @@ package uniandes.unacloud.web.services
 import uniandes.unacloud.utils.security.HashGenerator;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
@@ -257,14 +258,16 @@ class DeploymentService {
 		
 	}
 	
-	/**
-	 * Method used to validate if all images in global snapshot test deploy are ready
-	 * @return
-	 */
-	def globalSnapIsReady() {
-		Deployment.findAll {
+	def startGlobalSnapshot(Deployment deployment, user){
+		
+		List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
+		for(DeployedImage dI : deployment.images)
+			for(Execution exe: dI.executions)
+				machines.add(exe.executionNode);
+		if (machines.size() > 0)
+			QueueTaskerControl.taskMachines(machines, TaskEnum.GLOBAL_SNAPSHOT, user)
 	}
-	
+		
 	/**
 	 * Creates a task to make a copy from a current execution
 	 * @param execution to create a copy from its image

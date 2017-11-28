@@ -89,7 +89,14 @@ $(document).on('ready',function(){
 		event.preventDefault();
 		var data = $(this).data("id");
 		var href = $(this).attr("href");
-		sendConfirm('This image will be removed from all currently connected physical machines. Are you sure you want to remove it?',href,data)
+		sendConfirm('This image will be removed from all currently connected physical machines. Are you sure you want to remove it?', href, data)
+	});
+	
+	$('.global_snapshot').click(function (event){	
+		event.preventDefault();
+		var data = $(this).data("id");
+		var href = $(this).attr("href");
+		sendConfirm('This deployment will start global snapshot process. Do you want to continue?', href, data)
 	});
 	
 	$('#disable-lab').click(function (event){
