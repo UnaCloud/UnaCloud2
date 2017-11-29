@@ -67,7 +67,7 @@ public abstract class AbstractTCPServerSocket extends Thread {
 	 * @throws IOException
 	 */
 	public void stopService() throws IOException {
-		if (ss != null)
+		if (ss != null && !ss.isClosed())
 			ss.close();
 	}
 

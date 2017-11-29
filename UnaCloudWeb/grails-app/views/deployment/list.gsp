@@ -67,7 +67,7 @@
 							           	<input type="hidden" name="deployment_${deployment.id}" value="${deployment.id}"> 
 		                              	<tr>	
 		                              		<td class="column-center">	
-		                              			<a title="Global Snapshot" class="global_snapshot btn btn-default" data-id="${deployment.id}" href="${createLink(uri: '/services/deployment/snap', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-rocket' ></i></a>
+		                              			<a title="Global Snapshot" class="global_snapshot btn btn-default" data-id="${deployment.id}" href="${createLink(uri: '/services/deployment/snap/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-rocket' ></i></a>
 			                									
 								      		</td>		                              	
 		                              		<td class="column-center">	
@@ -187,13 +187,11 @@
 			                          		<tr class="info">
 											  	<td colspan="12">
 												  	<div class="pull-left text-head"><input type="checkbox" id="selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
-												  	<div id="btn-group-agent" class="hide-segment btn-group pull-right ">
-				                                 	 	<a title="Stop Agents" class="stop-agents btn btn-default" href="${createLink(uri: '/admin/lab//stop/', absolute: true)}"><i class='fa fa-stop' ></i></a>
-				                                   	 	<a title="Clean cache from host" class="cache-agents btn btn-default" href="${createLink(uri: '/admin/lab/cache/', absolute: true)}"><i class="fa fa-eraser" ></i></a>
-				                                        <a title="Update Agents" class="update-agents btn btn-default" href="${createLink(uri: '/admin/lab/update/', absolute: true)}"><i class="fa fa-level-up"></i></a>
-													</div>		  	
+												  	<div id="btn-group-agent" class="btn-group pull-right ">
+				                                 	 	<a title="Stop Executions" class="stop-executions btn btn-default" href="${createLink(uri: '/services/deployment/stop', absolute: true)}" data-toggle="tooltip"><i class='fa fa-stop' ></i></a>
+				                                   	</div>		  	
 											  	</td>
-										  	</tr>
+									  		</tr>
 			                              	<tr>
 			                                	<th></th>
 			                                	<th>Owner</th>
@@ -299,14 +297,14 @@
 			                                 	<td style="padding:0px !important">
 			                                  		<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status = "index" var="execution">
-				                                  		    <tr>
-					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
-						                                  		<a title="Download" class="download_image btn btn-default" data-id="${execution.id}" href="${createLink(uri: '/admin/user/delete/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a>
-			                									</td>
-					                                  		</tr>
-				                                  			</g:each> 
-				                                  		</tbody>
+			                                  			<g:each in="${image.getActiveExecutions()}" status="index" var="execution">
+			                                  		    <tr>			                                  		    
+				                                  			<g:if test="${index == 0}"><td class="insert-row"></g:if><g:else><td></g:else>
+					                                  		<g:if test="${execution.state.state == ExecutionStateEnum.DEPLOYED}"><a title="Download" class="download_btn btn btn-default" data-imagename="${image.image.name}" data-id="${execution.id}" href="${createLink(uri: '/services/deployment/download/', absolute: true)}"  data-toggle="tooltip"><i class='fa fa-download' ></i></a></g:if>	
+		                									</td>		                								
+				                                  		</tr>
+			                                  			</g:each> 
+			                                  		</tbody>
 			                                  	 	</table>
 			                                 	</td>
 			                              	</tr>	
