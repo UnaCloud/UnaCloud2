@@ -69,6 +69,7 @@ public enum TaskEnum {
 		if (name.equals(CACHE.name)) return CACHE;
 		if (name.equals(DATA_SPACE.name)) return DATA_SPACE;
 		if (name.equals(VERSION.name)) return VERSION;
+		if (name.equals(GLOBAL_SNAPSHOT.name)) return GLOBAL_SNAPSHOT;
 		return null;
 	}
 	

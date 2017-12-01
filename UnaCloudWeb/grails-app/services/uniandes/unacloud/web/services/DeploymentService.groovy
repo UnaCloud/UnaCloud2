@@ -8,6 +8,7 @@ import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
+import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.web.pmallocators.AllocatorException
 import uniandes.unacloud.web.pmallocators.PhysicalMachineAllocationDescription
 import uniandes.unacloud.web.queue.QueueTaskerControl;
@@ -262,8 +263,10 @@ class DeploymentService {
 		
 		List<PhysicalMachine> machines = new ArrayList<PhysicalMachine>();
 		for(DeployedImage dI : deployment.images)
-			for(Execution exe: dI.executions)
+			for(Execution exe: dI.executions){
+				exe.executionNode.putAt("state", PhysicalMachineStateEnum.PROCESSING)
 				machines.add(exe.executionNode);
+			}
 		if (machines.size() > 0)
 			QueueTaskerControl.taskMachines(machines, TaskEnum.GLOBAL_SNAPSHOT, user)
 	}

@@ -103,6 +103,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
      */
     private UnaCloudResponse attendAgentOperation(AgentMessage message) {
     	try {
+    		System.out.println("Arrived: " + message.getTask());
 	        switch (message.getTask()) {
 	            case AgentMessage.UPDATE_OPERATION:            	
 	                return AgentManager.updateAgent();

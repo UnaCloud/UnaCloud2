@@ -1,7 +1,7 @@
 package uniandes.unacloud.common.net.udp;
 
 import java.net.SocketException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
@@ -21,7 +21,7 @@ public abstract class AbstractUDPMessageReceiver extends Thread {
     /**
      * Thread pool to process sockets in batch
      */
-    protected ExecutorService threadPool;
+    protected Executor threadPool;
 	
     /**
      * Creates a new abstract udp message receiver
@@ -41,7 +41,7 @@ public abstract class AbstractUDPMessageReceiver extends Thread {
 			while(true) {
 				try  {
 					UnaCloudMessage message = receiver.getMessage();
-					threadPool.submit(processMessage(message));
+					threadPool.execute(processMessage(message));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

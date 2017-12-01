@@ -2,6 +2,7 @@ package uniandes.unacloud.common.net.tcp;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
@@ -43,8 +44,10 @@ public class TCPMultipleSender extends Thread {
 	 * @param message
 	 */
 	private void sendMessage(UnaCloudMessage message) {
-		try (Socket s =  new Socket(message.getIp(), message.getPort())) {
-			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
+		System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
+		try (Socket s =  new Socket(message.getIp(), message.getPort())) {	
+	/*	try (Socket s =  new Socket()) {	
+			s.connect(new InetSocketAddress(message.getIp(), message.getPort()), 4000);*/
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 			oos.writeObject(message);

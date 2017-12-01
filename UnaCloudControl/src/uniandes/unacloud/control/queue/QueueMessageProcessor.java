@@ -3,7 +3,7 @@ package uniandes.unacloud.control.queue;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -57,7 +57,7 @@ public class QueueMessageProcessor implements QueueReader {
 	/**
 	 * Pool of threads to attend messages
 	 */
-	private ExecutorService threadPool;
+	private Executor threadPool;
 	
 	/**
 	 * Creates message processor based in a quantity of threads and messages processed by thread
@@ -122,7 +122,7 @@ public class QueueMessageProcessor implements QueueReader {
 					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, imageId, machines.get(i).getId()));
 					
 					if (j >= messagesByThread || i == machines.size()-1) {
-						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
@@ -195,7 +195,7 @@ public class QueueMessageProcessor implements QueueReader {
 					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
 					
 					if (j >= messagesByThread || i == machines.size()-1) {
-						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
@@ -283,8 +283,8 @@ public class QueueMessageProcessor implements QueueReader {
 						
 						messageList.add(vmsm);
 						if (j >= messagesByThread || i == image.getExecutions().size()-1) {
-													
-							threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+							System.out.println("Ready for: " + messageList.size());
+							threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 								
 								@Override
 								public void attendResponse(Object response, Object message) {
@@ -365,7 +365,7 @@ public class QueueMessageProcessor implements QueueReader {
 							execution.getId());
 					messageList.add(vmsm);
 					if (j >= messagesByThread || i == executions.size()-1) {
-						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
@@ -447,7 +447,7 @@ public class QueueMessageProcessor implements QueueReader {
 					
 					if (j >= messagesByThread || i == executions.size()-1) {
 												
-						threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
 							public void attendResponse(Object response, Object message) {
@@ -510,7 +510,7 @@ public class QueueMessageProcessor implements QueueReader {
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
 				messageList.add(vmsim);
 				
-				threadPool.submit(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
+				threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 					
 					@Override
 					public void attendResponse(Object response, Object message) {
