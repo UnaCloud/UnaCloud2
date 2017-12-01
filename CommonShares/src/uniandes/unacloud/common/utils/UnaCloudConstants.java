@@ -82,5 +82,6 @@ public class UnaCloudConstants {
     public static final String FILE_EXTENSION = ".txt";
     public static final String DEFAULT_IMG_NAME = "unacloudbase";
     public static final String DOUBLE_QUOTE = "\"";
+	public static final int SOCKET_TIME_OUT = 4000;
  
 }
