@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.controllers.api
 
+import grails.converters.JSON
+import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.exception.HttpException;
 import uniandes.unacloud.web.exception.NotFoundException;
 import uniandes.unacloud.web.exception.PreconditionException;
@@ -10,6 +12,7 @@ abstract class AbstractController {
 	def beforeInterceptor = {
 		//Validate token
 		def key = request.getHeader("authorization")
+		flash.user = User.get(1)
 		
 		//Validate Json format
 		response.setContentType("application/json")
@@ -34,7 +37,10 @@ abstract class AbstractController {
 	
 	def doResponse(int code, String message) {
 		println "Error: " + code + " m: " + message
-		render (status: code, text: message)
+		
+		def responseData = ["status": code, "text": message]		
+		response.setContentType("application/json")		
+		render responseData as JSON
 	}
     
 }
