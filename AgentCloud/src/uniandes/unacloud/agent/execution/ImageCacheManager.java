@@ -67,7 +67,7 @@ public class ImageCacheManager {
 				ImageCopy copy = new ImageCopy();
 				try {
 					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
-					DownloadImageTask.dowloadImageCopy(vmi, copy, machineRepository, type);
+					DownloadImageTask.downloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
 					ex.printStackTrace();
