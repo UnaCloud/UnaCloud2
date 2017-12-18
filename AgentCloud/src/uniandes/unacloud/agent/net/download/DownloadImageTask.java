@@ -36,7 +36,7 @@ public class DownloadImageTask {
 	 * @param type
 	 * @throws Exception
 	 */
-	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
+	public static void downloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
 		
 		File root = new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
 		ImageCacheManager.cleanDir(root);
