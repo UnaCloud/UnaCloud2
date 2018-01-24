@@ -111,19 +111,25 @@ public class QueueMessageFileProcessor implements QueueReader {
 				if (image != null) {
 					boolean change = false;
 					boolean isNotPublic = false;
-					if (!image.isPublic()) {
-						isNotPublic = true;
-						FileConverter original = image.getFileConversor();
-						FileConverter copy = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getExecutableFile().getName());
-						System.out.println("Changes to public " + image.getMainFile());
-						
-						if (!copy.getZipFile().exists()) {
-							System.out.println(" O: " + original.getZipFile() + " -> " + copy.getZipFile() );
-							FileProcessor.copyFileSync(original.getZipFile().getAbsolutePath(), copy.getZipFile().getAbsolutePath());
-							change = true;
-						}
-												
-					} 
+					try {
+						if (!image.isPublic()) {
+							isNotPublic = true;
+							FileConverter original = image.getFileConversor();
+							FileConverter copy = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getExecutableFile().getName());
+							System.out.println("Changes to public " + image.getMainFile());
+							
+							if (!copy.getZipFile().exists()) {
+								System.out.println(" O: " + original.getZipFile() + " -> " + copy.getZipFile() );
+								copy.getZipFile().getParentFile().mkdirs();
+								FileProcessor.copyFileSync(original.getZipFile().getAbsolutePath(), copy.getZipFile().getAbsolutePath());
+								change = true;
+							}
+													
+						} 
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
 						if (isNotPublic)
 							//TODO if there is a previous image doesn't override and should send a notification		
