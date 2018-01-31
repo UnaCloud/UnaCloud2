@@ -104,9 +104,10 @@ class LaboratoryController {
 		if (lab) {			
 			def machineSet = lab.getOrderedMachines()
 			[lab: lab, machineSet:machineSet]
-		} else {
+		} 
+		else 
 			redirect(uri:"/admin/lab/list", absolute:true)
-		}
+		
 	}	
 	
 	/**
