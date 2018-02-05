@@ -1,0 +1,221 @@
+{
+	"info": {
+		"name": "REST-Grails",
+		"_postman_id": "ad9de29d-a989-3329-fbf5-55fd56d93924",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "usuarioId",
+						"value": "0",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"me\", \"password\":\"password\"}"
+				},
+				"url": "http://localhost:8080/RESTSERVICE/api/login",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZSIsImV4cCI6MTUxNzc4NjAzOSwiaWF0IjoxNTE3NzgyNDM5LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.LvZ1WLnxH5NO7aJvpQPvVStC-fJDj6RJNkesrfnk9p4"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cityName\":\t\"Munich12\",\n\t\"countryCode\":\t\"DE\",\n\t\"postalCode\":\t\"81927\"\n}\n"
+				},
+				"url": "http://localhost:8080/RESTSERVICE/City/1",
+				"description": "Hay que cambiar el header de autorización cada vez que se ejecute el login"
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener ciudades",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZSIsImV4cCI6MTUxNzc4NTg2MywiaWF0IjoxNTE3NzgyMjYzLCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.D2MsDvSbogz7Y2_jPfnknGFtWM8nlOLB8V5P0-1ugM0"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"cityName\":\t\"Munich12\",\n\t\"countryCode\":\t\"DE\",\n\t\"postalCode\":\t\"81927\"\n}\n"
+				},
+				"url": "http://localhost:8080/RESTSERVICE/City",
+				"description": "Hay que cambiar el header de autorización cada vez que se ejecute el login"
+			},
+			"response": []
+		},
+		{
+			"name": "Crear una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZSIsImV4cCI6MTUxNzc4NjAzOSwiaWF0IjoxNTE3NzgyNDM5LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.LvZ1WLnxH5NO7aJvpQPvVStC-fJDj6RJNkesrfnk9p4"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t    \"cityName\": \"AAAA\",\n\t    \"postalCode\":\"1111\",\n\t    \"countryCode\":\"CO\"\n\n}"
+				},
+				"url": "http://localhost:8080/RESTSERVICE/City",
+				"description": "Hay que cambiar el header cada vez que se haga una petición"
+			},
+			"response": []
+		},
+		{
+			"name": "Actualizar una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZSIsImV4cCI6MTUxNzc4NjAzOSwiaWF0IjoxNTE3NzgyNDM5LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.LvZ1WLnxH5NO7aJvpQPvVStC-fJDj6RJNkesrfnk9p4"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cityName\": \"Berlin5\",\n    \"countryCode\": \"DE\",\n    \"dateCreated\": \"2018-02-04T19:48:46Z\",\n    \"lastUpdated\": \"2018-02-04T19:48:46Z\",\n    \"postalCode\": \"10115\"\n}"
+				},
+				"url": "http://localhost:8080/RESTSERVICE/City/2",
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Borrar una ciudad",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1bb9783-a1b7-4f84-80ec-641c6b3183c8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZSIsImV4cCI6MTUxNzc4NjAzOSwiaWF0IjoxNTE3NzgyNDM5LCJyb2xlcyI6WyJST0xFX1VTRVIiXX0.LvZ1WLnxH5NO7aJvpQPvVStC-fJDj6RJNkesrfnk9p4"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://localhost:8080/RESTSERVICE/City/1",
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
