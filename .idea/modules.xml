@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AgentCloud/AgentCloud.iml" filepath="$PROJECT_DIR$/AgentCloud/AgentCloud.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AgentUpdater/AgentUpdater.iml" filepath="$PROJECT_DIR$/AgentUpdater/AgentUpdater.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CommonShares/CommonShares.iml" filepath="$PROJECT_DIR$/CommonShares/CommonShares.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RESTSERVICE/RESTSERVICE.iml" filepath="$PROJECT_DIR$/RESTSERVICE/RESTSERVICE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RESTSERVICE/RESTSERVICE-grailsPlugins.iml" filepath="$PROJECT_DIR$/RESTSERVICE/RESTSERVICE-grailsPlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerShares/ServerShares.iml" filepath="$PROJECT_DIR$/ServerShares/ServerShares.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnaCloudControl/UnaCloudControl.iml" filepath="$PROJECT_DIR$/UnaCloudControl/UnaCloudControl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnaCloudFileManager/UnaCloudFileManager.iml" filepath="$PROJECT_DIR$/UnaCloudFileManager/UnaCloudFileManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnaCloudFileManager/UnaCloudFileManager-grailsPlugins.iml" filepath="$PROJECT_DIR$/UnaCloudFileManager/UnaCloudFileManager-grailsPlugins.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnaCloudWeb/UnaCloudWeb.iml" filepath="$PROJECT_DIR$/UnaCloudWeb/UnaCloudWeb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UnaCloudWeb/UnaCloudWeb-grailsPlugins.iml" filepath="$PROJECT_DIR$/UnaCloudWeb/UnaCloudWeb-grailsPlugins.iml" />
+    </modules>
+  </component>
+</project>
