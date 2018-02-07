@@ -5445,3 +5445,5 @@ n:2673:org/codehaus/groovy/classgen/asm/ExpressionAsVariableSlot
 n:1694:org/codehaus/groovy/classgen/asm/sc/StaticTypesClosureWriter$MethodTargetCompletionVisitor
 n:1576:org/codehaus/groovy/control/CompilationUnit$addSource$0
 n:1437:org/codehaus/groovy/control/CompilationUnit$compile$1
+n:2360:org/springframework/core/serializer/support/DeserializingConverter
+n:2322:org/springframework/core/serializer/support/SerializingConverter

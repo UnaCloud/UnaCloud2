@@ -66,6 +66,7 @@ class BootStrap {
 	 * Initialize
 	 */
 	def init = { servletContext ->
+		println EnvironmentManager.getConfigPath()
 		ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath() + UnaCloudConstants.FILE_CONFIG)
 		println "***** Create HardwareProfile"
 		if (HardwareProfile.count() == 0) {
@@ -146,13 +147,14 @@ class BootStrap {
 		createGraphState()		
 				
 		println "***** Start QueueServices"
+		println ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable
 		QueueRabbitManager queueControl = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable, 
 			Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable), 
 			UnaCloudConstants.QUEUE_CONTROL);		
-		QueueTaskerControl.setQueueConnection(queueControl)		
+		QueueTaskerControl.setQueueConnection(queueControl)
 		QueueRabbitManager queueFile = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,

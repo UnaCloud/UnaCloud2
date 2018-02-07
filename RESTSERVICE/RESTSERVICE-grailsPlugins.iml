@@ -62,11 +62,11 @@
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-core-2.0-RC5/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-core-2.0-RC5/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M2">
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M2/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M2/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M2/grails-app/controllers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M2/grails-app/services" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M3">
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M3/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M3/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/spring-security-rest-1.5.0.M3/grails-app/services" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/tomcat-7.0.55">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/tomcat-7.0.55/src/java" isTestSource="false" />

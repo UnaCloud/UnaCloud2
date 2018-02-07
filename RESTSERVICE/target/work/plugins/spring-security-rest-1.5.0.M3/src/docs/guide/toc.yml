@@ -1,0 +1,25 @@
+introduction: Introduction to the Spring Security REST plugin
+whatsNew15: What's new in 1.5?
+whatsNew14: What's new in 1.4?
+configuration: Configuration
+authentication:
+  title: Authentication Endpoint
+  logout: Logout Endpoint
+tokenGeneration: Token Generation
+tokenStorage:
+  title: Token Storage
+  jwt: JSON Web Token
+  memcached: Memcached
+  gorm: GORM
+  redis: Redis
+  grailsCache: Grails Cache
+tokenRendering: Token Rendering
+tokenValidation: Token Validation Filter
+cors: CORS support
+oauth:
+  title: Delegating authentication to OAuth providers
+  google: Google
+  facebook: Facebook
+  twitter: Twitter
+debugging: Debugging
+faq: Frequently Asked Questions
