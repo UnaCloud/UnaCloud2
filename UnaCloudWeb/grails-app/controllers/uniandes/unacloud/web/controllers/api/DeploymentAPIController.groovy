@@ -28,8 +28,6 @@ class DeploymentAPIController extends AbstractController{
 	}
 	
     def create() {
-		def data = flash.data
-		data.nodes[0].name
 		response.status = 200
 		response.setContentType("application/json")
 		throw new NotFoundException("Hola");
