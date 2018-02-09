@@ -52,7 +52,7 @@ class DeploymentAPIController extends AbstractController {
 								break;
 							}	
 						if (requested == null)
-							throw new PreconditionException("The request does not contain all images.");
+							throw new PreconditionException("All images are not in request.");
 						requests[idx] = requested;
 					}
 					deploymentService.deploy(cluster, user, data.time * 60 * 60 * 1000, requests)
