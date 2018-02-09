@@ -31,32 +31,41 @@ class DeploymentAPIController extends AbstractController {
 		Cluster cluster = Cluster.get(data.cluster.id)
 		if (cluster) {
 			def user = flash.user
-			
 			//validates if user is owner to deploy cluster
 			if (user.userClusters.find {it.id == cluster.id} != null ) {
 				if(cluster.state.equals(ClusterEnum.AVAILABLE)) {
-					
 					//Validates if images are available in the platform
 					def availables = cluster.images.findAll{it.state == ImageEnum.AVAILABLE}
 					if (availables.size() != cluster.images.size())
 						throw new PreconditionException("Some images of this cluster are not available at this moment.");
-					
-					//validates if cluster is good configured
-					def requests = new ImageRequestOptions[cluster.images.size()];
-					cluster.images.eachWithIndex {it, idx->
-						ImageRequestOptions requested = null;
-						for(node in data.cluster.nodes) 
-							if(node.id == it.id){
-								HardwareProfile hp = HardwareProfile.findByName(node.hwp);
-								requested = new ImageRequestOptions(it, hp, node.quantity, node.gHostName, node.type);
-								break;
-							}	
-						if (requested == null)
-							throw new PreconditionException("All images are not in request.");
-						requests[idx] = requested;
+					try {
+						//validates if cluster is good configured
+						def requests = new ImageRequestOptions[cluster.images.size()];
+						cluster.images.eachWithIndex {it, idx->
+							ImageRequestOptions requested = null;
+							for(node in data.cluster.nodes) 
+								if(node.id == it.id)
+								{
+									HardwareProfile hp = HardwareProfile.findByName(node.hwp);
+									requested = new ImageRequestOptions(it, hp, node.quantity, node.gHostName, node.type);
+									break;
+								}	
+							if (requested == null)
+								throw new PreconditionException("All images are not in request.");
+							requests[idx] = requested;
+						}
+						deploymentService.deploy(cluster, user, data.time * 60 * 60 * 1000, requests)
+						return
+						
+					} catch (Exception e) {
+						e.printStackTrace()
+						if (e.message == null)
+							flash.message = e.getCause()
+						else
+							flash.message = e.message
+						redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
+						return
 					}
-					deploymentService.deploy(cluster, user, data.time * 60 * 60 * 1000, requests)
-					return
 				}
 				else 
 					throw new PreconditionException('Cluster is not available');
