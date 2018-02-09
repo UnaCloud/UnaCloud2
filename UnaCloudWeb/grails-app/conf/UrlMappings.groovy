@@ -15,53 +15,53 @@ class UrlMappings {
 		 * API REST services
 		 */
 		group "/api", {
-			"/deployment/"(controller:'DeploymentAPI', action:"create", method:"POST")
-			"/deployment/"(controller:'DeploymentAPI', action:"list", method:"GET")
+			"/deployment/"(controller:'DeploymentAPI',action:"create", method:"POST")
+			"/deployment/"(controller:'DeploymentAPI',action:"list", method:"GET")
 		}
 		
 		/** user**/
 		group "/user", {
-			"/login"(controller:'user', action:'login')
-			"/profile/"(controller:'user', action:'profile')
-			"/profile/save"(controller:'user', action:'changeProfile')
-			"/profile/change"(controller:'user', action:'changePassword')
-			"/profile/change/save"(controller:'user', action:'savePassword')
+			"/login"(controller:'user',action:'login')
+			"/profile/"(controller:'user',action:'profile')
+			"/profile/save"(controller:'user',action:'changeProfile')
+			"/profile/change"(controller:'user',action:'changePassword')
+			"/profile/change/save"(controller:'user',action:'savePassword')
 		}
 	
 		group "/services", {
 			
 			/** services - my images**/
 			group "/image", {
-				"/list"(controller:'Image', action:"list")
-				"/new"(controller:"Image", action:"newUploadImage")
-				"/upload"(controller:"Image", action:"upload")
-				"/edit/$id"(controller:'Image', action:"edit")
-				"/delete/$id"(controller:'Image', action:"delete")
-				"/clear/$id"(controller:'Image', action:"clearFromCache")
-				"/public"(controller:'Image', action:'newFromPublic')
-				"/public/copy"(controller:'Image', action:'copyPublic')
-				"/edit/save"(controller:'Image', action:'saveEdit')
-				"/update/$id"(controller:'Image', action:'update')
-				"/update/save"(controller:'Image', action:'updateFiles')
+				"/list"(controller:'Image',action:"list")
+				"/new"(controller:"Image",action:"newUploadImage")
+				"/upload"(controller:"Image",action:"upload")
+				"/edit/$id"(controller:'Image',action:"edit")
+				"/delete/$id"(controller:'Image',action:"delete")
+				"/clear/$id"(controller:'Image',action:"clearFromCache")
+				"/public"(controller:'Image',action:'newFromPublic')
+				"/public/copy"(controller:'Image',action:'copyPublic')
+				"/edit/save"(controller:'Image',action:'saveEdit')
+				"/update/$id"(controller:'Image',action:'update')
+				"/update/save"(controller:'Image',action:'updateFiles')
 			}
 						
 			/** services - my clusters**/
 			group "/cluster", {
-				"/list"(controller:'Cluster', action:"list")
-				"/new"(controller:"Cluster", action:"newCluster")
-				"/save"(controller:"Cluster", action:"save")
-				"/delete/$id"(controller:"Cluster", action:"delete")
-				"/deploy/$id"(controller:"Cluster", action:"deployOptions")
+				"/list"(controller:'Cluster',action:"list")
+				"/new"(controller:"Cluster",action:"newCluster")
+				"/save"(controller:"Cluster",action:"save")
+				"/delete/$id"(controller:"Cluster",action:"delete")
+				"/deploy/$id"(controller:"Cluster",action:"deployOptions")
 			}
 			
 			/** services - deployments **/
 			group "/deployment", {
-				"/new"(controller:'Deployment', action:"deploy")
-				"/list"(controller:'Deployment', action:"list")
-				"/stop"(controller:'Deployment', action:"stop")
-				"/$id/add"(controller:'Deployment', action:"addInstances")
-				"/$id/add/save"(controller:'Deployment', action:"saveInstances")
-				"/download/$id"(controller:'Deployment', action:"createCopy")
+				"/new"(controller:'Deployment',action:"deploy")
+				"/list"(controller:'Deployment',action:"list")
+				"/stop"(controller:'Deployment',action:"stop")
+				"/$id/add"(controller:'Deployment',action:"addInstances")
+				"/$id/add/save"(controller:'Deployment',action:"saveInstances")
+				"/download/$id"(controller:'Deployment',action:"createCopy")
 			}
 			
 		}	
@@ -70,36 +70,36 @@ class UrlMappings {
 			
 			/** admin - users**/
 			group "/user", {
-				"/list"(controller:'admin', action:"list")
-				"/new"(controller:'admin', action:"create")
-				"/save"(controller:'admin', action:"save")
-				"/delete/$id"(controller:'admin', action:"delete")
-				"/edit/$id"(controller:'admin', action:"edit")
-				"/edit/save"(controller:'admin', action:"saveEdit")
-				"/restrictions/$id"(controller:'admin', action:"config")
-				"/restrictions/set"(controller:'admin', action:"setRestrictions")
+				"/list"(controller:'admin',action:"list")
+				"/new"(controller:'admin',action:"create")
+				"/save"(controller:'admin',action:"save")
+				"/delete/$id"(controller:'admin',action:"delete")
+				"/edit/$id"(controller:'admin',action:"edit")
+				"/edit/save"(controller:'admin',action:"saveEdit")
+				"/restrictions/$id"(controller:'admin',action:"config")
+				"/restrictions/set"(controller:'admin',action:"setRestrictions")
 			}
 			
 			/** admin - groups**/
 			group "/group", {
-				"/list"(controller:'userGroup', action:"list")
-				"/new"(controller:'userGroup', action:"create")
-				"/save"(controller:'userGroup', action:"save")
-				"/delete/$id"(controller:'userGroup', action:"delete")
-				"/edit/$id"(controller:'userGroup', action:"edit")
-				"/edit/save"(controller:'userGroup', action:"saveEdit")
-				"/restrictions/$id"(controller:'userGroup', action:"config")
-				"/restrictions/set"(controller:'userGroup', action:"setRestrictions")
+				"/list"(controller:'userGroup',action:"list")
+				"/new"(controller:'userGroup',action:"create")
+				"/save"(controller:'userGroup',action:"save")
+				"/delete/$id"(controller:'userGroup',action:"delete")
+				"/edit/$id"(controller:'userGroup',action:"edit")
+				"/edit/save"(controller:'userGroup',action:"saveEdit")
+				"/restrictions/$id"(controller:'userGroup',action:"config")
+				"/restrictions/set"(controller:'userGroup',action:"setRestrictions")
 			}			
 			
 			/** admin - platforms**/
 			group "/platform", {
-				"/list"(controller:'platform', action:"list")
-				"/new"(controller:'platform', action:"create")
-				"/save"(controller:'platform', action:"save")
-				"/delete/$id"(controller:'platform', action:"delete")
-				"/edit/$id"(controller:'platform', action:"edit")
-				"/edit/save"(controller:'platform', action:"saveEdit")
+				"/list"(controller:'platform',action:"list")
+				"/new"(controller:'platform',action:"create")
+				"/save"(controller:'platform',action:"save")
+				"/delete/$id"(controller:'platform',action:"delete")
+				"/edit/$id"(controller:'platform',action:"edit")
+				"/edit/save"(controller:'platform',action:"saveEdit")
 			}			
 			
 			/** admin - Operating system**/
