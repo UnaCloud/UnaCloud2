@@ -32,7 +32,13 @@ public enum TaskEnum {
 	/**
 	 * Message to clear cache from agents
 	 */	
-	DATA_SPACE("size", AgentMessage.GET_DATA_SPACE);	
+	DATA_SPACE("size", AgentMessage.GET_DATA_SPACE),	
+	
+	
+	/**
+	 * Message to request file from agents
+	 */
+	GET_FILES("files", AgentMessage.GET_FILE);
 	
 	/**
 	 * Name of task

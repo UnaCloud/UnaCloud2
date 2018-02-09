@@ -3,9 +3,10 @@ package uniandes.unacloud.file.net;
 import java.io.DataInputStream;
 import java.net.Socket;
 
+import uniandes.unacloud.common.enums.FileEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
-import uniandes.unacloud.file.net.task.FileReceiverTask;
+import uniandes.unacloud.file.net.task.FileImageReceiverTask;
 import uniandes.unacloud.file.net.task.FileTransferTask;
 
 /**
@@ -34,7 +35,9 @@ public class FileServerSocket extends AbstractTCPServerSocket {
 			return new FileTransferTask(s);
 		} else if (byteOp == UnaCloudConstants.SEND_IMAGE) {//Agent sends an image
 			System.out.println("Start service to request file");
-			return new FileReceiverTask(s);
+			FileEnum type = FileEnum.getFileEnum(ds.readUTF());
+			if(type == FileEnum.IMAGE)
+				return new FileImageReceiverTask(s);			
 		}
 		return null;
 	}

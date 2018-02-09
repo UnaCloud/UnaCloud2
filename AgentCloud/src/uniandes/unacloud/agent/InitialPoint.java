@@ -10,12 +10,12 @@ import java.util.Date;
 
 import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
+import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 

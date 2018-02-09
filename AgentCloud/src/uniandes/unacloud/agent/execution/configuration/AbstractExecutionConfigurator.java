@@ -5,7 +5,7 @@ import java.util.Random;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.execution.domain.Execution;
-import uniandes.unacloud.agent.system.OperatingSystem;
+import uniandes.unacloud.agent.host.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 /**
