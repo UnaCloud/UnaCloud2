@@ -105,7 +105,7 @@ class DeploymentRestController extends RestfulController {
         Cluster cluster = Cluster.get(instance.cluster.id)
         if (cluster) {
             //Have to define if the session arrives as a token or through what sort of media
-            def user = User.get(instance.user.id)
+            def user = User.get(session.user.id)
             //validates if user is owner to deploy cluster
             if (user.userClusters.find { it.id == cluster.id } != null) {
                 if (cluster.state.equals(ClusterEnum.AVAILABLE)) {
@@ -151,8 +151,8 @@ class DeploymentRestController extends RestfulController {
 	 * Deployment list action. Controls view all function 
 	 * @return deployments that must be shown according to view all checkbox
 	 */
-	
 	def list() {
+        //Need to define authenticity of user through token or another sort of media
 		def user = User.get(session.user.id)
 		if (!user.isAdmin())
 			[myDeployments: user.getActiveDeployments()]		
