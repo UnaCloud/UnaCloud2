@@ -147,7 +147,6 @@ class BootStrap {
 		createGraphState()		
 				
 		println "***** Start QueueServices"
-		println ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable
 		QueueRabbitManager queueControl = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,

@@ -1,3 +1,9 @@
+import uniandes.unacloud.web.exceptions.FiveException
+
+import uniandes.unacloud.web.exceptions.NotFoundException
+import uniandes.unacloud.web.exceptions.PreconditionException
+import uniandes.unacloud.web.exceptions.UnauthorizedException
+
 class UrlMappings {
 	
 	//static excludes = ["/Image/update"]
@@ -9,9 +15,13 @@ class UrlMappings {
 		"/user/login"(controller:'user',action:'login')
 		"/logout"(controller:'user',action:"logout")
 		"/error"(controller:'error',action:"error")
+		"401"(controller:'error',action:"fourhundredone")
+        "412"(controller:'error',action:"fourhundredtwelve")
+        "500"(controller:'error',action:"fivehundred")
 		"404"(controller:'error',action:"fourhundred")
-		"500"(controller:'error',action:"fivehundred")
-		
+
+
+
 		/** services - user**/
 		"/user/profile/"(controller:'user',action:'profile')
 		"/user/profile/save"(controller:'user',action:'changeProfile')
@@ -120,5 +130,8 @@ class UrlMappings {
 		"/config/agent"(controller:'configuration',action:"agentConfig")
 		"/config/agent/version"(controller:'configuration',action:"setAgentVersion")
 		"/config/agent/download"(controller:'configuration',action:"downloadAgent")
+
+		/** rest api services**/
+		 "/rest/deployment"(controller:'DeploymentRest', action:[GET:"show", POST:"deploy", PUT:"errorTest", DELETE:"delete"])
 	}
 }

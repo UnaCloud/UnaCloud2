@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.domain
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 
@@ -9,6 +11,9 @@ import uniandes.unacloud.share.enums.ImageEnum;
  * @author CesarF
  *
  */
+//Addition of tags for rest services correct deployment.
+@ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass')
+@EqualsAndHashCode
 class Deployment {
 	//-----------------------------------------------------------------
 	// Properties
