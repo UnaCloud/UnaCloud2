@@ -124,8 +124,11 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.TORRENT_CLIENT_PORTS, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
-		}	
-			
+		}
+
+
+		println "HOLAAAA "+ServerVariable.findByName(UnaCloudConstants.WEB_SERVER_URL).variable;
+
 		println "***** Create Platform"
 		if (Platform.count() == 0) {
 			new Platform(name: "VirtualBox 5", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "5.*", classPlatform:"VBox5").save()
