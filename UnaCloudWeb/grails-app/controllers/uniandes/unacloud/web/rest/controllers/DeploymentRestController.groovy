@@ -25,7 +25,7 @@ import java.lang.reflect.Field
  *
  */
 @Controller
-class DeploymentRestController extends RestfulController {
+class DeploymentRestController extends AbstractRestController {
 
 
 	//-----------------------------------------------------------------
@@ -42,35 +42,6 @@ class DeploymentRestController extends RestfulController {
 	//-----------------------------------------------------------------
 
 
-    /**
-     * Method for showing error testing in REST a way is found to instantiate images in IntelliJIDEA of Sergio´s Mac
-     */
-    def errorTest()
-    {
-        Field[] fs = Deployment.class.getDeclaredFields();
-        for(Field f : fs) {
-            println f.getName()
-        }
-        flash.data=request.JSON
-        Example e =(Example)flash.data.valor
-        println e.nombre+" "+e.valor
-
-        println flash.data.valor
-
-        println "It ought to be deploying"
-        //Testing for e
-        switch (request.getHeader('exception'))
-        {
-            case '500': throw new HttpException(500,"MSJ")
-            case '404': throw new HttpException(404,"MSJ")
-            case '412':throw new HttpException(412,"MSJ")
-            case '401': throw new HttpException(401,"MSJ")
-        }
-        println "Nada"
-        throw new Exception("MSJ")
-    }
-
-
 	/**
 	 * Deploy action. Checks image number and depending on it, forms the parameters in
 	 * order to pass them to the service layer. It also catches exceptions and pass
@@ -78,11 +49,11 @@ class DeploymentRestController extends RestfulController {
 	 */
 
 	def deploy() {
-        /*def data=flash.data
-        Cluster cluster = Cluster.get(data.id)
-        if (cluster) {
+        def data=flash.data
+        Cluster cluster = Cluster.get(data.cluster.id)
+       if (cluster) {
             //Have to define if the session arrives as a token or through what sort of media
-            def user = User.get(data.user.id)
+            def user = User.get(flash.user.id)
             //validates if user is owner to deploy cluster
             if (user.userClusters.find { it.id == cluster.id } != null) {
                 if (cluster.state.equals(ClusterEnum.AVAILABLE)) {
@@ -92,28 +63,32 @@ class DeploymentRestController extends RestfulController {
                     if (availables.size() != cluster.images.size()) {
                         throw new HttpException(404,"Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster.");
                     }
-                    try {
                         //validates if cluster is good configured
                         def requests = new ImageRequestOptions[cluster.images.size()];
-                        cluster.images.eachWithIndex { it, idx ->
 
+                        String host;
+                        cluster.images.eachWithIndex { it, idx ->
                             ImageRequestOptions requested =null;
                             for(node in data.cluster.nodes)
+                            {
                                 if(node.id == it.id){
-                                    HardwareProfile hp = HardwareProfile.findByName(node.hwp);
-                                    requested = new ImageRequestOptions(it, hp, node.quantity, node.gHostName, node.type==="true");
+                                    HardwareProfile hp = HardwareProfile.get(node.hwp);
+                                    host=node.gHostName
+                                    requested = new ImageRequestOptions(it, hp, node.quantity,node.gHostName, node.type=="true");
                                     break;
                                 }
+                            }
                             if (requested == null)
                                 throw new HttpException(412,"The request does not contain all images.");
                             requests[idx] = requested;
                         }
-                        deploymentService.deploy(cluster, user, data.time * 60 * 60 * 1000, requests)
-                        return
-
+                        try
+                        {
+                            deploymentService.deploy(cluster, user, data.time.toLong() * 60 * 60 * 1000, requests)
+                            return
                         } catch (Exception e) {
                             e.printStackTrace()
-                            throw new HttpException (412,"The request does not contain all images ",e.getCause())
+                            throw new Exception("There was an error deploying the cluster")
                         }
                     }
                     else {
@@ -124,7 +99,11 @@ class DeploymentRestController extends RestfulController {
             {
                 throw new HttpException(401,'You don\'t have permissions to deploy this cluster ')
             }
-	    }*/
+	    }
+        else {
+           throw new HttpException(404, "The cluster does not exist")
+       }
+
     }
 	
 	
@@ -133,23 +112,18 @@ class DeploymentRestController extends RestfulController {
 	 * @return deployments that must be shown according to view all checkbox
 	 */
 	def list() {
-
         //Need to define authenticity of user through token or another sort of media
-		/*def user = User.get(flash.data.user.id)
+		def user = User.get(flash.user.id)
+        def list=user.getActiveDeployments()
+        //send exception if there are not active deployments
+        if(list.isEmpty())
+            throw new HttpException(404,"The user does not have any active deployments")
 		if (!user.isAdmin())
-			[myDeployments: user.getActiveDeployments()]		
-		else {	
+			[myDeployments: list]
+		else {
 			def deployments = deploymentService.getActiveDeployments(user)	
-			[myDeployments: user.getActiveDeployments(), deployments: deployments]
-		}*/
+			[myDeployments: list, deployments: deployments]
+		}
+
 	}
-
-
-
-	/** Log exception */
-    private void logException(final Exception exception) {
-        println "ERROE-----"
-        println "Exception occurred. ${exception?.class}"
-    }
-
 }

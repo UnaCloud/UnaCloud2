@@ -6,36 +6,52 @@ import grails.rest.RestfulController
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.exceptions.HttpException
 
-
-abstract class AbstractRestController{
+/**
+ * Abstract class for implementing restful controllers. It extends from RestfulController to allow further use of resources if required.
+ */
+abstract class AbstractRestController extends RestfulController{
 
     static responseFormats = ['json', 'xml']
 
 
     def beforeInterceptor = {
+
         //Validate token
         def key = request.getHeader("authorization")
+        //For now the user works with the first id
         flash.user = User.get(1)
-
         if (!request.get) {
             try {
                 flash.data = request.JSON
             }
             catch(Exception e) {
                 e.printStackTrace();
-                response.sendError(400);
             }
         }
     }
-
+    /**
+     * Method for handling http exception.
+     * @param e HttpException for handling
+     * @return Response in Json with code and error message
+     */
     def handleHttpException(final HttpException e) {
         doResponse(e.getCode(), e.getMessage())
     }
-
+    /**
+     * Method for handling http exception.
+     * @param e Exception for handling
+     * @return Response in Json with code in 500 and error message
+     */
     def handleException(final Exception e) {
+        e.printStackTrace()
         doResponse(500, e.getMessage())
     }
-
+    /**
+     * Generates json for response with the given code and message.
+     * @param code Http code
+     * @param message Message for exception handling
+     * @return Response data in JSON
+     */
     def doResponse(int code, String message) {
         println "Error: " + code + " m: " + message
 

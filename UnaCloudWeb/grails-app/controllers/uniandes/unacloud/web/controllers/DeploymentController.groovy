@@ -72,7 +72,8 @@ class DeploymentController {
 	 * them to error view. If everything works it redirects to list deployment view.
 	 */
 	def deploy(){
-		Cluster cluster = Cluster.get(params.id)
+		println "ENTRA "+"ID "+params.id+" USUARIO "+session.user.id
+        Cluster cluster = Cluster.get(params.id)
 		if (cluster) {
 			def user = User.get(session.user.id)
 			//validates if user is owner to deploy cluster
@@ -88,11 +89,12 @@ class DeploymentController {
 					//validates if cluster is good configured
 					def requests = new ImageRequestOptions[cluster.images.size()];
 					cluster.images.eachWithIndex {it,idx->
-
-								HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
+                        println "IT ID "+it.id+" OPTION_HW "+params.get('option_hw_' + it.id)+" INSTANCES "+params.get('instances_' + it.id)+" HOST "+params.get('host_' + it.id)+" HIGH_AVAILABILITY "+params.get('highAvailability_' + it.id)
+                        HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
 						requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
-					}		
-					deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
+					}
+                    println "TIME "+params.time.toLong()
+                    deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
 					redirect(uri:"/services/deployment/list", absolute:true)
 					return
 					

@@ -11,9 +11,6 @@ import uniandes.unacloud.share.enums.ImageEnum;
  * @author CesarF
  *
  */
-//Addition of tags for rest services correct deployment.
-@ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass')
-@EqualsAndHashCode
 class Deployment {
 	//-----------------------------------------------------------------
 	// Properties
