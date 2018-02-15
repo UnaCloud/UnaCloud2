@@ -16,10 +16,8 @@ abstract class AbstractRestController extends RestfulController{
 
     def beforeInterceptor = {
 
-        //Validate token
-        def key = request.getHeader("authorization")
         //For now the user works with the first id
-        flash.user = User.get(1)
+        flash.userKey = request.getHeader("key")
         if (!request.get) {
             try {
                 flash.data = request.JSON

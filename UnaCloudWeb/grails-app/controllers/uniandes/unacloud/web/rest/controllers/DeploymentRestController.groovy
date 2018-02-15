@@ -3,7 +3,7 @@ package uniandes.unacloud.web.rest.controllers
 import grails.converters.JSON
 import grails.rest.RestfulController
 import org.springframework.stereotype.Controller
-
+import uniandes.unacloud.share.enums.ExecutionStateEnum
 import uniandes.unacloud.share.enums.ImageEnum
 import uniandes.unacloud.web.domain.*
 import uniandes.unacloud.web.domain.enums.ClusterEnum
@@ -126,4 +126,33 @@ class DeploymentRestController extends AbstractRestController {
 		}
 
 	}
+    /**
+     * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
+     * stopped. Redirects to index when the operation is finished.
+     */
+    def stop() {
+        def user= User.get(session.user.id)
+        List<Execution> executions = new ArrayList<>();
+        def data=flash.data
+        for(exec in data.executions)
+        {
+            if(exec.value=="on")
+            {
+                Execution vm = Execution.get((exec.id) as Integer)
+                if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
+                    if (vm.deployImage.deployment.user == user || user.isAdmin())
+                        executions.add(vm)
+                }
+            }
+        }
+        if (executions.size() > 0) {
+            flash.message = 'Your request has been processed'
+            flash.type = 'info'
+            println "Successful"
+            deploymentService.stopExecutions(executions,user)
+        }
+        else {
+            throw new HttpException(412, 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED')
+        }
+    }
 }
