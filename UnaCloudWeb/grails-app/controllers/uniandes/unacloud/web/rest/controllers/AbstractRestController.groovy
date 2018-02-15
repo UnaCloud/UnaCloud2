@@ -57,6 +57,7 @@ abstract class AbstractRestController extends RestfulController{
 
         def responseData = ["status": code, "text": message]
         response.setContentType("application/json")
+        response.status=code
         render responseData as JSON
     }
 
