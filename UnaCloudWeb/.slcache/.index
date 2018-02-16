@@ -13204,3 +13204,14 @@ n:2666:uniandes/unacloud/web/domain/Execution$where$4
 n:2318:uniandes/unacloud/web/domain/Laboratory$getPools$4
 n:2301:uniandes/unacloud/web/domain/PhysicalMachine$this$2$initErrors$5
 n:2679:uniandes/unacloud/web/domain/PhysicalMachine$get$7
+n:2337:uniandes/unacloud/web/domain/Execution$goNextControl$2
+n:2549:uniandes/unacloud/web/domain/Execution$save$3
+n:2289:uniandes/unacloud/web/domain/Execution$this$2$initErrors$4
+n:2459:uniandes/unacloud/web/domain/Execution$showDetails$5
+n:2337:uniandes/unacloud/web/domain/Execution$remainingTime$6
+n:2654:uniandes/unacloud/web/domain/Deployment$get$2
+n:2664:uniandes/unacloud/web/domain/Execution$where
+n:2679:uniandes/unacloud/web/domain/PhysicalMachine$get$5
+n:2630:uniandes/unacloud/web/domain/Execution$findAll$1
+n:2547:uniandes/unacloud/web/domain/Execution$isControlExceeded$2
+n:2339:uniandes/unacloud/web/domain/Laboratory$getAvailableIps$5

@@ -104,10 +104,7 @@ class DeploymentRestController extends AbstractRestController {
         else {
            throw new HttpException(404, "The cluster does not exist")
        }
-
     }
-	
-	
 	/**
 	 * Deployment list action. Controls view all function 
 	 * @return deployments that must be shown according to view all checkbox
@@ -116,13 +113,7 @@ class DeploymentRestController extends AbstractRestController {
         //Need to define authenticity of user through token or another sort of media
         def user = getUserWithKey(flash.userKey)
         def list=user.getActiveDeployments()
-        if (!user.isAdmin())
-			[myDeployments: list]
-		else {
-			def deployments = deploymentService.getActiveDeployments(user)	
-			[myDeployments: list, deployments: deployments]
-		}
-
+        respond list
 	}
     /**
      * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
