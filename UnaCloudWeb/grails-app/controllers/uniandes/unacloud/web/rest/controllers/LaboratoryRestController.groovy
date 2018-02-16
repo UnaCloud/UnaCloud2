@@ -46,6 +46,7 @@ class LaboratoryRestController extends AbstractRestController {
      * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes
      */
     def updateMachines(){
+
         def data=flash.data
         def lab = Laboratory.get(data.id)
         if (lab && TaskEnum.getEnum(data.process) != null) {
@@ -61,9 +62,9 @@ class LaboratoryRestController extends AbstractRestController {
                 }
             }
             if (hostList.size() > 0) {
-                    def user = User.get(session.user.id)
+                    def user = getUserWithKey(flash.userKey)
                     laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), user)
-                    flash.message = "Your request have been sent."
+                    flash.message = "Your request has been sent."
                     flash.type = "info"
                     println "Success"
             } else {

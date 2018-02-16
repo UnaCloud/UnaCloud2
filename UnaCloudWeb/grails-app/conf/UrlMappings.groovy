@@ -124,6 +124,7 @@ class UrlMappings {
 		"/config/agent/download"(controller:'configuration',action:"downloadAgent")
 
 		/** rest api services**/
-		 "/rest/deployment"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"errorTest", DELETE:"delete"])
+		 "/rest/deployment"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
+		"/rest/laboratory"(controller:"LaboratoryRest",action:[PUT:"updateMachines"])
 	}
 }

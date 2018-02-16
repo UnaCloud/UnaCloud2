@@ -15,14 +15,12 @@ abstract class AbstractRestController extends RestfulController{
 
 
     def beforeInterceptor = {
-
         //For now the user works with the first id
         flash.userKey = request.getHeader("key")
         if (!request.get) {
             try {
                 flash.data = request.JSON
-            }
-            catch(Exception e) {
+            }            catch(Exception e) {
                 e.printStackTrace();
             }
         }
@@ -57,6 +55,19 @@ abstract class AbstractRestController extends RestfulController{
         response.setContentType("application/json")
         response.status=code
         render responseData as JSON
+    }
+    /**
+     * Gets the user with the given key-
+     * @param userKey
+     * @return User with the given key
+     */
+    def getUserWithKey(String userKey)
+    {
+        println userKey
+        def id = User.executeQuery(
+                'select f.id from User f where f.apiKey = :userKey',
+                [userKey: userKey])
+        return User.get(id)
     }
 
 }

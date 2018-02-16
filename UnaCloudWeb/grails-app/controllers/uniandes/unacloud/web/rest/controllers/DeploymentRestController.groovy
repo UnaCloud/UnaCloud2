@@ -3,6 +3,7 @@ package uniandes.unacloud.web.rest.controllers
 import grails.converters.JSON
 import grails.rest.RestfulController
 import org.springframework.stereotype.Controller
+import uniandes.unacloud.share.enums.DeploymentStateEnum
 import uniandes.unacloud.share.enums.ExecutionStateEnum
 import uniandes.unacloud.share.enums.ImageEnum
 import uniandes.unacloud.web.domain.*
@@ -53,7 +54,7 @@ class DeploymentRestController extends AbstractRestController {
         Cluster cluster = Cluster.get(data.cluster.id)
        if (cluster) {
             //Have to define if the session arrives as a token or through what sort of media
-            def user = User.get(flash.user.id)
+            def user = getUserWithKey(flash.userKey)
             //validates if user is owner to deploy cluster
             if (user.userClusters.find { it.id == cluster.id } != null) {
                 if (cluster.state.equals(ClusterEnum.AVAILABLE)) {
@@ -113,12 +114,9 @@ class DeploymentRestController extends AbstractRestController {
 	 */
 	def list() {
         //Need to define authenticity of user through token or another sort of media
-		def user = User.get(flash.user.id)
+        def user = getUserWithKey(flash.userKey)
         def list=user.getActiveDeployments()
-        //send exception if there are not active deployments
-        if(list.isEmpty())
-            throw new HttpException(404,"The user does not have any active deployments")
-		if (!user.isAdmin())
+        if (!user.isAdmin())
 			[myDeployments: list]
 		else {
 			def deployments = deploymentService.getActiveDeployments(user)	
@@ -131,7 +129,7 @@ class DeploymentRestController extends AbstractRestController {
      * stopped. Redirects to index when the operation is finished.
      */
     def stop() {
-        def user= User.get(session.user.id)
+        def user = getUserWithKey(flash.userKey)
         List<Execution> executions = new ArrayList<>();
         def data=flash.data
         for(exec in data.executions)

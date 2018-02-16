@@ -145,6 +145,7 @@ class DeploymentController {
 		params.each {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
+					println "VAL"+it.key+" "+it.value
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
 					if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
