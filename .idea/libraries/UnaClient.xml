@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="UnaClient">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/UnaCloudFileManager/web-app/agentSources/UnaClient.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="ClientUpdater">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/UnaCloudWeb/web-app/agentSources/ClientUpdater.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
