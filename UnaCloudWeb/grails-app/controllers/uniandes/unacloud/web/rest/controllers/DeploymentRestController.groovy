@@ -86,10 +86,10 @@ class DeploymentRestController extends AbstractRestController {
                         try
                         {
                             deploymentService.deploy(cluster, user, data.time.toLong() * 60 * 60 * 1000, requests)
-                            return
+                            renderSuccess()
                         } catch (Exception e) {
                             e.printStackTrace()
-                            throw new Exception("There was an error deploying the cluster")
+                            throw e
                         }
                     }
                     else {
@@ -135,10 +135,8 @@ class DeploymentRestController extends AbstractRestController {
             }
         }
         if (executions.size() > 0) {
-            flash.message = 'Your request has been processed'
-            flash.type = 'info'
-            println "Successful"
             deploymentService.stopExecutions(executions,user)
+            renderSuccess()
         }
         else {
             throw new HttpException(412, 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED')

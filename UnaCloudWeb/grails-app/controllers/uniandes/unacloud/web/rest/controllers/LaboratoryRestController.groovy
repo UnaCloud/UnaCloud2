@@ -64,9 +64,8 @@ class LaboratoryRestController extends AbstractRestController {
             if (hostList.size() > 0) {
                     def user = getUserWithKey(flash.userKey)
                     laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), user)
-                    flash.message = "Your request has been sent."
-                    flash.type = "info"
-                    println "Success"
+                    renderSuccess()
+
             } else {
                 throw new HttpException(412, "At least one host machine with state ON must be selected.")
             }

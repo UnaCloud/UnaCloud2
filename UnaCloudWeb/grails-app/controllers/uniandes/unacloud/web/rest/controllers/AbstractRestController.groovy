@@ -57,6 +57,14 @@ abstract class AbstractRestController extends RestfulController{
         render responseData as JSON
     }
     /**
+     * Generates an empty render view for successful operations (mostly 200 responses)
+     */
+    def renderSuccess()
+    {
+        response.status=200
+        render ""
+    }
+    /**
      * Gets the user with the given key-
      * @param userKey
      * @return User with the given key
