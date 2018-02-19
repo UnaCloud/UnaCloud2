@@ -4,6 +4,7 @@ package uniandes.unacloud.web.exceptions
  * @author s.guzmanm
  */
 class HttpException extends RuntimeException {
+	
     //Http code
     private int code;
     //--------
@@ -14,19 +15,19 @@ class HttpException extends RuntimeException {
         this.code=code;
     }
 
-     HttpException(int code,String message, Throwable cause) {
+     HttpException(int code, String message, Throwable cause) {
         super(message, cause);
         this.code=code;
 
     }
 
-     HttpException(int code,String message) {
+     HttpException(int code, String message) {
         super(message);
         this.code=code;
 
     }
 
-     HttpException(int code,Throwable cause) {
+     HttpException(int code, Throwable cause) {
         super(cause);
         this.code=code;
 

@@ -53,12 +53,12 @@ class LaboratoryRestController extends AbstractRestController {
             def hostList = []
             for(machine in data.machines)
             {
+				//Todo Remove
                 if(machine.value=="on")
                 {
                     PhysicalMachine pm = PhysicalMachine.get(machine.id)
-                    if (pm.state == PhysicalMachineStateEnum.ON) {
+                    if (pm.state == PhysicalMachineStateEnum.ON) 
                         hostList.add(pm)
-                    }
                 }
             }
             if (hostList.size() > 0) {
@@ -66,11 +66,12 @@ class LaboratoryRestController extends AbstractRestController {
                     laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), user)
                     renderSuccess()
 
-            } else {
-                throw new HttpException(412, "At least one host machine with state ON must be selected.")
-            }
+            } 
+			else 
+                throw new HttpException(412, "At least one host machine with state ON must be selected.")            
             return
-        } else
-            throw new HttpException(412,"There are no physical machines selected to be updated")
+        } 
+		else
+            throw new HttpException(412, "There are no physical machines selected to be updated")
     }
 }

@@ -9,14 +9,14 @@ import uniandes.unacloud.web.exceptions.HttpException
 /**
  * Abstract class for implementing restful controllers. It extends from RestfulController to allow further use of resources if required.
  */
-abstract class AbstractRestController extends RestfulController{
+abstract class AbstractRestController extends RestfulController {
 
     static responseFormats = ['json', 'xml']
-
 
     def beforeInterceptor = {
         //For now the user works with the first id
         flash.userKey = request.getHeader("key")
+		//TODO agregar 401
         if (!request.get) {
             try {
                 flash.data = request.JSON
@@ -25,6 +25,7 @@ abstract class AbstractRestController extends RestfulController{
             }
         }
     }
+	
     /**
      * Method for handling http exception.
      * @param e HttpException for handling
@@ -33,6 +34,7 @@ abstract class AbstractRestController extends RestfulController{
     def handleHttpException(final HttpException e) {
         doResponse(e.getCode(), e.getMessage())
     }
+	
     /**
      * Method for handling http exception.
      * @param e Exception for handling
@@ -42,6 +44,7 @@ abstract class AbstractRestController extends RestfulController{
         e.printStackTrace()
         doResponse(500, e.getMessage())
     }
+	
     /**
      * Generates json for response with the given code and message.
      * @param code Http code
@@ -53,17 +56,19 @@ abstract class AbstractRestController extends RestfulController{
 
         def responseData = ["status": code, "text": message]
         response.setContentType("application/json")
-        response.status=code
+        response.status = code
         render responseData as JSON
     }
+	
     /**
      * Generates an empty render view for successful operations (mostly 200 responses)
      */
     def renderSuccess()
     {
-        response.status=200
+        response.status = 200
         render ""
     }
+	
     /**
      * Gets the user with the given key-
      * @param userKey
@@ -71,11 +76,8 @@ abstract class AbstractRestController extends RestfulController{
      */
     def getUserWithKey(String userKey)
     {
-        println userKey
-        def id = User.executeQuery(
-                'select f.id from User f where f.apiKey = :userKey',
-                [userKey: userKey])
-        return User.get(id)
+        println ' User access ' + userKey
+        return User.findByApiKey(userKey)
     }
 
 }

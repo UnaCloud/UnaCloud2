@@ -47,12 +47,17 @@ class DeploymentRestController extends AbstractRestController {
 	 * Deploy action. Checks image number and depending on it, forms the parameters in
 	 * order to pass them to the service layer. It also catches exceptions and pass
 	 * them to error view. If everything works it redirects to list deployment view.
+	 * 
+	 * Body Example
+	 * 
+	 * 
+	 * 
 	 */
 
 	def deploy() {
-        def data=flash.data
+        def data = flash.data
         Cluster cluster = Cluster.get(data.cluster.id)
-       if (cluster) {
+        if (cluster) {
             //Have to define if the session arrives as a token or through what sort of media
             def user = getUserWithKey(flash.userKey)
             //validates if user is owner to deploy cluster
@@ -61,9 +66,9 @@ class DeploymentRestController extends AbstractRestController {
 
                     //Validates if images are available in the platform
                     def availables = cluster.images.findAll { it.state == ImageEnum.AVAILABLE }
-                    if (availables.size() != cluster.images.size()) {
-                        throw new HttpException(404,"Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster.");
-                    }
+                    if (availables.size() != cluster.images.size())
+                        throw new HttpException(404, "Some images of this cluster are not available at this moment. Please, change cluster to deploy or images in cluster.");
+                   
                         //validates if cluster is good configured
                         def requests = new ImageRequestOptions[cluster.images.size()];
 
@@ -74,8 +79,8 @@ class DeploymentRestController extends AbstractRestController {
                             {
                                 if(node.id == it.id){
                                     HardwareProfile hp = HardwareProfile.get(node.hwp);
-                                    host=node.gHostName
-                                    requested = new ImageRequestOptions(it, hp, node.quantity,node.gHostName, node.type=="true");
+                                    host = node.gHostName
+                                    requested = new ImageRequestOptions(it, hp, node.quantity, node.gHostName, node.type == "true");
                                     break;
                                 }
                             }
@@ -92,19 +97,16 @@ class DeploymentRestController extends AbstractRestController {
                             throw e
                         }
                     }
-                    else {
+                    else 
                         throw new HttpException(404,'The cluster is not available')
-                    }
             }
             else
-            {
                 throw new HttpException(401,'You don\'t have permissions to deploy this cluster ')
-            }
 	    }
-        else {
+        else 
            throw new HttpException(404, "The cluster does not exist")
-       }
     }
+	
 	/**
 	 * Deployment list action. Controls view all function 
 	 * @return deployments that must be shown according to view all checkbox
@@ -112,9 +114,10 @@ class DeploymentRestController extends AbstractRestController {
 	def list() {
         //Need to define authenticity of user through token or another sort of media
         def user = getUserWithKey(flash.userKey)
-        def list=user.getActiveDeployments()
+        def list = user.getActiveDeployments()
         respond list
 	}
+	
     /**
      * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
      * stopped. Redirects to index when the operation is finished.
@@ -122,10 +125,10 @@ class DeploymentRestController extends AbstractRestController {
     def stop() {
         def user = getUserWithKey(flash.userKey)
         List<Execution> executions = new ArrayList<>();
-        def data=flash.data
+        def data = flash.data
         for(exec in data.executions)
         {
-            if(exec.value=="on")
+            if(exec.value == "on")
             {
                 Execution vm = Execution.get((exec.id) as Integer)
                 if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
