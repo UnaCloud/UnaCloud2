@@ -13314,3 +13314,12 @@ n:2383:uniandes/unacloud/web/rest/controllers/AbstractRestController$renderSucce
 n:2337:uniandes/unacloud/web/domain/Execution$remainingTime$8
 n:2902:uniandes/unacloud/web/rest/controllers/AbstractRestController$doResponse$1
 n:2663:uniandes/unacloud/web/domain/User$getGroupsWithRestriction$7
+n:2279:uniandes/unacloud/web/domain/User$this$2$initErrors$0
+n:2621:uniandes/unacloud/web/domain/User$findWhere$1
+n:2624:uniandes/unacloud/web/domain/User$get$3
+n:2367:uniandes/unacloud/web/domain/User$list$4
+n:2336:uniandes/unacloud/web/domain/User$getOrderedImages$5
+n:2348:uniandes/unacloud/web/domain/User$getActiveDeployments$1
+n:2322:uniandes/unacloud/web/domain/Deployment$isActive
+n:2654:uniandes/unacloud/web/domain/Deployment$get$0
+n:2649:uniandes/unacloud/web/domain/Execution$get$2

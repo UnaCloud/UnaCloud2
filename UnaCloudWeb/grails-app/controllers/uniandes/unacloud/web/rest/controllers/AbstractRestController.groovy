@@ -3,6 +3,7 @@ package uniandes.unacloud.web.rest.controllers
 
 import grails.converters.JSON
 import grails.rest.RestfulController
+import uniandes.unacloud.share.enums.UserStateEnum
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.exceptions.HttpException
 
