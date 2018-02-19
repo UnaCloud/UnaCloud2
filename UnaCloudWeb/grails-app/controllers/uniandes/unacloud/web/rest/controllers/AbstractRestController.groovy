@@ -15,12 +15,16 @@ abstract class AbstractRestController extends RestfulController {
 
     def beforeInterceptor = {
         //For now the user works with the first id
-        flash.userKey = request.getHeader("key")
-		//TODO agregar 401
+        flash.user = getUserWithKey(request.getHeader("key"))
+        if(!flash.user)
+            throw new HttpException(401,"The given key is not registered in the system")
+        if(flash.user.status != UserStateEnum.AVAILABLE)
+            throw new HttpException(401,"The given user is not available in the sistem")
         if (!request.get) {
             try {
                 flash.data = request.JSON
-            }            catch(Exception e) {
+            }
+            catch(Exception e) {
                 e.printStackTrace();
             }
         }

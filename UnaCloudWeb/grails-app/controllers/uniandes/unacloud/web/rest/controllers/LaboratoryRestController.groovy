@@ -44,34 +44,52 @@ class LaboratoryRestController extends AbstractRestController {
 
     /**
      * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes
+     *
+     *
+     *
+     * Body example
+     *
+     * {
+     * "id":1,
+     *  "process":"cache",
+     *  "machines":[
+     *   {
+     *   "id":3,
+     *   "value":"on"
+     *   }
+     *   ]
+     * }
      */
     def updateMachines(){
 
         def data=flash.data
         def lab = Laboratory.get(data.id)
-        if (lab && TaskEnum.getEnum(data.process) != null) {
-            def hostList = []
-            for(machine in data.machines)
+        if (lab)
+        {
+            if(TaskEnum.getEnum(data.process) != null)
             {
-				//Todo Remove
-                if(machine.value=="on")
+                def hostList = []
+                for(machine in data.machines)
                 {
                     PhysicalMachine pm = PhysicalMachine.get(machine.id)
-                    if (pm.state == PhysicalMachineStateEnum.ON) 
+                    if (pm.state == PhysicalMachineStateEnum.ON)
                         hostList.add(pm)
                 }
-            }
-            if (hostList.size() > 0) {
+                if (hostList.size() > 0) {
                     def user = getUserWithKey(flash.userKey)
                     laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), user)
                     renderSuccess()
 
-            } 
-			else 
-                throw new HttpException(412, "At least one host machine with state ON must be selected.")            
-            return
-        } 
+                }
+                else
+                    throw new HttpException(412, "At least one host machine with state ON must be selected.")
+                return
+            }
+            else
+                throw new HttpException(412,"The requested process does not exist")
+
+        }
 		else
-            throw new HttpException(412, "There are no physical machines selected to be updated")
+            throw new HttpException(404, "The selected lab does not exist in the system")
     }
 }

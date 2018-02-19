@@ -237,6 +237,15 @@ class DeploymentService {
 	def getActiveExecutions() {
 		return Execution.findAll{ state.state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
+
+	/**
+	 * Returns the execution given by id
+	 * @param id of execution
+	 * @return executions with the given id
+	 */
+	def getActiveExecutions(int id) {
+		return Execution.findById(id)
+	}
 	
 	/**
 	 * Creates a task to stop executions in list

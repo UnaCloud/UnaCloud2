@@ -49,7 +49,22 @@ class DeploymentRestController extends AbstractRestController {
 	 * them to error view. If everything works it redirects to list deployment view.
 	 * 
 	 * Body Example
-	 * 
+	 * {
+     *   "cluster":
+     *    {
+     *      "id":2,
+     *      "nodes":[{
+     *      "id":13,
+     *       "hwp":1,
+     *      "quantity":1,
+     *      "gHostName":"1",
+     *      "type":"false"
+     *    }
+     *    ]
+     *    },
+     *    "time":1
+     *
+     * }
 	 * 
 	 * 
 	 */
@@ -59,7 +74,7 @@ class DeploymentRestController extends AbstractRestController {
         Cluster cluster = Cluster.get(data.cluster.id)
         if (cluster) {
             //Have to define if the session arrives as a token or through what sort of media
-            def user = getUserWithKey(flash.userKey)
+            def user = flash.user
             //validates if user is owner to deploy cluster
             if (user.userClusters.find { it.id == cluster.id } != null) {
                 if (cluster.state.equals(ClusterEnum.AVAILABLE)) {
@@ -113,29 +128,37 @@ class DeploymentRestController extends AbstractRestController {
 	 */
 	def list() {
         //Need to define authenticity of user through token or another sort of media
-        def user = getUserWithKey(flash.userKey)
-        def list = user.getActiveDeployments()
+        def list = flash.user.getActiveDeployments()
         respond list
 	}
 	
     /**
      * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
      * stopped. Redirects to index when the operation is finished.
+     *
+     *
+     * Body example
+     *
+     *   "executions":[
+     *  {
+     *      "id":4
+     *  },
+     *  {
+     *      "id":5
+     *  }
+     *  ]
      */
     def stop() {
-        def user = getUserWithKey(flash.userKey)
+        def user = flash.user
         List<Execution> executions = new ArrayList<>();
         def data = flash.data
         for(exec in data.executions)
         {
-            if(exec.value == "on")
-            {
                 Execution vm = Execution.get((exec.id) as Integer)
                 if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
                     if (vm.deployImage.deployment.user == user || user.isAdmin())
                         executions.add(vm)
                 }
-            }
         }
         if (executions.size() > 0) {
             deploymentService.stopExecutions(executions,user)
