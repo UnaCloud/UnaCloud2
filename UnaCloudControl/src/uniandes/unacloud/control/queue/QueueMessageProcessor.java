@@ -195,6 +195,7 @@ public class QueueMessageProcessor implements QueueReader {
 					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
 					
 					if (j >= messagesByThread || i == machines.size()-1) {
+						System.out.println("\tReady for " + messageList.size());
 						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
