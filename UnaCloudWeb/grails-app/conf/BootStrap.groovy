@@ -1,5 +1,7 @@
 
 import groovy.sql.Sql
+import uniandes.unacloud.web.marshaller.NoClassEnumMarshaller
+
 import java.io.FileInputStream;
 
 import sun.security.ssl.HandshakeMessage.Finished;
@@ -46,6 +48,8 @@ import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
  * @author CesarF
  */
 class BootStrap {
+
+
 	
 	/**
 	 * Representation of user service
@@ -160,7 +164,6 @@ class BootStrap {
 			Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),
 			UnaCloudConstants.QUEUE_FILE);		
 		QueueTaskerFile.setQueueConnection(queueFile)
-		
 	}
 	
 	def sqlProcesses() {

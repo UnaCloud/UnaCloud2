@@ -6,6 +6,7 @@ import grails.rest.RestfulController
 import uniandes.unacloud.share.enums.UserStateEnum
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.exceptions.HttpException
+import uniandes.unacloud.web.marshaller.NoClassEnumMarshaller
 
 /**
  * Abstract class for implementing restful controllers. It extends from RestfulController to allow further use of resources if required.
@@ -20,7 +21,7 @@ abstract class AbstractRestController extends RestfulController {
         if(!flash.user)
             throw new HttpException(401,"The given key is not registered in the system")
         if(flash.user.status != UserStateEnum.AVAILABLE)
-            throw new HttpException(401,"The given user is not available in the sistem")
+            throw new HttpException(401,"The given user is not available in the system")
         if (!request.get) {
             try {
                 flash.data = request.JSON

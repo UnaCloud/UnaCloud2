@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import uniandes.unacloud.share.enums.DeploymentStateEnum
 import uniandes.unacloud.share.enums.ExecutionStateEnum
 import uniandes.unacloud.share.enums.ImageEnum
+import uniandes.unacloud.share.enums.UserStateEnum
 import uniandes.unacloud.web.domain.*
 import uniandes.unacloud.web.domain.enums.ClusterEnum
 
@@ -127,6 +128,10 @@ class DeploymentRestController extends AbstractRestController {
 	 * @return deployments that must be shown according to view all checkbox
 	 */
 	def list() {
+        if(!flash.user)
+            throw new HttpException(401,"The given key is not registered in the system")
+        if(flash.user.status != UserStateEnum.AVAILABLE)
+            throw new HttpException(401,"The given user is not available in the system")
         //Need to define authenticity of user through token or another sort of media
         def list = flash.user.getActiveDeployments()
         respond list
@@ -180,13 +185,12 @@ class DeploymentRestController extends AbstractRestController {
         Deployment deployment=Deployment.get(id)
         if(deployment)
         {
+
             if(deployment.user==flash.user)
             {
-                Execution execution=Execution.get(idExec)
+                Execution execution=deploymentService.getActiveExecution(deployment,idExec)
                 if(execution)
-                {
                     respond execution
-                }
                 else
                     throw new HttpException(404,"The execution does not exist in the system")
             }
