@@ -18,11 +18,14 @@ UnaCloudFileManager/target/assets/manifest.properties
 
 UnaCloudWeb/UnaCloudWeb.iml
 UnaCloudWeb/UnaCloudWeb-grailsPlugins.iml
+UnaCloudFileManager/UnaCloudFileManager.iml
+UnaCloudFileManager/UnaCloudFileManager-grailsPlugins.iml
 AgentCloud/.idea/*
 AgentCloud/AgentCloud.iml
 AgentUpdater/AgentUpdater.iml
 CommonShares/CommonShares.iml
 ServerShares/ServerShares.iml
-UnaCloudClientAPI/UnaCloudClientAPI.iml
 UnaCloudClientRestAPI/UnaCloudClientRestAPI.iml
+UnaCloudClientRestAPI/.idea/*
 UnaCloudControl/UnaCloudControl.iml
+.idea/*
