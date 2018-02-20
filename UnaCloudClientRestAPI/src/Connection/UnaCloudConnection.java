@@ -1,20 +1,6 @@
 package Connection;
 
 import VO.Deployment;
-import VO.ObjectId;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +11,6 @@ public class UnaCloudConnection {
     private String userKey;
     //Base url
     private String baseUrl;
-
     /**
      * UnaCloudConnection constructor
      * @param userKey The user key
