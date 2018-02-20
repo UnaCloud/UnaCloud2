@@ -1,5 +1,7 @@
 
 import groovy.sql.Sql
+import uniandes.unacloud.web.marshaller.NoClassEnumMarshaller
+
 import java.io.FileInputStream;
 
 import sun.security.ssl.HandshakeMessage.Finished;
@@ -46,6 +48,8 @@ import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
  * @author CesarF
  */
 class BootStrap {
+
+
 	
 	/**
 	 * Representation of user service
@@ -66,6 +70,7 @@ class BootStrap {
 	 * Initialize
 	 */
 	def init = { servletContext ->
+		println EnvironmentManager.getConfigPath()
 		ConfigurationReader reader = new ConfigurationReader(EnvironmentManager.getConfigPath() + UnaCloudConstants.FILE_CONFIG)
 		println "***** Create HardwareProfile"
 		if (HardwareProfile.count() == 0) {
@@ -123,8 +128,7 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.TORRENT_CLIENT_PORTS, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
-		}	
-			
+		}
 		println "***** Create Platform"
 		if (Platform.count() == 0) {
 			new Platform(name: "VirtualBox 5", mainExtension:".vbox", filesExtensions:'.vdi,.vmdk', platformVersion: "5.*", classPlatform:"VBox5").save()
@@ -152,7 +156,7 @@ class BootStrap {
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_IP).variable, 
 			Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable), 
 			UnaCloudConstants.QUEUE_CONTROL);		
-		QueueTaskerControl.setQueueConnection(queueControl)		
+		QueueTaskerControl.setQueueConnection(queueControl)
 		QueueRabbitManager queueFile = new QueueRabbitManager(
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_USER).variable, 
 			ServerVariable.findByName(UnaCloudConstants.QUEUE_PASS).variable,
@@ -160,7 +164,6 @@ class BootStrap {
 			Integer.parseInt(ServerVariable.findByName(UnaCloudConstants.QUEUE_PORT).variable),
 			UnaCloudConstants.QUEUE_FILE);		
 		QueueTaskerFile.setQueueConnection(queueFile)
-		
 	}
 	
 	def sqlProcesses() {

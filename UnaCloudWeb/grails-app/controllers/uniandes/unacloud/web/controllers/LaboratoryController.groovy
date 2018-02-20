@@ -104,9 +104,10 @@ class LaboratoryController {
 		if (lab) {			
 			def machineSet = lab.getOrderedMachines()
 			[lab: lab, machineSet:machineSet]
-		} else {
+		} 
+		else 
 			redirect(uri:"/admin/lab/list", absolute:true)
-		}
+		
 	}	
 	
 	/**
@@ -417,12 +418,14 @@ class LaboratoryController {
 	 * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes
 	 */	
 	def updateMachines(){
+		println(params.id+" "+params.process)
 		def lab = Laboratory.get(params.id)
 		if (lab && TaskEnum.getEnum(params.process) != null) {
 			def hostList = []
 			params.each {
 				if (it.key.contains("machine")) {
 					if (it.value.contains("on")) {
+						println it.key+" "+it.value
 						PhysicalMachine pm = PhysicalMachine.get((it.key - "machine_") as Integer)
 						if (pm.state == PhysicalMachineStateEnum.ON) {
 							hostList.add(pm)

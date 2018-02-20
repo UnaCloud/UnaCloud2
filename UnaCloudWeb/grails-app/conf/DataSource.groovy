@@ -35,11 +35,11 @@ environments {
 	    development {
 	        dataSource {
 				//using properties file
-				username = reader.getStringVariable("dev_username");
-				password = reader.getStringVariable("dev_password");
+				username = reader.getStringVariable("dev_username")
+				password = reader.getStringVariable("dev_password")
 				dbCreate = 'update'// one of 'create', 'create-drop', 'update', 'validate', ''
 				url = reader.getStringVariable("dev_url") != null ? reader.getStringVariable("dev_url").replace('\\', ''):'';
-	        }
+			}
 	    }
 	}
 	    test {
