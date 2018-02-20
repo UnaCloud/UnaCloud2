@@ -61,7 +61,7 @@ class LaboratoryRestController extends AbstractRestController {
      * }
      */
     def updateMachines(){
-
+        verifyCurrentUser()
         def data=flash.data
         def lab = Laboratory.get(data.id)
         if (lab)

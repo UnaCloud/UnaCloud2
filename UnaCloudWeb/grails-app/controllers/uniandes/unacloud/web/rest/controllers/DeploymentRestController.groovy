@@ -71,6 +71,7 @@ class DeploymentRestController extends AbstractRestController {
 	 */
 
 	def deploy() {
+        verifyCurrentUser()
         def data = flash.data
         Cluster cluster = Cluster.get(data.cluster.id)
         if (cluster) {
@@ -128,10 +129,8 @@ class DeploymentRestController extends AbstractRestController {
 	 * @return deployments that must be shown according to view all checkbox
 	 */
 	def list() {
-        if(!flash.user)
-            throw new HttpException(401,"The given key is not registered in the system")
-        if(flash.user.status != UserStateEnum.AVAILABLE)
-            throw new HttpException(401,"The given user is not available in the system")
+
+        verifyCurrentUser()
         //Need to define authenticity of user through token or another sort of media
         def list = flash.user.getActiveDeployments()
         respond list
@@ -154,6 +153,7 @@ class DeploymentRestController extends AbstractRestController {
      *  ]
      */
     def stop() {
+        verifyCurrentUser()
         def user = flash.user
         List<Execution> executions = new ArrayList<>();
         def data = flash.data
