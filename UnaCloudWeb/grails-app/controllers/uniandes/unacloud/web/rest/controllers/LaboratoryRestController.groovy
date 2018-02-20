@@ -76,8 +76,7 @@ class LaboratoryRestController extends AbstractRestController {
                         hostList.add(pm)
                 }
                 if (hostList.size() > 0) {
-                    def user = getUserWithKey(flash.userKey)
-                    laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), user)
+                    laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), flash.user)
                     renderSuccess()
 
                 }

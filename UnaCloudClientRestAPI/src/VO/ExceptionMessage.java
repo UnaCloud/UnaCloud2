@@ -3,11 +3,11 @@ package VO;
 public class ExceptionMessage {
     int status;
 
-    String message;
+    String text;
 
-    public ExceptionMessage(int status, String message) {
+    public ExceptionMessage(int status, String text) {
         this.status = status;
-        this.message = message;
+        this.text = text;
     }
 
     public int getStatus() {
@@ -18,11 +18,16 @@ public class ExceptionMessage {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setText(String message) {
+        this.text = message;
+    }
+
+    public String toString()
+    {
+        return status+":"+text;
     }
 }

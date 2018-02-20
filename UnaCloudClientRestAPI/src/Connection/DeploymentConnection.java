@@ -1,15 +1,14 @@
 package Connection;
 
-import VO.Deployment;
+import VO.DeploymentRequest;
+import VO.DeploymentResponse;
+import VO.ExceptionMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,45 +37,39 @@ public class DeploymentConnection {
      * @return list of active user deployments
      * @throws Exception If there is any issue during the http request
      */
-    public List<Deployment> getDeployments() throws Exception
+    public List<DeploymentResponse> getDeployments() throws Exception
     {
-
-            //Base connection with RestAPI
-            String url = uc.getBaseUrl()+"/UnaCloudWeb/rest/deployment";
-
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-            // GET
-            con.setRequestMethod("GET");
-
-            //add request header
-            con.setRequestProperty("key", uc.getUserKey());
-
-            int responseCode = con.getResponseCode();
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
+        String jsonResponse=uc.getInfoFromUrl(RestVerb.GET,"/UnaCloudWeb/rest/deployment",null);
+        //Do mapping to json with gson library
+        try
+        {
+            Type collectionType = new TypeToken<Collection<DeploymentResponse>>(){}.getType();
+            return gson.fromJson(jsonResponse, collectionType);
+        }
+        catch(Exception e)
+        {
+            ExceptionMessage exceptionMessage=gson.fromJson(jsonResponse,ExceptionMessage.class);
+            System.out.println(exceptionMessage.toString());
+            return null;
+        }
 
 
-            //Get response content
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+    }
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            //print result
-            System.out.println(response.toString());
-
-
-
-            //Do mapping to json with gson library
-            Type collectionType = new TypeToken<Collection<Deployment>>(){}.getType();
-            return gson.fromJson(response.toString(), collectionType);
+    public void deployWithParams(DeploymentRequest deploymentRequest) throws Exception
+    {
+        System.out.println(gson.toJson(deploymentRequest));
+        String jsonResponse=uc.getInfoFromUrl(RestVerb.POST,"/UnaCloudWeb/rest/deployment",new JSONObject(gson.toJson(deploymentRequest)));
+        System.out.println(jsonResponse);
+        try
+        {
+            ExceptionMessage exceptionMessage=gson.fromJson(jsonResponse,ExceptionMessage.class);
+            System.out.println(exceptionMessage.toString());
+        }
+        catch(Exception e)
+        {
+            //The message was not an exception
+        }
 
 
     }
