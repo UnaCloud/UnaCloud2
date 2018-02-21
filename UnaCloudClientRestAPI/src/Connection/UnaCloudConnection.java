@@ -132,9 +132,9 @@ public class UnaCloudConnection {
         for(DeploymentResponse d:list)
             System.out.println(d.getId()+" "+d.getDuration()+" "+d.getStatus());
         //Post deployment with params
-       /* DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
+       DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
         deploymentRequest.addNode(13,1,1,"MyHost2",false);
-        dep.deployWithParams(deploymentRequest);*/
+        dep.deployWithParams(deploymentRequest);
     }
 
 }
