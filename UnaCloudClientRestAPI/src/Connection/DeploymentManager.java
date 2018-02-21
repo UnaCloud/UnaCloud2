@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Class used to manipulate deployment connections
  */
-public class DeploymentConnection {
+public class DeploymentManager {
     //Attribute for UnaCloudConnection
     private UnaCloudConnection uc;
     //Attribute for gson connection for parsing
@@ -25,7 +25,7 @@ public class DeploymentConnection {
      * Creates new deployment connection with the given UnaCloudConnection and a gson with desired json mapping criteria
      * @param uc
      */
-    public DeploymentConnection(UnaCloudConnection uc)
+    public DeploymentManager(UnaCloudConnection uc)
     {
         this.uc=uc;
         gson = new GsonBuilder().setExclusionStrategies(new CustomExclusionStrategy()).create();
@@ -41,17 +41,8 @@ public class DeploymentConnection {
     {
         String jsonResponse=uc.getInfoFromUrl(RestVerb.GET,"/UnaCloudWeb/rest/deployment",null);
         //Do mapping to json with gson library
-        try
-        {
-            Type collectionType = new TypeToken<Collection<DeploymentResponse>>(){}.getType();
-            return gson.fromJson(jsonResponse, collectionType);
-        }
-        catch(Exception e)
-        {
-            ExceptionMessage exceptionMessage=gson.fromJson(jsonResponse,ExceptionMessage.class);
-            System.out.println(exceptionMessage.toString());
-            return null;
-        }
+        Type collectionType = new TypeToken<Collection<DeploymentResponse>>(){}.getType();
+        return gson.fromJson(jsonResponse, collectionType);
 
 
     }
@@ -61,16 +52,5 @@ public class DeploymentConnection {
         System.out.println(gson.toJson(deploymentRequest));
         String jsonResponse=uc.getInfoFromUrl(RestVerb.POST,"/UnaCloudWeb/rest/deployment",new JSONObject(gson.toJson(deploymentRequest)));
         System.out.println(jsonResponse);
-        try
-        {
-            ExceptionMessage exceptionMessage=gson.fromJson(jsonResponse,ExceptionMessage.class);
-            System.out.println(exceptionMessage.toString());
-        }
-        catch(Exception e)
-        {
-            //The message was not an exception
-        }
-
-
     }
 }

@@ -2,7 +2,6 @@ package Connection;
 
 import VO.DeploymentRequest;
 import VO.DeploymentResponse;
-import VO.ExceptionMessage;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -56,7 +55,7 @@ public class UnaCloudConnection {
      * @param givenUrl Url of the resource that is going to be accesed.
      * @param jsonBody Body in json format. Null in case it is not necessary.
      * @return Response as a string.
-     * @throws Exception If any IOException is generated during the information retrieval.
+     * @throws Exception If any IOException is generated during the information retrieval or any HttpException happens.
      */
     public String getInfoFromUrl(RestVerb verb, String givenUrl, JSONObject jsonBody) throws Exception
     {
@@ -89,12 +88,18 @@ public class UnaCloudConnection {
         System.out.println("Response Code : " + responseCode);
 
         BufferedReader in=null;
+
+        boolean isError=false;
         if(responseCode==200)
             //Get response content
              in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         else
+        {
             //Get error content
             in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            isError=true;
+        }
+
         String inputLine;
         StringBuffer response = new StringBuffer();
 
@@ -103,8 +108,12 @@ public class UnaCloudConnection {
         }
         in.close();
 
-        //print result
-        System.out.println(response.toString());
+        //Throw exception if there is an error
+        if(isError)
+        {
+            throw new Exception(response.toString());
+        }
+
         return response.toString();
     }
 
@@ -116,16 +125,16 @@ public class UnaCloudConnection {
     public static void main(String[] args) throws Exception {
 
 
-        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
-        DeploymentConnection dep= new DeploymentConnection(uc);
+        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MX","http://localhost:8080");
+        DeploymentManager dep= new DeploymentManager(uc);
         //Get deployments
         List<DeploymentResponse> list=dep.getDeployments();
         for(DeploymentResponse d:list)
             System.out.println(d.getId()+" "+d.getDuration()+" "+d.getStatus());
         //Post deployment with params
-        DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
+       /* DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
         deploymentRequest.addNode(13,1,1,"MyHost2",false);
-        dep.deployWithParams(deploymentRequest);
+        dep.deployWithParams(deploymentRequest);*/
     }
 
 }
