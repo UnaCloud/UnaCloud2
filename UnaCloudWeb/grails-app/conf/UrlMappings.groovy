@@ -125,6 +125,7 @@ class UrlMappings {
 
 		/** rest api services**/
 		 "/rest/deployment"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
+		"/rest/deployment/$id"(controller:'DeploymentRest', action:[GET:"show"])
 		"/rest/deployment/$id/execution/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
 		"/rest/laboratory"(controller:"LaboratoryRest",action:[PUT:"updateMachines"])
 	}

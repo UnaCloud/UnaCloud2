@@ -229,6 +229,15 @@ class DeploymentService {
 		}
 		return deployments
 	}
+
+	/**
+	 * Returns given deployment by id
+	 * @param id Id of the deployment
+	 * @return given deployment
+	 */
+	def getActiveDeployment(long id) {
+		return Deployment.get(id)
+	}
 	
 	/**
 	 * Returns the list of active executions in all users

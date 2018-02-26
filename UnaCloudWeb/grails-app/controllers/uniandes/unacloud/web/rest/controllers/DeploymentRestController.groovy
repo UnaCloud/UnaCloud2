@@ -136,9 +136,24 @@ class DeploymentRestController extends AbstractRestController {
 
         verifyCurrentUser()
         //Need to define authenticity of user through token or another sort of media
-        def list = flash.user.getActiveDeployments()
+        def list = deploymentService.getActiveDeployments(flash.user)
         respond list
 	}
+
+    /**
+     * Get specific deployment action in REST
+     * @params id Id of the deployment
+     * @return deployments that must be shown according to view all checkbox
+     */
+    def show(int id) {
+
+        verifyCurrentUser()
+        //Need to define authenticity of user through token or another sort of media
+        def deployment = deploymentService.getActiveDeployment(id)
+        if(deployment.userId!=flash.user.id)
+            throw new HttpException(401,"The user does not possess this deployment")
+        respond deployment
+    }
 	
     /**
      * Stops execution action. All nodes selected on the deployment interface with status FAILED or DEPLOYED will be
