@@ -1,6 +1,5 @@
 
 import groovy.sql.Sql
-import uniandes.unacloud.web.marshaller.NoClassEnumMarshaller
 
 import java.io.FileInputStream;
 
@@ -42,7 +41,6 @@ import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
-
 /**
  * Start APP
  * @author CesarF

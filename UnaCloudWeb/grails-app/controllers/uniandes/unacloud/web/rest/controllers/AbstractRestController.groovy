@@ -6,7 +6,6 @@ import grails.rest.RestfulController
 import uniandes.unacloud.share.enums.UserStateEnum
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.exceptions.HttpException
-import uniandes.unacloud.web.marshaller.NoClassEnumMarshaller
 
 /**
  * Abstract class for implementing restful controllers. It extends from RestfulController to allow further use of resources if required.

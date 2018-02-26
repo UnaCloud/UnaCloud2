@@ -107,8 +107,12 @@ class DeploymentRestController extends AbstractRestController {
                         }
                         try
                         {
-                            deploymentService.deploy(cluster, user, data.time.toLong() * 60 * 60 * 1000, requests)
-                            renderSuccess()
+
+                            def responseData = [
+                                    'id': deploymentService.deploy(cluster, user, data.time.toLong() * 60 * 60 * 1000, requests).id,
+                            ]
+                            render responseData as JSON
+
                         } catch (Exception e) {
                             e.printStackTrace()
                             throw e
