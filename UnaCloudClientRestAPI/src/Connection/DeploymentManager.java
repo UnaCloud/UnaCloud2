@@ -20,6 +20,10 @@ public class DeploymentManager {
     //-----------------
     private static final String RUTA = "/UnaCloudWeb/rest/deployment";
 
+    public static final int DEPLOYED=5;
+
+    public static final int FAILED=2;
+
     //Attribute for UnaCloudConnection
     private UnaCloudConnection uc;
     //Attribute for gson connection for parsing
@@ -56,7 +60,7 @@ public class DeploymentManager {
      * @throws Exception If there is any issue during the http request
      */
     public DeploymentResponse getDeployment(int id) throws Exception {
-        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA, null);
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA+"/"+id, null);
         //Do mapping to json with gson library
         return gson.fromJson(jsonResponse, DeploymentResponse.class);
     }

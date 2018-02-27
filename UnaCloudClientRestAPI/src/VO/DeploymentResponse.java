@@ -6,6 +6,27 @@ import java.util.List;
  * Class that represents how a deployment response is made
  */
 public class DeploymentResponse {
+    //Class for status
+    public class Status{
+        //Name of the status
+        private String name;
+        //Constructor
+
+        public Status(String name) {
+            this.name = name;
+        }
+
+        //Getters and setters
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+
     //Id of deployment
     private int id;
     //Cluster object
@@ -17,12 +38,12 @@ public class DeploymentResponse {
     //Start time
     private String startTime;
     //Status object
-    private ObjectId<String> status;
+    private Status status;
     //User object
     private ObjectId<Integer> user;
 
     //Constructor
-    public DeploymentResponse(String startTime, long duration, int id, ObjectId<Integer> cluster, ObjectId<Integer> user, List<ObjectId<Integer>> images, ObjectId<String> status) {
+    public DeploymentResponse(String startTime, long duration, int id, ObjectId<Integer> cluster, ObjectId<Integer> user, List<ObjectId<Integer>> images, Status status) {
         this.startTime = startTime;
         this.duration = duration;
         this.id = id;
@@ -74,11 +95,11 @@ public class DeploymentResponse {
         this.startTime = startTime;
     }
 
-    public ObjectId<String> getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(ObjectId<String> status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

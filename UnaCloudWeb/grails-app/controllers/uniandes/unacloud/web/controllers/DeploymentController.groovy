@@ -151,8 +151,6 @@ class DeploymentController {
 					}
 				}			
 		}
-		for(Execution e:executions)
-			System.out.println(e.id)
 		executions=new ArrayList<>();
 		if (executions.size() > 0) {
 			flash.message = 'Your request has been processed'
