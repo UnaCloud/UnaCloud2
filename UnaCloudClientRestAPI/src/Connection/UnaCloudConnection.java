@@ -1,7 +1,6 @@
 package Connection;
 
-import VO.DeploymentRequest;
-import VO.DeploymentResponse;
+import VO.*;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -9,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
  * Class that represents the connection with UnaCloud
@@ -125,16 +123,41 @@ public class UnaCloudConnection {
     public static void main(String[] args) throws Exception {
 
 
-        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MX","http://localhost:8080");
+        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
         DeploymentManager dep= new DeploymentManager(uc);
         //Get deployments
-        List<DeploymentResponse> list=dep.getDeployments();
+        /* List<DeploymentResponse> list=dep.getDeployments();
         for(DeploymentResponse d:list)
-            System.out.println(d.getId()+" "+d.getDuration()+" "+d.getStatus());
+            System.out.println(d.getId()+" "+d.getDuration()+" "+d.getStatus());*/
         //Post deployment with params
+        /*
        DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
         deploymentRequest.addNode(13,1,1,"MyHost2",false);
-        dep.deployWithParams(deploymentRequest);
+        System.out.println(dep.deployWithParams(deploymentRequest));*/
+
+        //Assume we have executions
+        /*int i=0;
+        System.out.println("Get executions");
+        while(i<10)
+        {
+            System.out.println(dep.getExecutionById(14,13).getState().getId());
+            Thread.sleep(1000);
+            i++;
+        }
+
+        System.out.println("Stop");
+        DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+        deploymentStopRequest.addExecution(5);
+        dep.stopExecutions(deploymentStopRequest);*/
+        System.out.println("Cache");
+        LaboratoryManager lab=new LaboratoryManager(uc);
+        LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
+        laboratoryUpdateRequest.addMachine(3);
+        lab.cleanCache(laboratoryUpdateRequest);
+
+
+
+
     }
 
 }
