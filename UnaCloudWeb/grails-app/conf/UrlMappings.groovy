@@ -115,7 +115,7 @@ class UrlMappings {
 				"/$id/save"(controller:'laboratory', action:"saveMachine")
 				"/$id/delete/$host"(controller:'laboratory', action:"deleteMachine")
 				"/$id/edit/$host"(controller:'laboratory', action:"editMachine")
-				"/$id/edit/$host/save"(controller:'laboratory', action:"saveEditMachine")
+				"/$id/edit/$host/save"(controller:'laboratory', action:"saveEditMachine")				
 				"/$id/$process"(controller:'laboratory', action:"updateMachines")
 				"/disable/$id"(controller:'laboratory', action:"setStatus")
 				"/delete/$id"(controller:'laboratory', action:"delete")

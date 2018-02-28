@@ -416,7 +416,7 @@ class LaboratoryController {
 	/**
 	 * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes
 	 */	
-	def updateMachines(){
+	def requestTaskMachines(){
 		def lab = Laboratory.get(params.id)
 		if (lab && TaskEnum.getEnum(params.process) != null) {
 			def hostList = []

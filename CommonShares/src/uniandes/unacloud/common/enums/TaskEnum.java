@@ -38,7 +38,7 @@ public enum TaskEnum {
 	/**
 	 * Message to request file from agents
 	 */
-	GET_FILES("files", AgentMessage.GET_FILE);
+	GET_FILES("logs", AgentMessage.GET_FILE);
 	
 	/**
 	 * Name of task

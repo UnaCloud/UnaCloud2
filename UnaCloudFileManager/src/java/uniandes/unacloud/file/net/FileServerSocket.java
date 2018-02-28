@@ -7,6 +7,7 @@ import uniandes.unacloud.common.enums.FileEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPServerSocket;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.file.net.task.FileImageReceiverTask;
+import uniandes.unacloud.file.net.task.FileLogReceiverTask;
 import uniandes.unacloud.file.net.task.FileTransferTask;
 
 /**
@@ -37,7 +38,9 @@ public class FileServerSocket extends AbstractTCPServerSocket {
 			System.out.println("Start service to request file");
 			FileEnum type = FileEnum.getFileEnum(ds.readUTF());
 			if(type == FileEnum.IMAGE)
-				return new FileImageReceiverTask(s);			
+				return new FileImageReceiverTask(s);		
+			if(type == FileEnum.LOG)
+				return new FileLogReceiverTask(s);
 		}
 		return null;
 	}

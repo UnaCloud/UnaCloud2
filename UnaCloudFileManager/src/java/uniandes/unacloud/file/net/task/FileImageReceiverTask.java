@@ -32,7 +32,6 @@ public class FileImageReceiverTask extends AbsFileReceiverTask {
 	 */
 	public FileImageReceiverTask(Socket s) {
 		super(s);
-		System.out.println("Attending " + s.getRemoteSocketAddress());
 	}	
 
 	@Override

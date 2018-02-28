@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -15,23 +18,35 @@ import uniandes.unacloud.utils.file.FileProcessor;
 
 public abstract class AbsUploadFileTask implements Runnable {
 	
-	protected File fileOrDirectory;
+	protected List<File> files = new ArrayList<File>();
 	
-	protected String fileId;
+	protected String tokenUploadCom;
 	
 	protected FileEnum type;
 	
-	public AbsUploadFileTask(File fileOrDirectory, String fileId, FileEnum fileType) {
-		this.fileOrDirectory = fileOrDirectory;
-		this.fileId = fileId;
+	public AbsUploadFileTask(File fileOrDirectory, String token, FileEnum fileType) {
+		this.files.add(fileOrDirectory);
+		this.tokenUploadCom = token;
 		type = fileType;
+	}
+	
+	public AbsUploadFileTask(List<File> files, String token, FileEnum fileType) {
+		this.files = files;
+		this.tokenUploadCom = token;
+		type = fileType;
+	}
+	
+	public double getSize() {
+		double size = 0;
+		for (File file: files) 
+			size += file.length();
+		return size;
 	}
 	
 	
 	@Override
 	public void run() {
-		try {
-						
+		try {						
 			beforeUpload();
 			
 			final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
@@ -42,8 +57,12 @@ public abstract class AbsUploadFileTask implements Runnable {
 			File zip = null;
 			long fileSize = 0;
 			try {	
-				zip = FileProcessor.zipFileSync(fileOrDirectory.getAbsolutePath());
-				fileSize += fileOrDirectory.length();
+				if (files.size() > 1)
+					zip = FileProcessor.zipFilesSync(files.get(0).getName() + "_" + new Date(), files);
+				//If size is one
+				else
+					zip = FileProcessor.zipFileSync(files.get(0).getParentFile().getAbsolutePath());
+				fileSize += getSize();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -52,15 +71,15 @@ public abstract class AbsUploadFileTask implements Runnable {
 			try (Socket s = new Socket(ip, puerto); OutputStream os = s.getOutputStream()) {
 				
 				DataOutputStream ds = new DataOutputStream(os);
-				System.out.println("Connection succesful");
+				System.out.println("Connection successful");
 				ds.writeInt(UnaCloudConstants.SEND_IMAGE);
 				ds.flush();
 				
 				ds.writeUTF(type.name());
 				ds.flush();
 				
-				System.out.println("Token " + fileId);
-				ds.writeUTF(fileId);
+				System.out.println("Token " + tokenUploadCom);
+				ds.writeUTF(tokenUploadCom);
 				ds.flush();
 								
 				System.out.println("Filesize " + fileSize);
@@ -69,7 +88,7 @@ public abstract class AbsUploadFileTask implements Runnable {
 				
 				ZipOutputStream zos = new ZipOutputStream(ds);
 				
-				System.out.println("\tSending " + fileId);
+				System.out.println("\tSending " + tokenUploadCom);
 				final byte[] buffer = new byte[1024 * 100];
 				System.out.println("\tSending files" + zip.getAbsolutePath());
 				

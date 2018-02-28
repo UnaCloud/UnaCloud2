@@ -9,8 +9,9 @@ package uniandes.unacloud.common.utils;
 public class UnaCloudConstants {	
 
 	//UnaCloud Configuration
-	public static final String MAIN_REPOSITORY = "MAIN_REPOSITORY";
+	public static final String MAIN_REPOSITORY = "MAIN_REPOSITORY";	
 	public static final String TEMPLATE_PATH = "imageTemplates";
+	public static final String LOGS_PATH = "logs";
 	public static final String ADMIN_GROUP = "unacloudAdmins";
 	public static final String USERS_GROUP = "unacloudUsers";
 	
@@ -71,6 +72,8 @@ public class UnaCloudConstants {
 	public static final String GLOBAL_FILE = "global.properties";
 	public static final String LOCAL_FILE = "local.properties";
 	public static final String VERSION_FILE = "version.txt";
+	public static final String AGENT_OUT_LOG = "unacloud_out.log";
+	public static final String AGENT_ERROR_LOG = "unacloud_err.log";
 	
     //UnaCloud communication and operation constants
 	public static final String TRANSMISSION_PROTOCOL = "TRANSMISSION_PROTOCOL";

@@ -208,9 +208,9 @@ public class QueueMessageProcessor implements QueueReader {
 									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
-										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON, null);
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON, null, null);
 									else if (mss.getTask() == AgentMessage.GET_VERSION) 
-										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON, null);
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON, null, null);
 									else 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.ON);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);

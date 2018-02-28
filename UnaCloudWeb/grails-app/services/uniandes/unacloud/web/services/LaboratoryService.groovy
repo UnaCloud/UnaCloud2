@@ -17,6 +17,7 @@ import uniandes.unacloud.web.domain.PhysicalIP;
 import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Platform;
+import uniandes.unacloud.common.enums.TaskEnum;
 import uniandes.unacloud.common.utils.Ip4Validator
 import grails.transaction.Transactional
 
@@ -263,6 +264,7 @@ class LaboratoryService {
 		}
 		QueueTaskerControl.taskMachines(machineList,task, user)
 	}
+	
 	
 	/**
 	 * Calculates the quantity of available deployments by hardware profiles

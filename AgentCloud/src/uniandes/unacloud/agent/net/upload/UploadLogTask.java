@@ -2,16 +2,15 @@ package uniandes.unacloud.agent.net.upload;
 
 import java.io.File;
 import java.io.PrintWriter;
-
+import java.util.List;
 import uniandes.unacloud.common.enums.FileEnum;
-import uniandes.unacloud.utils.file.FileProcessor;
 
-public class UploadFileTask extends AbsUploadFileTask {
+public class UploadLogTask extends AbsUploadFileTask {
 		
 	private boolean success;
 
-	public UploadFileTask(File fileOrDirectory, FileEnum type) {
-		super(fileOrDirectory, fileOrDirectory.getName(), type);
+	public UploadLogTask(List<File> files, String hostname) {
+		super(files, hostname, FileEnum.LOG);
 	}
 
 	@Override
@@ -34,14 +33,13 @@ public class UploadFileTask extends AbsUploadFileTask {
 		if(success) {
 			try {
 				if(type == FileEnum.LOG) {
-					PrintWriter writer;				
-					writer = new PrintWriter(fileOrDirectory);
-					writer.print("");
-					writer.close();					
-				}
-				else if(type == FileEnum.MONITORING)
-					FileProcessor.deleteFileSync(fileOrDirectory.getAbsolutePath());
-				
+					for(File file: files) {
+						PrintWriter writer;				
+						writer = new PrintWriter(file);
+						writer.print("");
+						writer.close();	
+					}		
+				}				
 			} catch (Exception e) {			
 				e.printStackTrace();
 			}	

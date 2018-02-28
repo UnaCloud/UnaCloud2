@@ -34,7 +34,7 @@ public abstract class AbsFileReceiverTask extends AbstractTCPSocketProcessor {
 		//Receiving file from agent
 		try (Socket ss = s; DataInputStream is = new DataInputStream(s.getInputStream());) {
 			
-			String token= is.readUTF();
+			String token = is.readUTF();
 			
 			if (validateToken(token)) {
 				fileSize = is.readLong();
