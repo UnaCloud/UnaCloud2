@@ -175,6 +175,8 @@ public class UnaCloudConnection {
         double deploymentId=dep.deployWithParams(deploymentRequest);
         System.out.println("ID DEPLOY"+deploymentId);
 
+        //Signals if you need to throw an exception or not
+        boolean lanzaException=false;
         //Get the current deployment
         DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
         System.out.println(deploy.getStatus().getName()+"");
@@ -197,6 +199,8 @@ public class UnaCloudConnection {
                         todoEstaDetenido=false;
                         break;
                     }
+                    if(state== DeploymentManager.FAILED)
+                        lanzaException=true;
                 }
             }
         }
@@ -213,6 +217,9 @@ public class UnaCloudConnection {
         }
         //Stop executions
         dep.stopExecutions(deploymentStopRequest);
+        //Throws exception if there is a failed instance of deployment
+        if(lanzaException)
+            throw new Exception("There are failed deployment instances");
     }
 
     /**
@@ -235,6 +242,8 @@ public class UnaCloudConnection {
         DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
         System.out.println(deploy.getStatus().getName()+"");
 
+        //Signals if you need to throw an exception or not
+        boolean lanzaException=false;
         //Assume we have executions
         System.out.println("Get executions");
         boolean todoEstaDetenido=false;
@@ -254,6 +263,8 @@ public class UnaCloudConnection {
                         todoEstaDetenido=false;
                         break;
                     }
+                    if(state== DeploymentManager.FAILED)
+                        lanzaException=true;
                 }
             }
         }
@@ -275,6 +286,10 @@ public class UnaCloudConnection {
 
         //Stop executions
         dep.stopExecutions(deploymentStopRequest);
+
+        //Throws exception if there is a failed instance of deployment
+        if(lanzaException)
+            throw new Exception("There are failed deployment instances");
 
         //Clean the cache of the given machines or of given numbers.
         System.out.println("Cache");
