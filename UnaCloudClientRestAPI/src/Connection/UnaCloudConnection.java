@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class that represents the connection with UnaCloud
@@ -115,6 +117,101 @@ public class UnaCloudConnection {
 
         return response.toString();
     }
+
+    public void jesseTest() throws Exception
+    {
+        int maxCleanableMachines=25;
+        DeploymentManager dep= new DeploymentManager(this);
+        //Clean the cache of the given machines or of given numbers.
+        System.out.println("Cache");
+
+        LaboratoryManager lab=new LaboratoryManager(this);
+
+        List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(1);
+        Collections.sort(list);
+        LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
+        int i=0;
+        for(PhysicalMachineResponse phy:list)
+        {
+            System.out.println("MACHINE "+phy.getId());
+            laboratoryUpdateRequest.addMachine(phy.getId());
+            i++;
+            if(i>25)
+                break;
+        }
+        lab.cleanCache(laboratoryUpdateRequest);
+        boolean terminaCache=false;
+        while(!terminaCache)
+        {
+            Thread.sleep(60000);
+            terminaCache=true;
+            for(PhysicalMachineResponse phy:list)
+            {
+                if(phy.getState().equals(PhysicalMachineResponse.MACHINE_STATE.PROCESSING))
+                {
+                    terminaCache=false;
+                    break;
+                }
+            }
+        }
+
+        //Post deployment with params
+        DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
+        deploymentRequest.addNode(13,1,2,"MyHost2",false);
+        double deploymentId=dep.deployWithParams(deploymentRequest);
+        System.out.println("ID DEPLOY"+deploymentId);
+
+        //Get the current deployment
+        DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
+        System.out.println(deploy.getStatus().getName()+"");
+
+        double time=System.nanoTime();
+        //Assume we have executions
+        System.out.println("Get executions");
+        boolean todoEstaDetenido=false;
+        int state=0;
+        while(!todoEstaDetenido)
+        {
+            Thread.sleep(60000);
+            todoEstaDetenido=true;
+            for(ObjectId<Integer> id:deploy.getImages())
+            {
+                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                {
+                    state=exec.getState().getId();
+                    System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                    if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
+                    {
+                        todoEstaDetenido=false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        System.out.println("TIME "+(System.nanoTime()-time));
+
+        ArrayList<Integer> machines=new ArrayList<>();
+        System.out.println("Stop");
+        DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+        //Cycle through all executions of the deployment and add them to the list for stopping
+        for(ObjectId<Integer> id:deploy.getImages())
+        {
+            for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+            {
+                System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                deploymentStopRequest.addExecution(exec.getId());
+            }
+        }
+
+        //Stop executions
+        dep.stopExecutions(deploymentStopRequest);
+
+        //Clean the cache of the given machines or of given numbers.
+        System.out.println("Cache");
+
+    }
+
     /**
      * Test for main.
      * @param args

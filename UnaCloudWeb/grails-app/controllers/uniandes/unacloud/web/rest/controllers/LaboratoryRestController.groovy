@@ -41,6 +41,22 @@ class LaboratoryRestController extends AbstractRestController {
 	// Actions MVC
 	//-----------------------------------------------------------------
 
+    /**
+     * Gets the laboratory machines of the specified source in the id of the request.
+     * @param id Request id
+     */
+
+    def getLaboratoryMachines(int id)
+    {
+        verifyCurrentUser()
+        def lab=Laboratory.get(id)
+        if (lab)
+        {
+            respond lab.getOrderedMachines()
+        }
+        else
+            throw new HttpException(404, "The selected lab does not exist in the system")
+    }
 
     /**
      * Stops, Updates agent or Clears Cache in selected machines. Returns to lab when finishes

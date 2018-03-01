@@ -1,9 +1,16 @@
 package Connection;
 
+import VO.ExecutionResponse;
 import VO.LaboratoryUpdateRequest;
+import VO.PhysicalMachineResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Class used to manipulate deployment connections
@@ -32,7 +39,6 @@ public class LaboratoryManager {
      * Cleans the cache of given machines
      * @param laboratoryUpdateRequest The laboratory update request
      */
-
     public void cleanCache(LaboratoryUpdateRequest laboratoryUpdateRequest) throws Exception
     {
         String jsonResponse=uc.getInfoFromUrl(RestVerb.PUT,RUTA,new JSONObject(gson.toJson(laboratoryUpdateRequest)));
@@ -40,14 +46,17 @@ public class LaboratoryManager {
 
     }
 
-
-    public void stopExecutions()
+    /**
+     * Get machines of a given laboratory.
+     * @param id
+     * @return List with machines of given laboratory
+     */
+    public List<PhysicalMachineResponse> getLaboratoryMachines(int id) throws Exception
     {
-
-    }
-
-    public void getExecutionById()
-    {
-
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + id + "/machines", null);
+        System.out.println(jsonResponse);
+        Type collectionType = new TypeToken<Collection<ExecutionResponse>>() {
+        }.getType();
+        return gson.fromJson(jsonResponse,collectionType);
     }
 }

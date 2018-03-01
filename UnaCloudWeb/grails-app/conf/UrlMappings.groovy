@@ -129,5 +129,6 @@ class UrlMappings {
 		"/rest/deployment/$id/execution/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
 		"/rest/deployment/$id/deployedImage/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])
 		"/rest/laboratory"(controller:"LaboratoryRest",action:[PUT:"updateMachines"])
+		"/rest/laboratory/$id/machines"(controller:"LaboratoryRest",action:[GET:"getLaboratoryMachines"])
 	}
 }
