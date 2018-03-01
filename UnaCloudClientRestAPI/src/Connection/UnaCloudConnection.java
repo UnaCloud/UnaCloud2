@@ -127,6 +127,7 @@ public class UnaCloudConnection {
         int maxCleanableMachines=25;
         //Clean the cache of the given machines or of given numbers.
         System.out.println("Cache");
+        //The user must know the id of the lab to clean up and get machines from
         LaboratoryManager lab=new LaboratoryManager(this);
         //Get lab physical machines for cleaning cache
         List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(1);
@@ -221,7 +222,8 @@ public class UnaCloudConnection {
      */
     public static void main(String[] args) throws Exception {
         UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
-        uc.jesseTest();
+        //METHOD FOR JESSE TESTING. UNCOMMENT TO TEST
+        //uc.jesseTest();
         DeploymentManager dep= new DeploymentManager(uc);
         //Post deployment with params
         DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
@@ -277,6 +279,7 @@ public class UnaCloudConnection {
         //Clean the cache of the given machines or of given numbers.
         System.out.println("Cache");
 
+        //The user must know the id of the lab to clean up
         LaboratoryManager lab=new LaboratoryManager(uc);
         LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
         for(Integer i:machines)
