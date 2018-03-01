@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Class that represents the connection with UnaCloud
@@ -114,29 +115,26 @@ public class UnaCloudConnection {
 
         return response.toString();
     }
-
     /**
      * Test for main.
      * @param args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-
-
         UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
         DeploymentManager dep= new DeploymentManager(uc);
         //Post deployment with params
-       DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
-        deploymentRequest.addNode(13,1,1,"MyHost2",false);
+        DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
+        deploymentRequest.addNode(13,1,2,"MyHost2",false);
         double deploymentId=dep.deployWithParams(deploymentRequest);
-        System.out.println(deploymentId);
+        System.out.println("ID DEPLOY"+deploymentId);
 
         //Get the current deployment
         DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
         System.out.println(deploy.getStatus().getName()+"");
 
+        double time=System.nanoTime();
         //Assume we have executions
-        //TODO: Develop how to get al executions of a deployment
         System.out.println("Get executions");
         boolean todoEstaDetenido=false;
         int state=0;
@@ -144,18 +142,37 @@ public class UnaCloudConnection {
         {
             Thread.sleep(60000);
             todoEstaDetenido=true;
-            state=dep.getExecutionById(14,13).getState().getId();
-            if(state!=DeploymentManager.DEPLOYED || state!=DeploymentManager.FAILED)
+            for(ObjectId<Integer> id:deploy.getImages())
             {
-                todoEstaDetenido=false;
+                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                {
+                    state=exec.getState().getId();
+                    System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                    if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
+                    {
+                        todoEstaDetenido=false;
+                        break;
+                    }
+                }
             }
         }
 
+        System.out.println("TIME "+(System.nanoTime()-time));
+
+        ArrayList<Integer> machines=new ArrayList<>();
         System.out.println("Stop");
         DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
         //Cycle through all executions of the deployment and add them to the list for stopping
-        //TODO: Use the same cycle found in the last TODO
-        deploymentStopRequest.addExecution(14);
+        for(ObjectId<Integer> id:deploy.getImages())
+        {
+            for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+            {
+                System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                deploymentStopRequest.addExecution(exec.getId());
+                machines.add(exec.getExecutionNode().getId());
+            }
+        }
+
         //Stop executions
         dep.stopExecutions(deploymentStopRequest);
 
@@ -164,11 +181,12 @@ public class UnaCloudConnection {
 
         LaboratoryManager lab=new LaboratoryManager(uc);
         LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
-        laboratoryUpdateRequest.addMachine(4);
+        for(Integer i:machines)
+        {
+            System.out.println("MACHINE "+i);
+            laboratoryUpdateRequest.addMachine(i);
+        }
         lab.cleanCache(laboratoryUpdateRequest);
-
-
-
 
     }
 

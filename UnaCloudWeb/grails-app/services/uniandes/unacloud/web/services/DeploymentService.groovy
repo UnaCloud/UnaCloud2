@@ -262,10 +262,10 @@ class DeploymentService {
         return null
 	}
     /**
-     * Returns the execution given by id in the selected deployment
+     * Returns the executions given inside the image with given id of the selected deployment
      * @param deployment Deployment to look at
-     * @param idExec id of execution
-     * @return executions with the given id
+     * @param imageId id of deployed image
+     * @return executions with the given id of the deployed image
      */
     def getActiveExecutionsByImage(Deployment deployment, int imageId) {
         for(DeployedImage image:deployment.images)

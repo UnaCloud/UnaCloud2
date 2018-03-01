@@ -151,7 +151,6 @@ class DeploymentController {
 					}
 				}			
 		}
-		executions=new ArrayList<>();
 		if (executions.size() > 0) {
 			flash.message = 'Your request has been processed'
 			flash.type = 'info'

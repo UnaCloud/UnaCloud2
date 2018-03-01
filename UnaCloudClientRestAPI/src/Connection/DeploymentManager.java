@@ -103,4 +103,18 @@ public class DeploymentManager {
         System.out.println(jsonResponse);
         return gson.fromJson(jsonResponse,ExecutionResponse.class);
     }
+    /**
+     * Get the required executions by id of deployed image
+     *
+     * @param idDeployment Deployment id
+     * @param imageId  Execution id
+     * @throws Exception If there are mistakes during the request transmission
+     */
+    public List<ExecutionResponse> getExecutionsByDeployedImageId(int idDeployment, int imageId) throws Exception {
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + idDeployment + "/deployedImage/" + imageId, null);
+        System.out.println(jsonResponse);
+        Type collectionType = new TypeToken<Collection<ExecutionResponse>>() {
+        }.getType();
+        return gson.fromJson(jsonResponse,collectionType);
+    }
 }

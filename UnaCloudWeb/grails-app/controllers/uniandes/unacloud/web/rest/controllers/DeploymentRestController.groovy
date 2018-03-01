@@ -219,4 +219,30 @@ class DeploymentRestController extends AbstractRestController {
         else
             throw new HttpException(404,"The deployment does not exist in the system")
     }
+    /**
+     * Gets execution by id of a particular deployment
+     * @param id Deployment id
+     * @param idExec Execution id
+     * @return The execution given by id
+     */
+    def getExecutionsByDeployedImagetId(int id, int imageId)
+    {
+        Deployment deployment=Deployment.get(id)
+        if(deployment)
+        {
+
+            if(deployment.user==flash.user)
+            {
+                List<Execution> executions=deploymentService.getActiveExecutionsByImage(deployment,imageId)
+                if(executions!=null)
+                    respond executions
+                else
+                    throw new HttpException(404,"The executions do not exist in the system")
+            }
+            else
+                throw new HttpException(401,"The user does not have permissions for this execution list")
+        }
+        else
+            throw new HttpException(404,"The deployment does not exist in the system")
+    }
 }
