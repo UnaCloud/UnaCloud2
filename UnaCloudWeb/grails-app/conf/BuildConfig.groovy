@@ -33,14 +33,20 @@ grails.project.dependency.resolution = {
 		mavenRepo 'http://maven.restlet.org/'
     }
 
+
+
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         runtime 'mysql:mysql-connector-java:5.1.22'
     }
 
-    plugins {		
-		
-		runtime ":hibernate4:4.3.5.5"
+    plugins {
+        //plugins for security in rest services
+        //compile ':spring-security-core:2.0-RC5'
+        //compile ':spring-security-rest:1.5.0.M3'
+
+
+        runtime ":hibernate4:4.3.5.5"
 		compile ":asset-pipeline:1.9.9"
 		build	":tomcat:7.0.54"
 		//compile ":jaxrs:0.11"

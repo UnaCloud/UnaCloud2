@@ -34,12 +34,6 @@ class DeploymentService {
 	//-----------------------------------------------------------------
 	// Properties
 	//-----------------------------------------------------------------
-	
-	/**
-	 * Representation of Lab service
-	 */
-	LaboratoryService laboratoryService
-	
 	/**
 	 * Representation of User Restriction service
 	 */
@@ -229,6 +223,15 @@ class DeploymentService {
 		}
 		return deployments
 	}
+
+	/**
+	 * Returns given deployment by id
+	 * @param id Id of the deployment
+	 * @return given deployment
+	 */
+	def getActiveDeployment(long id) {
+		return Deployment.get(id)
+	}
 	
 	/**
 	 * Returns the list of active executions in all users
@@ -237,6 +240,43 @@ class DeploymentService {
 	def getActiveExecutions() {
 		return Execution.findAll{ state.state != ExecutionStateEnum.FINISHED}.sort{it.id}
 	}
+
+	/**
+	 * Returns the execution given by id in the selected deployment
+     * @param deployment Deployment to look at
+	 * @param idExec id of execution
+	 * @return executions with the given id
+	 */
+	def getActiveExecution(Deployment deployment, int idExec) {
+		print "DEP"+deployment.id
+        for(DeployedImage image:deployment.images)
+        {
+			print "IMA"+image.id
+            for(Execution execution:image.activeExecutions)
+            {
+				print "EXE"+execution.id
+                if(execution.id==idExec)
+                    return execution
+            }
+        }
+        return null
+	}
+    /**
+     * Returns the executions given inside the image with given id of the selected deployment
+     * @param deployment Deployment to look at
+     * @param imageId id of deployed image
+     * @return executions with the given id of the deployed image
+     */
+    def getActiveExecutionsByImage(Deployment deployment, int imageId) {
+        for(DeployedImage image:deployment.images)
+        {
+            if(imageId==image.id)
+            {
+                return image.getActiveExecutions()
+            }
+        }
+        return null
+    }
 	
 	/**
 	 * Creates a task to stop executions in list
