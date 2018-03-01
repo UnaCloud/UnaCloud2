@@ -118,17 +118,21 @@ public class UnaCloudConnection {
         return response.toString();
     }
 
+    /**
+     * Method for the tests deployed by Jesse.
+     * @throws Exception If there is any HTTPException whatsoever
+     */
     public void jesseTest() throws Exception
     {
         int maxCleanableMachines=25;
-        DeploymentManager dep= new DeploymentManager(this);
         //Clean the cache of the given machines or of given numbers.
         System.out.println("Cache");
-
         LaboratoryManager lab=new LaboratoryManager(this);
-
+        //Get lab physical machines for cleaning cache
         List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(1);
+        //Sort by id
         Collections.sort(list);
+        //Clean cache of given machines until they reach a top desired by the user
         LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
         int i=0;
         for(PhysicalMachineResponse phy:list)
@@ -136,25 +140,34 @@ public class UnaCloudConnection {
             System.out.println("MACHINE "+phy.getId());
             laboratoryUpdateRequest.addMachine(phy.getId());
             i++;
-            if(i>25)
+            if(i>=maxCleanableMachines)
                 break;
         }
         lab.cleanCache(laboratoryUpdateRequest);
+        //Check that every machine has finished cleaning cache before deployment
         boolean terminaCache=false;
         while(!terminaCache)
         {
             Thread.sleep(60000);
+            list=lab.getLaboratoryMachines(1);
+            Collections.sort(list);
             terminaCache=true;
+            i=0;
             for(PhysicalMachineResponse phy:list)
             {
-                if(phy.getState().equals(PhysicalMachineResponse.MACHINE_STATE.PROCESSING))
+                System.out.println("Mac "+phy.getId());
+                if(phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING+""))
                 {
                     terminaCache=false;
                     break;
                 }
+                i++;
+                if(i>=maxCleanableMachines)
+                    break;
             }
         }
 
+        DeploymentManager dep= new DeploymentManager(this);
         //Post deployment with params
         DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
         deploymentRequest.addNode(13,1,2,"MyHost2",false);
@@ -164,9 +177,7 @@ public class UnaCloudConnection {
         //Get the current deployment
         DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
         System.out.println(deploy.getStatus().getName()+"");
-
-        double time=System.nanoTime();
-        //Assume we have executions
+        //Get given deployment executions
         System.out.println("Get executions");
         boolean todoEstaDetenido=false;
         int state=0;
@@ -188,10 +199,6 @@ public class UnaCloudConnection {
                 }
             }
         }
-
-        System.out.println("TIME "+(System.nanoTime()-time));
-
-        ArrayList<Integer> machines=new ArrayList<>();
         System.out.println("Stop");
         DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
         //Cycle through all executions of the deployment and add them to the list for stopping
@@ -203,13 +210,8 @@ public class UnaCloudConnection {
                 deploymentStopRequest.addExecution(exec.getId());
             }
         }
-
         //Stop executions
         dep.stopExecutions(deploymentStopRequest);
-
-        //Clean the cache of the given machines or of given numbers.
-        System.out.println("Cache");
-
     }
 
     /**
@@ -219,6 +221,7 @@ public class UnaCloudConnection {
      */
     public static void main(String[] args) throws Exception {
         UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
+        uc.jesseTest();
         DeploymentManager dep= new DeploymentManager(uc);
         //Post deployment with params
         DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
@@ -230,7 +233,6 @@ public class UnaCloudConnection {
         DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
         System.out.println(deploy.getStatus().getName()+"");
 
-        double time=System.nanoTime();
         //Assume we have executions
         System.out.println("Get executions");
         boolean todoEstaDetenido=false;
@@ -254,7 +256,6 @@ public class UnaCloudConnection {
             }
         }
 
-        System.out.println("TIME "+(System.nanoTime()-time));
 
         ArrayList<Integer> machines=new ArrayList<>();
         System.out.println("Stop");

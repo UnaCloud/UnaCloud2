@@ -16,6 +16,10 @@ import java.util.List;
  * Class used to manipulate deployment connections
  */
 public class LaboratoryManager {
+    //Enum for knowing machine states
+    public enum MACHINE_STATE{
+        ON,OFF,PROCESSING,DISABLED
+    }
     //Constants
     private static final String RUTA="/UnaCloudWeb/rest/laboratory";
 
@@ -55,7 +59,7 @@ public class LaboratoryManager {
     {
         String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + id + "/machines", null);
         System.out.println(jsonResponse);
-        Type collectionType = new TypeToken<Collection<ExecutionResponse>>() {
+        Type collectionType = new TypeToken<Collection<PhysicalMachineResponse>>() {
         }.getType();
         return gson.fromJson(jsonResponse,collectionType);
     }

@@ -6,10 +6,7 @@ import java.util.List;
 public class PhysicalMachineResponse implements Comparable<PhysicalMachineResponse> {
 
 
-    //Enum for knowing machine states
-    public enum MACHINE_STATE{
-        ON,OFF,PROCESSING,DISABLED
-    }
+
     //Class for state
     public class State{
         //Name of the status
@@ -60,7 +57,7 @@ public class PhysicalMachineResponse implements Comparable<PhysicalMachineRespon
     //RAM
     private int ram;
     //State
-    private String state;
+    private State state;
     //Is with user
     private boolean withUser;
 
@@ -68,7 +65,7 @@ public class PhysicalMachineResponse implements Comparable<PhysicalMachineRespon
     //Constructor
     //-------------------
 
-    public PhysicalMachineResponse(int id, String agentVersion, int cores, double dataSpace, double freeSpace, boolean highAvailability, ObjectId<Integer> ip, ObjectId<Integer> laboratory, Date lastReport, String mac, String name, ObjectId<Integer> operatingSystem, int pCores, List<ObjectId<Integer>> platforms, int ram, String state, boolean withUser) {
+    public PhysicalMachineResponse(int id, String agentVersion, int cores, double dataSpace, double freeSpace, boolean highAvailability, ObjectId<Integer> ip, ObjectId<Integer> laboratory, Date lastReport, String mac, String name, ObjectId<Integer> operatingSystem, int pCores, List<ObjectId<Integer>> platforms, int ram, State state, boolean withUser) {
         this.id = id;
         this.agentVersion = agentVersion;
         this.cores = cores;
@@ -212,11 +209,11 @@ public class PhysicalMachineResponse implements Comparable<PhysicalMachineRespon
         this.ram = ram;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
