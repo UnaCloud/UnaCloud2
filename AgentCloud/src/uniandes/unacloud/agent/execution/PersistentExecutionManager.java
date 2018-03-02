@@ -1,6 +1,5 @@
 package uniandes.unacloud.agent.execution;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -80,21 +79,10 @@ public class PersistentExecutionManager {
      */
     public static void unregisterExecution(long executionId) {
     	Execution execution = executionList.get(executionId);
-		if (execution != null) {
+		if (execution != null)
 			execution.getImage().unregister();
-		}
     }
 
-    /**
-     * Delete directory sent by params
-     * @param f directory or file
-     */
-	public static void cleanDir(File f) {
-		if (f.isDirectory()) 
-			for (File r : f.listFiles()) 
-				cleanDir(r);
-		f.delete();
-	}
 	
     /**
      * Restarts the given execution
@@ -107,10 +95,12 @@ public class PersistentExecutionManager {
         	execution.getImage().restartExecution();
         	response.setMessage(UnaCloudConstants.SUCCESSFUL_OPERATION);
         	response.setState(ExecutionProcessEnum.SUCCESS);
-        } catch (PlatformOperationException ex) {
+        } 
+        catch (PlatformOperationException ex) {
             try {
 				ServerMessageSender.reportExecutionState(executionId, ExecutionProcessEnum.FAIL, ex.getMessage());
-			} catch (Exception e) {
+			} 
+            catch (Exception e) {
 				e.printStackTrace();
 			}
             response.setMessage(ex.getMessage());
@@ -138,12 +128,14 @@ public class PersistentExecutionManager {
 	            
 	            if (new ExecutionStateViewer(execution.getId(), execution.getMainInterface().getIp()).check())
 	            	execution.getImage().setStatus(ImageStatus.LOCK);
-	        } catch (PlatformOperationException e) {
+	        } 
+	        catch (PlatformOperationException e) {
 	        	e.printStackTrace();
 	        	execution.getImage().stopAndUnregister();
 	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.FAIL, e.getMessage());
 	        }
-        } catch (Exception e) {
+        } 
+    	catch (Exception e) {
 			e.printStackTrace();
 			execution.getImage().setStatus(ImageStatus.FREE);
 		}
@@ -171,7 +163,8 @@ public class PersistentExecutionManager {
     private static void saveData() {
     	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
         	oos.writeObject(executionList);
-        } catch(Exception e){
+        } 
+    	catch(Exception e){
         	e.printStackTrace();
         }
     }
@@ -188,7 +181,8 @@ public class PersistentExecutionManager {
 			for (Execution execution: removeExecutions)	
 				if (execution.getImage().getStatus() != ImageStatus.STARTING)
 					removeExecution(execution.getId(), false);			
-		} catch (Exception e) {
+		} 
+    	catch (Exception e) {
 			e.printStackTrace();
 		}
     }
@@ -208,7 +202,8 @@ public class PersistentExecutionManager {
         		if (execution.getImage().getStatus() != ImageStatus.STARTING)
         			ids.add(execution.getId());
         	return ids;
-		} catch (Exception e) {
+		} 
+    	catch (Exception e) {
 			e.printStackTrace();
 			return new ArrayList<Long>();
 		}    	
@@ -228,7 +223,8 @@ public class PersistentExecutionManager {
         				//execution.getImage().stopAndUnregister();
         				executionList.put(execution.getId(), execution);
             else saveData();
-        } catch (Exception ex) {
+        } 
+    	catch (Exception ex) {
         	ex.printStackTrace();
         }
     }
@@ -247,7 +243,8 @@ public class PersistentExecutionManager {
 				response.setMessage("Copying image");
 				response.setState(ExecutionProcessEnum.SUCCESS);
 				ExecutorService.executeBackgroundTask(new UploadImageTask(message.getTokenCom(), execution));
-            } else {
+            } 
+    		else {
 				response.setMessage(UnaCloudConstants.ERROR_MESSAGE + " Execution doesn't exist");
 				response.setState(ExecutionProcessEnum.FAIL);
 			}

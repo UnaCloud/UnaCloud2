@@ -23,7 +23,7 @@
              				<h5 class="box-title">Edit a host</h5> 							    			
              			</div>		
 	                 	<!-- form start -->
-	                 	<form method="post" id="form-new" action="${createLink(uri: '/admin/lab/'+lab.id+'/edit/'+machine.id+'/save', absolute: true)}" role="form">
+	                 	<form method="post" id="form-new" action="${createLink(uri: '/admin/lab/'+lab.id+'/machine/'+machine.id+'/save', absolute: true)}" role="form">
 	                     	<div class="box-body">	                     		
 	                        	 <div class="form-group">
 	                             	<label>Host Name</label>
@@ -79,7 +79,7 @@
 		                     </div><!-- /.box-body -->
 		                     <div class="box-footer"> 			
 		                         <g:submitButton name="button-submit" class="btn btn-success" value="Submit" />	
-		                         <a class="btn btn-danger" href="${createLink(uri: '/admin/lab/'+lab.id, absolute: true)}" >Cancel</a>	      
+		                         <a class="btn btn-danger" href="${createLink(uri: '/admin/lab/'+lab.id+'/machine/'+machine.id, absolute: true)}" >Cancel</a>	      
 		                     </div>
 	                	 </form>
 	             	</div>

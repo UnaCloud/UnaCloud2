@@ -23,7 +23,7 @@
              				<h5 class="box-title">Create a new host</h5> 							    			
              			</div>		
 	                 	<!-- form start -->
-	                 	<form method="post" id="form-new" action="${createLink(uri: '/admin/lab/'+lab.id+'/save', absolute: true)}" role="form">
+	                 	<form method="post" id="form-new" action="${createLink(uri: '/admin/lab/'+lab.id+'/machine/save', absolute: true)}" role="form">
 	                     	<div class="box-body">	                     		
 	                        	 <div class="form-group">
 	                             	<label>Host Name</label>

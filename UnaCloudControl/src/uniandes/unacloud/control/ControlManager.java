@@ -78,7 +78,7 @@ public class ControlManager extends ProjectManager {
 	 * @return agent port
 	 * @throws Exception 
 	 */
-	public int getPort() throws Exception {
+	public int getAgentPort() throws Exception {
 		return reader.getIntegerVariable(UnaCloudConstants.AGENT_PORT);
 	}
 	

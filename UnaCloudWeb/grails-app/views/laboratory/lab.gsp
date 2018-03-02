@@ -20,17 +20,17 @@
      	<div class="row">     		     
              <div class="col-xs-12">  
              	  <g:render template="/share/message"/>                       
-                  <a href="${createLink(uri: '/admin/lab/'+lab.id+'/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> Add host</a>
+                  <a href="${createLink(uri: '/admin/lab/'+lab.id+'/machine/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> Add host</a>
                   <a href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/new', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-plus' ></i> Add IP Pool</a>
                   <div class="pull-right">                  
-		              <a href="${createLink(uri: '/admin/lab/edit/'+lab.id, absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-pencil-square' ></i> Edit</a>
+		              <a href="${createLink(uri: '/admin/lab/'+lab.id+'/edit', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-pencil-square' ></i> Edit</a>
 	                  <g:if test="${lab.enable}">
-	                  <a id="disable-lab" data-state="true" data-id="${lab.id}" href="${createLink(uri: '/admin/lab/disable/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-ban' ></i> Disable</a>
+	                  <a id="disable-lab" data-state="true" data-id="${lab.id}" data-method="disable" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-ban' ></i> Disable</a>
 		              </g:if> 
 		              <g:else>
-		              <a id="disable-lab" data-state="false" data-id="${lab.id}" href="${createLink(uri: '/admin/lab/disable/', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-check' ></i> Enable</a>
+		              <a id="disable-lab" data-state="false" data-id="${lab.id}" data-method="disable" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-check' ></i> Enable</a>
 		              </g:else>
-		              <a id="delete-lab" data-id="${lab.id}" href="${createLink(uri: '/admin/lab/delete/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
+		              <a id="delete-lab" data-id="${lab.id}" data-method="delete" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
 		          </div>
                   <hr>
                   <div class="nav-tabs-custom">
@@ -50,12 +50,12 @@
 												  	<td colspan="12">
 													  	<div class="pull-left text-head"><input type = "checkbox" id = "selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
 													  	<div id = "btn-group-agent" class = "btn-group pull-right ">
-					                                 	 	<a title = "Stop Agents" class = "stop-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/stop/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-stop' ></i></a>
-					                                   	 	<a title = "Clean host cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/cache/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-eraser" ></i></a>
-					                                        <a title = "Update Agents" class = "update-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/update/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-level-up"></i></a>
-															<a title = "Request Version" class = "version-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/version/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-save"></i></a>
-					                                        <a title = "Request used disk space" class = "disk-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/size/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-floppy-save"></i></a>
-															<a title = "Request Logs" class = "btn btn-default"  href = "${createLink(uri: '/admin/lab/' + lab.id + '/logs/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-file" ></i></a>
+					                                 	 	<a title = "Stop Agents" class = "stop-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/stop/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-stop' ></i></a>
+					                                   	 	<a title = "Clean host cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/cache/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-eraser" ></i></a>
+					                                        <a title = "Update Agents" class = "update-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/update/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-level-up"></i></a>
+															<a title = "Request Version" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/version/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-save"></i></a>
+					                                        <a title = "Request used disk space" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/size/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-floppy-save"></i></a>
+															<a title = "Request Logs" class = "no_required_confirm_task btn btn-default"  href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/logs/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-file" ></i></a>
 						                                </div>		  	
 												  	</td>
 											  </tr>
@@ -121,9 +121,8 @@
 				                                  </td>
 											      <td class="column-center"> 
 					                               	  <div class="btn-group">
-					                               	      <a title = "Delete" class = "delete_machines btn btn-default" data-id = "${machine.id}" href = "${createLink(uri: '/admin/lab/' + lab.id + '/delete/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-trash-o' ></i></a>
-						                                  <a title = "Edit" class="btn btn-default"  href = "${createLink(uri: '/admin/lab/' + lab.id + '/edit/' + machine.id, absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-pencil-square" ></i></a>
-						                              </div>
+					                               	  	  <a title = "Detail" class = "btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/' + machine.id, absolute: true)}" data-toggle = "tooltip"><i class = 'glyphicon glyphicon-eye-open' ></i></a>
+					                               	  </div>
 												  </td>
 				                              </tr>
 					                      </g:each>                         
@@ -154,8 +153,8 @@
 			                                  <td><small>${pool.mask}</small></td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/delete/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Edit" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="fa fa-pencil-square" ></i></a>
+					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" data-method="delete" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+					                                  <a title="Detail" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open" ></i></a>
 					                              </div>
 											  </td>
 			                              </tr>

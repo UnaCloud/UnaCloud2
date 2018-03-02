@@ -54,7 +54,6 @@ public class FileLogReceiverTask extends AbsFileReceiverTask {
 	public String getRepoPath() {
 		try (Connection con = FileManager.getInstance().getDBConnection();) {	
 			RepositoryEntity entity = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
-			new File(entity.getRoot() + File.separator + UnaCloudConstants.LOGS_PATH + File.separator + machine.getHost() + File.separator).mkdirs();
 			return entity.getRoot() + File.separator + UnaCloudConstants.LOGS_PATH + File.separator + machine.getHost() + File.separator;
 		}
 		catch (Exception e) {

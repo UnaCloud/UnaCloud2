@@ -19,8 +19,9 @@ public class UploadLogTask extends AbsUploadFileTask {
 	}
 
 	@Override
-	public void successUpload() {
+	public void successUpload() {		
 		success = true;
+		
 	}
 
 	@Override
@@ -29,7 +30,9 @@ public class UploadLogTask extends AbsUploadFileTask {
 	}
 
 	@Override
-	public void afterUpload() {
+	public void afterUpload(File zip) {
+		if(zip != null && zip.exists())
+			zip.delete();
 		if(success) {
 			try {
 				if(type == FileEnum.LOG) {
@@ -38,6 +41,7 @@ public class UploadLogTask extends AbsUploadFileTask {
 						writer = new PrintWriter(file);
 						writer.print("");
 						writer.close();	
+						System.out.println("Logs were upload to server");
 					}		
 				}				
 			} catch (Exception e) {			

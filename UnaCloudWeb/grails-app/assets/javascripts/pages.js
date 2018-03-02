@@ -38,22 +38,22 @@ $(document).on('ready',function(){
 	
 	$("#delete-lab").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Laboratory')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Laboratory', $(this).attr("method"))	
 	});
 	
 	$(".delete_ip").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP', 'delete')	
 	});
 	
 	$(".delete_pool").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP Pool')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'IP Pool', 'delete')	
 	});
 	
 	$(".delete_machines").click(function (event){
 		event.preventDefault();
-		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Host')	
+		redirectConfirm($(this).data("id"),  $(this).attr("href"), 'Host', 'delete')	
 	});
 	
 	$(".stop-agents").click(function (event){		
@@ -84,6 +84,13 @@ $(document).on('ready',function(){
 		submitConfirm(form, href, 'All selected host machines will update their agents, some processes in agents will be stopped. Do you want to continue?');
 	});
 	
+	$(".no_required_confirm_task").click(function (event){	
+		event.preventDefault();
+		var href = $(this).attr("href");
+		var form = $('#form_machines');
+		submitConfirm(form, href);
+	});
+	
 	
 	$('.clear_image').click(function (event){	
 		event.preventDefault();
@@ -97,10 +104,11 @@ $(document).on('ready',function(){
 		var data = $(this).data("id");
 		var href = $(this).attr("href");
 		var state = $(this).data("state");
+		var method = $(this).data("method");
 		var text = "";
 		if(state) text = "enabled to disabled"
 		else text = "disabled to enabled"
-	    sendConfirm('This laboratory will change its status from <strong>'+text+'</strong>. Are you sure you want to change it?',href,data);
+	    sendConfirm('This laboratory will change its status from <strong>'+text+'</strong>. Are you sure you want to change it?', href, data, method);
 	});
 
 	$('#button-upload').click(function (event){		
@@ -230,9 +238,7 @@ function tableChecker(){
 
 function showMessage(data, message){
 	 if(data.success){
-		 addLabel('#label-message',message,false);			
-	 }else{
-		 
+		 addLabel('#label-message', message, false);			
 	 }
 }
 
@@ -252,20 +258,28 @@ function checkSelected(){
 }
 
 function submitConfirm(form, href, message){
-	if(checkSelected()){	
-		showConfirm('Confirm',message, function(){	
+	if(checkSelected()){
+		var func = function(){	
 			form.attr('action',href);
 			form.submit()
-		});			 		
+		}
+		if(message)
+			showConfirm('Confirm', message, func);	
+		else 
+			func();
 	}
 }
 
-function redirectConfirm(data, href, name){
-	sendConfirm('This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?',href,data)
+function redirectConfirm(data, href, name, method){
+	sendConfirm('This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?', href, data, method)
 }
-function sendConfirm(message,href,data){
-	showConfirm('Confirm',message, function(){		
-		window.location.href = href + data;
+
+function sendConfirm(message, href, data, method){
+	var url = href + data
+	if(method)
+		url = href + data + '/' + method;
+	showConfirm('Confirm', message, function(){	
+		window.location.href = url;
 	});
 }
 

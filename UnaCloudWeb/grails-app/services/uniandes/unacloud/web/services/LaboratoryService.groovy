@@ -7,6 +7,7 @@ import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.web.queue.QueueTaskerControl;
+import uniandes.unacloud.web.utils.groovy.Utils;
 import uniandes.unacloud.web.domain.ExecutionIP;
 import uniandes.unacloud.web.domain.HardwareProfile;
 import uniandes.unacloud.web.domain.IPPool;
@@ -63,7 +64,7 @@ class LaboratoryService {
 	 * @param netMask laboratory network's mask
 	 */	
 	def createLab(name, highAvailability, NetworkQualityEnum netConfig, privateNet, netGateway, netMask, ipInit, ipEnd) {
-		ArrayList<String> ips = createRange(ipInit, ipEnd)
+		ArrayList<String> ips = Utils.createRange(ipInit, ipEnd)
 		if (ips.size() == 0) 
 			throw new Exception("IP range invalid")
 		//TODO save lab after validate each IP
@@ -73,59 +74,7 @@ class LaboratoryService {
 			new ExecutionIP(ip: ipFind, ipPool: ipPool).save()			
 	}
 	
-	/**
-	 * Adds a new machine to a given laboratory
-	 * @param ip physical machine's IP
-	 * @param name physical machine's name
-	 * @param cores physical machine's number of processors
-	 * @param ram physical machine's RAM memory
-	 * @param disk physical machine's available disk space
-	 * @param osId physical machine's operating system
-	 * @param mac physical machine's MAC address
-	 * @param lab Laboratory
-	 */
 	
-	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
-		def physicalMachine = new PhysicalMachine(name: name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
-			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [])
-		if (plats.getClass().equals(String))
-			physicalMachine.platforms.add(Platform.get(plats))
-		else
-			for (platId in plats)
-				physicalMachine.platforms.add(Platform.get(platId))
-		physicalMachine.save(failOnError:true)	
-	}
-	
-	/**
-	 * Sets values in a host machine
-	 * @param ip new ip for host
-	 * @param name new name
-	 * @param cores new logical cores quantity
-	 * @param pCores new physical cores quantity
-	 * @param ram new memory in host
-	 * @param osId new operating system id
-	 * @param mac new MAC address
-	 * @param host new name in network
-	 * @return
-	 */
-	def editMachine(ip, name, cores, pCores, ram, osId, mac, PhysicalMachine host, plats) {
-		if (!host.ip.ip.equals(ip))
-			host.ip.setIp(ip)
-		host.setName(name)
-		host.setMac(mac)
-		host.setCores(Integer.parseInt(cores))
-		host.setpCores(Integer.parseInt(pCores))
-		host.setRam(Integer.parseInt(ram))
-		host.setOperatingSystem(OperatingSystem.get(osId))
-		Set platforms = []
-		if (plats.getClass().equals(String))
-			platforms.add(Platform.get(plats))
-		else
-			for (platId in plats)
-				platforms.add(Platform.get(platId))
-		host.platforms = platforms
-		host.save(failOnError:true)
-	}
 	
 	/**
 	 * Changes the status of a laboratory
@@ -162,109 +111,7 @@ class LaboratoryService {
 				machine.putAt("highAvailability", highAvailability)
 			lab.putAt("highAvailability", highAvailability)
 		}		
-	}
-	
-	/**
-	 * Removes a valid IP in a lab
-	 * @param lab laboratory to be modified
-	 * @param ip to be removed
-	 */
-	def deleteIP(Laboratory lab, ip) {
-		ExecutionIP executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
-		if (executionIp.ipPool.ips.size() == 1)
-			throw new Exception("IP range must have one IP address at least")
-		if (executionIp && (executionIp.state == IPEnum.AVAILABLE || executionIp.state == IPEnum.DISABLED)) {	
-			NetInterface.executeUpdate("update NetInterface net set net.ip = null where net.ip.id = :id", [id : executionIp.id]);
-			IPPool pool = executionIp.ipPool
-			pool.removeFromIps(executionIp)
-			executionIp.delete()
-		}
-	}
-	
-	/**
-	 * Changes the state of a IP from AVAILABLE to DISABLE and vis
-	 * @param lab laboratory allows IP
-	 * @param ip IP to be modified
-	 */
-	def setStatusIP(Laboratory lab, ip){
-		def executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
-		if (executionIp && (executionIp.state.equals(IPEnum.AVAILABLE) || executionIp.state.equals(IPEnum.DISABLED))) {
-			if (executionIp.state == IPEnum.AVAILABLE)
-				executionIp.putAt("state", IPEnum.DISABLED)
-			else if (executionIp.state != IPEnum.AVAILABLE)
-				executionIp.putAt("state", IPEnum.AVAILABLE)
-		}
-	}
-	
-	/**
-	 * Deletes a IP Pool from a lab
-	 * Validates if IP Pool have ips Unavailable
-	 * @param lab where is assigned ips
-	 * @param pool of ip to be deleted 
-	 */
-	def deletePool(Laboratory lab, pool){
-		def ipPool = IPPool.get(pool)
-		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
-			for (ExecutionIP ip : ipPool.ips)
-				deleteIP(lab, ip.id)
-			ipPool.delete()
-		} else 
-			throw new Exception('Some IP addresses in IP Pool are being used')
-	}
-	
-	/**
-	 * Creates a new Pool in a lab, validates if range is valid
-	 * @param lab where will be assign ip's
-	 * @param privateNet if network is private or public
-	 * @param netGateway gateway
-	 * @param netMask mask for network
-	 * @param ipInit first ip 
-	 * @param ipEnd last ip
-	 */
-	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd) throws Exception {
-		ArrayList<String> ips = createRange(ipInit,ipEnd)
-		if (ips.size() == 0) 
-			throw new Exception("IP range invalid")
-		def ipPool = new IPPool(privateNet:privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()
-		for (String ipFind : ips) 
-			new ExecutionIP(ip : ipFind, ipPool : ipPool).save()
-	}
-	
-	/**
-	 * Deletes a host (physical machine) from a lab
-	 * Validates if there are not deployments in host
-	 * @param lab laboratory where is located the host
-	 * @param host to be deleted
-	 */
-	def deleteHost(Laboratory lab, host) {
-		PhysicalMachine hostMachine = PhysicalMachine.where{id == host && laboratory == lab}.find()
-		if (hostMachine) {			
-			if (Execution.where {executionNode == hostMachine && state.state != ExecutionStateEnum.FINISHED}.findAll().size() > 0) 
-				throw new Exception('The Host can not be deleted because there are some deployments linked to this one') 
-			def executions = Execution.where{
-					executionNode == hostMachine && state.state == ExecutionStateEnum.FINISHED}.findAll()
-			for (Execution exe in executions)
-					exe.putAt("executionNode", null)			
-			hostMachine.delete()			
-		}
-	}
-	
-	/**
-	 * Creates a task to stop, update agent or clear cache in a list of host machines
-	 * Sends task for queue if it is valid
-	 * @param machines
-	 */
-	def createRequestTasktoMachines(machines, task, user){
-		if (task == null || machines.size() == 0) 
-				throw new Exception("Invalid values");
-		List<PhysicalMachine> machineList = new ArrayList<PhysicalMachine>();
-		for (PhysicalMachine pm : machines) {
-			pm.putAt("state", PhysicalMachineStateEnum.PROCESSING)
-			machineList.add(pm);
-		}
-		QueueTaskerControl.taskMachines(machineList,task, user)
-	}
-	
+	}	
 	
 	/**
 	 * Calculates the quantity of available deployments by hardware profiles
@@ -302,29 +149,5 @@ class LaboratoryService {
 		return results
 	}
 	
-	/**
-	 * Method used to create a valid IP Range
-	 * @param ipInit first ip
-	 * @param ipEnd last ip
-	 * @return list of valid ip in range
-	 */
-	private ArrayList<String> createRange(ipInit,ipEnd){
-		Ip4Validator validator = new Ip4Validator();
-		if (!validator.validate(ipInit) || !validator.validate(ipEnd) || !validator.validateRange(ipInit, ipEnd))
-				throw new Exception("IP range is not valid")
-		String[] components = ipInit.split(".");
-		String[] components2 = ipEnd.split(".");
-		ArrayList<String> ips = new ArrayList<String>();
-		String ip = ipInit;
-		while (validator.inRange(ipInit, ipEnd, ip)) {
-			ips.add(ip);
-			long ipnumber = validator.transformIp(ip) + 1;
-			int b1 = (ipnumber >> 24) & 0xff;
-			int b2 = (ipnumber >> 16) & 0xff;
-			int b3 = (ipnumber >>  8) & 0xff;
-			int b4 = (ipnumber      ) & 0xff;
-			ip = b1 + "." + b2 + "." + b3 + "." + b4
-		}
-		return ips
-	}
+	
 }

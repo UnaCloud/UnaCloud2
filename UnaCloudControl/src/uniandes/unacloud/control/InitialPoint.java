@@ -18,7 +18,7 @@ public class InitialPoint {
 	 */
 	public static void main(String[] args) {		
 		try {
-			try {
+			/*try {
 	    		//Create agent log file
 	        	PrintStream ps = new PrintStream(new FileOutputStream("unacloud_control_out.log", true), true) {
 	        		@Override
@@ -44,7 +44,7 @@ public class InitialPoint {
 				System.setErr(psError);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}
+			}*/
 			ControlManager.getInstance();		
 			System.out.println("UnaCloud Control is running");
 		} catch (Exception e) {

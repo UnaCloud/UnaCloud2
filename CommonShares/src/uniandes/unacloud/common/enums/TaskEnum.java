@@ -70,6 +70,7 @@ public enum TaskEnum {
 		if (name.equals(CACHE.name)) return CACHE;
 		if (name.equals(DATA_SPACE.name)) return DATA_SPACE;
 		if (name.equals(VERSION.name)) return VERSION;
+		if (name.equals(GET_FILES.name)) return GET_FILES;
 		return null;
 	}
 	

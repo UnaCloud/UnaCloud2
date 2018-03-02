@@ -51,12 +51,12 @@
                                   <td class="column-center">
 	                                  <div class="btn-group">
 		                                  <g:if test="${!ip.state.equals(IPEnum.USED)&&!ip.state.equals(IPEnum.RESERVED)}">
-		                                  <a title="Delete" class="delete_ip btn btn-default" data-id="${ip.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/delete/ip/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+		                                  <a title="Delete" class="delete_ip btn btn-default" data-id="${ip.id}" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/ip/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
 			                              <g:if test="${!ip.state.equals(IPEnum.DISABLED)}">
-			                              <a title="Disable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-ban' ></i></a>
+			                              <a title="Disable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/ip/'+ip.id+'/set', absolute: true)}" data-toggle="tooltip"><i class='fa fa-ban' ></i></a>
 			                              </g:if>
 			                              <g:else>
-			                              <a title="Enable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/set/ip/'+ip.id, absolute: true)}" data-toggle="tooltip"><i class='fa fa-check' ></i></a>
+			                              <a title="Enable" class="btn btn-default" href="${createLink(uri: '/admin/lab/'+lab.id+'/pool/'+pool.id+'/ip/'+ip.id+'/set', absolute: true)}" data-toggle="tooltip"><i class='fa fa-check' ></i></a>
 			                              </g:else>
 			                              </g:if>
 		                              </div>

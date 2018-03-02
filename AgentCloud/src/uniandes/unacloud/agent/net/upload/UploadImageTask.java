@@ -67,7 +67,7 @@ public class UploadImageTask extends AbsUploadFileTask {
 	}
 
 	@Override
-	public void afterUpload() {
+	public void afterUpload(File zip) {
 		try {
 			System.out.println("Delete Image " + machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 			PersistentExecutionManager.removeExecution(machineExecution.getId(), false);
@@ -76,7 +76,7 @@ public class UploadImageTask extends AbsUploadFileTask {
 				ImageCacheManager.deleteImage(machineExecution.getImageId());
 				TorrentClient.getInstance().removeTorrent(machineExecution.getImage().getMainFile().getTorrentFile());				
 			}
-			PersistentExecutionManager.cleanDir(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile());
+			FileProcessor.deleteFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

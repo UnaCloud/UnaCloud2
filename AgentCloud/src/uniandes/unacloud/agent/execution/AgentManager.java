@@ -33,7 +33,7 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
-		
+		System.out.println("Updating agent");
 		try {
 			ClouderClientAttention.getInstance().stopService();
 		} catch (Exception e) {
@@ -58,7 +58,7 @@ public class AgentManager {
 	 * @return message 
 	 */
 	public static UnaCloudResponse stopAgent() {
-		
+		System.out.println("Stopping agent");
 		try {
 			ClouderClientAttention.getInstance().stopService();
 		} catch (Exception e) {

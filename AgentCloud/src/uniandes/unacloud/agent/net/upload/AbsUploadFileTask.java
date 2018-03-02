@@ -5,12 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.FileEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
@@ -18,7 +17,7 @@ import uniandes.unacloud.utils.file.FileProcessor;
 
 public abstract class AbsUploadFileTask implements Runnable {
 	
-	protected List<File> files = new ArrayList<File>();
+	protected List<File> files;
 	
 	protected String tokenUploadCom;
 	
@@ -57,11 +56,19 @@ public abstract class AbsUploadFileTask implements Runnable {
 			File zip = null;
 			long fileSize = 0;
 			try {	
-				if (files.size() > 1)
-					zip = FileProcessor.zipFilesSync(files.get(0).getName() + "_" + new Date(), files);
+				String name = null;
+				if (files.size() > 1) {
+					name = files.get(0).getParentFile().getAbsolutePath() + files.get(0).getName() + "_" + SystemUtils.getStringDate();
+					System.out.println("\tMultiple Files " + name);
+					zip = FileProcessor.zipFilesSync(name, files);					
+				}
 				//If size is one
-				else
-					zip = FileProcessor.zipFileSync(files.get(0).getParentFile().getAbsolutePath());
+				else {
+					name = files.get(0).getParentFile().getAbsolutePath();
+					System.out.println("\tOne file or folder " + name);
+					zip = FileProcessor.zipFileSync(name);
+				}
+				System.out.println("\t\t" + zip);
 				fileSize += getSize();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -111,7 +118,7 @@ public abstract class AbsUploadFileTask implements Runnable {
 				failedUpload(e);
 			}
 			
-			afterUpload();
+			afterUpload(zip);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,6 +131,6 @@ public abstract class AbsUploadFileTask implements Runnable {
 	
 	public abstract void failedUpload(Exception e);
 	
-	public abstract void afterUpload();
+	public abstract void afterUpload(File zip);
 
 }
