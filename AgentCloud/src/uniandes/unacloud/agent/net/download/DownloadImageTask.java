@@ -10,7 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import uniandes.unacloud.agent.exceptions.ExecutionException;
-import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Image;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.execution.domain.ImageStatus;
@@ -19,6 +18,7 @@ import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.file.FileProcessor;
 import uniandes.unacloud.utils.file.Zipper;
 
 /**
@@ -39,7 +39,7 @@ public class DownloadImageTask {
 	public static void downloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
 		
 		File root = new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
-		ImageCacheManager.cleanDir(root);
+		FileProcessor.deleteFileSync(root.getAbsolutePath());
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 		final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);

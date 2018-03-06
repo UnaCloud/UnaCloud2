@@ -17,7 +17,7 @@
     <section class="content"> 
     	<div class="row">
     		<div class="col-xs-12">  
-	    	    <a href="${createLink(uri: '/admin/lab/' + lab.id + '/machine/', absolute: true)}" data-id = "${machine.id}" class="delete_machines btn btn-primary btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
+	    	    <a href="${createLink(uri: '/admin/lab/' + lab.id + '/machine/', absolute: true)}" data-id = "${machine.id}" class="delete_machines btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
 	            <a href="${createLink(uri: '/admin/lab/' + lab.id + '/machine/' + machine.id + '/edit', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-pencil-square' ></i> Edit</a>
 	            <hr>
 	           	<div class="col-lg-6 col-sm-6 col-xs-12"> 
@@ -31,11 +31,11 @@
 	                		<p class="help-block">${machine.name}.</p>
 	                		<label class="col-lg-6 col-sm-6 col-xs-6">IP Address:</label>   
 	                		<p class="help-block">${machine.ip.ip}.</p>
+	                		<hr>
 	                		<label class="col-lg-6 col-sm-6 col-xs-6">Last Log in server:</label>   
 	                		<p class="help-block"><g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty()}">${machine.lastLog}</g:if><g:else>No Available</g:else></p>
-	                		<g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty()}">
-	                		<p class="help-block">Click to download the last log stored in server.</p>
-	                		<a title="Download" class="btn btn-primary" href="${createLink(uri: '/config/agent/download/', absolute: true)}" >Download</a>
+	                		<g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty()}">	                		
+	                		<a class="btn btn-success" title="Download last log" href="${createLink(uri: fileUrl, absolute: true)}" ><i class='fa fa-download' ></i> Download log</a>
 	                		</g:if>
 	                	</div>	                 	
 	            	</div>

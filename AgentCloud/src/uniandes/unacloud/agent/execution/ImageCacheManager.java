@@ -26,6 +26,7 @@ import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.utils.file.FileProcessor;
 import uniandes.unacloud.utils.security.HashGenerator;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.*;
 
@@ -143,17 +144,6 @@ public class ImageCacheManager {
 	}
 		
 	/**
-	 * Removes a directory from physical machine disk
-	 * @param f file or directory to be deleted
-	 */
-	public static void cleanDir(File f) {
-		if (f.isDirectory()) 
-			for (File r : f.listFiles())
-				cleanDir(r);
-		System.out.println("\t\t" + f + ": " + f.delete());
-	}
-	
-	/**
 	 * Removes all images from physical machine disk
 	 * @return operation confirmation
 	 */
@@ -164,14 +154,17 @@ public class ImageCacheManager {
 			try {				
 				for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
+						System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
 						PlatformFactory.getPlatform(image.getPlatformId()).stopAndUnregister(copy);
 						TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 					}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}					
-			for (File f : new File(machineRepository).listFiles())
-				cleanDir(f);
+			for (File f : new File(machineRepository).listFiles()) {
+				System.out.println("\tDelete File: " + f.getAbsolutePath());
+				FileProcessor.deleteFileSync(f.getAbsolutePath());
+			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -184,8 +177,9 @@ public class ImageCacheManager {
 	/**
 	 * Removes an image from cache in repository
 	 * @return response
+	 * @throws Exception 
 	 */
-	public static synchronized UnaCloudResponse clearImageFromCache(Long imageId) {
+	public static synchronized UnaCloudResponse clearImageFromCache(Long imageId) throws Exception {
 		System.out.println("clearCache for machine " + imageId);
 		loadImages();
 		Image vmi = imageList.get(imageId);		
@@ -205,7 +199,7 @@ public class ImageCacheManager {
 		System.out.println("\tDelete: " + folder);
 		if (folder.exists())
 			for (File root : new File(machineRepository + OperatingSystem.PATH_SEPARATOR + imageId).listFiles())
-				cleanDir(root);
+				FileProcessor.deleteFileSync(root.getAbsolutePath());
 		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	

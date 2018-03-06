@@ -25,6 +25,7 @@ public class SystemUtils {
 	 * Return date in format yyyy-MM-dd-hh-mm-ss
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public static String getStringDate(){
 		Date d = new Date();
 		return + (d.getYear() + 1900) + "-" + (d.getMonth() + 1) + "-" + (d.getDate()) + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();

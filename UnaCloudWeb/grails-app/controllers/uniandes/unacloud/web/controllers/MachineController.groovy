@@ -9,6 +9,7 @@ import uniandes.unacloud.web.domain.Platform;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.services.LaboratoryService;
 import uniandes.unacloud.web.services.MachineService
+import uniandes.unacloud.web.services.ServerVariableService;
 
 class MachineController extends AbsAdminController{
 	
@@ -20,6 +21,11 @@ class MachineController extends AbsAdminController{
 	 * Representation of laboratory services
 	 */
 	MachineService machineService
+	
+	/**
+	 * Representation of server variable service
+	 */
+	ServerVariableService serverVariableService
 		
 	//-----------------------------------------------------------------
 	// Actions
@@ -74,8 +80,10 @@ class MachineController extends AbsAdminController{
 		if (!machine)
 			redirect(uri:"/admin/lab/list", absolute:true)
 		else
-			[machine: machine, lab: lab, oss:OperatingSystem.list(), platforms: Platform.list()]
-		
+			if(machine.lastLog != null && !machine.lastLog.isEmpty())
+				[machine: machine, lab: lab, fileUrl: serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastLog]
+			else 
+				[machine: machine, lab: lab]
 	}
 	
 	/**

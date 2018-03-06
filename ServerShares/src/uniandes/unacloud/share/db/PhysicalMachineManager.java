@@ -62,7 +62,7 @@ public class PhysicalMachineManager {
 	 * @param con Database Connection
 	 * @return List of Physical Machines entities
 	 */
-	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState,Connection con) {
+	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState, Connection con) {
 		if (idList.length == 0)
 			return null;
 		try {
@@ -157,7 +157,7 @@ public class PhysicalMachineManager {
 			if (machine.getLastReport() != null) query += (parameters++ > 0 ? "," : "") + " pm.last_report = ? ";
 			if (machine.getFreeSpace() != null) query += (parameters++ > 0 ? "," : "") + " pm.free_space = ? ";
 			if (machine.getVersion() != null) query += (parameters++ > 0 ? "," : "") + " pm.agent_version = ? ";
-			if (machine.getLogName() != null) query += (parameters++ > 0 ? "," : "") + " pm.lastLog = ? ";
+			if (machine.getLogName() != null) query += (parameters++ > 0 ? "," : "") + " pm.last_log = ? ";
 			if (parameters > 0) {
 				query += "WHERE pm.id = ? AND pm.id > 0;";
 				PreparedStatement ps = con.prepareStatement(query);

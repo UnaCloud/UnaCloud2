@@ -74,6 +74,8 @@ public class UnaCloudConstants {
 	public static final String VERSION_FILE = "version.txt";
 	public static final String AGENT_OUT_LOG = "unacloud_out.log";
 	public static final String AGENT_ERROR_LOG = "unacloud_err.log";
+	public static final String CONTROL_OUT_LOG = "unacloud_control_out.log";
+	public static final String CONTROL_ERROR_LOG = "unacloud_control_err.log";
 	
     //UnaCloud communication and operation constants
 	public static final String TRANSMISSION_PROTOCOL = "TRANSMISSION_PROTOCOL";

@@ -1,13 +1,18 @@
 package uniandes.unacloud.file.services
 
 import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.sql.Connection
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.internal.compiler.flow.FinallyFlowContext;
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
+import sun.rmi.log.ReliableLog.LogFile;
 import uniandes.unacloud.common.utils.FileConverter;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.ImageManager;
@@ -30,7 +35,6 @@ import grails.transaction.Transactional
  * @author CesarF
  *
  */
-@Transactional
 class FileService implements ApplicationContextAware { 
 	
 	/**
@@ -231,5 +235,52 @@ class FileService implements ApplicationContextAware {
 	 */
 	def updateProperty() {
 		System.setProperty(UnaCloudConstants.ROOT_PATH, applicationContext.getResource("/").getFile().getAbsolutePath())
+	}
+	
+	/**
+	 * 
+	 * @param outputStream
+	 * @param logName
+	 * @return
+	 */
+	def getLog(OutputStream outputStream, String hostname, String logName) {
+		Connection con
+		RepositoryEntity entity
+		try	{
+			con = FileManager.getInstance().getDBConnection();
+			entity = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con);
+		}
+		catch (Exception e) {
+			e.printStackTrace()
+		} 
+		finally {
+			if (con != null)
+				con.close();
+		}
+		ZipOutputStream zos = new ZipOutputStream(outputStream);
+		if (entity != null) {
+			File logFile = new File(entity.getRoot() + File.separator + 
+				UnaCloudConstants.LOGS_PATH + File.separator + hostname + File.separator + logName);	
+			println '\t path' + logFile		
+			if(logFile.exists()) {
+				
+				zos.putNextEntry(new ZipEntry(logName));
+				Files.copy(logFile.toPath(), zos);
+				zos.closeEntry();		
+			}		
+			else
+				writeResponseError("File does not exist", zos);
+		}
+		else 
+			writeResponseError("Error reading database", zos);			
+		zos.close();
+	}	
+	
+	private void writeResponseError(String message, ZipOutputStream zos) {
+		PrintWriter pw = new PrintWriter(zos);
+		zos.putNextEntry(new ZipEntry("Error.txt"));
+		pw.println("Error in download process: " + message);
+		pw.flush();
+		zos.closeEntry();
 	}
 }

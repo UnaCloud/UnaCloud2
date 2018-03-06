@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 
+import uniandes.unacloud.common.utils.UnaCloudConstants;
+
 /**
  * Initial point to start all services from UnaCloud Control
  * @author CesarF
@@ -18,9 +20,9 @@ public class InitialPoint {
 	 */
 	public static void main(String[] args) {		
 		try {
-			/*try {
+			try {
 	    		//Create agent log file
-	        	PrintStream ps = new PrintStream(new FileOutputStream("unacloud_control_out.log", true), true) {
+	        	PrintStream ps = new PrintStream(new FileOutputStream(UnaCloudConstants.CONTROL_OUT_LOG, true), true) {
 	        		@Override
 	        		public void println(String x) {
 	        			super.println(new Date() + " " + x);
@@ -30,7 +32,7 @@ public class InitialPoint {
 	        			super.println(new Date() + " " + x);
 	        		}
 	        	};
-	        	PrintStream psError = new PrintStream(new FileOutputStream("unacloud_control_err.log", true), true) {
+	        	PrintStream psError = new PrintStream(new FileOutputStream(UnaCloudConstants.CONTROL_ERROR_LOG, true), true) {
 	            	@Override
 	        		public void println(String x) {
 	        			super.println(new Date() + " " + x);
@@ -44,7 +46,7 @@ public class InitialPoint {
 				System.setErr(psError);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
-			}*/
+			}
 			ControlManager.getInstance();		
 			System.out.println("UnaCloud Control is running");
 		} catch (Exception e) {
