@@ -12,7 +12,7 @@ import uniandes.unacloud.web.utils.groovy.Utils;
 import grails.transaction.Transactional
 
 @Transactional
-class IpService {
+class IpAddressService {
 
    /**
 	 * Removes a valid IP in a lab

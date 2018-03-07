@@ -112,12 +112,12 @@ class UrlMappings {
 			"/lab/$id/machine/task/$process"(controller:'machine', action:"requestTask")
 			
 			/** admin - IP**/	
-			"/lab/$id/pool/new"(controller:'ip', action:"createPool")
-			"/lab/$id/pool/save"(controller:'ip', action:"savePool")
-			"/lab/$id/pool/$pool"(controller:'ip', action:"list")
-			"/lab/$id/pool/$pool/delete/"(controller:'ip', action:"poolDelete")
-			"/lab/$id/pool/$pool/ip/$ip/delete"(controller:'ip', action:"delete")
-			"/lab/$id/pool/$pool/ip/$ip/set"(controller:'ip', action:"update")
+			"/lab/$id/pool/new"(controller:'ipAddress', action:"createPool")
+			"/lab/$id/pool/save"(controller:'ipAddress', action:"savePool")
+			"/lab/$id/pool/$pool/list"(controller:'ipAddress', action:"list")
+			"/lab/$id/pool/$pool/delete/"(controller:'ipAddress', action:"poolDelete")
+			"/lab/$id/pool/$pool/ip/$ip/delete"(controller:'ipAddress', action:"delete")
+			"/lab/$id/pool/$pool/ip/$ip/set"(controller:'ipAddress', action:"update")
 						
 			/** admin - Repositories management**/
 			"/repository/list"(controller:'repository', action:"list")

@@ -154,7 +154,7 @@
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
 					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" data-method="delete" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
-					                                  <a title="Detail" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open" ></i></a>
+					                                  <a title="Detail" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id + '/list', absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open" ></i></a>
 					                              </div>
 											  </td>
 			                              </tr>
