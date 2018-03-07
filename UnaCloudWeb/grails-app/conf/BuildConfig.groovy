@@ -41,10 +41,6 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        //plugins for security in rest services
-        //compile ':spring-security-core:2.0-RC5'
-        //compile ':spring-security-rest:1.5.0.M3'
-
 
         runtime ":hibernate4:4.3.5.5"
 		compile ":asset-pipeline:1.9.9"
