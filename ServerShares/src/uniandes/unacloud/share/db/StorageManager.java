@@ -20,7 +20,7 @@ public class StorageManager {
 	 * @param con Database Connection
 	 * @return repository entity
 	 */
-	public static RepositoryEntity getRepositoryByName(String name,Connection con){
+	public static RepositoryEntity getRepositoryByName(String name, Connection con){
 		try {
 			PreparedStatement ps = con.prepareStatement("SELECT re.id, re.name, re.capacity, re.path FROM repository re WHERE re.name = ?;");
 			ps.setString(1,name);

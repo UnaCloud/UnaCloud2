@@ -10,12 +10,12 @@ import java.util.Date;
 
 import uniandes.unacloud.agent.execution.AgentManager;
 import uniandes.unacloud.agent.execution.PersistentExecutionManager;
+import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.PhysicalMachineStateReporter;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.net.torrent.TorrentClient;
 import uniandes.unacloud.agent.platform.PlatformFactory;
-import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
@@ -61,7 +61,7 @@ public class InitialPoint {
         //Start log    
         try {
     		//Create agent log file
-        	PrintStream ps = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_out.log", true), true){
+        	PrintStream ps = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + UnaCloudConstants.AGENT_OUT_LOG, true), true){
         	
         		@Override
         		public void println(String x) {
@@ -72,7 +72,7 @@ public class InitialPoint {
         			super.println(new Date() + " " + x);
         		}
         	};
-        	PrintStream psError = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + "unacloud_err.log", true), true){
+        	PrintStream psError = new PrintStream(new FileOutputStream(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + UnaCloudConstants.AGENT_ERROR_LOG, true), true){
             	@Override
         		public void println(String x) {
         			super.println(new Date() + " " + x);

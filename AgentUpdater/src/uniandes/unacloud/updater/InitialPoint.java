@@ -5,10 +5,15 @@
 
 package uniandes.unacloud.updater;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import uniandes.unacloud.common.utils.ConfigurationReader;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 
@@ -20,9 +25,12 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * @author CesarF
  */
 public class InitialPoint {
+	
+	private static ConfigurationReader reader;
 	   
     public static void main(String... args) throws IOException {
         if (args.length >= 1) {        	
+        	reader = new ConfigurationReader(UnaCloudConstants.LOCAL_FILE);
             startClient(Integer.parseInt(args[0]));
         }
     }
@@ -32,6 +40,36 @@ public class InitialPoint {
      * @param opcion
      */
     public static void startClient(int opcion) {
+    	   //Start log    
+        try {
+    		//Create agent log file
+        	PrintStream ps = new PrintStream(new FileOutputStream(reader.getStringVariable(UnaCloudConstants.DATA_PATH) + "updater_" + UnaCloudConstants.AGENT_OUT_LOG, true), true){
+        	
+        		@Override
+        		public void println(String x) {
+        			super.println(new Date() + " " + x);
+        		}
+        		@Override
+        		public void println(Object x) {
+        			super.println(new Date() + " " + x);
+        		}
+        	};
+        	PrintStream psError = new PrintStream(new FileOutputStream(reader.getStringVariable(UnaCloudConstants.DATA_PATH) + "updater_" + UnaCloudConstants.AGENT_ERROR_LOG, true), true){
+            	@Override
+        		public void println(String x) {
+        			super.println(new Date() + " " + x);
+        		}
+        		@Override
+        		public void println(Object x) {
+        			super.println(new Date() + " " + x);
+        		}
+        	};
+			System.setOut(ps);
+			System.setErr(psError);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+        System.out.println("Start agent " + opcion);      
         if (opcion == UnaCloudConstants.DELAY) {
             opcion = UnaCloudConstants.RUN;
             try {
