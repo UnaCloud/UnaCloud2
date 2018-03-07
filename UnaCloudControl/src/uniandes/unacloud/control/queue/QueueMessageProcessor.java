@@ -119,7 +119,7 @@ public class QueueMessageProcessor implements QueueReader {
 				
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
 				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
-					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, imageId, machines.get(i).getId()));
+					messageList.add(new ClearImageFromCacheMessage(machines.get(i).getIp(), ControlManager.getInstance().getAgentPort(), null, imageId, machines.get(i).getId()));
 					
 					if (j >= messagesByThread || i == machines.size()-1) {
 						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
@@ -192,9 +192,10 @@ public class QueueMessageProcessor implements QueueReader {
 				System.out.println("Send message to " + machines.size());
 				List<UnaCloudMessage> messageList = new ArrayList<UnaCloudMessage>();
 				for (int i = 0, j = 1; i < machines.size() ; i++, j++) {
-					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getPort(), null, task, machines.get(i).getId()));
+					messageList.add(new AgentMessage(machines.get(i).getIp(), ControlManager.getInstance().getAgentPort(), null, task, machines.get(i).getId()));
 					
 					if (j >= messagesByThread || i == machines.size()-1) {
+						System.out.println("\tReady for " + messageList.size());
 						threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 							
 							@Override
@@ -207,9 +208,9 @@ public class QueueMessageProcessor implements QueueReader {
 									if (mss.getTask() == AgentMessage.STOP_CLIENT || mss.getTask() == AgentMessage.UPDATE_OPERATION) 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 									else if (mss.getTask() == AgentMessage.GET_DATA_SPACE) 
-										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON, null);
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, null, Long.parseLong(resp.getMessage()), PhysicalMachineStateEnum.ON, null, null);
 									else if (mss.getTask() == AgentMessage.GET_VERSION) 
-										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON, null);
+										pm = new PhysicalMachineEntity(mss.getPmId(), null, null, resp.getMessage(), null, PhysicalMachineStateEnum.ON, null, null);
 									else 
 										pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.ON);
 									PhysicalMachineManager.setPhysicalMachine(pm, con2);
@@ -268,7 +269,7 @@ public class QueueMessageProcessor implements QueueReader {
 							interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
 						ExecutionStartMessage vmsm = new ExecutionStartMessage(
 								execution.getNode().getIp(), 
-								ControlManager.getInstance().getPort(), 
+								ControlManager.getInstance().getAgentPort(), 
 								null, 
 								execution.getId(), 
 								execution.getNode().getId(),
@@ -358,7 +359,7 @@ public class QueueMessageProcessor implements QueueReader {
 					ExecutionEntity execution = executions.get(i);
 					ImageOperationMessage vmsm  = new ImageOperationMessage(
 							execution.getNode().getIp(), 
-							ControlManager.getInstance().getPort(), 
+							ControlManager.getInstance().getAgentPort(), 
 							null,  
 							ImageOperationMessage.VM_STOP, 
 							execution.getNode().getId(),
@@ -430,7 +431,7 @@ public class QueueMessageProcessor implements QueueReader {
 						interfaces.add(new ImageNetInterfaceComponent(interf.getIp(), interf.getNetMask(), interf.getName()));
 					ExecutionStartMessage vmsm = new ExecutionStartMessage(
 							execution.getNode().getIp(), 
-							ControlManager.getInstance().getPort(), 
+							ControlManager.getInstance().getAgentPort(), 
 							null, 
 							execution.getId(), 
 							execution.getNode().getId(),
@@ -501,7 +502,7 @@ public class QueueMessageProcessor implements QueueReader {
 			try {
 				ExecutionSaveImageMessage vmsim = new ExecutionSaveImageMessage(
 						execution.getNode().getIp(), 
-						ControlManager.getInstance().getPort(), 
+						ControlManager.getInstance().getAgentPort(), 
 						null, 
 						executionId, 
 						execution.getNode().getId(),
