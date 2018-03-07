@@ -18,7 +18,7 @@ public class DeploymentManager {
     //-----------------
     //Constants
     //-----------------
-    private static final String RUTA = "/UnaCloudWeb/rest/deployment";
+    private static final String RUTA = "/rest/deployment";
 
     public static final int DEPLOYED=5;
 

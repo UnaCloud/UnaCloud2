@@ -228,10 +228,14 @@ public class UnaCloudConnection {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080");
+        UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         //METHOD FOR JESSE TESTING. UNCOMMENT TO TEST
         //uc.jesseTest();
         DeploymentManager dep= new DeploymentManager(uc);
+
+        DeploymentResponse deploy=dep.getDeployment((int)1);
+        System.out.println(deploy.getStatus().getName()+"");
+/*
         //Post deployment with params
         DeploymentRequest deploymentRequest=new DeploymentRequest(2,2);
         deploymentRequest.addNode(13,1,2,"MyHost2",false);
@@ -302,7 +306,7 @@ public class UnaCloudConnection {
             System.out.println("MACHINE "+i);
             laboratoryUpdateRequest.addMachine(i);
         }
-        lab.cleanCache(laboratoryUpdateRequest);
+        lab.cleanCache(laboratoryUpdateRequest);*/
 
     }
 

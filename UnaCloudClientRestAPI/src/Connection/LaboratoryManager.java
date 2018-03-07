@@ -21,7 +21,7 @@ public class LaboratoryManager {
         ON,OFF,PROCESSING,DISABLED
     }
     //Constants
-    private static final String RUTA="/UnaCloudWeb/rest/laboratory";
+    private static final String RUTA="/rest/laboratory";
 
     //Attribute for UnaCloudConnection
     private UnaCloudConnection uc;
