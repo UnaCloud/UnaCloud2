@@ -15,6 +15,7 @@ import uniandes.unacloud.web.domain.enums.ClusterEnum
 import uniandes.unacloud.web.exceptions.HttpException
 import uniandes.unacloud.web.services.DeploymentService
 import uniandes.unacloud.web.services.LaboratoryService
+import uniandes.unacloud.web.services.MachineService
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions
 
 /**
@@ -25,7 +26,7 @@ import uniandes.unacloud.web.utils.groovy.ImageRequestOptions
  *
  */
 @Controller
-class LaboratoryRestController extends AbstractRestController {
+class MachineRestController extends AbstractRestController {
 
 
 	//-----------------------------------------------------------------
@@ -35,7 +36,7 @@ class LaboratoryRestController extends AbstractRestController {
 	/**
 	 * Representation of cluster service
 	 */
-	LaboratoryService laboratoryService
+	MachineService machineService
 
 	//-----------------------------------------------------------------
 	// Actions MVC
@@ -92,7 +93,7 @@ class LaboratoryRestController extends AbstractRestController {
                         hostList.add(pm)
                 }
                 if (hostList.size() > 0) {
-                    laboratoryService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), flash.user)
+                    machineService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(data.process), flash.user)
                     renderSuccess()
 
                 }
