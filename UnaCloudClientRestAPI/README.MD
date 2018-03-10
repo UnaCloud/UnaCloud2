@@ -3,12 +3,12 @@
 + gson-2.8.0.jar
 # Components
 ## UnaCloudConnection 
-UnaCloudConnection is currently the only way to connect directly to the REST Api developed for UnaCloud. It receives the base URL in the format <IP>:>PORT>/<root> ("http://157.253.236.113:8080/UnaCloud" for instance) and the API Key of the user who is gonna access the service. Besides it possesses methods for comunicating with the REST API through the use of HTTP methods.
+UnaCloudConnection is currently the only way to connect directly to the REST API developed for UnaCloud. It receives the base URL in the format <IP>:<PORT>/<root> ("http://157.253.236.113:8080/UnaCloud" for instance) and the API Key of the user who is gonna access the service. Besides it possesses methods for comunicating with the REST API through the use of HTTP verbs.
 ## Managers
 Each manager is specialized in some resource and uses UnaCLoudConnection for connecting to the API and doing the required actions for each resource.
 ## VO
 Classes used for mapping between REST requests and responses using gson
-## Example
+## Example (UnaCloudClientRestAPI/src/Example/)
 Classes for showcasing complex examples of current operations supported by this library
 # Important notes regarding the current functionality
 + It is assumed that for any deployment the user must know the id of the cluster and the id of the nodes (or images)
@@ -22,7 +22,7 @@ Classes for showcasing complex examples of current operations supported by this 
 + Gets the executions from a deployed image (DeploymentManager.getExecutionsByDeployedImageId(int idDeployment,int imageId))
 + Cleans the cache of given machines inside a lab (LaboratoryManager.cleanCache(LaboratoryUpdateRequest laboratoryUpdateRequest))
 + Gets the machines of a laboratory with the given id (LaboratoryManager.getLaboratoryMachines(int id))
-# Code examples
+# Code examples (UnaCloudClientRestAPI/src/Example/)
 Currently there are two code examples showcasing UnaCloudConnection functionalities:
 ## SimpleDeployment
 + With a given UnaCloudConnection it creates a deployment with a given time and cluster id. It also adds one image for deploying. After the deployment request is finished and sent to the REST API it returns an id for further identification of the created deployment. The example code can be run in the main of the class.
