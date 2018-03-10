@@ -146,8 +146,8 @@ class UrlMappings {
 			"/deployment/$id"(controller:'DeploymentRest', action:[GET:"show"])
 			"/deployment/$id/execution/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
 			"/deployment/$id/deployedImage/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])
-			"/laboratory"(controller:"LaboratoryRest",action:[PUT:"updateMachines"])
-			"/laboratory/$id/machines"(controller:"LaboratoryRest",action:[GET:"getLaboratoryMachines"])
+			"/laboratory"(controller:"MachineRest",action:[PUT:"updateMachines"])
+			"/laboratory/$id/machines"(controller:"MachineRest",action:[GET:"getLaboratoryMachines"])
 		}
 	}
 }
