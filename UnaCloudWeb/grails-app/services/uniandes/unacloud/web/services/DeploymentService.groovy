@@ -282,7 +282,7 @@ class DeploymentService {
 	 */
 	def getExecutionHistory(int id)
 	{
-		return ExecutionHistory.findAllByExecution(Execution.get(id))
+		return ExecutionHistory.findAllByExecution(Execution.get(id)).sort { it.changeTime }
 	}
 	
 	/**

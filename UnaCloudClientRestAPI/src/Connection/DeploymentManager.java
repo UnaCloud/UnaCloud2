@@ -24,6 +24,15 @@ public class DeploymentManager {
 
     public static final int FAILED=2;
 
+    public static final int HW_SMALL=1;
+
+    public static final int HW_MEDIUM=2;
+
+    public static final int HW_LARGE=3;
+
+    public static final int HW_XLARGE=4;
+
+
     //Attribute for UnaCloudConnection
     private UnaCloudConnection uc;
     //Attribute for gson connection for parsing
