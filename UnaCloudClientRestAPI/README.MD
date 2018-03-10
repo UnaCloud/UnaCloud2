@@ -3,7 +3,7 @@
 + gson-2.8.0.jar
 # Components
 ## UnaCloudConnection 
-UnaCloudConnection is currently the only way to connect directly to the REST Api developed for UnaCloud. It receives the base URL in the format <IP>:>PORT>/<root> ("http://157.253.236.113:8080/UnaCloud" for instance) and the API Key of the user who is gonna access the service. Besides it possesses methods for comunicating with the REST API through the use of HTTP methods.
+UnaCloudConnection is currently the only way to connect directly to the REST API developed for UnaCloud. It receives the base URL in the format <IP>:<PORT>/<root> ("http://157.253.236.113:8080/UnaCloud" for instance) and the API Key of the user who is gonna access the service. Besides it possesses methods for comunicating with the REST API through the use of HTTP verbs.
 ## Managers
 Each manager is specialized in some resource and uses UnaCLoudConnection for connecting to the API and doing the required actions for each resource.
 ## VO
