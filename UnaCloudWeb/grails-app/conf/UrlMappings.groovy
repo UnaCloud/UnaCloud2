@@ -142,12 +142,13 @@ class UrlMappings {
 		 * API REST services
 		 */
 		group "/rest", {
-			"/deployment"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
-			"/deployment/$id"(controller:'DeploymentRest', action:[GET:"show"])
-			"/deployment/$id/execution/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
-			"/deployment/$id/deployedImage/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])
-			"/laboratory"(controller:"MachineRest",action:[PUT:"updateMachines"])
-			"/laboratory/$id/machines"(controller:"MachineRest",action:[GET:"getLaboratoryMachines"])
+			"/deployments"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
+			"/deployments/$id"(controller:'DeploymentRest', action:[GET:"show"])
+			"/deployments/$id/executions/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
+			"/deployments/$id/executions/$idExec/histories"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])
+			"/deployments/$id/deployedImages/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionHistory"])
+			"/laboratories"(controller:"MachineRest",action:[PUT:"updateMachines"])
+			"/laboratories/$id/machines"(controller:"MachineRest",action:[GET:"getLaboratoryMachines"])
 		}
 	}
 }
