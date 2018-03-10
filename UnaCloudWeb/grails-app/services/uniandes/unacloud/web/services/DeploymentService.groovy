@@ -282,7 +282,7 @@ class DeploymentService {
 	 */
 	def getExecutionHistory(int id)
 	{
-		return ExecutionHistory.where(execution==Execution.get(id))
+		return ExecutionHistory.findAllByExecution(Execution.get(id))
 	}
 	
 	/**

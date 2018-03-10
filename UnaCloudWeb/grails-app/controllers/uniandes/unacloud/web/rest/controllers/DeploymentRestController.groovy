@@ -265,7 +265,7 @@ class DeploymentRestController extends AbstractRestController {
                 Execution execution=deploymentService.getActiveExecution(deployment,idExec)
                 if(execution)
                 {
-                    ExecutionHistory history= deploymentService.getExecutionHistory(idExec)
+                    List<ExecutionHistory> history= deploymentService.getExecutionHistory(idExec)
                     if(history)
                         respond history
                     else
