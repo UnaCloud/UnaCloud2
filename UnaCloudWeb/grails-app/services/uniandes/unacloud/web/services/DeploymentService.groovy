@@ -1,6 +1,7 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.utils.security.HashGenerator;
+import uniandes.unacloud.utils.security.HashGenerator
+import uniandes.unacloud.web.domain.ExecutionHistory;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
@@ -248,13 +249,10 @@ class DeploymentService {
 	 * @return executions with the given id
 	 */
 	def getActiveExecution(Deployment deployment, int idExec) {
-		print "DEP"+deployment.id
         for(DeployedImage image:deployment.images)
         {
-			print "IMA"+image.id
             for(Execution execution:image.activeExecutions)
             {
-				print "EXE"+execution.id
                 if(execution.id==idExec)
                     return execution
             }
@@ -277,6 +275,15 @@ class DeploymentService {
         }
         return null
     }
+	/**
+	 * Gets the execution history with the given id of execution.
+	 * @param id Id of the execution
+	 * @return Execution History of the given execution
+	 */
+	def getExecutionHistory(int id)
+	{
+		return ExecutionHistory.findAllByExecution(Execution.get(id)).sort { it.changeTime }
+	}
 	
 	/**
 	 * Creates a task to stop executions in list

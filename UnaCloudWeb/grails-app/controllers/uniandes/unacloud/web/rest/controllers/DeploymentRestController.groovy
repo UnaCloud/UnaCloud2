@@ -135,9 +135,13 @@ class DeploymentRestController extends AbstractRestController {
 	def list() {
 
         verifyCurrentUser()
-        //Need to define authenticity of user through token or another sort of media
-        def list = deploymentService.getActiveDeployments(flash.user)
-        respond list
+        ArrayList<Deployment> deployments=new ArrayList<Deployment>()
+        for(Deployment d:flash.user.deployments)
+        {
+            if(d.isActive())
+                deployments.add(d)
+        }
+        respond deployments
 	}
 
     /**
@@ -244,5 +248,36 @@ class DeploymentRestController extends AbstractRestController {
         }
         else
             throw new HttpException(404,"The deployment does not exist in the system")
+    }
+    /**
+     * Gets the execution history of the given execution id and deployment id.
+     * @param id Id of the deployment
+     * @param idExec Id of the execution
+     * @return Execution history of the given deployment and execution
+     */
+    def getExecutionHistory(int id, int idExec)
+    {
+        Deployment deployment=Deployment.get(id)
+        if(deployment)
+        {
+            if(deployment.user==flash.user)
+            {
+                Execution execution=deploymentService.getActiveExecution(deployment,idExec)
+                if(execution)
+                {
+                    List<ExecutionHistory> history= deploymentService.getExecutionHistory(idExec)
+                    if(history)
+                        respond history
+                    else
+                        renderSuccess()
+                }
+                else
+                    throw new HttpException(404,"The execution does not exist in the system")
+            }
+            else
+                throw new HttpException(401,"The user does not have permissions for this execution list")
+        }
+        else
+            throw new HttpException(404,"The given deployment does not exist in the system")
     }
 }

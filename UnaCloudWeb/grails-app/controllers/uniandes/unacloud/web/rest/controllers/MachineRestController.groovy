@@ -108,4 +108,5 @@ class MachineRestController extends AbstractRestController {
 		else
             throw new HttpException(404, "The selected lab does not exist in the system")
     }
+
 }
