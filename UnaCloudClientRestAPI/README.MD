@@ -8,7 +8,7 @@ UnaCloudConnection is currently the only way to connect directly to the REST API
 Each manager is specialized in some resource and uses UnaCLoudConnection for connecting to the API and doing the required actions for each resource.
 ## VO
 Classes used for mapping between REST requests and responses using gson
-## Example
+## Example (UnaCloudClientRestAPI/src/Example/)
 Classes for showcasing complex examples of current operations supported by this library
 # Important notes regarding the current functionality
 + It is assumed that for any deployment the user must know the id of the cluster and the id of the nodes (or images)
@@ -22,7 +22,7 @@ Classes for showcasing complex examples of current operations supported by this 
 + Gets the executions from a deployed image (DeploymentManager.getExecutionsByDeployedImageId(int idDeployment,int imageId))
 + Cleans the cache of given machines inside a lab (LaboratoryManager.cleanCache(LaboratoryUpdateRequest laboratoryUpdateRequest))
 + Gets the machines of a laboratory with the given id (LaboratoryManager.getLaboratoryMachines(int id))
-# Code examples
+# Code examples (UnaCloudClientRestAPI/src/Example/)
 Currently there are two code examples showcasing UnaCloudConnection functionalities:
 ## SimpleDeployment
 + With a given UnaCloudConnection it creates a deployment with a given time and cluster id. It also adds one image for deploying. After the deployment request is finished and sent to the REST API it returns an id for further identification of the created deployment. The example code can be run in the main of the class.
