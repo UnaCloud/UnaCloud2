@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Class for deployment time testing examples with different methods.
- * @pauthor s.guzmanm
+ * @author s.guzmanm
  */
 public class DeploymentTimeTesting {
     //Given UnaCloudConnection
@@ -57,7 +57,7 @@ public class DeploymentTimeTesting {
                 int i=0;
                 for(PhysicalMachineResponse phy:list)
                 {
-                    System.out.println("MACHINE "+phy.getId());
+                    System.out.println("MACHINE "+phy.getId()+" "+phy.getName()+" "+phy.getIp().getId());
                     laboratoryUpdateRequest.addMachine(phy.getId());
                     i++;
                     if(i>=maxCleanableMachines)
@@ -75,7 +75,7 @@ public class DeploymentTimeTesting {
                     i=0;
                     for(PhysicalMachineResponse phy:list)
                     {
-                        System.out.println("Mac "+phy.getId());
+                        System.out.println("MACHINE "+phy.getId()+" "+phy.getName()+" "+phy.getIp().getId());
                         if(phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING+""))
                         {
                             terminaCache=false;
@@ -88,8 +88,8 @@ public class DeploymentTimeTesting {
                 }
                 DeploymentManager dep= new DeploymentManager(uc);
                 //Post deployment with params
-                DeploymentRequest deploymentRequest=new DeploymentRequest(3600000,61);
-                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";;;"+j+"_"+qty,false);
+                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
+                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+"_"+qty+";",false);
                 double deploymentId=dep.deployWithParams(deploymentRequest);
                 System.out.println("ID DEPLOY"+deploymentId);
 
@@ -116,6 +116,13 @@ public class DeploymentTimeTesting {
                 //Throws exception if there is a failed instance of deployment
                 if(!noErrors)
                     throw new Exception("There are failed deployment instances");
+                //While the deployment is not done loop
+                while(!deploy.getStatus().getName().equals(DeploymentManager.FINISHED))
+                {
+                    Thread.sleep(15000);
+                    deploy=dep.getDeployment((int)deploymentId);
+                    System.out.println("CURRENT DEP STATUS "+deploy.getStatus().getName());
+                }
             }
         }
 
@@ -136,8 +143,8 @@ public class DeploymentTimeTesting {
             for(Integer qty:quantities)
             {
                 //Post deployment with params
-                DeploymentRequest deploymentRequest=new DeploymentRequest(3600000,2);
-                deploymentRequest.addNode(13,DeploymentManager.HW_SMALL,qty,significantHostName+";;;"+j+"_"+qty,false);
+                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
+                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+"_"+qty+";",false);
                 double deploymentId=dep.deployWithParams(deploymentRequest);
                 System.out.println("ID DEPLOY"+deploymentId);
 
@@ -175,13 +182,20 @@ public class DeploymentTimeTesting {
 
                 //The user must know the id of the lab to clean up
                 LaboratoryManager lab=new LaboratoryManager(uc);
-                LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
+                LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(2, TaskManagerState.CACHE);
                 for(Integer i:machines)
                 {
                     System.out.println("MACHINE "+i);
                     laboratoryUpdateRequest.addMachine(i);
                 }
                 lab.cleanCache(laboratoryUpdateRequest);
+                //While the deployment is not done loop
+                while(!deploy.getStatus().getName().equals(DeploymentManager.FINISHED))
+                {
+                    Thread.sleep(15000);
+                    deploy=dep.getDeployment((int)deploymentId);
+                    System.out.println("CURRENT DEP STATUS "+deploy.getStatus().getName());
+                }
             }
         }
 
@@ -204,10 +218,10 @@ public class DeploymentTimeTesting {
             todoEstaDetenido=true;
             for(ObjectId<Integer> id:deploy.getImages())
             {
-                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId(deploymentId,id.getId()))
                 {
                     state=exec.getState().getId();
-                    System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                    System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode().getId()+" "+exec.getState().getId());
                     if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
                     {
                         todoEstaDetenido=false;
@@ -230,10 +244,9 @@ public class DeploymentTimeTesting {
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
         //First method for making deployment time testing
-        deploymentTimeTesting.deploymentTimeTesting(5,new int[]{1,2,3,4,5},10,"UnaCloudConnectionTest");
-        //Second method for making deployment time testing with post-cache processing
-        deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(5,new int[]{1,2,3,4,5},"UnaCloudConnectionTest");
-
+        deploymentTimeTesting.deploymentTimeTesting(2,new int[]{1,2},10,"UnaCloudConnectionTest");
+        //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TO USE
+        //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 
     }
 

@@ -3,6 +3,10 @@ package VO;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Physical machine response VO
+ * @author s.guzmanm
+ */
 public class PhysicalMachineResponse implements Comparable<PhysicalMachineResponse> {
 
 
@@ -236,11 +240,7 @@ public class PhysicalMachineResponse implements Comparable<PhysicalMachineRespon
      */
     @Override
     public int compareTo(PhysicalMachineResponse o) {
-        if(id>o.id)
-            return 1;
-        else if (id==o.id)
-            return 0;
-        else return -1;
+        return name.compareTo(o.name);
     }
 
 }

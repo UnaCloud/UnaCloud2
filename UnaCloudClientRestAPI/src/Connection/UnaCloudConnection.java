@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Class that represents the connection with UnaCloud
+ * @author s.guzmanm
  */
 public class UnaCloudConnection {
     //User key

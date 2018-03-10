@@ -12,18 +12,21 @@ import java.util.List;
 
 /**
  * Class used to manipulate deployment connections
+ *  @author s.guzmanm
  */
 public class DeploymentManager {
 
     //-----------------
     //Constants
     //-----------------
-    private static final String RUTA = "/rest/deployment";
+    private static final String RUTA = "/rest/deployments";
 
+    //Constant for execution states
     public static final int DEPLOYED=5;
 
     public static final int FAILED=2;
 
+    //Constants for hardware profiles
     public static final int HW_SMALL=1;
 
     public static final int HW_MEDIUM=2;
@@ -31,6 +34,8 @@ public class DeploymentManager {
     public static final int HW_LARGE=3;
 
     public static final int HW_XLARGE=4;
+    //Constants for deployment states
+    public static final String FINISHED="FINISHED";
 
 
     //Attribute for UnaCloudConnection
@@ -83,7 +88,6 @@ public class DeploymentManager {
      * @throws Exception If there is any execution exception (http ones mainly)
      */
     public Double deployWithParams(DeploymentRequest deploymentRequest) throws Exception {
-        System.out.println(gson.toJson(deploymentRequest));
         String jsonResponse = uc.getInfoFromUrl(RestVerb.POST, RUTA, new JSONObject(gson.toJson(deploymentRequest)));
         System.out.println(jsonResponse);
         return (Double) gson.fromJson(jsonResponse, ObjectId.class).getId();
@@ -108,7 +112,7 @@ public class DeploymentManager {
      * @throws Exception If there are mistakes during the request transmission
      */
     public ExecutionResponse getExecutionById(int idDeployment, int idExecution) throws Exception {
-        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + idDeployment + "/execution/" + idExecution, null);
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + idDeployment + "/executions/" + idExecution, null);
         System.out.println(jsonResponse);
         return gson.fromJson(jsonResponse,ExecutionResponse.class);
     }
@@ -120,7 +124,7 @@ public class DeploymentManager {
      * @throws Exception If there are mistakes during the request transmission
      */
     public List<ExecutionResponse> getExecutionsByDeployedImageId(int idDeployment, int imageId) throws Exception {
-        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + idDeployment + "/deployedImage/" + imageId, null);
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA + "/" + idDeployment + "/deployedImages/" + imageId, null);
         System.out.println(jsonResponse);
         Type collectionType = new TypeToken<Collection<ExecutionResponse>>() {
         }.getType();

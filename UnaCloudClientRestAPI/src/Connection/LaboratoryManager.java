@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Class used to manipulate deployment connections
+ *  @author s.guzmanm
  */
 public class LaboratoryManager {
     //Enum for knowing machine states
@@ -21,7 +22,7 @@ public class LaboratoryManager {
         ON,OFF,PROCESSING,DISABLED
     }
     //Constants
-    private static final String RUTA="/rest/laboratory";
+    private static final String RUTA="/rest/laboratories";
 
     //Attribute for UnaCloudConnection
     private UnaCloudConnection uc;

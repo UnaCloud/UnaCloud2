@@ -3,6 +3,7 @@ package VO;
 /**
  * Class that represents an object that has an id of the given class
  * @param <T> Given class of the id
+ *  @author s.guzmanm
  */
 public class ObjectId<T>
 {

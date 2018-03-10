@@ -1,8 +1,13 @@
 package VO;
 
+/**
+ * Exception message VO
+ *  @author s.guzmanm
+ */
 public class ExceptionMessage {
+    //Exception HTTP status
     int status;
-
+    //Message content
     String text;
 
     public ExceptionMessage(int status, String text) {

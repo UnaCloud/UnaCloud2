@@ -3,6 +3,10 @@ package VO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Laboratory update request VO
+ * @author s.guzmanm
+ */
 public class LaboratoryUpdateRequest {
     //Laboratory id
     private int id;

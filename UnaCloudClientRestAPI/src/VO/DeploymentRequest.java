@@ -3,6 +3,10 @@ package VO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Deployment Request VO
+ *  @author s.guzmanm
+ */
 public class DeploymentRequest {
     //Class for storing the cluster
     class Cluster
@@ -10,14 +14,15 @@ public class DeploymentRequest {
 
         class Node
         {
+            //Id
             private int id;
-
+            //Given hardware profile
             private int hwp;
-
+            //Given quantity
             private int quantity;
-
+            //Host name
             private String gHostName;
-
+            //Whether it is of high availability or not
             private boolean type;
 
             public Node(int id, int hwp, int quantity, String gHostName, boolean type) {
@@ -68,9 +73,9 @@ public class DeploymentRequest {
                 this.type = type;
             }
         }
-
+        //Id
         private int id;
-
+        //Nodes of the cluster
         private List<Node> nodes;
 
         public Cluster(int id) {
@@ -107,9 +112,9 @@ public class DeploymentRequest {
     }
 
 
-    //Time
+    //Time in hours
     private int time;
-
+    //CLuster
     private Cluster cluster;
 
     public DeploymentRequest(int time, int idCluster) {

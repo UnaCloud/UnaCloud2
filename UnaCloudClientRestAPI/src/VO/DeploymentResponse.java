@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Class that represents how a deployment response is made
+ *  @author s.guzmanm
  */
 public class DeploymentResponse {
     //Class for status

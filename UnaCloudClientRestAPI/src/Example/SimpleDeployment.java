@@ -4,6 +4,10 @@ import Connection.DeploymentManager;
 import Connection.UnaCloudConnection;
 import VO.*;
 
+/**
+ * Class for showcasing a simple deployment example.
+ *  @author s.guzmanm
+ */
 public class SimpleDeployment {
     //Given UnaCloudConnection
     private UnaCloudConnection uc;

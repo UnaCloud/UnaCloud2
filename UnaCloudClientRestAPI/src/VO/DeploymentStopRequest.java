@@ -3,6 +3,10 @@ package VO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Deployment stop request VO
+ *  @author s.guzmanm
+ */
 public class DeploymentStopRequest {
 
     private List<ObjectId<Integer>> executions;
