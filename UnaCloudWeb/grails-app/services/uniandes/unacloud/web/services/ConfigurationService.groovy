@@ -58,9 +58,9 @@ class ConfigurationService {
 	 * @param outputStream file output stream for download
 	 * @param appDir directory where the zip will be stored
 	 */
-	def copyUpdaterOnStream(OutputStream outputStream,File appDir) {
+	def copyUpdaterOnStream(OutputStream outputStream, File appDir) {
 		ZipOutputStream zos = new ZipOutputStream(outputStream);
-		copyFile(zos,UnaCloudConstants.UPDATER_JAR,new File(appDir, "agentSources/" + UnaCloudConstants.UPDATER_JAR), true);
+		copyFile(zos, UnaCloudConstants.UPDATER_JAR, new File(appDir, "agentSources/" + UnaCloudConstants.UPDATER_JAR), true);
 		zos.putNextEntry(new ZipEntry(UnaCloudConstants.GLOBAL_FILE));
 		PrintWriter pw = new PrintWriter(zos);
 		for(ServerVariable sv : ServerVariable.where{serverOnly == false}.findAll())

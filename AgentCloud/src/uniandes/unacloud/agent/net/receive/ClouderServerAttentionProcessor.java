@@ -13,7 +13,8 @@ import uniandes.unacloud.agent.execution.PersistentExecutionManager;
 import uniandes.unacloud.agent.execution.domain.Execution;
 import uniandes.unacloud.agent.execution.task.StartExecutionTask;
 import uniandes.unacloud.agent.execution.task.StopExecutionTask;
-import uniandes.unacloud.agent.system.OSFactory;
+import uniandes.unacloud.agent.host.resources.FileManager;
+import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.common.net.tcp.message.AgentMessage;
@@ -116,6 +117,8 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());
 	            case AgentMessage.GET_DATA_SPACE:
 	            	return new UnaCloudResponse(AgentManager.getFreeDataSpace() + "", ExecutionProcessEnum.SUCCESS);
+	            case AgentMessage.GET_FILE:
+	            	return FileManager.copyLogs();
 	        }
 	        return new UnaCloudResponse("Invalid operation: " + message.getTask(), ExecutionProcessEnum.FAIL);
 	    } catch (Exception e) {

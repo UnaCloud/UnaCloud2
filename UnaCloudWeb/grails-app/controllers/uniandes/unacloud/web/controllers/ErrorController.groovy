@@ -18,7 +18,7 @@ class ErrorController {
 	 * In case of 400 error server
 	 */
 	def fourhundred() {		
-		render(view: "error", model: [error:'400',message:'Bad request', description:'We could not find the page you were looking for'])
+		render(view: "error", model: [error:'404',message:'Bad request', description:'We could not find the page you were looking for'])
 	}
 	
 	/**

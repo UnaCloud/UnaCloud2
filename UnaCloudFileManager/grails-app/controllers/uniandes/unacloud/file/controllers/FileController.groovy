@@ -133,4 +133,22 @@ class FileController {
 		
 		render resp as JSON
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	def log(){
+		if(params.log && params.host) {			
+			println 'Request file: ' + params.host + " - " + params.log
+			response.setContentType("application/zip")
+			response.setHeader("Content-disposition", "filename=log.zip")
+			fileService.getLog(response.outputStream,  params.host, params.log)
+			response.outputStream.flush()					
+		}
+		else {
+			def resp = [success:false, 'message':'Error! Precondition failed.'];
+			render resp as JSON
+		}
+	}
 }

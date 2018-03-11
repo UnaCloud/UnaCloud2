@@ -19,7 +19,7 @@
     		<div class="col-lg-6 col-sm-6 col-xs-12">      			
     			<div id="label-message"></div> 
     			<g:render template="/share/message"/>         
-    			<form method="post" action="${createLink(uri: '/admin/lab/edit/save', absolute: true)}" role="form">	                        		     
+    			<form method="post" action="${createLink(uri: '/admin/lab/'+lab.id+'/save', absolute: true)}" role="form">	                        		     
 		       		<div class="box box-primary"> 
 		       		   
 		       			<div class="box-body"> 		           	 	 

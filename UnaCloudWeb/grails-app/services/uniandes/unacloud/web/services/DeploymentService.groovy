@@ -18,6 +18,9 @@ import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Image;
+import uniandes.unacloud.web.domain.enums.ClusterEnum;
+import uniandes.unacloud.web.exception.NotFoundException
+import uniandes.unacloud.web.exception.PreconditionException
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions;
 import grails.transaction.Transactional
 import grails.util.Environment;
@@ -295,5 +298,60 @@ class DeploymentService {
 		execution.copyTo = image.id
 		execution.save()
 		QueueTaskerControl.createCopyFromExecution(execution, image, execution.deployImage.image, user)
+	}
+	
+	
+	def synchronized doDeploy(data, User user) throws Exception, AllocatorException {
+		
+		try {
+			//TODO Add model validation						
+			Cluster cluster = Cluster.get(data.cluster.id)
+			if (cluster) {
+				//validates if user is owner to deploy cluster
+				if (user.userClusters.find {it.id == cluster.id} != null && cluster.state.equals(ClusterEnum.AVAILABLE)) {
+//					//Validates if images are available in the platform
+					def availables = cluster.images.findAll{it.state == ImageEnum.AVAILABLE}
+					if (availables.size() != cluster.images.size()) {
+						throw new PreconditionException("Some images on this cluster are not available at this moment.")
+					}
+//					try {
+//						//validates if cluster is good configured
+//						def requests = new ImageRequestOptions[cluster.images.size()];
+//						cluster.images.eachWithIndex {it,idx->
+//							HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
+//							requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
+//						}
+//						deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
+//						redirect(uri:"/services/deployment/list", absolute:true)
+//						return
+//
+//					} catch (Exception e) {
+//						e.printStackTrace()
+//						if (e.message == null)
+//							flash.message = e.getCause()
+//						else
+//							flash.message = e.message
+//						redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
+//						return
+//					}
+//				}
+//				else {
+//					flash.message = 'You don\'t have permissions to deploy this cluster or cluster is not available'
+//					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
+//					return
+				}
+			}
+//			redirect(uri:"/services/cluster/list", absolute:true)
+			/*response.status = 200
+			response.setContentType("application/json")
+			render(request.JSON)*/
+			//response.setContentType("application/json")
+			render status: 412
+		} catch(Exception e){
+			e.printStackTrace()
+			//TODO Add different exception with code status
+			//response.setContentType("application/json")
+			render status: 404
+		}
 	}
 }

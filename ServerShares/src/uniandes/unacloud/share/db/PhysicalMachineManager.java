@@ -62,7 +62,7 @@ public class PhysicalMachineManager {
 	 * @param con Database Connection
 	 * @return List of Physical Machines entities
 	 */
-	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState,Connection con) {
+	public static List<PhysicalMachineEntity> getPhysicalMachineList(Long[] idList, PhysicalMachineStateEnum machineState, Connection con) {
 		if (idList.length == 0)
 			return null;
 		try {
@@ -111,7 +111,7 @@ public class PhysicalMachineManager {
 	 * @param con Database Connection
 	 * @return list of physical machines entities
 	 */
-	public static List<PhysicalMachineEntity> getAllPhysicalMachine(PhysicalMachineStateEnum machineState,Connection con){		
+	public static List<PhysicalMachineEntity> getAllPhysicalMachine(PhysicalMachineStateEnum machineState, Connection con) {		
 		try {
 			List<PhysicalMachineEntity> list = new ArrayList<PhysicalMachineEntity>();
 			String query = 
@@ -157,6 +157,7 @@ public class PhysicalMachineManager {
 			if (machine.getLastReport() != null) query += (parameters++ > 0 ? "," : "") + " pm.last_report = ? ";
 			if (machine.getFreeSpace() != null) query += (parameters++ > 0 ? "," : "") + " pm.free_space = ? ";
 			if (machine.getVersion() != null) query += (parameters++ > 0 ? "," : "") + " pm.agent_version = ? ";
+			if (machine.getLogName() != null) query += (parameters++ > 0 ? "," : "") + " pm.last_log = ? ";
 			if (parameters > 0) {
 				query += "WHERE pm.id = ? AND pm.id > 0;";
 				PreparedStatement ps = con.prepareStatement(query);
@@ -165,6 +166,7 @@ public class PhysicalMachineManager {
 				if (machine.getLastReport() != null) ps.setTimestamp(id++, new Timestamp(machine.getLastReport().getTime()));
 				if (machine.getFreeSpace() != null) ps.setLong(id++, machine.getFreeSpace());
 			    if (machine.getVersion() != null) ps.setString(id++, machine.getVersion());
+			    if (machine.getLogName() != null) ps.setString(id++, machine.getLogName());
 				ps.setLong(id, machine.getId());
 				System.out.println(ps.toString() + "\n change " + ps.executeUpdate() + " lines");
 				try {
@@ -221,5 +223,41 @@ public class PhysicalMachineManager {
 		return false;
 	}
 	
+	/**
+	 * Returns physical machine with the same hostname 
+	 * @param name to search physicalmachine
+	 * @param con Database Connection
+	 * @return PhysicalMachine or null
+	 */
+	public static PhysicalMachineEntity getPhysicalMachineByHostName(String name, Connection con){
+		try {
+			PreparedStatement ps = con.prepareStatement(
+					"SELECT pm.id, i.ip, pm.state, pm.last_report, pm.name "
+					+ "FROM physical_machine pm "
+					+ "INNER JOIN ip i "
+					+ "ON pm.ip_id = i.id "
+					+ "WHERE pm.name = ?;");
+			ps.setString(1, name);
+			System.out.println(ps.toString());
+			ResultSet rs = ps.executeQuery();	
+			PhysicalMachineEntity machine = null;
+			if (rs.next())
+				machine = new PhysicalMachineEntity(rs.getLong(1), 
+						rs.getString(2),
+						new java.util.Date(rs.getTimestamp(4).getTime()), 
+						PhysicalMachineStateEnum.getEnum(rs.getString(3)),
+						rs.getString(5));
+			try {
+				rs.close();
+				ps.close();
+			} catch (Exception e) {
+				e.printStackTrace();	
+			}
+			return machine;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}	
+	}
 
 }
