@@ -18,7 +18,7 @@ import uniandes.unacloud.web.domain.User;
  * @author CesarF
  *
  */
-class LaboratoryController {
+class LaboratoryController extends AbsAdminController {
 	
 	//-----------------------------------------------------------------
 	// Properties
@@ -29,36 +29,11 @@ class LaboratoryController {
 	 */
 	LaboratoryService laboratoryService
 	
-	/**
-	 * Representation of group services
-	 */
 	
-	UserGroupService userGroupService
-
     //-----------------------------------------------------------------
 	// Actions
 	//-----------------------------------------------------------------
-	
-	/**
-	 * Makes session verifications before executing user administration actions
-	 */
-	
-	def beforeInterceptor = {
-		if (!session.user) {
-			flash.message = "You must log in first"
-			redirect(uri:"/login", absolute:true)
-			return false
-		}
-		else {
-			def user = User.get(session.user.id)
-			session.user.refresh(user)
-			if (!userGroupService.isAdmin(user)) {
-				flash.message = "You must be administrator to see this content"
-				redirect(uri:"/error", absolute:true)
-				return false
-			}
-		}
-	}
+		
 	
 	/**
 	 * Laboratory index action
@@ -89,7 +64,8 @@ class LaboratoryController {
 				flash.message = "Error: " + e.message
 				redirect(uri:"/admin/lab/new", absolute:true)
 			}			
-		} else {
+		} 
+		else {
 			flash.message = "All fields are required"
 			redirect(uri:"/admin/lab/new", absolute:true)
 		}
@@ -105,9 +81,9 @@ class LaboratoryController {
 			def machineSet = lab.getOrderedMachines()
 			[lab: lab, machineSet:machineSet]
 		} 
-		else 
+		else {
 			redirect(uri:"/admin/lab/list", absolute:true)
-		
+		}
 	}	
 	
 	/**
@@ -159,7 +135,8 @@ class LaboratoryController {
 					redirect(uri:"/admin/lab/" + lab.id, absolute:true)
 					return
 				}
-			} else {
+			} 
+			else {
 				flash.message = "All fields are required"
 				redirect(uri:"/admin/lab/edit/" + lab.id, absolute:true)
 			}			

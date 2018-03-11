@@ -3,7 +3,6 @@ package uniandes.unacloud.web.services
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
 import uniandes.unacloud.web.domain.Execution
-import uniandes.unacloud.web.domain.ExecutionHistory
 import uniandes.unacloud.web.domain.Laboratory;
 import uniandes.unacloud.web.domain.OperatingSystem;
 import uniandes.unacloud.web.domain.PhysicalIP
@@ -104,5 +103,4 @@ class MachineService {
 		}
 		QueueTaskerControl.taskMachines(machineList,task, user)
 	}
-
 }
