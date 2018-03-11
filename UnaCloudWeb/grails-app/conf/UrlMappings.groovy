@@ -136,6 +136,19 @@ class UrlMappings {
 			"/agent/version"(controller:'configuration', action:"setAgentVersion")
 			"/agent/download"(controller:'configuration', action:"downloadAgent")
 		}
+
+		/**
+		 * API REST services
+		 */
+		group "/rest", {
+			"/deployments"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
+			"/deployments/$id"(controller:'DeploymentRest', action:[GET:"show"])
+			"/deployments/$id/executions/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
+			"/deployments/$id/executions/$idExec/histories"(controller:'DeploymentRest', action:[GET:"getExecutionHistory"])
+			"/deployments/$id/deployedImages/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])
+			"/laboratories"(controller:"MachineRest",action:[PUT:"updateMachines"])
+			"/laboratories/$id/machines"(controller:"MachineRest",action:[GET:"getLaboratoryMachines"])
+		}
 		
 	}
 }
