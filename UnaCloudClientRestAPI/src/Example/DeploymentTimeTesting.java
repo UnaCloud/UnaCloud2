@@ -99,7 +99,7 @@ public class DeploymentTimeTesting {
                 //Get given deployment executions
                 System.out.println("Get executions");
                 //Signals if you need to throw an exception or not if there are executions that failed during the process
-                boolean noErrors=finishDeployment(deploy,dep);
+                boolean noErrors= finishExecutions(deploy,dep);
                 System.out.println("Stop");
                 DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
                 //Cycle through all executions of the deployment and add them to the list for stopping
@@ -117,12 +117,7 @@ public class DeploymentTimeTesting {
                 if(!noErrors)
                     throw new Exception("There are failed deployment instances");
                 //While the deployment is not done loop
-                while(!deploy.getStatus().getName().equals(DeploymentManager.FINISHED))
-                {
-                    Thread.sleep(15000);
-                    deploy=dep.getDeployment((int)deploymentId);
-                    System.out.println("CURRENT DEP STATUS "+deploy.getStatus().getName());
-                }
+                finishDeployment(deploy,dep);
             }
         }
 
@@ -155,7 +150,7 @@ public class DeploymentTimeTesting {
                 //Assume we have executions
                 System.out.println("Get executions");
                 //Signals if you need to throw an exception or not
-                boolean noErrors=finishDeployment(deploy,dep);
+                boolean noErrors= finishExecutions(deploy,dep);
                 ArrayList<Integer> machines=new ArrayList<>();
                 System.out.println("Stop");
                 DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
@@ -190,12 +185,9 @@ public class DeploymentTimeTesting {
                 }
                 lab.cleanCache(laboratoryUpdateRequest);
                 //While the deployment is not done loop
-                while(!deploy.getStatus().getName().equals(DeploymentManager.FINISHED))
-                {
-                    Thread.sleep(15000);
-                    deploy=dep.getDeployment((int)deploymentId);
-                    System.out.println("CURRENT DEP STATUS "+deploy.getStatus().getName());
-                }
+                finishDeployment(deploy,dep);
+
+
             }
         }
 
@@ -207,7 +199,7 @@ public class DeploymentTimeTesting {
      * @param dep Deployment manager for the given execution
      * @return Boolean that determines whether the deployment was finished successfully (true) or it had errors during launch (false)
      */
-    public boolean finishDeployment(DeploymentResponse deploy, DeploymentManager dep) throws Exception
+    public boolean finishExecutions(DeploymentResponse deploy, DeploymentManager dep) throws Exception
     {
         int deploymentId=deploy.getId();
         boolean todoEstaDetenido=false;
@@ -233,6 +225,28 @@ public class DeploymentTimeTesting {
             }
         }
         return true;
+    }
+    /**
+     * Method for looping until the deployment is officially inactive (No execution running).
+     * @param deploy The deployment response for looking at the executions
+     * @param dep Deployment manager for the given execution
+     */
+    public void finishDeployment(DeploymentResponse deploy, DeploymentManager dep) throws Exception
+    {
+        boolean finished=false;
+        while(!finished)
+        {
+            finished=true;
+            for(ObjectId<Integer> image:deploy.getImages())
+            {
+                System.out.println("CURRENT DEP STATUS WITH IMAGE "+image.getId());
+                if(!dep.getExecutionsByDeployedImageId(deploy.getId(),image.getId()).isEmpty())
+                {
+                    finished=false;
+                    break;
+                }
+            }
+        }
     }
 
     /**
