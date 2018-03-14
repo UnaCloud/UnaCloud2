@@ -88,7 +88,7 @@ class ClusterController {
 	 * Action to create a new cluster. It redirects to index after saving
 	 */
 	def save() {		
-		if (params.name && params.images) {			
+		if (params.name /*&& params.images*/) {
 			def user = User.get(session.user.id)
 			try {
 				clusterService.createCluster(params.name, params.images, user)

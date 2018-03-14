@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.domain
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
 import uniandes.unacloud.share.enums.DeploymentStateEnum;
 import uniandes.unacloud.share.enums.ImageEnum;
 

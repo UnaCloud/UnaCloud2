@@ -56,6 +56,10 @@
 		                                 	<th>Status</th>
 		                                  	<th>Time Left</th>
 		                                  	<th>IP</th>
+		                                  	<!-- Only seen for admins-->
+		                                  	<g:if test="${session.user.isAdmin()}">
+	                        					 <th>Node</th>
+                       						 </g:if>
 		                                  	<th>Actions</th>
 		                              	</tr>
 		                          	</thead>
@@ -121,6 +125,8 @@
 			                                  		</tbody>
 		                                  	 	</table>
 		                                	 </td>
+
+
 		                                 	 <td style="padding:0px !important">
 		                                  	 	<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
@@ -147,6 +153,21 @@
 			                                  		</tbody>
 		                                  	 	</table>
 		                                 	</td>
+		                                 	<!--Add ip and hostname only for admin-->
+		                                 	 <g:if test="${session.user.isAdmin()}">
+	                        					 <td style = "padding:0px !important">
+													<table class = "table insert-table embeded_table">
+														<tbody>
+															<g:each in="${image.getActiveExecutions()}" status = "index" var = "execution">
+															<tr>
+																<span>${execution.executionNode.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.executionNode.ip.ip}"></i>
+																</td>
+															</tr>
+															</g:each>
+														</tbody>
+													</table>
+												 </td>
+                       						 </g:if>
 		                                 	<td style="padding:0px !important">
 		                                  		<table class="table insert-table embeded_table">
 			                                  		<tbody> 				                                 				                                  	
