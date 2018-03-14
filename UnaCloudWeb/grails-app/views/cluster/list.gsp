@@ -26,6 +26,7 @@
 	                          <thead>
 	                              <tr>
 	                                  <th>Cluster Name</th>
+									  <th>Id</th>
 	                                  <th>State</th>
 	                                  <th>Images</th>
 	                                  <th>Actions</th>
@@ -35,6 +36,7 @@
 	                          <g:each in="${clusters}" var="cluster"> 
 	                              <tr>
 	                                 <td>${cluster.name}</td>
+                                     <td>${cluster.id}</td>
 	                                 <td>
 		                                  <g:if test="${cluster.state.equals(ClusterEnum.AVAILABLE)}">
 		                                 	<span class="label label-success">${cluster.state.name}</span>

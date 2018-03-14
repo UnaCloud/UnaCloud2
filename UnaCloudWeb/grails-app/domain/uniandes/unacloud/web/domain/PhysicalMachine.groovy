@@ -9,7 +9,7 @@ import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
  * @author CesarF
  *
  */
-class PhysicalMachine {
+class  PhysicalMachine {
 	
 	//-----------------------------------------------------------------
 	// Properties

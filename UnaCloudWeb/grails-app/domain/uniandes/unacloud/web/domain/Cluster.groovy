@@ -1,5 +1,8 @@
 package uniandes.unacloud.web.domain
 
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
 import java.util.ArrayList;
 
 import uniandes.unacloud.web.domain.enums.ClusterEnum;
@@ -11,6 +14,10 @@ import uniandes.unacloud.share.enums.ImageEnum;
  * @author CesarF
  *
  */
+
+//Addition of tags for rest services correct deployment.
+@ToString(includeNames = true, includeFields = true, excludes = 'dateCreated,lastUpdated,metaClass')
+@EqualsAndHashCode
 class Cluster {
 	
 	//-----------------------------------------------------------------
