@@ -71,11 +71,10 @@ class DeploymentController {
 	 * order to pass them to the service layer. It also catches exceptions and pass
 	 * them to error view. If everything works it redirects to list deployment view.
 	 */
-	
 	def deploy(){
-		Cluster cluster = Cluster.get(params.id)
-		if (cluster) {			
-			def user = User.get(session.user.id)	
+        Cluster cluster = Cluster.get(params.id)
+		if (cluster) {
+			def user = User.get(session.user.id)
 			//validates if user is owner to deploy cluster
 			if (user.userClusters.find {it.id == cluster.id} != null && cluster.state.equals(ClusterEnum.AVAILABLE)) {
 				//Validates if images are available in the platform
@@ -89,10 +88,11 @@ class DeploymentController {
 					//validates if cluster is good configured
 					def requests = new ImageRequestOptions[cluster.images.size()];
 					cluster.images.eachWithIndex {it,idx->
-						HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
+                        HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
 						requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
-					}		
-					deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
+					}
+                    println "TIME "+params.time.toLong()
+                    deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
 					redirect(uri:"/services/deployment/list", absolute:true)
 					return
 					
@@ -143,13 +143,14 @@ class DeploymentController {
 		params.each {
 			if (it.key.contains("execution_"))
 				if (it.value.contains("on")) {
+					println "VAL"+it.key+" "+it.value
 					Execution vm = Execution.get((it.key - "execution_") as Integer)
 					if (vm != null && (vm.state.state == ExecutionStateEnum.DEPLOYED || vm.state.state == ExecutionStateEnum.FAILED)) {
 						if (vm.deployImage.deployment.user == user || user.isAdmin())
 							executions.add(vm)
 					}
 				}			
-		}	
+		}
 		if (executions.size() > 0) {
 			flash.message = 'Your request has been processed'
 			flash.type = 'info'

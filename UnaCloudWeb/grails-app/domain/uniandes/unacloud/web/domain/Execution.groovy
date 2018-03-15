@@ -44,7 +44,7 @@ class Execution {
 	Date stopTime
 	
 	/**
-	 * Actual state , by default is requested
+	 * Current state, requested by default 
 	 */
 	ExecutionState state 
 	

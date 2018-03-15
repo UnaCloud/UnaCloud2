@@ -28,7 +28,7 @@ class Utils {
 	 * @param ipEnd last ip
 	 * @return list of valid ip in range
 	 */
-	private ArrayList<String> createRange(String ipInit, String ipEnd){
+	public static ArrayList<String> createRange(String ipInit, String ipEnd){
 		Ip4Validator validator = new Ip4Validator();
 		if (!validator.validate(ipInit) || !validator.validate(ipEnd) || !validator.validateRange(ipInit, ipEnd))
 				throw new Exception("IP range is not valid")
