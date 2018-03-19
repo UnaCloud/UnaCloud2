@@ -72,7 +72,7 @@ class IpAddressService {
 	 * @param ipEnd last ip
 	 */
 	def createPool(Laboratory lab, privateNet, netGateway, netMask, ipInit, ipEnd) throws Exception {
-		ArrayList<String> ips = Utils.createRange(ipInit,ipEnd)
+		ArrayList<String> ips = Utils.createRange(ipInit, ipEnd)
 		if (ips.size() == 0)
 			throw new Exception("IP range invalid")
 		def ipPool = new IPPool(privateNet:privateNet, gateway: netGateway, mask: netMask, laboratory: lab).save()

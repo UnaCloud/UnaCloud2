@@ -160,6 +160,7 @@
 														<tbody>
 															<g:each in="${image.getActiveExecutions()}" status = "index" var = "execution">
 															<tr>
+																<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 																<span>${execution.executionNode.name} </span> <i class="fa fa-info-circle text-info" data-toggle="tooltip" title="${execution.executionNode.ip.ip}"></i>
 																</td>
 															</tr>
@@ -300,7 +301,7 @@
 			                                	<td style="padding:0px !important">
 			                                  		<table class="table insert-table embeded_table">
 				                                  		<tbody> 				                                 				                                  	
-				                                  			<g:each in="${image.getActiveExecutions()}" status =" index" var="execution">
+				                                  			<g:each in="${image.getActiveExecutions()}" status ="index" var="execution">
 				                                  		    <tr>
 					                                  			<g:if test="${index==0}"><td class="insert-row"></g:if><g:else><td></g:else>
 						                                  			<small>${execution.mainIp().ip}</small>
