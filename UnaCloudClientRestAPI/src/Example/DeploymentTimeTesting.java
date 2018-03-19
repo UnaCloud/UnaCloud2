@@ -38,90 +38,171 @@ public class DeploymentTimeTesting {
      * @param significantHostName Defines the host name used for this set of tests
      * @throws Exception If there is any HTTPException or if there are any failed deployments.
      */
-    public void deploymentTimeTesting(int iterations, int[] quantities, int maxCleanableMachines, String significantHostName) throws Exception
-    {
-        for(int j=0;j<iterations;j++)
-        {
-            for(Integer qty:quantities)
-            {
+    public void deploymentTimeTesting(int iterations, int[] quantities, int maxCleanableMachines, String significantHostName) throws Exception {
+        for (int j = 0; j < iterations; j++) {
+            for (Integer qty : quantities) {
                 //Clean the cache of the given machines or of given numbers.
                 System.out.println("Cache");
                 //The user must know the id of the lab to clean up and get machines from
-                LaboratoryManager lab=new LaboratoryManager(uc);
+                LaboratoryManager lab = new LaboratoryManager(uc);
                 //Get lab physical machines for cleaning cache
-                List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(2);
+                List<PhysicalMachineResponse> list = lab.getLaboratoryMachines(2);
                 //Sort by id
                 Collections.sort(list);
                 //Clean cache of given machines until they reach a top desired by the user
-                LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(2, TaskManagerState.CACHE);
-                int i=0;
-                for(PhysicalMachineResponse phy:list)
-                {
-                    System.out.println("MACHINE "+phy.getId()+" "+phy.getName()+" "+phy.getIp().getId());
+                LaboratoryUpdateRequest laboratoryUpdateRequest = new LaboratoryUpdateRequest(2, TaskManagerState.CACHE);
+                int i = 0;
+                for (PhysicalMachineResponse phy : list) {
+                    System.out.println("MACHINE " + phy.getId() + " " + phy.getName() + " " + phy.getIp().getId());
                     laboratoryUpdateRequest.addMachine(phy.getId());
                     i++;
-                    if(i>=maxCleanableMachines)
+                    if (i >= maxCleanableMachines)
                         break;
                 }
                 lab.cleanCache(laboratoryUpdateRequest);
                 //Check that every machine has finished cleaning cache before deployment
-                boolean terminaCache=false;
-                while(!terminaCache)
-                {
+                boolean terminaCache = false;
+                while (!terminaCache) {
                     Thread.sleep(60000);
-                    list=lab.getLaboratoryMachines(2);
+                    list = lab.getLaboratoryMachines(2);
                     Collections.sort(list);
-                    terminaCache=true;
-                    i=0;
-                    for(PhysicalMachineResponse phy:list)
-                    {
-                        System.out.println("MACHINE "+phy.getId()+" "+phy.getName()+" "+phy.getIp().getId());
-                        if(phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING+""))
-                        {
-                            terminaCache=false;
+                    terminaCache = true;
+                    i = 0;
+                    for (PhysicalMachineResponse phy : list) {
+                        System.out.println("MACHINE " + phy.getId() + " " + phy.getName() + " " + phy.getIp().getId());
+                        if (phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING + "")) {
+                            terminaCache = false;
                             break;
                         }
                         i++;
-                        if(i>=maxCleanableMachines)
+                        if (i >= maxCleanableMachines)
                             break;
                     }
                 }
-                DeploymentManager dep= new DeploymentManager(uc);
+                DeploymentManager dep = new DeploymentManager(uc);
                 //Post deployment with params
-                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
-                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+"_"+qty+";",false);
-                double deploymentId=dep.deployWithParams(deploymentRequest);
-                System.out.println("ID DEPLOY"+deploymentId);
+                DeploymentRequest deploymentRequest = new DeploymentRequest(1, 61);
+                deploymentRequest.addNode(74, DeploymentManager.HW_SMALL, qty, significantHostName + ";" + (j + 1) + "_" + qty + ";", false);
+                double deploymentId = dep.deployWithParams(deploymentRequest);
+                System.out.println("ID DEPLOY" + deploymentId);
 
                 //Get the current deployment
-                DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
-                System.out.println(deploy.getStatus().getName()+"");
+                DeploymentResponse deploy = dep.getDeployment((int) deploymentId);
+                System.out.println(deploy.getStatus().getName() + "");
                 //Get given deployment executions
                 System.out.println("Get executions");
                 //Signals if you need to throw an exception or not if there are executions that failed during the process
-                boolean noErrors= finishExecutions(deploy,dep);
+                boolean noErrors = finishExecutions(deploy, dep);
                 System.out.println("Stop");
-                DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+                DeploymentStopRequest deploymentStopRequest = new DeploymentStopRequest();
                 //Cycle through all executions of the deployment and add them to the list for stopping
-                for(ObjectId<Integer> id:deploy.getImages())
-                {
-                    for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
-                    {
-                        System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                for (ObjectId<Integer> id : deploy.getImages()) {
+                    for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
+                        System.out.println("ADD " + exec.getId() + " " + exec.getExecutionNode() + " " + exec.getState().getId());
                         deploymentStopRequest.addExecution(exec.getId());
                     }
                 }
                 //Stop executions
                 dep.stopExecutions(deploymentStopRequest);
                 //Throws exception if there is a failed instance of deployment
-                if(!noErrors)
+                if (!noErrors)
                     throw new Exception("There are failed deployment instances");
                 //While the deployment is not done loop
-                finishDeployment(deploy,dep);
+                finishDeployment(deploy, dep);
             }
         }
-
     }
+
+        /**
+         * Complex example for testing the deployment time of several machines with the number of iterations, the array of quantity of machines and the max number of cleanable machines given by param.
+         * It consists in cleaning cache, later deploying and finally stopping the executions in the given lab.
+         * @param iterations Maximum number of iterations
+         * @param quantities Quantities for iteration deployments
+         * @param maxCleanableMachines Determines the maximum number of machines for cleaning the cache
+         * @param significantHostName Defines the host name used for this set of tests
+         * @throws Exception If there is any HTTPException or if there are any failed deployments.
+         */
+        public void test(int iterations, int[] quantities, int maxCleanableMachines, String significantHostName) throws Exception
+        {
+            for(int j=0;j<iterations;j++)
+            {
+                for(Integer qty:quantities)
+                {
+                    //Clean the cache of the given machines or of given numbers.
+                    System.out.println("Cache");
+                    //The user must know the id of the lab to clean up and get machines from
+                    LaboratoryManager lab=new LaboratoryManager(uc);
+                    //Get lab physical machines for cleaning cache
+                    List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(1);
+                    //Sort by id
+                    Collections.sort(list);
+                    //Clean cache of given machines until they reach a top desired by the user
+                    LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(1, TaskManagerState.CACHE);
+                    int i=0;
+                    for(PhysicalMachineResponse phy:list)
+                    {
+                        System.out.println("MACHINE "+phy.getId()+" "+phy.getName()+" "+phy.getIp().getId());
+                        laboratoryUpdateRequest.addMachine(phy.getId());
+                        i++;
+                        if(i>=maxCleanableMachines)
+                            break;
+                    }
+                    lab.cleanCache(laboratoryUpdateRequest);
+                    //Check that every machine has finished cleaning cache before deployment
+                    boolean terminaCache=false;
+                    double time=System.currentTimeMillis();
+                    while(!terminaCache)
+                    {
+                        Thread.sleep(10000);
+                        list=lab.getLaboratoryMachines(1);
+                        Collections.sort(list);
+                        terminaCache=true;
+                        i=0;
+                        for(PhysicalMachineResponse phy:list)
+                        {
+                            if(list.indexOf(phy)<26) continue;
+                            if(phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING+""))
+                            {
+                                terminaCache=false;
+                                break;
+                            }
+                            i++;
+                            if(i>=maxCleanableMachines)
+                                break;
+                        }
+                        if(System.currentTimeMillis()-time>120000)
+                            throw new Exception("Las máquinas se quedaron procesando iniciando en "+time+" "+significantHostName+";"+(j+1)+"_"+qty );
+                    }
+                    DeploymentManager dep= new DeploymentManager(uc);
+                    //Post deployment with params
+                    DeploymentRequest deploymentRequest=new DeploymentRequest(3600000,61);
+                    deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+"_"+qty+";",false);
+                    double deploymentId=dep.deployWithParams(deploymentRequest);
+
+                    //Get the current deployment
+                    DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
+                    //Get given deployment executions
+                    //Signals if you need to throw an exception or not if there are executions that failed during the process
+                    boolean noErrors= finishExecutions(deploy,dep);
+                    DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+                    //Cycle through all executions of the deployment and add them to the list for stopping
+                    for(ObjectId<Integer> id:deploy.getImages())
+                    {
+                        for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                        {
+                            deploymentStopRequest.addExecution(exec.getId());
+                        }
+                    }
+                    //Stop executions
+                    dep.stopExecutions(deploymentStopRequest);
+                    //While the deployment is not done loop
+                    finishDeployment(deploy,dep);
+                }
+            }
+
+        }
+
+
     /**
      * Complex example for testing the deployment time of several machines with the number of iterations, and the array of quantity of machines given by param.
      * Since the cache cleaning is done at the end, it consists in deploying, stopping the executions in the given lab and finally cleaning the cache of the used machines.
@@ -258,8 +339,8 @@ public class DeploymentTimeTesting {
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
         //First method for making deployment time testing
-        deploymentTimeTesting.deploymentTimeTesting(2,new int[]{1,2},10,"UnaCloudConnectionTest");
-        //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TO USE
+        deploymentTimeTesting.test(1000,new int[]{6,7,8,9,10},50,"CacheBugTest");
+        //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
         //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 
     }
