@@ -32,7 +32,7 @@ public class PlatformFactory {
     /**
      * Map that contains a relation between platform names and platform objects
      */
-    private static Map<String,Platform> map = new HashMap<>();
+    private static Map<String, Platform> map = new HashMap<>();
     
     public static void registerplatforms() {
     	String vmRun = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.VMRUN_PATH);
