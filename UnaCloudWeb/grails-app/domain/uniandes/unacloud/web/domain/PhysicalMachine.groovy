@@ -9,7 +9,7 @@ import uniandes.unacloud.share.enums.PhysicalMachineStateEnum;
  * @author CesarF
  *
  */
-class PhysicalMachine {
+class  PhysicalMachine {
 	
 	//-----------------------------------------------------------------
 	// Properties
@@ -90,8 +90,13 @@ class PhysicalMachine {
 	 */
 	Laboratory laboratory	
 	
+	/**
+	 * Last log request name
+	 */
+	String lastLog;
 	
-	static belongsTo =  [laboratory:Laboratory]
+	
+	static belongsTo =  [laboratory: Laboratory]
 	
 	
 	/**
@@ -133,7 +138,7 @@ class PhysicalMachine {
 	 */
 	def availableResources() {
 		def usedResources = Execution.executeQuery('select count(*) AS executions, sum(vme.hardwareProfile.ram) AS ram, sum(vme.hardwareProfile.cores) AS cores from Execution as vme where vme.executionNode.id = :node_id and vme.state.state != \''+ExecutionStateEnum.FINISHED+"\'", [node_id:this.id])		
-		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]:pCores, ram:usedResources[0][1] != null ? ram-usedResources[0][1] : ram, cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
+		return [vms:usedResources[0][0] != null ? pCores-usedResources[0][0]: pCores, ram: usedResources[0][1] != null ? ram-usedResources[0][1] : ram, cores:usedResources[0][2] != null ? cores-usedResources[0][2] : cores]
 	}
 	
 	/**

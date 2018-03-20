@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
-import uniandes.unacloud.agent.system.OSFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
@@ -33,7 +33,12 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
-		
+		System.out.println("Updating agent");
+		try {
+			ClouderClientAttention.getInstance().stopService();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		try {
 			LocalProcessExecutor.executeCommand(new String[]{OSFactory.getOS().getJavaCommand(), "-jar", UnaCloudConstants.UPDATER_JAR, UnaCloudConstants.DELAY + ""});
 		} catch (Exception e) {
@@ -41,12 +46,7 @@ public class AgentManager {
         }
         new Thread() {
         	public void run() {
-        		SystemUtils.sleep(3000);
-        		try {
-        			ClouderClientAttention.getInstance().stopService();
-        		} catch (Exception e) {
-        			e.printStackTrace();
-        		}
+        		SystemUtils.sleep(2000);        		
         		System.exit(6);
         	};
         }.start();
@@ -58,15 +58,15 @@ public class AgentManager {
 	 * @return message 
 	 */
 	public static UnaCloudResponse stopAgent() {
-		
+		System.out.println("Stopping agent");
+		try {
+			ClouderClientAttention.getInstance().stopService();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
          new Thread() {
          	public void run() {
-         		SystemUtils.sleep(5000);
-         		try {
-        			ClouderClientAttention.getInstance().stopService();
-        		} catch (Exception e) {
-        			e.printStackTrace();
-        		}
+         		SystemUtils.sleep(2000);         		
          		System.exit(0);
          	};
          }.start();

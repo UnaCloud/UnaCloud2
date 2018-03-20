@@ -1,6 +1,7 @@
 package uniandes.unacloud.web.services
 
-import uniandes.unacloud.utils.security.HashGenerator;
+import uniandes.unacloud.utils.security.HashGenerator
+import uniandes.unacloud.web.domain.ExecutionHistory;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
@@ -18,6 +19,9 @@ import uniandes.unacloud.web.domain.PhysicalMachine;
 import uniandes.unacloud.web.domain.User;
 import uniandes.unacloud.web.domain.Execution;
 import uniandes.unacloud.web.domain.Image;
+import uniandes.unacloud.web.domain.enums.ClusterEnum;
+import uniandes.unacloud.web.exception.NotFoundException
+import uniandes.unacloud.web.exception.PreconditionException
 import uniandes.unacloud.web.utils.groovy.ImageRequestOptions;
 import grails.transaction.Transactional
 import grails.util.Environment;
@@ -34,12 +38,6 @@ class DeploymentService {
 	//-----------------------------------------------------------------
 	// Properties
 	//-----------------------------------------------------------------
-	
-	/**
-	 * Representation of Lab service
-	 */
-	LaboratoryService laboratoryService
-	
 	/**
 	 * Representation of User Restriction service
 	 */
@@ -229,6 +227,15 @@ class DeploymentService {
 		}
 		return deployments
 	}
+
+	/**
+	 * Returns given deployment by id
+	 * @param id Id of the deployment
+	 * @return given deployment
+	 */
+	def getActiveDeployment(long id) {
+		return Deployment.get(id)
+	}
 	
 	/**
 	 * Returns the list of active executions in all users
@@ -236,6 +243,49 @@ class DeploymentService {
 	 */
 	def getActiveExecutions() {
 		return Execution.findAll{ state.state != ExecutionStateEnum.FINISHED}.sort{it.id}
+	}
+
+	/**
+	 * Returns the execution given by id in the selected deployment
+     * @param deployment Deployment to look at
+	 * @param idExec id of execution
+	 * @return executions with the given id
+	 */
+	def getActiveExecution(Deployment deployment, int idExec) {
+        for(DeployedImage image:deployment.images)
+        {
+            for(Execution execution:image.activeExecutions)
+            {
+                if(execution.id==idExec)
+                    return execution
+            }
+        }
+        return null
+	}
+    /**
+     * Returns the executions given inside the image with given id of the selected deployment
+     * @param deployment Deployment to look at
+     * @param imageId id of deployed image
+     * @return executions with the given id of the deployed image
+     */
+    def getActiveExecutionsByImage(Deployment deployment, int imageId) {
+        for(DeployedImage image:deployment.images)
+        {
+            if(imageId==image.id)
+            {
+                return image.getActiveExecutions()
+            }
+        }
+        return null
+    }
+	/**
+	 * Gets the execution history with the given id of execution.
+	 * @param id Id of the execution
+	 * @return Execution History of the given execution
+	 */
+	def getExecutionHistory(int id)
+	{
+		return ExecutionHistory.findAllByExecution(Execution.get(id)).sort { it.changeTime }
 	}
 	
 	/**
@@ -295,5 +345,60 @@ class DeploymentService {
 		execution.copyTo = image.id
 		execution.save()
 		QueueTaskerControl.createCopyFromExecution(execution, image, execution.deployImage.image, user)
+	}
+	
+	
+	def synchronized doDeploy(data, User user) throws Exception, AllocatorException {
+		
+		try {
+			//TODO Add model validation						
+			Cluster cluster = Cluster.get(data.cluster.id)
+			if (cluster) {
+				//validates if user is owner to deploy cluster
+				if (user.userClusters.find {it.id == cluster.id} != null && cluster.state.equals(ClusterEnum.AVAILABLE)) {
+//					//Validates if images are available in the platform
+					def availables = cluster.images.findAll{it.state == ImageEnum.AVAILABLE}
+					if (availables.size() != cluster.images.size()) {
+						throw new PreconditionException("Some images on this cluster are not available at this moment.")
+					}
+//					try {
+//						//validates if cluster is good configured
+//						def requests = new ImageRequestOptions[cluster.images.size()];
+//						cluster.images.eachWithIndex {it,idx->
+//							HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
+//							requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
+//						}
+//						deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
+//						redirect(uri:"/services/deployment/list", absolute:true)
+//						return
+//
+//					} catch (Exception e) {
+//						e.printStackTrace()
+//						if (e.message == null)
+//							flash.message = e.getCause()
+//						else
+//							flash.message = e.message
+//						redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
+//						return
+//					}
+//				}
+//				else {
+//					flash.message = 'You don\'t have permissions to deploy this cluster or cluster is not available'
+//					redirect(uri:"/services/cluster/deploy/" + cluster.id, absolute:true)
+//					return
+				}
+			}
+//			redirect(uri:"/services/cluster/list", absolute:true)
+			/*response.status = 200
+			response.setContentType("application/json")
+			render(request.JSON)*/
+			//response.setContentType("application/json")
+			render status: 412
+		} catch(Exception e){
+			e.printStackTrace()
+			//TODO Add different exception with code status
+			//response.setContentType("application/json")
+			render status: 404
+		}
 	}
 }

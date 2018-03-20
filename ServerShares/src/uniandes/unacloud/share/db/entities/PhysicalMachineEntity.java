@@ -26,6 +26,9 @@ public class PhysicalMachineEntity {
 	
 	private String host;
 	
+	private String logName;
+	
+	
 	/**
 	 * Empty constructor
 	 */
@@ -70,7 +73,7 @@ public class PhysicalMachineEntity {
 	 * @param status
 	 */
 	public PhysicalMachineEntity (Long id, String ip, Date lastReport, String version, Long dataSpace,
-			PhysicalMachineStateEnum status, String host) {
+			PhysicalMachineStateEnum status, String host, String logs) {
 		super();
 		this.id = id;
 		this.ip = ip;
@@ -79,6 +82,7 @@ public class PhysicalMachineEntity {
 		this.version = version;
 		this.freeSpace = dataSpace;
 		this.host = host;
+		this.logName = logs;
 	}
 
 	public Long getId() {
@@ -136,5 +140,12 @@ public class PhysicalMachineEntity {
 	public void setHost(String host) {
 		this.host = host;
 	}
-
+	
+	public String getLogName() {
+		return logName;
+	}
+	
+	public void setLogName(String logName) {
+		this.logName = logName;
+	}
 }

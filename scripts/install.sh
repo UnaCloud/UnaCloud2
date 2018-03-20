@@ -1,5 +1,4 @@
 #!/bin/sh
-apt-get -y update
 
 export PATH_CONFIG=""
 RABBIT_USER=$(grep -w "QUEUE_USER" ${PATH_CONFIG}config.properties  | cut -c12-)
@@ -13,13 +12,12 @@ MYSQL_PASS=`echo $MYSQL_PASS | tr -d '\r'`
 MYSQL_DB=$(grep -w "DB_NAME" ${PATH_CONFIG}config.properties  | cut -c9-)
 MYSQL_DB=`echo $MYSQL_DB | tr -d '\r'`
 
-apt-get -y update
-
 #Java
-apt-get -y install python-software-properties
-add-apt-repository ppa:webupd8team/java
+#apt-get -y install python-software-properties
+#add-apt-repository ppa:webupd8team/java
 apt-get -y update
-apt-get -y install oracle-java7-installer
+apt-get -y install default-jre
+#apt-get -y install oracle-java7-installer
 
 #Rabbit
 apt-get -y install rabbitmq-server
@@ -32,13 +30,10 @@ rabbitmqctl stop
 invoke-rc.d rabbitmq-server stop
 invoke-rc.d rabbitmq-server start
 
-apt-get -y update
-
 #Tomcat
-apt-get -y install default-jre
 mkdir /opt/tomcat
 tar xvf apache-tomcat-8*tar.gz -C /opt/tomcat --strip-components=1
-rm apache-tomcat-8*tar.gz
+#rm apache-tomcat-8*tar.gz
 
 #mysql
 echo 'mysql-server mysql-server/root_password password '$MYSQL_PASS | debconf-set-selections
@@ -49,7 +44,7 @@ mysql --user="$MYSQL_USER" --password="$MYSQL_PASS" --execute="CREATE DATABASE $
 #UnaCloud
 mkdir /opt/unacloud
 mkdir /opt/unacloud/repo
-export JAVA_HOME=/usr/lib/jvm/java-7-oracle
+export JAVA_HOME=/usr/lib/jvm/default-java
 export CATALINA_HOME=/opt/tomcat
 export UNACLOUD_HOME=/opt/unacloud
 unset RABBIT_USER

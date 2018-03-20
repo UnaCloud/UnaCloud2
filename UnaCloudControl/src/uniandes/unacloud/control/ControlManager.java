@@ -35,17 +35,17 @@ public class ControlManager extends ProjectManager {
 	/**
 	 * Number of concurrent threads to process messages from physical machines
 	 */
-	private static final int CONCURRENT_THREADS_PM = 50;
+	private static final int CONCURRENT_THREADS_PM = 8;
 	
 	/**
 	 * Number of concurrent threads to process messages from virtual machines status
 	 */
-	private static final int CONCURRENT_THREADS_VM = 30;
+	private static final int CONCURRENT_THREADS_VM = 8;
 	
 	/**
 	 * Number of concurrent threads to process messages from queue
 	 */
-	private static final int CONCURRENT_THREADS_QUEUE = 50;
+	private static final int CONCURRENT_THREADS_QUEUE = 8;
 	
 	/**
 	 * Number of tasks in each thread in queue processor
@@ -78,7 +78,7 @@ public class ControlManager extends ProjectManager {
 	 * @return agent port
 	 * @throws Exception 
 	 */
-	public int getPort() throws Exception {
+	public int getAgentPort() throws Exception {
 		return reader.getIntegerVariable(UnaCloudConstants.AGENT_PORT);
 	}
 	

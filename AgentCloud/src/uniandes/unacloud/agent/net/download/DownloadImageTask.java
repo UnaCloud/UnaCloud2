@@ -10,15 +10,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import uniandes.unacloud.agent.exceptions.ExecutionException;
-import uniandes.unacloud.agent.execution.ImageCacheManager;
 import uniandes.unacloud.agent.execution.domain.Image;
 import uniandes.unacloud.agent.execution.domain.ImageCopy;
 import uniandes.unacloud.agent.execution.domain.ImageStatus;
+import uniandes.unacloud.agent.host.system.OperatingSystem;
 import uniandes.unacloud.agent.net.torrent.TorrentClient;
-import uniandes.unacloud.agent.system.OperatingSystem;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
+import uniandes.unacloud.utils.file.FileProcessor;
 import uniandes.unacloud.utils.file.Zipper;
 
 /**
@@ -36,10 +36,10 @@ public class DownloadImageTask {
 	 * @param type
 	 * @throws Exception
 	 */
-	public static void dowloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
+	public static void downloadImageCopy(Image image, ImageCopy copy, String repository, TransmissionProtocolEnum type) throws Exception {
 		
 		File root = new File(repository + OperatingSystem.PATH_SEPARATOR + image.getId() + OperatingSystem.PATH_SEPARATOR + "base");
-		ImageCacheManager.cleanDir(root);
+		FileProcessor.deleteFileSync(root.getAbsolutePath());
 		root.mkdirs();
 		final int puerto = VariableManager.getInstance().getGlobal().getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT);
 		final String ip = VariableManager.getInstance().getGlobal().getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
@@ -97,9 +97,8 @@ public class DownloadImageTask {
 			
 			if (type == TransmissionProtocolEnum.P2P) 
 				TorrentClient.getInstance().downloadAndAnnounceTorrent(copy.getMainFile().getTorrentFile());
-						
+					
 			Zipper.unzipIt(copy.getMainFile().getZipFile(), root.getAbsolutePath());
-			
 			copy.setImage(image);
 			image.getImageCopies().add(copy);
 			copy.init();

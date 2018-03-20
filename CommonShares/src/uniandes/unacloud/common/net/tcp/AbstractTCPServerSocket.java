@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 
@@ -17,7 +17,7 @@ public abstract class AbstractTCPServerSocket extends Thread {
 	/**
 	 * Thread pool to process sockets in background
 	 */
-	private ExecutorService threadPool;
+	private Executor threadPool;
 
 	/**
 	 * Server socket for service
@@ -47,7 +47,7 @@ public abstract class AbstractTCPServerSocket extends Thread {
 			while (true) {
 				try {
 					Socket s = ss.accept();
-					threadPool.submit(processSocket(s));
+					threadPool.execute(processSocket(s));
 				} catch (SocketException soe) {
 					ss.close();
 					soe.printStackTrace();

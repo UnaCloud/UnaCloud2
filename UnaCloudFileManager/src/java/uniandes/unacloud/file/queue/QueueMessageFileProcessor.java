@@ -3,7 +3,7 @@ package uniandes.unacloud.file.queue;
 import java.io.File;
 import java.sql.Connection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import uniandes.unacloud.common.utils.FileConverter;
@@ -37,7 +37,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	/**
 	 * Thread pool 
 	 */
-	private ExecutorService threadPool;
+	private Executor threadPool;
 	
 	/**
 	 * Main repository for all images
@@ -95,7 +95,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	 */
 	private void createPublicImage(QueueMessage message) {
 		
-		threadPool.submit(new MessageProcessor(message) {			
+		threadPool.execute(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
 				
@@ -111,19 +111,25 @@ public class QueueMessageFileProcessor implements QueueReader {
 				if (image != null) {
 					boolean change = false;
 					boolean isNotPublic = false;
-					if (!image.isPublic()) {
-						isNotPublic = true;
-						FileConverter original = image.getFileConversor();
-						FileConverter copy = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getExecutableFile().getName());
-						System.out.println("Changes to public " + image.getMainFile());
-						
-						if (!copy.getZipFile().exists()) {
-							System.out.println(" O: " + original.getZipFile() + " -> " + copy.getZipFile() );
-							FileProcessor.copyFileSync(original.getZipFile().getAbsolutePath(), copy.getZipFile().getAbsolutePath());
-							change = true;
-						}
-												
-					} 
+					try {
+						if (!image.isPublic()) {
+							isNotPublic = true;
+							FileConverter original = image.getFileConversor();
+							FileConverter copy = new FileConverter(mainRepo.getRoot() + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator + original.getExecutableFile().getName());
+							System.out.println("Changes to public " + image.getMainFile());
+							
+							if (!copy.getZipFile().exists()) {
+								System.out.println(" O: " + original.getZipFile() + " -> " + copy.getZipFile() );
+								copy.getZipFile().getParentFile().mkdirs();
+								FileProcessor.copyFileSync(original.getZipFile().getAbsolutePath(), copy.getZipFile().getAbsolutePath());
+								change = true;
+							}
+													
+						} 
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
 					try (Connection con = FileManager.getInstance().getDBConnection()) {
 						if (isNotPublic)
 							//TODO if there is a previous image doesn't override and should send a notification		
@@ -151,7 +157,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	//TODO: remove platform validation because it is not necessary, use main file in public image
 	private void createPrivateImage(QueueMessage message) {
 		
-		threadPool.submit(new MessageProcessor(message) {			
+		threadPool.execute(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
 				
@@ -219,7 +225,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	 * @param message
 	 */
 	private void deleteImage(QueueMessage message){
-		threadPool.submit(new MessageProcessor(message) {			
+		threadPool.execute(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
 				MessageIdOfImage messageId = new MessageIdOfImage(message);
@@ -264,7 +270,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	 * @param message
 	 */
 	private void deleteUser(QueueMessage message) {
-		threadPool.submit(new MessageProcessor(message) {			
+		threadPool.execute(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
 				
@@ -320,7 +326,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 	 * @param message
 	 */
 	private void deletePublicImage(QueueMessage message) {
-		threadPool.submit(new MessageProcessor(message) {			
+		threadPool.execute(new MessageProcessor(message) {			
 			@Override
 			protected void processMessage(QueueMessage message) throws Exception {
 				MessageIdOfImage messageId = new MessageIdOfImage(message);

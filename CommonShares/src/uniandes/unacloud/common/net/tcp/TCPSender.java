@@ -2,9 +2,11 @@ package uniandes.unacloud.common.net.tcp;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import uniandes.unacloud.common.net.UnaCloudMessage;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
  * Responsible to send unacloud message
@@ -43,8 +45,9 @@ public class TCPSender {
 	 * @param processor
 	 */
 	private void sendMessage(UnaCloudMessage message, TCPResponseProcessor processor) {
-		try (Socket s =  new Socket(message.getIp(), message.getPort())) {
-			System.out.println("Sending message to " + message.getIp() + ":" + message.getPort() + " message: " + message);
+		System.out.println("Sending message to " + message.getIp() + ":" + message.getPort() + " message: " + message);
+		try (Socket s =  new Socket()) {	
+		s.connect(new InetSocketAddress(message.getIp(), message.getPort()), UnaCloudConstants.SOCKET_TIME_OUT);			
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 			oos.writeObject(message);
