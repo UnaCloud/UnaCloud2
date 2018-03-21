@@ -328,6 +328,7 @@ public class DeploymentTimeTesting {
                 }
             }
         }
+        Thread.sleep(30000);
     }
 
     /**
