@@ -78,7 +78,8 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	        		ExecutorService.executeBackgroundTask(new StartExecutionTask(Execution.getFromStartExecutionMessage(msg), msg.getTransmissionType()));
 	            	return resp;
 	            case ImageOperationMessage.VM_STOP:
-	            	ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
+					System.out.println("Execution is being stopped...");
+					ExecutorService.executeBackgroundTask(new StopExecutionTask(message.getExecutionId()));
 	                return new UnaCloudResponse("Stopping execution...", ExecutionProcessEnum.SUCCESS);
 	            case ImageOperationMessage.VM_RESTART:
 	            	//TODO Unused
@@ -112,6 +113,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	            case AgentMessage.GET_VERSION:
 	                return new UnaCloudResponse(AgentManager.getVersion(), ExecutionProcessEnum.SUCCESS);
 	            case AgentMessage.CLEAR_CACHE:
+	            	System.out.println("The agent is clearing cache");
 	                return ImageCacheManager.clearCache();                
 	            case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
 	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());

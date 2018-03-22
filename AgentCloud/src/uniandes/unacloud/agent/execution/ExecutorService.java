@@ -25,7 +25,8 @@ public class ExecutorService {
      * @param run
      */
     public static synchronized void executeBackgroundTask(Runnable run) {
-    	if (backPool == null)
+		System.out.println("Background: Executing task is back pool");
+		if (backPool == null)
     		backPool = Executors.newFixedThreadPool(BACKGROUND_POOL_THREAD_SIZE);
     	backPool.execute(run);
     }
