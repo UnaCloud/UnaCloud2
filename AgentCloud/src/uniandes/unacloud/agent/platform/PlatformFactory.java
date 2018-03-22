@@ -61,7 +61,7 @@ public class PlatformFactory {
      * @param platformId The platform id to be instantiated
      * @return A managed platform for the given name
      */
-    public static Platform getPlatform(final String platformId) {
+    public static Platform getPlatform(final String platformId) {´
     	return map.get(platformId);
     }
     

@@ -55,10 +55,13 @@ public class PersistentExecutionManager {
      * @param checkTime 
      */
     public static void removeExecution(long executionId, boolean checkTime) {
-    	Execution execution = executionList.remove(executionId);
+		System.out.println("Background task: Removing execution with id "+executionId);
+		Execution execution = executionList.remove(executionId);
 		if (execution != null && (!checkTime || System.currentTimeMillis() > execution.getShutdownTime())) {
+			System.out.println("Background task: Stop and unregistering image from execution " + executionId);
 			execution.getImage().stopAndUnregister();
 		}
+		System.out.println("Background task: Saving data from execution removal");
 		saveData();
     }
     
@@ -161,7 +164,8 @@ public class PersistentExecutionManager {
      * Saves the current state of executions and images on this node.  
      */
     private static void saveData() {
-    	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
+		System.out.println("Saving data...");
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
         	oos.writeObject(executionList);
         } 
     	catch(Exception e){
