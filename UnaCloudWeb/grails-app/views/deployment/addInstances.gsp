@@ -80,7 +80,7 @@
 					        </div>
 					   </li>					  	
 					   <li>
-                           <i class="fa  fa-bolt"></i>
+                           <i class="fa fa-bolt"></i>
                        </li>
 					</ul>
 				</div>			   
