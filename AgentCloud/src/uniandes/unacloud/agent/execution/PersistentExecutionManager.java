@@ -120,10 +120,12 @@ public class PersistentExecutionManager {
      * @return result message
      */
     public static void startUpMachine(Execution execution, boolean started) {
-    	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
+		System.out.println("Setting shutdown time of "+execution.getId());
+		execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
+				System.out.println("Report execution state "+execution.getId());
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
 	            if (!started) 
 	            	execution.getImage().startExecution();
 	            executionList.put(execution.getId(), execution);
