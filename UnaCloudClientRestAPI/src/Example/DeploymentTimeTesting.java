@@ -160,7 +160,6 @@ public class DeploymentTimeTesting {
                         i=0;
                         for(PhysicalMachineResponse phy:list)
                         {
-                            if(list.indexOf(phy)<26) continue;
                             if(phy.getState().getName().equals(LaboratoryManager.MACHINE_STATE.PROCESSING+""))
                             {
                                 terminaCache=false;
@@ -328,7 +327,6 @@ public class DeploymentTimeTesting {
                 }
             }
         }
-        Thread.sleep(30000);
     }
 
     /**
