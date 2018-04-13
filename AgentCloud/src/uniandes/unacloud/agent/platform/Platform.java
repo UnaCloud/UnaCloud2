@@ -55,7 +55,7 @@ public abstract class Platform {
      * turns off the managed execution
      * @param image to be stopped
      */
-    public abstract void stopExecution(ImageCopy image, int t);
+    public abstract void stopExecution(ImageCopy image);
 
     
     /**
