@@ -106,9 +106,10 @@ public class DeploymentTimeTesting {
                 dep.stopExecutions(deploymentStopRequest);
                 //Throws exception if there is a failed instance of deployment
                 if (!noErrors)
-                    throw new Exception("There are failed deployment instances");
+                    throw new Exception("There are failed deployment instances "+significantHostName + ";" + (j + 1) + "_" + qty + "; "+System.currentTimeMillis());
                 //While the deployment is not done loop
                 finishDeployment(deploy, dep);
+                Thread.sleep(60000*5);
             }
         }
     }
@@ -338,7 +339,7 @@ public class DeploymentTimeTesting {
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
         //First method for making deployment time testing
-        deploymentTimeTesting.test(1000,new int[]{6,7,8,9,10},50,"CacheBugTest");
+        deploymentTimeTesting.deploymentTimeTesting(5,new int[]{1,2,3,4,5,6,7,8,9,10},50,"P2PSmallTestWaira2SeriesApril");
         //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
         //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 
