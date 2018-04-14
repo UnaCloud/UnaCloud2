@@ -20,7 +20,6 @@ import uniandes.unacloud.agent.host.system.OperatingSystem;
 import uniandes.unacloud.agent.net.download.DownloadImageTask;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.net.torrent.TorrentClient;
-import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
@@ -157,7 +156,7 @@ public class ImageCacheManager {
                 for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
 						System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
-						PlatformFactory.getPlatform(image.getPlatformId()).stopAndUnregister(copy);
+						copy.stopAndUnregister();
                         System.out.println("\tRemoving torrent: " + copy.getMainFile().getFilePath());
                         TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 					}
@@ -191,7 +190,7 @@ public class ImageCacheManager {
 		if (vmi != null) {
 			try {
 				for (ImageCopy copy : vmi.getImageCopies()) {
-					PlatformFactory.getPlatform(vmi.getPlatformId()).stopAndUnregister(copy);
+					copy.stopAndUnregister();
 					TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 				}				
 			} catch (Exception e) {
