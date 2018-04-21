@@ -45,10 +45,13 @@ public class ExecutionReportGenerator {
         SimpleDateFormat sf= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         double[] sumTrans=new double[numIterations];
         double[] sumFin=new double[numIterations];
+
         double fallidos=0;
         int numMaquina=0;
         for(Integer j:quantities)
         {
+            double[] tiemposDespliegue=new double[j];
+            double[] tiemposTransmision=new double[j];
             numMaquina=1;
             fallidos=0;
             pw.println("Despliegues: "+j);
@@ -81,6 +84,7 @@ public class ExecutionReportGenerator {
                         {
                            double tTrans=sf.parse(trans).getTime()-sf.parse(ini).getTime();
                            tiempoTrans=tTrans+"";
+                           tiemposDespliegue[j]=tTrans;
                            sumTrans[i]+=tTrans/1000.0;
                         }
                         catch(Exception e)
@@ -91,20 +95,33 @@ public class ExecutionReportGenerator {
                         try {
                             double tFin = sf.parse(trans).getTime() - sf.parse(ini).getTime();
                             tiempoFin = tFin + "";
+                            tiemposTransmision[j]=tFin;
                             sumTrans[i] += tFin / 1000.0;
                         }
                         catch(Exception e)
                         {
                             fallidos++;
                         }
+
                         pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+trans+","+fin+","+tiempoTrans+","+tiempoFin);
                         numMaquina++;
 
                     }
                     double cant=j;
+                    double desvTrans=0;
+                    double desvFin=0;
+                    for(int k=0;k<tiemposTransmision.length;k++)
+                    {
+                        desvTrans+=Math.pow(sumTrans[i]/j-tiemposTransmision[k],2);
+                        desvFin+=Math.pow(sumFin[i]/j-tiemposDespliegue[k],2);
+                    }
+                    int n=tiemposTransmision.length-1;
+                    if(n==0) n++;
+                    desvTrans=Math.sqrt(desvTrans/n);
+                    desvFin=Math.sqrt(desvTrans/n);
                     pw.println(" , ");
-                    pw.println("Total transmisiones,Total fallidos,Promedio transmision (s),Promedio despliegue (s),Confiabilidad (%)");
-                    pw.println(j+","+fallidos+","+sumTrans[i]/j+","+sumFin[i]/j+","+(cant-fallidos)/cant);
+                    pw.println("Total transmisiones,Total fallidos,Promedio transmision (s),Promedio despliegue (s),Confiabilidad (%),Desviacion estandar transmision (s),Desviacion estandar despliegue (s)");
+                    pw.println(j+","+fallidos+","+sumTrans[i]/j+","+sumFin[i]/j+","+(cant-fallidos)/cant+","+desvTrans+","+desvFin);
                     pw.println(" , ");
                     pw.println("Total despliegues,Total fallidos,Confiabilidad (%)");
                     pw.println(j+","+fallidos+","+(cant-fallidos)/cant);
