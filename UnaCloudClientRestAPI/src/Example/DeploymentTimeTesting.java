@@ -3,9 +3,9 @@ package Example;
 import Connection.*;
 import VO.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * Class for deployment time testing examples with different methods.
@@ -203,6 +203,8 @@ public class DeploymentTimeTesting {
         }
 
 
+
+
     /**
      * Complex example for testing the deployment time of several machines with the number of iterations, and the array of quantity of machines given by param.
      * Since the cache cleaning is done at the end, it consists in deploying, stopping the executions in the given lab and finally cleaning the cache of the used machines.
@@ -211,29 +213,57 @@ public class DeploymentTimeTesting {
      * @param significantHostName Defines the host name used for this set of tests
      * @throws Exception If there is any HTTPException or if there are any failed deployments.
      */
-    public void deploymentTimeTestingWithPostCacheCleaning(int iterations, int[] quantities, String significantHostName) throws Exception
+    public void energyTestingPerAlgorithm(int iterations, int[] quantities,int time, int idCluster,Map<Integer,HardwareProfileNodeList> quantitiesPerNode,String significantHostName,int labId,String fileName) throws Exception
     {
         DeploymentManager dep= new DeploymentManager(uc);
+        PrintWriter pw=new PrintWriter(new File(fileName));
+
         for(int j=0;j<iterations;j++)
         {
             for(Integer qty:quantities)
             {
+                LaboratoryManager lab=new LaboratoryManager(uc);
+                //Get lab physical machines for cleaning cache
+                List<PhysicalMachineResponse> list=lab.getLaboratoryMachines(labId);
+                //Hash to get if the machine had an user
+                HashMap<Integer,Boolean> machineWithUser=new HashMap<>();
+                for(PhysicalMachineResponse phy:list)
+                {
+                    machineWithUser.put(phy.getId(),phy.isWithUser());
+                }
                 //Post deployment with params
-                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
-                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+"_"+qty+";",false);
+                DeploymentRequest deploymentRequest=new DeploymentRequest(time,idCluster);
+                for(Integer i:quantitiesPerNode.get(qty).getProfiles().keySet())
+                {
+                    if(notHardwareProfile(i)) throw new Exception("The given hardware profile does not exist in the system");
+                    int quantity=quantitiesPerNode.get(qty).getProfiles().get(i).get("quantity");
+                    if(quantity>0)
+                        deploymentRequest.addNode(quantitiesPerNode.get(qty).getProfiles().get(i).get("image"),i,quantity,significantHostName+";"+(j+1)+"_"+quantity+";",false);
+                }
+
+
                 double deploymentId=dep.deployWithParams(deploymentRequest);
                 System.out.println("ID DEPLOY"+deploymentId);
 
                 //Get the current deployment
                 DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
                 System.out.println(deploy.getStatus().getName()+"");
+                //Identify given machines
+
+                HashMap<Integer,List<Integer>> vmsInPms=new HashMap<>();
+                for(ObjectId<Integer> id:deploy.getImages())
+                {
+                    for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                    {
+                        if(vmsInPms.get(id.getId())==null) vmsInPms.put(id.getId(),new ArrayList<>());
+                        vmsInPms.get(id.getId()).add(exec.getExecutionNode().getId());
+                    }
+                }
 
                 //Assume we have executions
                 System.out.println("Get executions");
                 //Signals if you need to throw an exception or not
                 boolean noErrors= finishExecutions(deploy,dep);
-                ArrayList<Integer> machines=new ArrayList<>();
-                System.out.println("Stop");
                 DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
                 //Cycle through all executions of the deployment and add them to the list for stopping
                 for(ObjectId<Integer> id:deploy.getImages())
@@ -242,38 +272,40 @@ public class DeploymentTimeTesting {
                     {
                         System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
                         deploymentStopRequest.addExecution(exec.getId());
-                        machines.add(exec.getExecutionNode().getId());
                     }
                 }
-
+                System.out.println("The system is waiting 15 minutes to stop executions");
+                Thread.sleep(15*60000);
+                System.out.println("Stop");
                 //Stop executions
                 dep.stopExecutions(deploymentStopRequest);
 
                 //Throws exception if there is a failed instance of deployment
                 if(!noErrors)
                     throw new Exception("There are failed deployment instances");
-
-                //Clean the cache of the given machines or of given numbers.
-                System.out.println("Cache");
-
-                //The user must know the id of the lab to clean up
-                LaboratoryManager lab=new LaboratoryManager(uc);
-                LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(2, TaskManagerState.CACHE);
-                for(Integer i:machines)
+                pw.println(significantHostName+";"+(j+1)+"_"+qty+";");
+                pw.println("ID IMAGEN DESPLEGADA,ID MÁQUINA FÍSICA");
+                for(Integer i:vmsInPms.keySet())
                 {
-                    System.out.println("MACHINE "+i);
-                    laboratoryUpdateRequest.addMachine(i);
+                    for(Integer exe:vmsInPms.get(i))
+                    {
+                        pw.println(i+","+exe);
+                    }
                 }
-                lab.cleanCache(laboratoryUpdateRequest);
-                //While the deployment is not done loop
-                finishDeployment(deploy,dep);
-
 
             }
         }
+        pw.close();
 
 
     }
+
+    private boolean notHardwareProfile(Integer i) {
+        if(i==DeploymentManager.HW_LARGE || i==DeploymentManager.HW_MEDIUM||i==DeploymentManager.HW_SMALL||i==DeploymentManager.HW_XLARGE)
+            return false;
+        return true;
+    }
+
     /**
      * Method for looping until the executions are finished. It returns whether there was a successful deployment or not.
      * @param deploy The deployment response for looking at the executions
@@ -336,10 +368,20 @@ public class DeploymentTimeTesting {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
         //First method for making deployment time testing
-        deploymentTimeTesting.deploymentTimeTesting(5,new int[]{3,4,5,6,7,8,9,10},50,"P2PSmallTestWaira2SeriesApril");
+       // deploymentTimeTesting.deploymentTimeTesting(5,new int[]{3,4,5,6,7,8,9,10},50,"P2PSmallTestWaira2SeriesApril");
+
+        Map<Integer,HardwareProfileNodeList> quantitiesPerNode=new HashMap<>();
+        Map<Integer,Map<String,Integer>> node=new HashMap<>();
+        Map<String,Integer> interno=new HashMap<>();
+        interno.put("quantity",1);
+        interno.put("image",74);
+        node.put(DeploymentManager.HW_SMALL,interno);
+        quantitiesPerNode.put(1,new HardwareProfileNodeList(node));
+        deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{1},1,61,quantitiesPerNode,"test",1,"test.csv");
         //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
         //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 
