@@ -3,7 +3,9 @@ package Example;
 import Connection.*;
 import VO.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -236,9 +238,9 @@ public class DeploymentTimeTesting {
                 for(Integer i:quantitiesPerNode.get(qty).getProfiles().keySet())
                 {
                     if(notHardwareProfile(i)) throw new Exception("The given hardware profile does not exist in the system");
-                    int quantity=quantitiesPerNode.get(qty).getProfiles().get(i).get("quantity");
+                    int quantity=Integer.parseInt(quantitiesPerNode.get(qty).getProfiles().get(i).get("quantity"));
                     if(quantity>0)
-                        deploymentRequest.addNode(quantitiesPerNode.get(qty).getProfiles().get(i).get("image"),i,quantity,significantHostName+";"+(j+1)+"_"+quantity+";",false);
+                        deploymentRequest.addNode(Integer.parseInt(quantitiesPerNode.get(qty).getProfiles().get(i).get("image")),i,quantity,quantitiesPerNode.get(qty).getProfiles().get(i).get("hostname")+":"+(j+1)+"_"+quantity+";",false);
                 }
 
 
@@ -274,15 +276,13 @@ public class DeploymentTimeTesting {
                         deploymentStopRequest.addExecution(exec.getId());
                     }
                 }
+                if(!noErrors)
+                    throw new Exception("The system has failed executions");
                 System.out.println("The system is waiting 15 minutes to stop executions");
                 Thread.sleep(15*60000);
                 System.out.println("Stop");
                 //Stop executions
                 dep.stopExecutions(deploymentStopRequest);
-
-                //Throws exception if there is a failed instance of deployment
-                if(!noErrors)
-                    throw new Exception("There are failed deployment instances");
                 pw.println(significantHostName+";"+(j+1)+"_"+qty+";");
                 pw.println("ID IMAGEN DESPLEGADA,ID MÁQUINA FÍSICA");
                 for(Integer i:vmsInPms.keySet())
@@ -292,7 +292,19 @@ public class DeploymentTimeTesting {
                         pw.println(i+","+exe);
                     }
                 }
+                pw.println("ID MÁQUINA FÍSICA,USUARIO");
+                int usadas=0;
+                for(Integer i:machineWithUser.keySet())
+                {
+                    if(vmsInPms.values().contains(i))
+                    {
+                        pw.println(i+","+((machineWithUser.get(i))?"1":"0"));
+                        usadas++;
+                    }
 
+                }
+                pw.println("MÁQUINA FÍSICA USADA");
+                pw.println(usadas);
             }
         }
         pw.close();
@@ -374,14 +386,54 @@ public class DeploymentTimeTesting {
         //First method for making deployment time testing
        // deploymentTimeTesting.deploymentTimeTesting(5,new int[]{3,4,5,6,7,8,9,10},50,"P2PSmallTestWaira2SeriesApril");
 
+
         Map<Integer,HardwareProfileNodeList> quantitiesPerNode=new HashMap<>();
-        Map<Integer,Map<String,Integer>> node=new HashMap<>();
-        Map<String,Integer> interno=new HashMap<>();
-        interno.put("quantity",1);
-        interno.put("image",74);
-        node.put(DeploymentManager.HW_SMALL,interno);
-        quantitiesPerNode.put(1,new HardwareProfileNodeList(node));
-        deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{1},1,61,quantitiesPerNode,"test",1,"test.csv");
+        Map<Integer,Map<String,String>> node=new HashMap<>();
+        Map<String,String> interno=new HashMap<>();
+        List<String> hardwareProfiles = Arrays.asList(new String[]{"small","medium","large","xlarge"});
+
+        BufferedReader br=new BufferedReader(new FileReader("./archivoEntrada.csv"));
+        String linea=br.readLine();
+        linea=br.readLine();
+        int clusterId=Integer.parseInt(linea.split(",")[0]);
+        String [] datos=null;
+        int categoria=0;
+        int temp=0;
+        while(linea!=null)
+        {
+            datos=linea.split(",");
+            temp=Integer.parseInt(datos[1]);
+            if(temp!=categoria)
+            {
+                categoria=temp;
+                node=new HashMap<>();
+                quantitiesPerNode.put(categoria,new HardwareProfileNodeList(node));
+            }
+            for(int i=0;i<4;i++)
+            {
+                int hw=hardwareProfiles.indexOf(datos[4+4*i]);
+                interno=new HashMap<>();
+                interno.put("quantity",(datos[hw*4+3]));
+                interno.put("image",(datos[hw*4+2]));
+                interno.put("hostname",datos[hw*4+5]);
+                quantitiesPerNode.get(categoria).getProfiles().put(hw+1,interno);
+            }
+            linea=br.readLine();
+        }
+        br.close();
+        for(Integer i:quantitiesPerNode.keySet())
+        {
+            System.out.println(i);
+            for(Integer j:quantitiesPerNode.get(i).getProfiles().keySet())
+            {
+                System.out.println("HW"+j);
+                for(String s:quantitiesPerNode.get(i).getProfiles().get(j).keySet())
+                {
+                    System.out.println("Key "+s+" "+quantitiesPerNode.get(i).getProfiles().get(j).get(s));
+                }
+            }
+        }
+        //deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{40,50},1,clusterId,quantitiesPerNode,"test",1,"test.csv");
         //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
         //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 
