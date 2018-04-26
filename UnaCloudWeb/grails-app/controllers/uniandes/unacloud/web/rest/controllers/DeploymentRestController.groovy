@@ -226,8 +226,8 @@ class DeploymentRestController extends AbstractRestController {
     /**
      * Gets execution by id of a particular deployment
      * @param id Deployment id
-     * @param idExec Execution id
-     * @return The execution given by id
+     * @param imageId Image id
+     * @return The executions given by id
      */
     def getExecutionsByDeployedImagetId(int id, int imageId)
     {

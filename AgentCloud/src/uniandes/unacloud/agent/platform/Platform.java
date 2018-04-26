@@ -101,10 +101,14 @@ public abstract class Platform {
     public abstract void cloneImage(ImageCopy source,ImageCopy dest);
     
     public void stopAndUnregister(ImageCopy image){
-    	synchronized (image) {
-    		stopExecution(image);
-        	unregisterImage(image);
-        	ImageCacheManager.freeLockedImageCopy(image);
+        System.out.println("The agent is stopping and unregistering an image");
+        synchronized (image) {
+            System.out.println("The agent is stopping the image copy "+image.getImageName()+" "+image.getImage().getId());
+            stopExecution(image);
+            System.out.println("The agent is unregistering the image copy "+image.getImageName()+" "+image.getImage().getId());
+            unregisterImage(image);
+            System.out.println("The agent is freeing the locked image copy of "+image.getImageName()+" "+image.getImage().getId());
+            ImageCacheManager.freeLockedImageCopy(image);
 		}
     }
     

@@ -130,4 +130,13 @@ public class DeploymentManager {
         }.getType();
         return gson.fromJson(jsonResponse,collectionType);
     }
+
+    public List<ExecutionStateResponse> getStates(int deploymentId, int executionId) throws Exception
+    {
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA+"/"+deploymentId+"/executions/"+executionId+"/histories", null);
+        //Do mapping to json with gson library
+        Type collectionType = new TypeToken<Collection<ExecutionStateResponse>>() {
+        }.getType();
+        return gson.fromJson(jsonResponse,collectionType);
+    }
 }

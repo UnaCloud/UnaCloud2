@@ -55,10 +55,13 @@ public class PersistentExecutionManager {
      * @param checkTime 
      */
     public static void removeExecution(long executionId, boolean checkTime) {
-    	Execution execution = executionList.remove(executionId);
+		System.out.println("Background task: Removing execution with id "+executionId);
+		Execution execution = executionList.remove(executionId);
 		if (execution != null && (!checkTime || System.currentTimeMillis() > execution.getShutdownTime())) {
+			System.out.println("Background task: Stop and unregistering image from execution " + executionId);
 			execution.getImage().stopAndUnregister();
 		}
+		System.out.println("Background task: Saving data from execution removal");
 		saveData();
     }
     
@@ -117,10 +120,12 @@ public class PersistentExecutionManager {
      * @return result message
      */
     public static void startUpMachine(Execution execution, boolean started) {
-    	execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
+		System.out.println("Setting shutdown time of "+execution.getId());
+		execution.setShutdownTime(System.currentTimeMillis() + execution.getExecutionTime().toMillis());
     	try {
 	        try {
-	        	ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
+				System.out.println("Report execution state "+execution.getId());
+				ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.SUCCESS, "Starting execution");
 	            if (!started) 
 	            	execution.getImage().startExecution();
 	            executionList.put(execution.getId(), execution);
@@ -161,7 +166,8 @@ public class PersistentExecutionManager {
      * Saves the current state of executions and images on this node.  
      */
     private static void saveData() {
-    	try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
+		System.out.println("Saving data...");
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(executionsFile));) {
         	oos.writeObject(executionList);
         } 
     	catch(Exception e){

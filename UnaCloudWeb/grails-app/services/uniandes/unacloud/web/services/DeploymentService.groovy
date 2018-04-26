@@ -102,10 +102,9 @@ class DeploymentService {
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptions = physicalMachineAllocatorService.getPhysicalMachineUsage(pms)
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
-		def images = []		
+		def images = []
 		requests.eachWithIndex(){ request, i->
-			
-			def depImage= new DeployedImage(image: request.image, highAvaliavility: request.high, executions: [])			
+			def depImage= new DeployedImage(image: request.image, highAvaliavility: request.high, executions: [])
 			def executions = []
 			for (int j = 0 ; j < request.instances; j++) {		
 				executions.add( new Execution(
@@ -254,7 +253,7 @@ class DeploymentService {
 	def getActiveExecution(Deployment deployment, int idExec) {
         for(DeployedImage image:deployment.images)
         {
-            for(Execution execution:image.activeExecutions)
+            for(Execution execution:image.executions)
             {
                 if(execution.id==idExec)
                     return execution

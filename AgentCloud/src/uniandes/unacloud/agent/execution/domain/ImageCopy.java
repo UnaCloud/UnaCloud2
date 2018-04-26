@@ -137,7 +137,7 @@ public class ImageCopy implements Serializable {
 					status = ImageStatus.STARTING;
 				Class<?> configuratorClass = Class.forName("uniandes.unacloud.agent.execution.configuration." + getImage().getConfiguratorClass());
 				Object configuratorObject = configuratorClass.getConstructor().newInstance();
-				
+				System.out.println("Beginning initial config " + getImageName());
 				if (configuratorObject instanceof AbstractExecutionConfigurator) {
 					AbstractExecutionConfigurator configurator = (AbstractExecutionConfigurator) configuratorObject;
 					//configurator.setplatform(platform);

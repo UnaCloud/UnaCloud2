@@ -140,14 +140,19 @@ public class TorrentClient {
 		System.out.println("Remove torrent " + torrentFile.getAbsolutePath() + " client: " + client);
 		if (client != null) {
 			try {
+				System.out.println("Stop torrent " + torrentFile.getAbsolutePath() + " client: " + client);
 				client.getTorrent().stop();
+				System.out.println("Close torrent " + torrentFile.getAbsolutePath() + " client: " + client);
 				client.getTorrent().close();
+				System.out.println("Finish torrent " + torrentFile.getAbsolutePath() + " client: " + client);
 				if (client.getTorrent().isComplete())
 					client.getTorrent().finish();
+				System.out.println("Stop client " + torrentFile.getAbsolutePath() + " client: " + client);
 				client.stop(false);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}			
+			}
+			System.out.println("Remove torrent from local clients " + torrentFile.getAbsolutePath());
 			localClients.remove(torrentFile.getAbsolutePath());
 		}		
 	}
