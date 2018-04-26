@@ -61,12 +61,12 @@ public class ImageCacheManager {
 		Image vmi = getImage(execution.getImageId());
 		ImageCopy source;
 		ImageCopy dest;
+		ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
 		synchronized (vmi) {
 			System.out.println("\thas " + vmi.getImageCopies().size() + " copies");
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
-				try {
-					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
+				try {					
 					DownloadImageTask.downloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
