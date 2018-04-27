@@ -41,6 +41,7 @@ public class StartExecutionTask implements Runnable {
 		System.out.println("Start Execution " + machineExecution.getId());
 		try {
 			//get image 
+			ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
 			ImageCopy image = ImageCacheManager.getFreeImageCopy(machineExecution, transmissionType);
 			machineExecution.setImage(image);
 			image.configureAndStart(machineExecution);

@@ -248,7 +248,7 @@ public class PersistentExecutionManager {
     			System.out.println("Start copy service with token " + message.getTokenCom());
 				response.setMessage("Copying image");
 				response.setState(ExecutionProcessEnum.SUCCESS);
-				ExecutorService.executeBackgroundTask(new UploadImageTask(message.getTokenCom(), execution));
+				ExecutorService.executeRequestTask(new UploadImageTask(message.getTokenCom(), execution));
             } 
     		else {
 				response.setMessage(UnaCloudConstants.ERROR_MESSAGE + " Execution doesn't exist");

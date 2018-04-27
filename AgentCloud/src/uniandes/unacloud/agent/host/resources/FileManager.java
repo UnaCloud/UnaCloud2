@@ -19,7 +19,7 @@ public class FileManager {
 			List<File> files = new ArrayList<File>();
 			files.add(new File(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + UnaCloudConstants.AGENT_OUT_LOG));
 			files.add(new File(VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH) + UnaCloudConstants.AGENT_ERROR_LOG));
-			ExecutorService.executeBackgroundTask(new UploadLogTask(files, OSFactory.getOS().getHostname()));
+			ExecutorService.executeRequestTask(new UploadLogTask(files, OSFactory.getOS().getHostname()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		

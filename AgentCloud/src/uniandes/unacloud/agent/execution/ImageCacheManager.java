@@ -60,13 +60,12 @@ public class ImageCacheManager {
 		System.out.println("\tgetFreeImageCopy " + execution.getImageId());
 		Image vmi = getImage(execution.getImageId());
 		ImageCopy source;
-		ImageCopy dest;
+		ImageCopy dest;		
 		synchronized (vmi) {
 			System.out.println("\thas " + vmi.getImageCopies().size() + " copies");
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
-				try {
-					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
+				try {					
 					DownloadImageTask.downloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
@@ -170,7 +169,7 @@ public class ImageCacheManager {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
-        System.out.println("The agent is clearing it´´ image list");
+        System.out.println("The agent is clearing its image list");
         imageList.clear();
         System.out.println("The agent is saving images");
         saveImages();
