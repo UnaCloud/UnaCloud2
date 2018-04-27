@@ -20,7 +20,6 @@ import uniandes.unacloud.agent.host.system.OperatingSystem;
 import uniandes.unacloud.agent.net.download.DownloadImageTask;
 import uniandes.unacloud.agent.net.send.ServerMessageSender;
 import uniandes.unacloud.agent.net.torrent.TorrentClient;
-import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.utils.SystemUtils;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
@@ -53,21 +52,20 @@ public class ImageCacheManager {
 	
 	/**
 	 * Returns a free copy of the image
-	 * @param imageId image Id 
-	 * @return image available copy
+	 * @param execution Given execution
+	 * @return type Type of transmission protocol
 	 * @throws Exception 
 	 */
 	public static ImageCopy getFreeImageCopy(Execution execution, TransmissionProtocolEnum type) throws Exception {
 		System.out.println("\tgetFreeImageCopy " + execution.getImageId());
 		Image vmi = getImage(execution.getImageId());
 		ImageCopy source;
-		ImageCopy dest;
+		ImageCopy dest;		
 		synchronized (vmi) {
 			System.out.println("\thas " + vmi.getImageCopies().size() + " copies");
 			if (vmi.getImageCopies().isEmpty()) {
 				ImageCopy copy = new ImageCopy();
-				try {
-					ServerMessageSender.reportExecutionState(execution.getId(), ExecutionProcessEnum.REQUEST, "Start Transmission");
+				try {					
 					DownloadImageTask.downloadImageCopy(vmi, copy, machineRepository, type);
 					saveImages();
 				} catch (ExecutionException ex) {
@@ -135,28 +133,31 @@ public class ImageCacheManager {
 	 */
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy) {
 		System.out.println("\t break free " + vmiCopy.getMainFile().getFilePath());
-				
 		Image image = ImageCacheManager.getImage(vmiCopy.getImage().getId());
-		for (ImageCopy imC: image.getImageCopies())
+        System.out.println("The agent is retrieving the image copy "+vmiCopy.getImageName()+" of "+image.getId()+" for releasing it to compare iwith other image copies");
+        for (ImageCopy imC: image.getImageCopies())
 			if (imC.getImageName().equals(vmiCopy.getImageName()))
 				imC.setStatus(ImageStatus.FREE);
-		saveImages();
+        System.out.println("The agent freed the image copy "+vmiCopy.getImageName()+" ");
+        saveImages();
 	}
 		
 	/**
-	 * Removes all images from physical machine disk
+	 * Removes all images fom physical machine disk
 	 * @return operation confirmation
 	 */
 	public static synchronized UnaCloudResponse clearCache() {
 		System.out.println("clearCache");
 		loadImages();		
 		try {	
-			try {				
-				for (Image image: imageList.values())
+			try {
+                System.out.println("The agent is clearing cache form it´s image list");
+                for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
 						System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
-						PlatformFactory.getPlatform(image.getPlatformId()).stopAndUnregister(copy);
-						TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
+						copy.stopAndUnregister();
+                        System.out.println("\tRemoving torrent: " + copy.getMainFile().getFilePath());
+                        TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 					}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -168,8 +169,10 @@ public class ImageCacheManager {
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		imageList.clear();
-		saveImages();
+        System.out.println("The agent is clearing its image list");
+        imageList.clear();
+        System.out.println("The agent is saving images");
+        saveImages();
 		return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS)  ;
 	}
 	
@@ -186,7 +189,7 @@ public class ImageCacheManager {
 		if (vmi != null) {
 			try {
 				for (ImageCopy copy : vmi.getImageCopies()) {
-					PlatformFactory.getPlatform(vmi.getPlatformId()).stopAndUnregister(copy);
+					copy.stopAndUnregister();
 					TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
 				}				
 			} catch (Exception e) {
@@ -207,7 +210,8 @@ public class ImageCacheManager {
 	 * Saves the images data in a file
 	 */
 	private static synchronized void saveImages() {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(imageListFile))) {
+        System.out.println("\tSaving images...");
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(imageListFile))) {
 			oos.writeObject(imageList);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -219,13 +223,19 @@ public class ImageCacheManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private static void loadImages() {
+		System.out.println("The agent is loading the imageList");
 		if (imageList == null) {
+			System.out.println("The image list is empty");
 			imageList = new TreeMap<>();
 			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(imageListFile))) {
 				imageList = (Map<Long,Image>) ois.readObject();
 				for (Image im : imageList.values())
+				{
+					System.out.println("The agent is copying image "+im.getId()+" into its list");
 					for(ImageCopy copy : im.getImageCopies())
-						copy.setStatus(ImageStatus.FREE);				
+						copy.setStatus(ImageStatus.FREE);
+				}
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
