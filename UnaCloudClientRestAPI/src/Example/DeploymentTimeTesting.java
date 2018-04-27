@@ -240,7 +240,7 @@ public class DeploymentTimeTesting {
                     if(notHardwareProfile(i)) throw new Exception("The given hardware profile does not exist in the system");
                     int quantity=Integer.parseInt(quantitiesPerNode.get(qty).getProfiles().get(i).get("quantity"));
                     if(quantity>0)
-                        deploymentRequest.addNode(Integer.parseInt(quantitiesPerNode.get(qty).getProfiles().get(i).get("image")),i,quantity,quantitiesPerNode.get(qty).getProfiles().get(i).get("hostname")+":"+(j+1)+"_"+quantity+";",false);
+                        deploymentRequest.addNode(Integer.parseInt(quantitiesPerNode.get(qty).getProfiles().get(i).get("image")),i,quantity,i+"-"+significantHostName+"-"+(j+1)+"_"+qty+"-",false);
                 }
 
 
@@ -276,14 +276,14 @@ public class DeploymentTimeTesting {
                         deploymentStopRequest.addExecution(exec.getId());
                     }
                 }
-                if(!noErrors)
-                    throw new Exception("The system has failed executions");
+                //if(!noErrors)
+                //    throw new Exception("The system has failed executions");
                 System.out.println("The system is waiting 15 minutes to stop executions");
                 Thread.sleep(15*60000);
                 System.out.println("Stop");
                 //Stop executions
                 dep.stopExecutions(deploymentStopRequest);
-                pw.println(significantHostName+";"+(j+1)+"_"+qty+";");
+                pw.println(significantHostName+"-"+(j+1)+"_"+qty+"-");
                 pw.println("ID IMAGEN DESPLEGADA,ID MÁQUINA FÍSICA");
                 for(Integer i:vmsInPms.keySet())
                 {
@@ -296,14 +296,16 @@ public class DeploymentTimeTesting {
                 int usadas=0;
                 for(Integer i:machineWithUser.keySet())
                 {
-                    if(vmsInPms.values().contains(i))
-                    {
-                        pw.println(i+","+((machineWithUser.get(i))?"1":"0"));
-                        usadas++;
+                    System.out.println("Mac"+" "+i);
+                    for(List<Integer> values:vmsInPms.values()) {
+                        if (values.contains(i)) {
+                            pw.println(i + "," + ((machineWithUser.get(i)) ? "1" : "0"));
+                            usadas++;
+                            break;
+                        }
                     }
-
                 }
-                pw.println("MÁQUINA FÍSICA USADA");
+                pw.println("MÁQUINAS FÍSICAS USADAS");
                 pw.println(usadas);
             }
         }
@@ -433,7 +435,7 @@ public class DeploymentTimeTesting {
                 }
             }
         }
-        //deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{40,50},1,clusterId,quantitiesPerNode,"test",1,"test.csv");
+        deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{40},1,clusterId,quantitiesPerNode,"MyNewHostXXX",1,"test2.csv");
         //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
         //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
 

@@ -3,7 +3,6 @@ package TestManager;
 import Connection.DeploymentManager;
 import Connection.ReportManager;
 import Connection.UnaCloudConnection;
-import Example.DeploymentTimeTesting;
 import VO.DeploymentExecutionResponse;
 import VO.ExecutionStateResponse;
 
@@ -57,44 +56,52 @@ public class ExecutionReportGenerator {
             {
                 try
                 {
-                    System.out.println("REGEX "+hostname+iterationRegex+(i+1)+machineRegex+j);
-                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+";");
-                    for(Integer executionId:response.getExecutions())
+                    for(int k=1;k<4;k++)
                     {
-                        List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
-                        String ini="";
-                        String fin="";
-                        for(ExecutionStateResponse executionStateResponse:list)
+                        System.out.println("REGEX "+k+"-"+hostname+iterationRegex+(i+1)+machineRegex+j);
+                        DeploymentExecutionResponse response=reportManager.getRelation(k+"-"+hostname+iterationRegex+(i+1)+machineRegex+j+";");
+                        for(Integer executionId:response.getExecutions())
                         {
-                            switch (executionStateResponse.getState().getId())
+                            List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
+                            String ini="";
+                            String fin="";
+                            for(ExecutionStateResponse executionStateResponse:list)
                             {
-                                case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
-                                case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                switch (executionStateResponse.getState().getId())
+                                {
+                                    case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                    case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                }
                             }
+                            System.out.println(sf.parse(ini).getTime());
+                            String tiempoFin="";
+                            try {
+                                double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
+                                tiempoFin = tFin + "";
+                            }
+                            catch(Exception e)
+                            {
+                                fallidos++;
+                            }
+                            pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+fin+","+tiempoFin);
+                            numMaquina++;
+                            if(numMaquina>j)
+                                numMaquina=1;
                         }
-                        System.out.println(sf.parse(ini).getTime());
-                        String tiempoFin="";
-                        try {
-                            double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
-                            tiempoFin = tFin + "";
-                        }
-                        catch(Exception e)
-                        {
-                            fallidos++;
-                        }
-                        pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+fin+","+tiempoFin);
-
                     }
+
                 }
                 catch(Exception e)
                 {
                     System.out.println("There was an error during the HTTP Procedure in hostname "+hostname+iterationRegex+(i+1)+machineRegex+j);
                     e.printStackTrace();
+                    continue;
                 }
-                pw.println("");
-                pw.println("FALLIDOS,"+fallidos);
-                pw.println("");
+
             }
+            pw.println("");
+            pw.println("FALLIDOS,"+fallidos);
+            pw.println("");
         }
 
         pw.close();
@@ -106,26 +113,28 @@ public class ExecutionReportGenerator {
         ReportManager reportManager=new ReportManager(uc);
         PrintWriter pw=new PrintWriter(new File(fileName));
         SimpleDateFormat sf= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        double[] sumTrans=new double[numIterations];
-        double[] sumFin=new double[numIterations];
+        double[] sumTrans=null;
+        double[] sumFin=null;
 
-        double fallidos=0;
+        double fallidos;
         int numMaquina=0;
         for(Integer j:quantities)
         {
             double[] tiemposDespliegue=new double[j];
             double[] tiemposTransmision=new double[j];
             numMaquina=1;
-            fallidos=0;
             pw.println("Despliegues: "+j);
             pw.println(" , ");
             pw.println("Prueba,Numero,Name,T-Inicial,T-Transmision,T-Final,T-Transmision(s),T-Desplegado(s)");
+            sumTrans=new double[numIterations];
+            sumFin=new double[numIterations];
             for(int i=0;i<numIterations;i++)
             {
                 try
                 {
+                    fallidos=0;
                     System.out.println("REGEX "+hostname+iterationRegex+(i+1)+machineRegex+j);
-                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+";");
+                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+iterationRegex);
                     for(Integer executionId:response.getExecutions())
                     {
                         List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
@@ -134,41 +143,46 @@ public class ExecutionReportGenerator {
                         String fin="";
                         for(ExecutionStateResponse executionStateResponse:list)
                         {
+                            System.out.println("ESTADO "+executionStateResponse.getState().getId()+" "+T_TRANS+" "+(executionStateResponse.getState().getId().equals(T_TRANS))+" "+executionStateResponse.getChangeTime());
                             switch (executionStateResponse.getState().getId())
                             {
                                 case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
                                 case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
                                 case(T_TRANS):trans=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                default: continue;
                             }
                         }
-                        System.out.println(sf.parse(ini).getTime());
                         String tiempoTrans="";
                         try
                         {
                             double tTrans=sf.parse(trans).getTime()-sf.parse(ini).getTime();
                             tiempoTrans=tTrans+"";
-                            tiemposDespliegue[j]=tTrans;
+                            tiemposTransmision[j-1]=tTrans;
                             sumTrans[i]+=tTrans/1000.0;
                         }
                         catch(Exception e)
                         {
-
+                            tiemposTransmision[j-1]=0;
+                            e.printStackTrace();
                         }
                         String tiempoFin="";
                         try {
                             double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
                             tiempoFin = tFin + "";
-                            tiemposDespliegue[j]=tFin;
+                            tiemposDespliegue[j-1]=tFin;
                             sumFin[i] += tFin / 1000.0;
                         }
                         catch(Exception e)
                         {
                             fallidos++;
+                            tiemposDespliegue[j-1]=0;
+                            e.printStackTrace();
                         }
 
                         pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+trans+","+fin+","+tiempoTrans+","+tiempoFin);
                         numMaquina++;
-
+                        if(numMaquina>j)
+                            numMaquina=1;
                     }
                     double cant=j;
                     double desvTrans=0;
@@ -181,7 +195,7 @@ public class ExecutionReportGenerator {
                     int n=tiemposTransmision.length-1;
                     if(n==0) n++;
                     desvTrans=Math.sqrt(desvTrans/n);
-                    desvFin=Math.sqrt(desvTrans/n);
+                    desvFin=Math.sqrt(desvFin/n);
                     pw.println(" , ");
                     pw.println("Total transmisiones,Total fallidos,Promedio transmision (s),Promedio despliegue (s),Confiabilidad (%),Desviacion estandar transmision (s),Desviacion estandar despliegue (s)");
                     pw.println(j+","+fallidos+","+sumTrans[i]/j+","+sumFin[i]/j+","+(cant-fallidos)/cant+","+desvTrans+","+desvFin);
@@ -205,16 +219,12 @@ public class ExecutionReportGenerator {
     public static void main(String[] args) throws Exception {
 
 
-        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080/UnaCloudWeb");
+        UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         ExecutionReportGenerator executionReportGenerator=new ExecutionReportGenerator(uc);
         //First method for making deployment time testing
-        executionReportGenerator.generateExecutionReportbyProtocol("./reporte.csv","hola","","_",1,new int[]{2});
-        //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
-        //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
+        executionReportGenerator.generateExecutionReportForEnergyTesting("./reporteTest.csv","MyNewHostXXX","-","_",1,new int[]{40});
+       //executionReportGenerator.generateExecutionReportbyProtocol("./reporteP2PSmall.csv","P2PSmallTestWaira2SeriesApril","-","_",5,new int[]{1,2,3,4,5,6,7,8,9,10});
 
     }
-
-
-
 
 }
