@@ -87,6 +87,8 @@ public abstract class VirtualBox extends Platform {
     @Override
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
+		String rta=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","hdds");
+		System.out.println("Active execution processes when starting "+image.getImageName()+" "+rta);
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
         if (h.contains(ERROR_MESSAGE)) {
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
