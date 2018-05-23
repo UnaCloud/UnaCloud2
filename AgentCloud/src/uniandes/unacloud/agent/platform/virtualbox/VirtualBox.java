@@ -65,9 +65,9 @@ public abstract class VirtualBox extends Platform {
 	public void unregisterImage(ImageCopy image){
     	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
     	sleep(15000);
-		//String rta=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"closemedium","disk",image.getMainFile().getFilePath().replaceAll("vbox","vdi"));
-		//System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE "+image.getMainFile().getFilePath()+": "+rta);
-		//sleep(15000);
+		String rta=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"closemedium","disk",image.getMainFile().getFilePath().replaceAll("vbox","vdi"));
+		System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE "+image.getMainFile().getFilePath()+": "+rta);
+		sleep(15000);
     }
     
     /**
