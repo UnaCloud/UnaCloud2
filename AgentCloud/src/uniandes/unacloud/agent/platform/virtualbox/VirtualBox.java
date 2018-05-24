@@ -70,7 +70,9 @@ public abstract class VirtualBox extends Platform {
      * @param image Image copy to be registered
      */
     @Override
-	public void registerImage(ImageCopy image){
+	public void registerImage(ImageCopy image){    	
+    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi"));
+    	sleep(5000);
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
     }
@@ -141,6 +143,7 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
+<<<<<<< HEAD
     	String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
     	String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
     	try
@@ -151,6 +154,9 @@ public abstract class VirtualBox extends Platform {
 		{
 			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
 		}
+=======
+    	 
+>>>>>>> development
     	if (cores != 0 && ram != 0) {
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--memory", ""+ram, "--cpus", ""+cores);
             sleep(20000);
