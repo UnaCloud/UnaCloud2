@@ -225,7 +225,7 @@ class ImageController {
 			try {
 				def token = imageService.uploadImage(params.name, (params.isPublic != null), params.protocol, params.osId, params.platId, params.user, params.passwd,user)
 				def url = serverVariableService.getUrlFileManager()
-				resp = [success:true,'token':token,'url': url + "/upload"];				
+				resp = [success:true, 'token':token, 'url': url + "upload"];				
 			} catch (Exception e) {
 				e.printStackTrace()
 				resp = [success:false, 'message':e.message]
@@ -248,7 +248,7 @@ class ImageController {
 			try {
 				def token = imageService.updateFiles(image)
 				def url = serverVariableService.getUrlFileManager()
-				resp = [success:true, 'token':token, 'url': url + "/update"]
+				resp = [success:true, 'token':token, 'url': url + "update"]
 			} catch(Exception e) {
 				e.printStackTrace()
 				resp = [success:false,'message':e.message]

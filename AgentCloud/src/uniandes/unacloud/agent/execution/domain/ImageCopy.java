@@ -151,7 +151,8 @@ public class ImageCopy implements Serializable {
 	    			configurator.configureIP();
 	    			System.out.println("Execution config " + getImageName() + " - " + new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
-				} else {
+				} 
+				else {
 					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Invalid execution configurator.");
 					status = ImageStatus.FREE;
 				}

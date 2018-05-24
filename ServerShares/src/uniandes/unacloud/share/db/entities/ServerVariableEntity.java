@@ -1,4 +1,4 @@
-package uniandes.unacloud.file.db.entities;
+package uniandes.unacloud.share.db.entities;
 
 import uniandes.unacloud.share.enums.ServerVariableTypeEnum;
 

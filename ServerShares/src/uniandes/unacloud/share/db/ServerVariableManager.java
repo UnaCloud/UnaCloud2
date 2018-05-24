@@ -1,4 +1,4 @@
-package uniandes.unacloud.file.db;
+package uniandes.unacloud.share.db;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import uniandes.unacloud.share.db.entities.ServerVariableEntity;
 import uniandes.unacloud.share.enums.ServerVariableTypeEnum;
-import uniandes.unacloud.file.db.entities.ServerVariableEntity;
 
 /**
  * Class used to execute query, update and delete processes in database for Server Variable Entity. 

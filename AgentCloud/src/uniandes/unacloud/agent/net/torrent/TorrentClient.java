@@ -77,7 +77,7 @@ public class TorrentClient {
 	 * @param torrent
 	 * @throws Exception
 	 */
-	public void announceTorrent(File torrent) throws Exception {
+	public void announceTorrent(File torrent, int t) throws Exception {
 		announceTorrent(torrent, false);
 	}
 	
