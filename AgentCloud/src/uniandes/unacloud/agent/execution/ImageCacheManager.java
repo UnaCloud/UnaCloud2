@@ -134,11 +134,11 @@ public class ImageCacheManager {
 	public synchronized static void freeLockedImageCopy(ImageCopy vmiCopy) {
 		System.out.println("\t break free " + vmiCopy.getMainFile().getFilePath());
 		Image image = ImageCacheManager.getImage(vmiCopy.getImage().getId());
-        System.out.println("The agent is retrieving the image copy "+vmiCopy.getImageName()+" of "+image.getId()+" for releasing it to compare iwith other image copies");
+        System.out.println("The agent is retrieving the image copy " + vmiCopy.getImageName() + " of " + image.getId() + " for releasing it to compare with other image copies");
         for (ImageCopy imC: image.getImageCopies())
 			if (imC.getImageName().equals(vmiCopy.getImageName()))
 				imC.setStatus(ImageStatus.FREE);
-        System.out.println("The agent freed the image copy "+vmiCopy.getImageName()+" ");
+        System.out.println("The agent freed the image copy " + vmiCopy.getImageName()+" ");
         saveImages();
 	}
 		
@@ -150,18 +150,19 @@ public class ImageCacheManager {
 		System.out.println("clearCache");
 		loadImages();		
 		try {	
-			try {
-                System.out.println("The agent is clearing cache form it´s image list");
-                for (Image image: imageList.values())
+			  System.out.println("The agent is clearing cache from it's image list");
+              for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
-						System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
-						copy.stopAndUnregister();
-                        System.out.println("\tRemoving torrent: " + copy.getMainFile().getFilePath());
-                        TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
+						try {			              
+							System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
+							copy.stopAndUnregister();
+	                        System.out.println("\tRemoving torrent: " + copy.getMainFile().getFilePath());
+	                        TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
+							
+						} catch (Exception e) {
+							e.printStackTrace();
+						}	
 					}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}					
 			for (File f : new File(machineRepository).listFiles()) {
 				System.out.println("\tDelete File: " + f.getAbsolutePath());
 				FileProcessor.deleteFileSync(f.getAbsolutePath());
@@ -187,14 +188,14 @@ public class ImageCacheManager {
 		loadImages();
 		Image vmi = imageList.get(imageId);		
 		if (vmi != null) {
-			try {
-				for (ImageCopy copy : vmi.getImageCopies()) {
+			for (ImageCopy copy : vmi.getImageCopies()) {
+				try {				
 					copy.stopAndUnregister();
-					TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());
-				}				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}			
+					TorrentClient.getInstance().removeTorrent(copy.getMainFile().getTorrentFile());								
+				} catch (Exception e) {
+					e.printStackTrace();
+				}	
+			}	
 			imageList.remove(imageId);
 			saveImages();
 		}

@@ -194,7 +194,7 @@ class FileService implements ApplicationContextAware {
 	 *
 	 */
 	private void shareFile(final ImageFileEntity image, final RepositoryEntity main) {
-		FileProcessor.zipFileAsync(image.getMainFile(), new Observer() {				
+		FileProcessor.zipFileAsync(image.getMainFile(), new Observer() {
 			@Override
 			public void update(Observable o, Object arg) {
 				Connection con = null;
