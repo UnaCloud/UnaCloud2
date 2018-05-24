@@ -142,7 +142,7 @@ public abstract class VirtualBox extends Platform {
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
     	String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
-    	String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi"));
+    	String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
     	try
 		{
 			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
