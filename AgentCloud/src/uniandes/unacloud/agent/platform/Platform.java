@@ -49,7 +49,7 @@ public abstract class Platform {
      * @param image
      * @throws PlatformOperationException
      */
-    public abstract void configureExecutionHardware(int cores,int ram,ImageCopy image) throws PlatformOperationException;
+    public abstract void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException;
     
     /**
      * turns off the managed execution

@@ -28,7 +28,9 @@ class ServerVariableService {
 	 * @return file manager url
 	 */
 	def getUrlFileManager() {
-		return ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable
+		String variable = ServerVariable.findByName(UnaCloudConstants.WEB_FILE_SERVER_URL).variable;
+		if(!variable.endsWith("/")) variable = variable + "/";
+		return variable
 	}
 	
 	/**

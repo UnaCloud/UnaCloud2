@@ -63,11 +63,11 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
 	public void unregisterImage(ImageCopy image){
-    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
-    	sleep(15000);
-		String rta=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"closemedium","disk",image.getMainFile().getFilePath().replaceAll("vbox","vdi"));
-		System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE "+image.getMainFile().getFilePath()+": "+rta);
-		sleep(15000);
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
+        sleep(10000);
+        String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk", image.getMainFile().getFilePath().replaceAll("vbox", "vdi"));
+        System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE " + image.getMainFile().getFilePath() + ": " + rta);
+        sleep(5000);        
     }
     
     /**
@@ -77,9 +77,9 @@ public abstract class VirtualBox extends Platform {
     @Override
     public void restartExecution(ImageCopy image) throws PlatformOperationException {
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getImageName(), "reset");
-        if (h.contains(ERROR_MESSAGE)) {
+        if (h.contains(ERROR_MESSAGE)) 
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
-        }
+        
         sleep(30000);
     }
     
@@ -90,12 +90,10 @@ public abstract class VirtualBox extends Platform {
     @Override
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
-		String rta=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","hdds");
-		System.out.println("Active execution processes when starting "+image.getImageName()+" "+rta);
         String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
-        if (h.contains(ERROR_MESSAGE)) {
+        if (h.contains(ERROR_MESSAGE)) 
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
-        }
+        
         sleep(30000);
         try {
         	OSFactory.getOS().setPriorityProcess(HEADLESS_SERVICE_NAME);
@@ -125,6 +123,8 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
+    	 
+    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi"));
     	if (cores != 0 && ram != 0) {
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--memory", ""+ram, "--cpus", ""+cores);
             sleep(20000);
@@ -143,9 +143,9 @@ public abstract class VirtualBox extends Platform {
         Collections.addAll(com, createExecutionCommand(getExecutablePath(), image.getImageName(), command, image.getImage().getUsername(), image.getImage().getPassword()));
         Collections.addAll(com, args);
         String h = LocalProcessExecutor.executeCommandOutput(com.toArray(new String[0]));
-        if (h.contains(ERROR_MESSAGE)) {
+        if (h.contains(ERROR_MESSAGE)) 
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
-        }
+        
         sleep(10000);
     }
     /**
@@ -157,9 +157,9 @@ public abstract class VirtualBox extends Platform {
     @Override
     public void copyFileOnExecution(ImageCopy image, String destinationRoute, File sourceFile) throws PlatformOperationException {
        	String h = LocalProcessExecutor.executeCommandOutput(createCopyToCommand(getExecutablePath(), image.getImageName(), sourceFile.getAbsolutePath(), destinationRoute, image.getImage().getUsername(), image.getImage().getPassword()));
-    	if (h.contains(ERROR_MESSAGE)) {
+    	if (h.contains(ERROR_MESSAGE)) 
             throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
-        }
+        
         sleep(10000);
     }
     
@@ -249,20 +249,20 @@ public abstract class VirtualBox extends Platform {
 		List<String> list = new ArrayList<String>();
 		try {
 			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms").split("\n|\r");
-			for (String vm : result) {
+			for (String vm : result) 
 				list.add(vm.split(" ")[0].replace("\"", "").trim());
-			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		for (Execution execution: executions) {
 			boolean isRunning = false;
-			for (String exeInplatform : list) {
+			for (String exeInplatform : list) 
 				if (exeInplatform.contains(execution.getImage().getImageName())) {
 					isRunning = true;
 					break;
 				}
-			}	
+			
 			if (!isRunning)
 				executionsToDelete.add(execution);	
 		}
