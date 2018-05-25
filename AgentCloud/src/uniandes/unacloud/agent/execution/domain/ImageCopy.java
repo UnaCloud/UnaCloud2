@@ -188,6 +188,7 @@ public class ImageCopy implements Serializable {
 		Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
 		if (platform == null)
 			throw new ExecutionException("Platform doesn't exists on machine. platform was " + image.getPlatformId());
+		platform.configureImage(this);
 		platform.registerImage(this);
 		try {
 			platform.changeExecutionMac(this);

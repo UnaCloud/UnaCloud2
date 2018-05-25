@@ -71,16 +71,7 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
 	public void registerImage(ImageCopy image){
-		String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
-		String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
-		try
-		{
-			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
-		}
-		catch(Exception e)
-		{
-			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
-		}
+
     	sleep(5000);
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
@@ -361,27 +352,21 @@ public abstract class VirtualBox extends Platform {
 	 */
 	public abstract String[] createCopyToCommand(String path, String imageName, String sourcePath, String guestPath, String username, String password);
 
-
-	public static void main(final String[] args) throws SAXException, IOException, ParserConfigurationException,
-			XPathExpressionException, TransformerException {
-
-		String remplazo="";
-		BufferedReader br=new BufferedReader(new FileReader(new File("./data/Debian.vbox")));
-		String linea=br.readLine();
-		while(linea!=null)
+	/**
+	 * Configures the image changing the uuid of the given image copy.
+	 * @param image Image copy to change the uuid
+	 */
+	public void configureImage(ImageCopy image)
+	{
+		String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
+		String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+		try
 		{
-			linea=linea.replaceAll("1f629445-8975-43ca-84f1-236f3a137fbb","aaa");
-			remplazo+=linea+"\n";
-			System.out.println(linea);
-			linea=br.readLine();
+			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
 		}
-		br.close();
-		System.out.println("REMPLAZO\n"+remplazo);
-		PrintWriter pw=new PrintWriter(new File("./data/Debian.vbox"));
-		pw.println(remplazo);
-		pw.close();
-
-
-
+		catch(Exception e)
+		{
+			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
+		}
 	}
 }
