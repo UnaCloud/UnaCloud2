@@ -70,8 +70,17 @@ public abstract class VirtualBox extends Platform {
      * @param image Image copy to be registered
      */
     @Override
-	public void registerImage(ImageCopy image){    	
-    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi"));
+	public void registerImage(ImageCopy image){
+		String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
+		String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+		try
+		{
+			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
+		}
+		catch(Exception e)
+		{
+			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
+		}
     	sleep(5000);
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
@@ -143,20 +152,7 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
-<<<<<<< HEAD
-    	String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
-    	String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
-    	try
-		{
-			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
-		}
-		catch(Exception e)
-		{
-			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
-		}
-=======
-    	 
->>>>>>> development
+
     	if (cores != 0 && ram != 0) {
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--memory", ""+ram, "--cpus", ""+cores);
             sleep(20000);
@@ -165,7 +161,7 @@ public abstract class VirtualBox extends Platform {
 
     private void replaceUIID(String old,String newUUID,String path) throws Exception
 	{
-		System.out.println("Relace UUID "+old+" with "+newUUID+" in "+path);
+		System.out.println("Replace UUID "+old+" with "+newUUID+" in "+path);
 		String remplazo="";
 		BufferedReader br=new BufferedReader(new FileReader(new File(path)));
 		String linea=br.readLine();
@@ -178,7 +174,7 @@ public abstract class VirtualBox extends Platform {
 		}
 		br.close();
 		System.out.println("REMPLAZO\n"+remplazo);
-		PrintWriter pw=new PrintWriter(new File("./data/Debian.vbox"));
+		PrintWriter pw=new PrintWriter(new File(path));
 		pw.println(remplazo);
 		pw.close();
 	}
@@ -186,28 +182,19 @@ public abstract class VirtualBox extends Platform {
 	private String getUUID(String filePath) {
 
     	String uuid="";
-    	boolean termino=false;
-    	String loc="";
     	String[] datos=null;
-    	String rta= LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list");
+    	System.out.println("File Path "+filePath);
+    	String rta= LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showhdinfo",filePath);
     	System.out.println("VMS LISTED \n"+rta);
     	for(String s:rta.split("\n"))
 		{
 			datos=s.split(":");
 			if(datos[0].trim().equals("UUID"))
-				uuid=datos[1].trim();
-			if(datos[0].trim().equals("Location"))
 			{
-				loc=datos[1].trim();
-				if(loc.equals(filePath) && uuid!=null)
-				{
-					termino=true;
-					break;
-				}
+				uuid=datos[1].trim();
+				break;
 			}
 		}
-		if(!termino)
-			uuid=null;
     	System.out.println("Found uuid "+uuid);
     	return uuid;
 
