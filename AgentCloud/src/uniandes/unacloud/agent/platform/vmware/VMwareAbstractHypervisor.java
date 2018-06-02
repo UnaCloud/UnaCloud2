@@ -139,6 +139,10 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 	@Override
 	public void unregisterImage(ImageCopy image) {
 	}
+
+    @Override
+    public void configureImage(ImageCopy image) {
+    }
 	/**
 	 * Returns type VMware execution
 	 * @return type of VMware platform

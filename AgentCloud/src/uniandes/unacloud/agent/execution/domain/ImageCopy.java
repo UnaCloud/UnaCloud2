@@ -69,8 +69,9 @@ public class ImageCopy implements Serializable {
 		if (mainFile == null || mainFile.getFilePath() == null) 
 			return "null";
 		String h = mainFile.getExecutableFile().getName();
+		System.out.println("FILE:"+mainFile.getFilePath()+" "+mainFile.getExecutableFile().getName());
 		int l = h.lastIndexOf(".");
-		if (l == -1) 
+		if (l == -1)
 			return h;
 		return h.substring(0, l);
 	}
@@ -187,6 +188,7 @@ public class ImageCopy implements Serializable {
 		Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
 		if (platform == null)
 			throw new ExecutionException("Platform doesn't exists on machine. platform was " + image.getPlatformId());
+		platform.configureImage(this);
 		platform.registerImage(this);
 		try {
 			platform.changeExecutionMac(this);
