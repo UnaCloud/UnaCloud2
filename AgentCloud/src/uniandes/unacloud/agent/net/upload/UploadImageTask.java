@@ -80,6 +80,7 @@ public class UploadImageTask extends AbsUploadFileTask {
 			}
 			FileProcessor.deleteFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 		} catch (Exception e) {
+			System.out.println("There was an exception after uploading");
 			e.printStackTrace();
 		}
 	}
