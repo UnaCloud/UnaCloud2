@@ -3,7 +3,6 @@ package TestManager;
 import Connection.DeploymentManager;
 import Connection.ReportManager;
 import Connection.UnaCloudConnection;
-import Example.DeploymentTimeTesting;
 import VO.DeploymentExecutionResponse;
 import VO.ExecutionStateResponse;
 
@@ -43,7 +42,6 @@ public class ExecutionReportGenerator {
         ReportManager reportManager=new ReportManager(uc);
         PrintWriter pw=new PrintWriter(new File(fileName));
         SimpleDateFormat sf= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-
         double fallidos=0;
         int numMaquina=0;
         for(Integer j:quantities)
@@ -57,118 +55,147 @@ public class ExecutionReportGenerator {
             {
                 try
                 {
-                    System.out.println("REGEX "+hostname+iterationRegex+(i+1)+machineRegex+j);
-                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+";");
-                    for(Integer executionId:response.getExecutions())
+                    for(int k=1;k<4;k++)
                     {
-                        List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
-                        String ini="";
-                        String fin="";
-                        for(ExecutionStateResponse executionStateResponse:list)
+                        System.out.println("REGEX "+k+"-"+hostname+iterationRegex+(i+1)+machineRegex+j);
+                        DeploymentExecutionResponse response=reportManager.getRelation(k+"-"+hostname+iterationRegex+(i+1)+machineRegex+j+";");
+                        for(Integer executionId:response.getExecutions())
                         {
-                            switch (executionStateResponse.getState().getId())
+                            List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
+                            String ini="";
+                            String fin="";
+                            for(ExecutionStateResponse executionStateResponse:list)
                             {
-                                case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
-                                case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                switch (executionStateResponse.getState().getId())
+                                {
+                                    case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                    case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                }
                             }
+                            System.out.println(sf.parse(ini).getTime());
+                            String tiempoFin="";
+                            try {
+                                double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
+                                tiempoFin = tFin + "";
+                            }
+                            catch(Exception e)
+                            {
+                                fallidos++;
+                            }
+                            pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+fin+","+tiempoFin);
+                            numMaquina++;
+                            if(numMaquina>j)
+                                numMaquina=1;
                         }
-                        System.out.println(sf.parse(ini).getTime());
-                        String tiempoFin="";
-                        try {
-                            double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
-                            tiempoFin = tFin + "";
-                        }
-                        catch(Exception e)
-                        {
-                            fallidos++;
-                        }
-                        pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+fin+","+tiempoFin);
-
                     }
+
                 }
                 catch(Exception e)
                 {
                     System.out.println("There was an error during the HTTP Procedure in hostname "+hostname+iterationRegex+(i+1)+machineRegex+j);
                     e.printStackTrace();
+                    continue;
                 }
-                pw.println("");
-                pw.println("FALLIDOS,"+fallidos);
-                pw.println("");
-            }
-        }
 
+            }
+            pw.println("");
+            pw.println("FALLIDOS,"+fallidos);
+            pw.println("");
+        }
         pw.close();
     }
 
-    public void generateExecutionReportbyProtocol(String fileName,String hostname, String iterationRegex, String machineRegex, int numIterations, int[]quantities) throws Exception
+    public void generateExecutionReportbyProtocol(String averageFileName,String fileName,String hostname, String iterationRegex, String machineRegex, int numIterations, int[]quantities) throws Exception
     {
         DeploymentManager deploymentmanager=new DeploymentManager(uc);
         ReportManager reportManager=new ReportManager(uc);
         PrintWriter pw=new PrintWriter(new File(fileName));
+        PrintWriter pw2= new PrintWriter(new File(averageFileName));
         SimpleDateFormat sf= new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-        double[] sumTrans=new double[numIterations];
-        double[] sumFin=new double[numIterations];
-
-        double fallidos=0;
+        double[] sumTrans=null;
+        double[] sumFin=null;
+        double fallidos;
         int numMaquina=0;
+        pw2.println("Cantidad,Tiempo de transmisión (s),Tiempo de despliegue (s)");
         for(Integer j:quantities)
         {
             double[] tiemposDespliegue=new double[j];
             double[] tiemposTransmision=new double[j];
+            double promTrans=0;
+            double promFin=0;
             numMaquina=1;
-            fallidos=0;
             pw.println("Despliegues: "+j);
             pw.println(" , ");
             pw.println("Prueba,Numero,Name,T-Inicial,T-Transmision,T-Final,T-Transmision(s),T-Desplegado(s)");
+            sumTrans=new double[numIterations];
+            sumFin=new double[numIterations];
             for(int i=0;i<numIterations;i++)
             {
                 try
                 {
+                    fallidos=0;
                     System.out.println("REGEX "+hostname+iterationRegex+(i+1)+machineRegex+j);
-                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+";");
+                    DeploymentExecutionResponse response=reportManager.getRelation(hostname+iterationRegex+(i+1)+machineRegex+j+iterationRegex);
                     for(Integer executionId:response.getExecutions())
                     {
-                        List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
                         String ini="";
                         String trans="";
                         String fin="";
-                        for(ExecutionStateResponse executionStateResponse:list)
-                        {
-                            switch (executionStateResponse.getState().getId())
-                            {
-                                case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
-                                case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
-                                case(T_TRANS):trans=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
-                            }
-                        }
-                        System.out.println(sf.parse(ini).getTime());
                         String tiempoTrans="";
-                        try
-                        {
-                            double tTrans=sf.parse(trans).getTime()-sf.parse(ini).getTime();
-                            tiempoTrans=tTrans+"";
-                            tiemposDespliegue[j]=tTrans;
-                            sumTrans[i]+=tTrans/1000.0;
-                        }
-                        catch(Exception e)
-                        {
-
-                        }
                         String tiempoFin="";
                         try {
-                            double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
-                            tiempoFin = tFin + "";
-                            tiemposDespliegue[j]=tFin;
-                            sumFin[i] += tFin / 1000.0;
+                            List<ExecutionStateResponse> list=deploymentmanager.getStates(response.getDeploymentId(),executionId);
+                            for(ExecutionStateResponse executionStateResponse:list)
+                            {
+                                System.out.println("ESTADO "+executionStateResponse.getState().getId()+" "+T_TRANS+" "+(executionStateResponse.getState().getId().equals(T_TRANS))+" "+executionStateResponse.getChangeTime());
+                                switch (executionStateResponse.getState().getId())
+                                {
+                                    case(T_INICIAL):ini=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                    case(T_FINAL):fin=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                    case(T_TRANS):trans=executionStateResponse.getChangeTime().replace("T"," ").replace("Z",""); break;
+                                    default: continue;
+                                }
+                            }
+                            try
+                            {
+                                double tTrans=sf.parse(trans).getTime()-sf.parse(ini).getTime();
+                                tiempoTrans=tTrans+"";
+                                tiemposTransmision[j-1]=tTrans;
+                                sumTrans[i]+=tTrans/1000.0;
+                            }
+                            catch(Exception e)
+                            {
+                                tiemposTransmision[j-1]=0;
+                                e.printStackTrace();
+                            }
+                            tiempoFin="";
+                            try {
+                                double tFin = sf.parse(fin).getTime() - sf.parse(ini).getTime();
+                                tiempoFin = tFin + "";
+                                tiemposDespliegue[j-1]=tFin;
+                                sumFin[i] += tFin / 1000.0;
+                            }
+                            catch(Exception e)
+                            {
+                                fallidos++;
+                                tiemposDespliegue[j-1]=0;
+                                e.printStackTrace();
+                            }
                         }
                         catch(Exception e)
                         {
-                            fallidos++;
+                            ini="";
+                            trans="";
+                            fin="";
+                            tiempoTrans="";
+                            tiempoFin="";
+                            e.printStackTrace();
                         }
-
+                        System.out.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+trans+","+fin+","+tiempoTrans+","+tiempoFin);
                         pw.println((i+1)+","+numMaquina+","+hostname+iterationRegex+(i+1)+machineRegex+j+","+ini+","+trans+","+fin+","+tiempoTrans+","+tiempoFin);
                         numMaquina++;
-
+                        if(numMaquina>j)
+                            numMaquina=1;
                     }
                     double cant=j;
                     double desvTrans=0;
@@ -181,7 +208,9 @@ public class ExecutionReportGenerator {
                     int n=tiemposTransmision.length-1;
                     if(n==0) n++;
                     desvTrans=Math.sqrt(desvTrans/n);
-                    desvFin=Math.sqrt(desvTrans/n);
+                    desvFin=Math.sqrt(desvFin/n);
+                    promTrans+=sumTrans[i]/j;
+                    promFin+=sumFin[i]/j;
                     pw.println(" , ");
                     pw.println("Total transmisiones,Total fallidos,Promedio transmision (s),Promedio despliegue (s),Confiabilidad (%),Desviacion estandar transmision (s),Desviacion estandar despliegue (s)");
                     pw.println(j+","+fallidos+","+sumTrans[i]/j+","+sumFin[i]/j+","+(cant-fallidos)/cant+","+desvTrans+","+desvFin);
@@ -189,32 +218,38 @@ public class ExecutionReportGenerator {
                     pw.println("Total despliegues,Total fallidos,Confiabilidad (%)");
                     pw.println(j+","+fallidos+","+(cant-fallidos)/cant);
 
+
                 }
                 catch(Exception e)
                 {
                     System.out.println("There was an error during the HTTP Procedure in hostname "+hostname+iterationRegex+(i+1)+machineRegex+j);
                     e.printStackTrace();
                 }
-                pw.println("");
+                pw.println(" , ");
             }
+            pw2.println(j+","+promTrans/numIterations+","+promFin/numIterations);
+            pw.println("Promedio total de transmisión (s),Promedio total de despliegue (s)");
+            pw.println(promTrans/numIterations+","+promFin/numIterations);
         }
-
+        pw2.close();
         pw.close();
     }
 
     public static void main(String[] args) throws Exception {
 
 
-        UnaCloudConnection uc = new UnaCloudConnection("E72EOKECIA79DZO89ME7M5NWLZAF5MXI","http://localhost:8080/UnaCloudWeb");
+        UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         ExecutionReportGenerator executionReportGenerator=new ExecutionReportGenerator(uc);
         //First method for making deployment time testing
-        executionReportGenerator.generateExecutionReportbyProtocol("./reporte.csv","hola","","_",1,new int[]{2});
-        //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
-        //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
+        //executionReportGenerator.generateExecutionReportForEnergyTesting("./reporteTest.csv","MyNewHostXXX","-","_",1,new int[]{40});
+        String[] reportes=new String[]{"P2PSmall1-10.csv","P2PMedium1-10.csv","P2PLarge1-10.csv","TCPSmall1-10.csv","TCPMedium1-10.csv","TCPLarge1-10.csv","P2PSmall15-50.csv","P2PMedium15-50.csv","P2PLarge15-50.csv","TCPSmall15-50.csv","TCPMedium15-50.csv","TCPLarge15-50.csv"};
+        String[] regex= new String[]{"P2PSmallTestWaira2SeriesApril","P2PMediumTestWaira2SeriesApril","P2PLargeTestWaira2SeriesApril","SecondP2PSmallTestWaira2SeriesApril","SecondP2PMediumTestWaira2SeriesApril","SecondP2PLargeTestWaira2SeriesApril","BiggerP2PSmallTestWaira2SeriesApril",
+                                        "BiggerP2PMediumTestWaira2SeriesApril","BiggerP2PLargeTestWaira2SeriesApril","BiggerTCPSmallTestWaira2SeriesApril","BiggerTCPMediumTestWaira2SeriesApril","BiggerTCPLargeTestWaira2SeriesApril"};
+       for(int i=0;i<6;i++)
+        executionReportGenerator.generateExecutionReportbyProtocol("./data/average/prom"+reportes[i],"./data/reports/reporte"+reportes[i],regex[i],"-","_",5,new int[]{1,2,3,4,5,6,7,8,9,10});
+        for(int i=6;i<reportes.length;i++)
+            executionReportGenerator.generateExecutionReportbyProtocol("./data/average/prom"+reportes[i],"./data/reports/reporte"+reportes[i],regex[i],"-","_",5,new int[]{15,25,50});
 
     }
-
-
-
 
 }

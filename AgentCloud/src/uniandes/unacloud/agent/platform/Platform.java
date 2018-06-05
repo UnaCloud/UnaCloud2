@@ -131,4 +131,10 @@ public abstract class Platform {
 			code = this.getClass().getSimpleName();
 		return code;
 	}
+
+    /**
+     * Configure image acording to the hypervisor.
+     * @param iamge Image copy to configure
+     */
+    public abstract void configureImage(ImageCopy image);
 }

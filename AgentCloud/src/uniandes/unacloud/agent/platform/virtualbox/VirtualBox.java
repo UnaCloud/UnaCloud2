@@ -2,7 +2,7 @@ package uniandes.unacloud.agent.platform.virtualbox;
 
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
-import java.io.File;
+import java.io.*;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +17,24 @@ import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.utils.LocalProcessExecutor;
+
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of platform abstract class to give support for VirtualBox
@@ -52,8 +70,8 @@ public abstract class VirtualBox extends Platform {
      * @param image Image copy to be registered
      */
     @Override
-	public void registerImage(ImageCopy image){    	
-    	LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid", image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi"));
+	public void registerImage(ImageCopy image){
+
     	sleep(5000);
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
@@ -125,14 +143,55 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException {
-    	 
+
     	if (cores != 0 && ram != 0) {
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "modifyvm", image.getImageName(), "--memory", ""+ram, "--cpus", ""+cores);
             sleep(20000);
         }
     }
-    
-    /**
+
+    private void replaceUIID(String old,String newUUID,String path) throws Exception
+	{
+		System.out.println("Replace UUID "+old+" with "+newUUID+" in "+path);
+		String remplazo="";
+		BufferedReader br=new BufferedReader(new FileReader(new File(path)));
+		String linea=br.readLine();
+		while(linea!=null)
+		{
+			linea=linea.replaceAll(old,newUUID);
+			remplazo+=linea+"\n";
+			System.out.println(linea);
+			linea=br.readLine();
+		}
+		br.close();
+		System.out.println("REMPLAZO\n"+remplazo);
+		PrintWriter pw=new PrintWriter(new File(path));
+		pw.println(remplazo);
+		pw.close();
+	}
+
+	private String getUUID(String filePath) {
+
+    	String uuid="";
+    	String[] datos=null;
+    	System.out.println("File Path "+filePath);
+    	String rta= LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showhdinfo",filePath);
+    	System.out.println("VMS LISTED \n"+rta);
+    	for(String s:rta.split("\n"))
+		{
+			datos=s.split(":");
+			if(datos[0].trim().equals("UUID"))
+			{
+				uuid=datos[1].trim();
+				break;
+			}
+		}
+    	System.out.println("Found uuid "+uuid);
+    	return uuid;
+
+	}
+
+	/**
      * Executes a command to the VM itself
      * @param image copy in which command will be executed
      * @param command command to be executed
@@ -292,4 +351,24 @@ public abstract class VirtualBox extends Platform {
 	 * @return Array with all command elements
 	 */
 	public abstract String[] createCopyToCommand(String path, String imageName, String sourcePath, String guestPath, String username, String password);
+
+	/**
+	 * Configures the image changing the uuid of the given image copy.
+	 * @param image Image copy to change the uuid
+	 */
+	public void configureImage(ImageCopy image)
+	{
+		System.out.println("Original path: " +image.getMainFile().getFilePath()+" "+image.getMainFile().getExecutableFile().getAbsolutePath());
+		String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
+		String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
+                image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+		try
+		{
+			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
+		}
+		catch(Exception e)
+		{
+			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
+		}
+	}
 }

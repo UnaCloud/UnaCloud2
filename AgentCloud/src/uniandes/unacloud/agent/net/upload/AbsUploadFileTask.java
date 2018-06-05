@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -15,16 +16,22 @@ import uniandes.unacloud.common.enums.FileEnum;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.file.FileProcessor;
 
+/**
+ * Only a directory or a set of files.
+ */
 public abstract class AbsUploadFileTask implements Runnable {
-	
+
+	private static final String BASE="base";
+
 	protected List<File> files;
 	
 	protected String tokenUploadCom;
 	
 	protected FileEnum type;
 	
-	public AbsUploadFileTask(File fileOrDirectory, String token, FileEnum fileType) {
-		this.files.add(fileOrDirectory);
+	public AbsUploadFileTask(File folderOrDirectory, String token, FileEnum fileType) {
+		this.files=new ArrayList<>();
+		this.files.add(folderOrDirectory);
 		this.tokenUploadCom = token;
 		type = fileType;
 	}
@@ -64,7 +71,8 @@ public abstract class AbsUploadFileTask implements Runnable {
 				}
 				//If size is one
 				else {
-					name = files.get(0).getParentFile().getAbsolutePath();
+					//TODO The abstract is not sending one file
+					name = files.get(0).getAbsolutePath();
 					System.out.println("\tOne file or folder " + name);
 					zip = FileProcessor.zipFileSync(name);
 				}
