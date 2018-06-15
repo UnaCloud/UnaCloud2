@@ -29,3 +29,5 @@ UnaCloudClientRestAPI/UnaCloudClientRestAPI.iml
 UnaCloudClientRestAPI/.idea/*
 UnaCloudControl/UnaCloudControl.iml
 .idea/*
+UnaCloudFileManager/.slcache/
+UnaCloudWeb/.slcache/

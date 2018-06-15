@@ -156,18 +156,24 @@ public abstract class VirtualBox extends Platform {
 		String remplazo="";
 		BufferedReader br=new BufferedReader(new FileReader(new File(path)));
 		String linea=br.readLine();
-		while(linea!=null)
-		{
+		boolean oldExists=false;
+		while(linea!=null) {
+			if(linea.contains(old))
+					oldExists=true;
 			linea=linea.replaceAll(old,newUUID);
 			remplazo+=linea+"\n";
 			System.out.println(linea);
 			linea=br.readLine();
 		}
 		br.close();
-		System.out.println("REMPLAZO\n"+remplazo);
-		PrintWriter pw=new PrintWriter(new File(path));
-		pw.println(remplazo);
-		pw.close();
+		System.out.println("EXISTENCIA DE IMG "+oldExists);
+		if(oldExists && old.trim()!="")
+		{
+			System.out.println("REMPLAZO\n"+remplazo);
+			PrintWriter pw=new PrintWriter(new File(path));
+			pw.println(remplazo);
+			pw.close();
+		}
 	}
 
 	private String getUUID(String filePath) {
