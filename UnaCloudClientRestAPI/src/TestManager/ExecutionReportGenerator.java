@@ -242,12 +242,16 @@ public class ExecutionReportGenerator {
         ExecutionReportGenerator executionReportGenerator=new ExecutionReportGenerator(uc);
         //First method for making deployment time testing
         //executionReportGenerator.generateExecutionReportForEnergyTesting("./reporteTest.csv","MyNewHostXXX","-","_",1,new int[]{40});
-        String[] reportes=new String[]{"P2PSmall1-10.csv","P2PMedium1-10.csv","P2PLarge1-10.csv","TCPSmall1-10.csv","TCPMedium1-10.csv","TCPLarge1-10.csv","P2PSmall15-50.csv","P2PMedium15-50.csv","P2PLarge15-50.csv","TCPSmall15-50.csv","TCPMedium15-50.csv","TCPLarge15-50.csv"};
-        String[] regex= new String[]{"P2PSmallTestWaira2SeriesApril","P2PMediumTestWaira2SeriesApril","P2PLargeTestWaira2SeriesApril","SecondP2PSmallTestWaira2SeriesApril","SecondP2PMediumTestWaira2SeriesApril","SecondP2PLargeTestWaira2SeriesApril","BiggerP2PSmallTestWaira2SeriesApril",
-                                        "BiggerP2PMediumTestWaira2SeriesApril","BiggerP2PLargeTestWaira2SeriesApril","BiggerTCPSmallTestWaira2SeriesApril","BiggerTCPMediumTestWaira2SeriesApril","BiggerTCPLargeTestWaira2SeriesApril"};
-       for(int i=0;i<6;i++)
-        executionReportGenerator.generateExecutionReportbyProtocol("./data/average/prom"+reportes[i],"./data/reports/reporte"+reportes[i],regex[i],"-","_",5,new int[]{1,2,3,4,5,6,7,8,9,10});
-        for(int i=6;i<reportes.length;i++)
+       // String[] reportes=new String[]{"P2PSmall1-10.csv","P2PMedium1-10.csv","P2PLarge1-10.csv","TCPSmall1-10.csv","TCPMedium1-10.csv","TCPLarge1-10.csv","P2PSmall15-50.csv","P2PMedium15-50.csv","P2PLarge15-50.csv","TCPSmall15-50.csv","TCPMedium15-50.csv","TCPLarge15-50.csv"};
+       // String[] regex= new String[]{"P2PSmallTestWaira2SeriesApril","P2PMediumTestWaira2SeriesApril","P2PLargeTestWaira2SeriesApril","SecondP2PSmallTestWaira2SeriesApril","SecondP2PMediumTestWaira2SeriesApril","SecondP2PLargeTestWaira2SeriesApril","BiggerP2PSmallTestWaira2SeriesApril",
+        //                               "BiggerP2PMediumTestWaira2SeriesApril","BiggerP2PLargeTestWaira2SeriesApril","BiggerTCPSmallTestWaira2SeriesApril","BiggerTCPMediumTestWaira2SeriesApril","BiggerTCPLargeTestWaira2SeriesApril"};
+        //CAMBIO PARA PRUEBAS BÁSICAS
+        String[] reportes=new String[]{"P2PSmall15-50.csv","P2PMedium15-50.csv","P2PLarge15-50.csv"};
+        String[] regex= new String[]{"BiggerP2PSmallTestWaira2SeriesApril","BiggerP2PMediumTestWaira2SeriesApril","BiggerP2PLargeTestWaira2SeriesApril"};
+
+        //for(int i=0;i<3;i++)
+        //executionReportGenerator.generateExecutionReportbyProtocol("./data/average/prom"+reportes[i],"./data/reports/reporte"+reportes[i],regex[i],"-","_",5,new int[]{1,2,3,4,5,6,7,8,9,10});
+        for(int i=0;i<reportes.length;i++)
             executionReportGenerator.generateExecutionReportbyProtocol("./data/average/prom"+reportes[i],"./data/reports/reporte"+reportes[i],regex[i],"-","_",5,new int[]{15,25,50});
 
     }
