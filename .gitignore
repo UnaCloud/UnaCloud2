@@ -31,3 +31,7 @@ UnaCloudControl/UnaCloudControl.iml
 .idea/*
 UnaCloudFileManager/.slcache/
 UnaCloudWeb/.slcache/
+out/
+UnaCloudFileManager/web-app/agentSources/.idea/
+UnaCloudFileManager/scripts/test/unit/uniandes/unacloud/file/test/
+AgentCloud/src/META-INF/MANIFEST.MF

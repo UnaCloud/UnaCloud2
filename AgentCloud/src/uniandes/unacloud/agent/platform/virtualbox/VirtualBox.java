@@ -162,12 +162,11 @@ public abstract class VirtualBox extends Platform {
 					oldExists=true;
 			linea=linea.replaceAll(old,newUUID);
 			remplazo+=linea+"\n";
-			System.out.println(linea);
 			linea=br.readLine();
 		}
 		br.close();
-		System.out.println("EXISTENCIA DE IMG "+oldExists);
-		if(oldExists && old.trim()!="")
+		System.out.println("EXISTENCIA DE IMG "+oldExists+":"+old+":");
+		if(oldExists && !old.trim().equals(""))
 		{
 			System.out.println("REMPLAZO\n"+remplazo);
 			PrintWriter pw=new PrintWriter(new File(path));
@@ -178,7 +177,7 @@ public abstract class VirtualBox extends Platform {
 
 	private String getUUID(String filePath) {
 
-    	String uuid="";
+    	String uuid=null;
     	String[] datos=null;
     	System.out.println("File Path "+filePath);
     	String rta= LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showhdinfo",filePath);
@@ -362,19 +361,66 @@ public abstract class VirtualBox extends Platform {
 	 * Configures the image changing the uuid of the given image copy.
 	 * @param image Image copy to change the uuid
 	 */
-	public void configureImage(ImageCopy image)
+	public synchronized void configureImage(ImageCopy image)
 	{
 		System.out.println("Original path: " +image.getMainFile().getFilePath()+" "+image.getMainFile().getExecutableFile().getAbsolutePath());
 		String oldUUID= getUUID(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
-		String newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
-                image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
-		try
+		String newUUID="";
+		String machineUUID="";
+		if(oldUUID!=null)
 		{
-			replaceUIID(oldUUID,newUUID,image.getMainFile().getFilePath());
+			try
+			{
+				machineUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
+						image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+				newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
+						image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+				replaceUIID2(oldUUID,machineUUID,newUUID,image.getMainFile().getFilePath());
+                String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
+				System.out.println("LIST BEFORE DEL "+rta);
+				rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk",oldUUID);
+				System.out.println("CLOSE MED "+rta);
+				rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
+				System.out.println("LIST AFTER DEL "+rta);
+			}
+			catch(Exception e)
+			{
+				System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
+			}
 		}
-		catch(Exception e)
+
+	}
+
+	private void replaceUIID2(String old, String machineUUID, String newUUID, String path) throws Exception {
+		System.out.println("Replace UUID "+old+" with "+newUUID+" and machine "+machineUUID+" in "+path);
+		String remplazo="";
+		BufferedReader br=new BufferedReader(new FileReader(new File(path)));
+		String linea=br.readLine();
+		boolean oldExists=false;
+		boolean machineReplaced=false;
+		while(linea!=null) {
+			if(linea.contains(old))
+				oldExists=true;
+			if(!machineReplaced && linea.contains("Machine uuid"))
+			{
+				int firstInd=linea.indexOf("{");
+				int lastInd=linea.indexOf("}");
+				linea=linea.substring(0,firstInd+1)+machineUUID+linea.substring(lastInd);
+			}
+			linea=linea.replaceAll(old,newUUID);
+			remplazo+=linea+"\n";
+			linea=br.readLine();
+
+		}
+		br.close();
+		System.out.println("EXISTENCIA DE IMG "+oldExists+":"+old+":");
+		if(oldExists && !old.trim().equals(""))
 		{
-			System.out.println("There was an error replacing UUID "+oldUUID+" with "+newUUID+" "+e.getMessage());
+			System.out.println("REMPLAZO\n"+remplazo);
+			PrintWriter pw=new PrintWriter(new File(path));
+			pw.println(remplazo);
+			pw.close();
 		}
 	}
+
 }
