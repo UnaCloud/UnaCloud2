@@ -95,8 +95,8 @@ class UrlMappings {
 			"/lab/new"(controller:'laboratory', action:"create")
 			"/lab/save"(controller:'laboratory', action:"save")
 			"/lab/$id"(controller:'laboratory', action:"lab")
-			"/lab/$id/disable"(controller:'laboratory', action:"setStatus")
 			"/lab/$id/delete"(controller:'laboratory', action:"delete")
+			"/lab/$id/disable"(controller:'laboratory', action:"setStatus")
 			"/lab/$id/edit"(controller:'laboratory', action:"edit")
 			"/lab/$id/save"(controller:'laboratory', action:"saveEdit")
 			

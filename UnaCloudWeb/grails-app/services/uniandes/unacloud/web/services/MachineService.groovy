@@ -14,7 +14,7 @@ import grails.transaction.Transactional
 @Transactional
 class MachineService {
 
-   	
+
 	/**
 	 * Deletes a host (physical machine) from a lab
 	 * Validates if there are not deployments in host
@@ -33,7 +33,7 @@ class MachineService {
 			hostMachine.delete()
 		}
 	}
-	
+
 	/**
 	 * Adds a new machine to a given laboratory
 	 * @param ip physical machine's IP
@@ -45,10 +45,10 @@ class MachineService {
 	 * @param mac physical machine's MAC address
 	 * @param lab Laboratory
 	 */
-	
+
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
 		def physicalMachine = new PhysicalMachine(name: name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
-			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [])
+			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [], lastLog:"None")
 		if (plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
 		else
@@ -56,7 +56,7 @@ class MachineService {
 				physicalMachine.platforms.add(Platform.get(platId))
 		physicalMachine.save(failOnError:true)
 	}
-	
+
 	/**
 	 * Sets values in a host machine
 	 * @param ip new ip for host
@@ -87,7 +87,7 @@ class MachineService {
 		host.platforms = platforms
 		host.save(failOnError:true)
 	}
-	
+
 	/**
 	 * Creates a task to stop, update agent or clear cache in a list of host machines
 	 * Sends task for queue if it is valid

@@ -26,11 +26,12 @@
 		              <a href="${createLink(uri: '/admin/lab/'+lab.id+'/edit', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-pencil-square' ></i> Edit</a>
 	                  <g:if test="${lab.enable}">
 	                  <a id="disable-lab" data-state="true" data-id="${lab.id}" data-method="disable" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-ban' ></i> Disable</a>
-		              </g:if> 
+		              </g:if>
 		              <g:else>
 		              <a id="disable-lab" data-state="false" data-id="${lab.id}" data-method="disable" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-check' ></i> Enable</a>
 		              </g:else>
-		              <a id="delete-lab" data-id="${lab.id}" data-method="delete" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
+					  <!-- For a strange reason delete does not work as well as disable, for that this is the only other way-->
+		              <a data-id="${lab.id}" data-method="delete" href="${createLink(uri: '/admin/lab/'+lab.id+"/delete", absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
 		          </div>
                   <hr>
                   <div class="nav-tabs-custom">

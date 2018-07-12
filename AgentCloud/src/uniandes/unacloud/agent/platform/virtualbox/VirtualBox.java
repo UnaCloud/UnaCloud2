@@ -19,22 +19,6 @@ import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.utils.LocalProcessExecutor;
 
 import java.io.File;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of platform abstract class to give support for VirtualBox
@@ -110,17 +94,32 @@ public abstract class VirtualBox extends Platform {
     @Override
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
-        String h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
-        if (h.contains(ERROR_MESSAGE)) 
-            throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
-        
+		int times=3;
+		String h=null;
+		while(times>0)
+		{
+			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
+			System.out.println("Start vm headless response "+h);
+			if (!h.contains(ERROR_MESSAGE) && !h.contains("error"))
+				break;
+			times--;
+			sleep(30000);
+		}
+		times--;
+		if(times==0)
+		{
+			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
+			System.out.println("Start vm emergencystop response "+h);
+			if (h.contains(ERROR_MESSAGE) || h.contains("error"))
+				throw new PlatformOperationException(h.length() < 100 ? h : h.substring(0, 100));
+		}
         sleep(30000);
         try {
         	OSFactory.getOS().setPriorityProcess(HEADLESS_SERVICE_NAME);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        sleep(1000);
+		sleep(1000);
     }
 
 	private void setPriority(ImageCopy image) throws PlatformOperationException {
@@ -371,11 +370,14 @@ public abstract class VirtualBox extends Platform {
 		{
 			try
 			{
+				//Get id for machine
 				machineUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
 						image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
+				//Get id for image
 				newUUID=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "internalcommands", "sethduuid",
 						image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
-				replaceUIID2(oldUUID,machineUUID,newUUID,image.getMainFile().getFilePath());
+				//Replace files on xml
+				replaceUIID(oldUUID,machineUUID,newUUID,image.getMainFile().getFilePath());
                 String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
 				System.out.println("LIST BEFORE DEL "+rta);
 				rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk",oldUUID);
@@ -391,7 +393,7 @@ public abstract class VirtualBox extends Platform {
 
 	}
 
-	private void replaceUIID2(String old, String machineUUID, String newUUID, String path) throws Exception {
+	private void replaceUIID(String old, String machineUUID, String newUUID, String path) throws Exception {
 		System.out.println("Replace UUID "+old+" with "+newUUID+" and machine "+machineUUID+" in "+path);
 		String remplazo="";
 		BufferedReader br=new BufferedReader(new FileReader(new File(path)));
