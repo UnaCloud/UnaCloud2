@@ -31,7 +31,7 @@
 		              <a id="disable-lab" data-state="false" data-id="${lab.id}" data-method="disable" href="${createLink(uri: '/admin/lab/', absolute: true)}" class="btn btn-primary btn-sm"><i class='fa fa-check' ></i> Enable</a>
 		              </g:else>
 					  <!-- For a strange reason delete does not work as well as disable, for that this is the only other way-->
-		              <a data-id="${lab.id}" data-method="delete" href="${createLink(uri: '/admin/lab/'+lab.id+"/delete", absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
+		              <a title="Delete" href="${createLink(uri: '/admin/lab/'+lab.id+"/delete", absolute: true)}" class="btn btn-danger btn-sm"><i class='fa fa-trash-o' ></i> Delete</a>
 		          </div>
                   <hr>
                   <div class="nav-tabs-custom">
@@ -154,7 +154,7 @@
 			                                  <td><small>${pool.mask}</small></td>
 			                                  <td class="column-center"> 
 				                               	  <div class="btn-group">
-					                                  <a title="Delete" class="delete_pool btn btn-default" data-id="${pool.id}" data-method="delete" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
+													  <a title="Delete" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/'+pool.id+'/delete', absolute: true)}" data-toggle="tooltip"><i class='fa fa-trash-o' ></i></a>
 					                                  <a title="Detail" class="btn btn-default" href="${createLink(uri: '/admin/lab/' + lab.id + '/pool/' + pool.id, absolute: true)}" data-toggle="tooltip"><i class="glyphicon glyphicon-eye-open" ></i></a>
 					                              </div>
 											  </td>

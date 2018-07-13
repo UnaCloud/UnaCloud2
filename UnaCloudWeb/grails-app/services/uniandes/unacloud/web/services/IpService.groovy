@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.services
 
+import uniandes.unacloud.web.domain.IP
+
 import java.util.ArrayList;
 
 import uniandes.unacloud.common.utils.Ip4Validator;
@@ -20,15 +22,20 @@ class IpService {
 	 * @param ip to be removed
 	 */
 	def delete(Laboratory lab, ip) {
+        print "A"
 		ExecutionIP executionIp = ExecutionIP.where{id == ip && ipPool in lab.ipPools}.find()
 		if (executionIp.ipPool.ips.size() == 1)
 			throw new Exception("IP range must have one IP address at least")
 		if (executionIp && (executionIp.state == IPEnum.AVAILABLE || executionIp.state == IPEnum.DISABLED)) {	
 			NetInterface.executeUpdate("update NetInterface net set net.ip = null where net.ip.id = :id", [id : executionIp.id]);
 			IPPool pool = executionIp.ipPool
+            print "C"
 			pool.removeFromIps(executionIp)
+            print "D"
 			executionIp.delete()
+            print "E"
 		}
+        print "B"
 	}
 	
 	/**
@@ -54,10 +61,18 @@ class IpService {
 	 */
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
+		print ipPool.id+" "+ipPool.getUsedIpsQuantity()
 		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
-			for (ExecutionIP ip : ipPool.ips)
-				delete(lab, ip.id)
+            def ips=[]
+            for (ExecutionIP ip : ipPool.ips)
+			{
+                print "EXEC "+ ip.id
+                delete(lab, ip.id)
+                print "SALE "+ip.id
+			}
+			print "Del"
 			ipPool.delete()
+			print "del"
 		} else
 			throw new Exception('Some IP addresses in IP Pool are being used')
 	}

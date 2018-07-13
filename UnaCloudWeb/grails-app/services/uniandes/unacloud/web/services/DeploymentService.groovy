@@ -1,7 +1,10 @@
 package uniandes.unacloud.web.services
 
+import uniandes.unacloud.share.enums.IPEnum
 import uniandes.unacloud.utils.security.HashGenerator
-import uniandes.unacloud.web.domain.ExecutionHistory;
+import uniandes.unacloud.web.domain.ExecutionHistory
+import uniandes.unacloud.web.domain.ExecutionIP
+import uniandes.unacloud.web.domain.IP;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
@@ -103,6 +106,7 @@ class DeploymentService {
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
 		def images = []
+		def reservedIps=[]
 		requests.eachWithIndex(){ request, i->
 			def depImage= new DeployedImage(image: request.image, highAvaliavility: request.high, executions: [])
 			def executions = []
@@ -129,10 +133,24 @@ class DeploymentService {
 			if (depImage.highAvaliavility && pmsHigh.size() == 0) 
 				throw new Exception('Not enough high availability physical machines available')
 			
-			physicalMachineAllocatorService.allocatePhysicalMachines(user, depImage.executions.sort(), depImage.highAvaliavility ? pmsHigh : pms, depImage.highAvaliavility ? pmDescriptionHigh : pmDescriptions)
-			ipAllocatorService.allocateIPAddresses(depImage.executions)
-			
-		}	
+			try
+			{
+				physicalMachineAllocatorService.allocatePhysicalMachines(user, depImage.executions.sort(), depImage.highAvaliavility ? pmsHigh : pms, depImage.highAvaliavility ? pmDescriptionHigh : pmDescriptions)
+				reservedIps.addAll(ipAllocatorService.allocateIPAddresses(depImage.executions))
+			}
+			catch (Exception e)
+			{
+				print "Excepcion "+e
+				for(Long id: reservedIps)
+				{
+					def ip=ExecutionIP.get(id)
+					ip.state=IPEnum.AVAILABLE
+					ip.save()
+				}
+				print "Disponibles otra vez"
+				throw e
+			}
+		}
 		
 		Deployment dep = new Deployment(user: user, duration: time, status: DeploymentStateEnum.ACTIVE, cluster: cluster)
 		dep.save(failOnError: true, flush: true)		
