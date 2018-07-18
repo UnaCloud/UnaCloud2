@@ -32,7 +32,7 @@ public abstract class VirtualBox extends Platform {
 
 	private static final String LOCKED_BY_SESSION_ERROR="is already locked by a session";
 
-	private static final String NETWORK_ERROR="nonexistent host networking interface";
+	private static final String NETWORK_ERROR="Nonexistent host networking interface";
 	    
 	/**
 	 * Class constructor
@@ -122,6 +122,21 @@ public abstract class VirtualBox extends Platform {
 		{
 			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
 			System.out.println("Start vm emergencystop response "+h);
+			times=6;
+			String temp;
+			if(h.trim().equals(""))
+            {
+                h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"startvm",image.getImageName(),"--type","headless");
+                System.out.println("START HEADLESS "+h);
+                sleep(30000);
+            }
+			while(times>0 && h.trim().equals(""))
+			{
+				sleep(60000);
+				temp=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms");
+				System.out.println("TEMP "+(6-times)+" RUNNING VMS \n"+temp);
+				times--;
+			}
 			//Try to correct network issues if present
 			if(h.contains(NETWORK_ERROR))
 			{
@@ -315,7 +330,7 @@ public abstract class VirtualBox extends Platform {
 		List<String> list = new ArrayList<String>();
 		try {
 			String[] result = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms").split("\n|\r");
-			for (String vm : result) 
+			for (String vm : result)
 				list.add(vm.split(" ")[0].replace("\"", "").trim());
 			
 		} catch (Exception e) {
