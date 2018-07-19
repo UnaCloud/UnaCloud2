@@ -29,7 +29,15 @@ public class InitialPoint {
 	 * Number of threads to attend messages from server
 	 */
 	private static final int THREADS = 10;
-	
+	/**
+	 * Allowed users in the system
+	 */
+	private static final String ALLOWED_USERS="ALLOWED_USERS";
+	/**
+	 * Split regex for allowed users
+	 */
+	private static final String SPLIT_REGEX=";;;";
+
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -90,10 +98,20 @@ public class InitialPoint {
         System.out.println("Start configuration");         	
        	
     	{
-    		//Validate if the user that is executing agent is system user    		
+    		//Validate if the user that is executing agent is system user or it is an authorized one
 			try {
-				if (OSFactory.getOS().isRunningBySuperUser()) {
-					System.err.println("You can't execute the agent as " + OSFactory.getOS().getWhoAmI());
+				String[] allowedUsers = VariableManager.getInstance().getLocal().getStringVariable(ALLOWED_USERS).split(SPLIT_REGEX);
+				String whoAmI=OSFactory.getOS().getWhoAmI();
+				boolean userFound=false;
+				System.out.println("User is "+whoAmI);
+				for(String s:allowedUsers)
+					if(whoAmI.contains(s))
+					{
+						userFound=true;
+						break;
+					}
+				if (!userFound && OSFactory.getOS().isRunningBySuperUser()) {
+					System.err.println("You can't execute the agent as " + whoAmI);
 	        		System.exit(0);
 	        		return;
 	        	}
