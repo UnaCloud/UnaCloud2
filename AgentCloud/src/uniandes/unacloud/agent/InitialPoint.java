@@ -100,16 +100,20 @@ public class InitialPoint {
     	{
     		//Validate if the user that is executing agent is system user or it is an authorized one
 			try {
-				String[] allowedUsers = VariableManager.getInstance().getLocal().getStringVariable(ALLOWED_USERS).split(SPLIT_REGEX);
+				String prop=VariableManager.getInstance().getGlobal().getStringVariable(ALLOWED_USERS);
 				String whoAmI=OSFactory.getOS().getWhoAmI();
 				boolean userFound=false;
-				System.out.println("User is "+whoAmI);
-				for(String s:allowedUsers)
-					if(whoAmI.contains(s))
-					{
-						userFound=true;
-						break;
-					}
+				if(prop!=null)
+				{
+					String[] allowedUsers = prop.split(SPLIT_REGEX);
+					System.out.println("User is "+whoAmI);
+					for(String s:allowedUsers)
+						if(whoAmI.contains(s))
+						{
+							userFound=true;
+							break;
+						}
+				}
 				if (!userFound && OSFactory.getOS().isRunningBySuperUser()) {
 					System.err.println("You can't execute the agent as " + whoAmI);
 	        		System.exit(0);
