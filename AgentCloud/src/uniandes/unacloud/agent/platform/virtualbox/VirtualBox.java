@@ -122,21 +122,22 @@ public abstract class VirtualBox extends Platform {
 		{
 			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
 			System.out.println("Start vm emergencystop response "+h);
-			times=6;
+			times=2;
 			String temp;
+
 			if(h.trim().equals(""))
             {
+				while(times>0)
+				{
+					sleep(60000);
+					temp=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms");
+					System.out.println("TEMP "+(2-times)+" RUNNING VMS \n"+temp);
+					times--;
+				}
                 h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"startvm",image.getImageName(),"--type","headless");
                 System.out.println("START HEADLESS "+h);
                 sleep(30000);
             }
-			while(times>0 && h.trim().equals(""))
-			{
-				sleep(60000);
-				temp=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms");
-				System.out.println("TEMP "+(6-times)+" RUNNING VMS \n"+temp);
-				times--;
-			}
 			//Try to correct network issues if present
 			if(h.contains(NETWORK_ERROR))
 			{
