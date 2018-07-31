@@ -43,8 +43,11 @@ public class AgentMessage extends ClientMessage {
 	/**
 	 * Request free space in data path
 	 */
-	public static final int GET_FILE = 12;
-		
+	public static final int GET_LOGS = 12;
+	/**
+	 * Request free space in data path
+	 */
+	public static final int GET_MONITORING = 13;
 	/**
 	 * Creates a new Agent message
 	 * @param subOperation

@@ -5,11 +5,14 @@ import java.io.PrintWriter;
 import java.util.List;
 import uniandes.unacloud.common.enums.FileEnum;
 
-public class UploadLogTask extends AbsUploadFileTask {
+/**
+ * Class for uploading a zip with the given file list
+ */
+public class UploadZipTask extends AbsUploadFileTask {
 		
 	private boolean success;
 
-	public UploadLogTask(List<File> files, String hostname) {
+	public UploadZipTask(List<File> files, String hostname) {
 		super(files, hostname, FileEnum.LOG);
 	}
 

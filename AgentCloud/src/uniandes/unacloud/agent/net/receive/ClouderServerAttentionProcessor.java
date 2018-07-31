@@ -17,12 +17,7 @@ import uniandes.unacloud.agent.host.resources.FileManager;
 import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.common.enums.ExecutionProcessEnum;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
-import uniandes.unacloud.common.net.tcp.message.AgentMessage;
-import uniandes.unacloud.common.net.tcp.message.ClientMessage;
-import uniandes.unacloud.common.net.tcp.message.ImageOperationMessage;
-import uniandes.unacloud.common.net.tcp.message.PhysicalMachineOperationMessage;
-import uniandes.unacloud.common.net.tcp.message.TCPMessageEnum;
-import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
+import uniandes.unacloud.common.net.tcp.message.*;
 import uniandes.unacloud.common.net.tcp.message.agent.ClearImageFromCacheMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionAddTimeMessage;
 import uniandes.unacloud.common.net.tcp.message.exe.ExecutionSaveImageMessage;
@@ -67,7 +62,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 
     /**
      * Method responsible for attending requests for operations on executions
-     * @param clouderServerRequestSplitted Server request
+     * @param message Server request
      */
     private UnaCloudResponse attendExecutionOperation(ImageOperationMessage message) {
 	    try {
@@ -119,8 +114,10 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());
 	            case AgentMessage.GET_DATA_SPACE:
 	            	return new UnaCloudResponse(AgentManager.getFreeDataSpace() + "", ExecutionProcessEnum.SUCCESS);
-	            case AgentMessage.GET_FILE:
+	            case AgentMessage.GET_LOGS:
 	            	return FileManager.copyLogs();
+                case AgentMessage.GET_MONITORING:
+                    return FileManager.copyMonitoringFiles();
 	        }
 	        return new UnaCloudResponse("Invalid operation: " + message.getTask(), ExecutionProcessEnum.FAIL);
 	    } catch (Exception e) {
@@ -132,10 +129,7 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
     /**
      * Method responsible for attending requests for operations over the
      * physical machine
-     *
-     * @param clouderServerRequestSplitted Server request
-     * @param con Channel used to interact with UnaCloud server to receive or
-     * send additional data
+     * @param message Message for the physical machine itneraction
      */
     private UnaCloudResponse attendPhysicalMachineOperation(PhysicalMachineOperationMessage message) {
     	try {

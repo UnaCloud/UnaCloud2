@@ -25,7 +25,9 @@ import java.io.File;
  * platform.
  */
 public abstract class VirtualBox extends Platform {
-	
+
+    //Constants for virtual box
+
 	private static final String HEADLESS_SERVICE_NAME = "VBoxHeadless";
 	
 	private static final String VBOX_SERVICE_NAME = "VBoxSVC";
@@ -319,7 +321,14 @@ public abstract class VirtualBox extends Platform {
 	 */
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
-		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+		System.out.println("Cloning result "+h);
+		if(h.contains("error") && h.contains("unacloudbase"))
+		{
+			takeExecutionSnapshot(source, "unacloudbase");
+			h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+			System.out.println("Cloning result with unacloudbase reinstated: "+h);
+		}
 		sleep(20000);
 		takeExecutionSnapshot(dest, "unacloudbase");
         unregisterImage(dest);
@@ -396,6 +405,7 @@ public abstract class VirtualBox extends Platform {
 						image.getMainFile().getFilePath().replaceAll(".vbox", ".vdi")).split(":")[1].trim();
 				//Replace files on xml
 				replaceUIID(oldUUID,machineUUID,newUUID,image.getMainFile().getFilePath());
+				//Get running vms before and after closing disk medium
                 String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
 				System.out.println("LIST BEFORE DEL "+rta);
 				rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk",oldUUID);

@@ -33,10 +33,14 @@
 	                		<p class="help-block">${machine.ip.ip}.</p>
 	                		<hr>
 	                		<label class="col-lg-6 col-sm-6 col-xs-6">Last Log in server:</label>   
-	                		<p class="help-block"><g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty()}">${machine.lastLog}</g:if><g:else>No Available</g:else></p>
-	                		<g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty()}">	                		
+	                		<p class="help-block"><g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty() && !machine.lastLog.equals("None")}">${machine.lastLog}</g:if><g:else>None</g:else></p>
+	                		<g:if test="${machine.lastLog != null && !machine.lastLog.isEmpty() && !machine.lastLog.equals("None")}">
 	                		<a class="btn btn-success" title="Download last log" href="${createLink(uri: fileUrl, absolute: true)}" ><i class='fa fa-download' ></i> Download log</a>
 	                		</g:if>
+							<p class="help-block"><g:if test="${machine.lastMonitoring != null && !machine.lastMonitoring.isEmpty() && !machine.lastMonitoring.equals("None")}">${machine.lastMonitoring}</g:if><g:else>None</g:else></p>
+							<g:if test="${machine.lastMonitoring != null && !machine.lastMonitoring.isEmpty() && !machine.lastMonitoring.equals("None")}">
+								<a class="btn btn-success" title="Download last monitoring log" href="${createLink(uri: fileUrl, absolute: true)}" ><i class='fa fa-download' ></i> Download monitoring log</a>
+							</g:if>
 	                	</div>	                 	
 	            	</div>
 		        </div><!-- /.box -->    

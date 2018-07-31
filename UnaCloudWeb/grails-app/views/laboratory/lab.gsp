@@ -56,8 +56,37 @@
 					                                        <a title = "Update Agents" class = "update-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/update/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-level-up"></i></a>
 															<a title = "Request Version" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/version/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-save"></i></a>
 					                                        <a title = "Request used disk space" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/size/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-floppy-save"></i></a>
-															<a title = "Request Logs" class = "no_required_confirm_task btn btn-default"  href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/logs/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-file" ></i></a>
-						                                </div>		  	
+															<a class = "btn btn-default"  data-target="#myModal" data-toggle = "modal"><i class = "glyphicon glyphicon-file" ></i></a>
+															<!-- Modal -->
+															<div class="modal fade" id="myModal" role="dialog">
+																<div class="modal-dialog">
+
+																	<!-- Modal content-->
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<button type="button" class="close" data-dismiss="modal">&times;</button>
+																			<h4 class="modal-title">Request files</h4>
+																		</div>
+																		<div class="modal-body">
+                                                                            <div class="dropdown">
+                                                                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                                    Select the files you want retrieved
+                                                                                    <span class="caret"></span>
+                                                                                </button>
+                                                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                                    <li><a class = "multiple_selection_confirm_task dropdown-item" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/logs/', absolute: true)}" data-toggle = "tooltip">Logs</a></li>
+                                                                                    <li><a class = "multiple_selection_confirm_task dropdown-item" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/monitoring/', absolute: true)}" data-toggle = "tooltip">Monitoring files</a></li>
+                                                                                </ul>
+                                                                            </div>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+																		</div>
+																	</div>
+
+																</div>
+															</div>
+														</div>
 												  	</td>
 											  </tr>
 											  </g:if>

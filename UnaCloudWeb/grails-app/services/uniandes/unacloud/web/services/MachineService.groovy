@@ -48,7 +48,8 @@ class MachineService {
 
 	def addMachine(ip, name, cores, pCores, ram, osId, mac, Laboratory lab, plats) {
 		def physicalMachine = new PhysicalMachine(name: name, cores: cores, pCores: pCores, ram: ram, highAvailability: (lab.highAvailability),
-			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [], lastLog:"None")
+			mac: mac, state: PhysicalMachineStateEnum.OFF, operatingSystem: OperatingSystem.get(osId), laboratory: lab, ip: new PhysicalIP(ip: ip), platforms: [], lastLog:"None",
+		    lastMonitoring: "None")
 		if (plats.getClass().equals(String))
 			physicalMachine.platforms.add(Platform.get(plats))
 		else
@@ -101,6 +102,7 @@ class MachineService {
 			pm.putAt("state", PhysicalMachineStateEnum.PROCESSING)
 			machineList.add(pm);
 		}
+		print("Message gets here "+task)
 		QueueTaskerControl.taskMachines(machineList,task, user)
 	}
 }

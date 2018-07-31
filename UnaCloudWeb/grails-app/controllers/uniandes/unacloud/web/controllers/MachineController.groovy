@@ -80,10 +80,16 @@ class MachineController extends AbsAdminController{
 		if (!machine)
 			redirect(uri:"/admin/lab/list", absolute:true)
 		else
-			if(machine.lastLog != null && !machine.lastLog.isEmpty())
-				[machine: machine, lab: lab, fileUrl: serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastLog]
-			else 
-				[machine: machine, lab: lab]
+        {
+           def logUrl=null
+           def monitoringUrl=null
+            if(machine.lastLog != null && !machine.lastLog.isEmpty())
+                logUrl= serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastLog
+            if(machine.lastMonitoring != null && !machine.lastMonitoring.isEmpty())
+                monitoringUrl= serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastMonitoring
+            [machine: machine, lab: lab,logUrl:logUrl,monitoringUrl:monitoringUrl]
+        }
+
 	}
 	
 	/**
@@ -194,7 +200,7 @@ class MachineController extends AbsAdminController{
 				try {
 					def user = User.get(session.user.id)
 					machineService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(params.process), user)
-					flash.message = "Your request have been sent."
+					flash.message = "Your request has been sent."
 					flash.type = "info"
 				} catch(Exception e) {
 					flash.message = e.message

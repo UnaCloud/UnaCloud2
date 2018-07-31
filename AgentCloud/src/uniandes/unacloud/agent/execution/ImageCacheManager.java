@@ -184,7 +184,7 @@ public class ImageCacheManager {
 	 * @throws Exception 
 	 */
 	public static synchronized UnaCloudResponse clearImageFromCache(Long imageId) throws Exception {
-		System.out.println("clearCache for machine " + imageId);
+		System.out.println("clearCache for image " + imageId);
 		loadImages();
 		Image vmi = imageList.get(imageId);		
 		if (vmi != null) {
