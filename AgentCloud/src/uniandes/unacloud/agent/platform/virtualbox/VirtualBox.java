@@ -323,7 +323,7 @@ public abstract class VirtualBox extends Platform {
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
 		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 		System.out.println("Cloning result "+h);
-		if(h.contains("error") && h.contains("unacloudbase"))
+		if(h.contains("error") && h.contains("snapshots"))
 		{
 			takeExecutionSnapshot(source, "unacloudbase");
 			h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
