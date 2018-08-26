@@ -4,10 +4,7 @@ import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
 import java.io.*;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
 import uniandes.unacloud.agent.exceptions.UnsupportedPlatformException;
@@ -35,7 +32,11 @@ public abstract class VirtualBox extends Platform {
 	private static final String LOCKED_BY_SESSION_ERROR="is already locked by a session";
 
 	private static final String NETWORK_ERROR="Nonexistent host networking interface";
-	    
+
+    /**
+     * Hash for storing names and counter
+     */
+    private HashMap<String,Integer> names;
 	/**
 	 * Class constructor
 	 * @param path Path to this platform executable
@@ -43,6 +44,7 @@ public abstract class VirtualBox extends Platform {
 	 */
 	public VirtualBox(String path) {		
 		super(path);
+		names=new HashMap<>();
 	}
    	
     /**
@@ -62,9 +64,44 @@ public abstract class VirtualBox extends Platform {
     @Override
 	public void registerImage(ImageCopy image){
 
+		System.out.println("Change UUID before registering");
+		configureImage(image);
     	sleep(5000);
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "registervm", image.getMainFile().getExecutableFile().getPath());
         sleep(15000);
+    }
+
+    public synchronized File registerAndCloneImage(ImageCopy image)
+    {
+        String newName=null;
+        if(!names.containsKey(image.getImageName()))
+            names.put(image.getImageName(),0);
+        names.put(image.getImageName(),(names.get(image.getImageName())+1));
+        newName=image.getImageName()+names.get(image.getImageName());
+        String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+        System.out.println("Cloning result "+h);
+        if(h.contains("error") && h.contains("snapshots"))
+        {
+            takeExecutionSnapshot(image, "unacloudbase");
+            h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+            System.out.println("Cloning result with unacloudbase reinstated: "+h);
+        }
+        sleep(20000);
+        takeExecutionSnapshot(image, "unacloudbase");
+        System.out.println(newName+" vms listed: ");
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms");
+        //TODO Cambiar el UUID
+        File f=new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath());
+        System.out.println("Path"+f.getAbsolutePath());
+        for(String s:f.list())
+            System.out.println("File"+s);
+        f=new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName);
+        System.out.println("Path"+f.getAbsolutePath());
+        for(String s:f.list())
+            System.out.println("File"+s);
+        f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+File.separator+newName+".vbox");
+        System.out.println(f.getAbsolutePath());
+        return f;
     }
     
     /**
@@ -75,9 +112,9 @@ public abstract class VirtualBox extends Platform {
 	public void unregisterImage(ImageCopy image){
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
         sleep(10000);
-        String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk", image.getMainFile().getFilePath().replaceAll("vbox", "vdi"));
+        /*String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk", image.getMainFile().getFilePath().replaceAll("vbox", "vdi"));
         System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE " + image.getMainFile().getFilePath() + ": " + rta);
-        sleep(5000);        
+        sleep(5000); */
     }
     
     /**
@@ -101,10 +138,11 @@ public abstract class VirtualBox extends Platform {
 	public void startExecution(ImageCopy image) throws PlatformOperationException {
 		setPriority(image);
 		//Try three times to start headless
-		int times=3;
+		int times=2;
 		String h;
 		while(times>0)
 		{
+			System.out.println("Show vm info headless "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
 			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
 			System.out.println("Start vm headless response "+h);
 			if(h.contains(NETWORK_ERROR))
@@ -117,28 +155,46 @@ public abstract class VirtualBox extends Platform {
             if (!h.contains(ERROR_MESSAGE) && !h.contains(LOCKED_BY_SESSION_ERROR))
 				break;
 			times--;
-			sleep(30000);
+			sleep(20000);
 		}
 		//If it does not work try with an emergency start
 		if(times==0)
 		{
-			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
+            System.out.println("Show vm info "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
+            System.out.println("Listm vms log "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms"));
+            h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
 			System.out.println("Start vm emergencystop response "+h);
-			times=2;
-			String temp;
+			/*try
+            {
 
+            	changeAbortedState(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
+				String t=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"startvm",image.getImageName(),"--type","headless");
+				System.out.println("START HEADLESS AFTER ABORTED "+t);
+				sleep(20000);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Could not start vm from aborted state "+e.getMessage() );
+            }*/
+			times=1;
+			String temp;
+			System.out.println("Show vm info "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
+			System.out.println("Listm vms log "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms"));
 			if(h.trim().equals(""))
             {
 				while(times>0)
 				{
-					sleep(60000);
+					sleep(40000);
 					temp=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "runningvms");
 					System.out.println("TEMP "+(2-times)+" RUNNING VMS \n"+temp);
-					times--;
+                    System.out.println("Show vm info "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
+                    System.out.println("Listm vms log "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms"));
+
+                    times--;
 				}
                 h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"startvm",image.getImageName(),"--type","headless");
                 System.out.println("START HEADLESS "+h);
-                sleep(30000);
+                sleep(20000);
             }
 			//Try to correct network issues if present
 			if(h.contains(NETWORK_ERROR))
@@ -162,7 +218,26 @@ public abstract class VirtualBox extends Platform {
 		sleep(1000);
     }
 
-	private void setPriority(ImageCopy image) throws PlatformOperationException {
+    private void changeAbortedState(String path) throws Exception {
+        System.out.println("Change aborted state "+path);
+        String remplazo="";
+        BufferedReader br=new BufferedReader(new FileReader(new File(path)));
+        System.out.println("Inicia lectura");
+        String linea=br.readLine();
+        while(linea!=null) {
+            linea=linea.replaceAll("aborted=\"true\"","aborted=\"false\"");
+            remplazo+=linea+"\n";
+            System.out.println("LINE "+linea);
+            linea=br.readLine();
+        }
+        br.close();
+        System.out.println("REMPLAZO "+remplazo);
+        PrintWriter pw=new PrintWriter(new File(path));
+        pw.println(remplazo);
+        pw.close();
+    }
+
+    private void setPriority(ImageCopy image) throws PlatformOperationException {
 		//To correct executions in Vbox 4.3 and forward
     	try {
     		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName());
@@ -188,6 +263,32 @@ public abstract class VirtualBox extends Platform {
             sleep(20000);
         }
     }
+
+	/**
+	 * Get UUID form the given file path
+	 * @param filePath File path of the image
+	 * @return UUID of the filePath. Null if there is no image with such file path.
+	 */
+	private String getMachineUUID(String filePath) {
+
+		String uuid=null;
+		String[] datos;
+		System.out.println("File Path "+filePath);
+		String rta= LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showhdinfo",filePath);
+		System.out.println("VMS LISTED \n"+rta);
+		for(String s:rta.split("\n"))
+		{
+			datos=s.split(":");
+			if(datos[1].contains("UUID"))
+			{
+				uuid=datos[2].substring(0,datos[2].length()-1).trim();
+				break;
+			}
+		}
+		System.out.println("Found uuid "+uuid);
+		return uuid;
+
+	}
 
     /**
      * Get UUID form the given file path
@@ -321,6 +422,8 @@ public abstract class VirtualBox extends Platform {
 	 */
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
+	    System.out.println("VBox vms");
+        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
 		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 		System.out.println("Cloning result "+h);
 		if(h.contains("error") && h.contains("snapshots"))
@@ -328,6 +431,8 @@ public abstract class VirtualBox extends Platform {
 			takeExecutionSnapshot(source, "unacloudbase");
 			h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 			System.out.println("Cloning result with unacloudbase reinstated: "+h);
+            System.out.println("VBox vms 2");
+            LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
 		}
 		sleep(20000);
 		takeExecutionSnapshot(dest, "unacloudbase");
@@ -406,7 +511,7 @@ public abstract class VirtualBox extends Platform {
 				//Replace files on xml
 				replaceUIID(oldUUID,machineUUID,newUUID,image.getMainFile().getFilePath());
 				//Get running vms before and after closing disk medium
-                String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
+				String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms");
 				System.out.println("LIST BEFORE DEL "+rta);
 				rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk",oldUUID);
 				System.out.println("CLOSE MED "+rta);

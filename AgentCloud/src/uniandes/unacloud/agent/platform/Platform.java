@@ -95,6 +95,8 @@ public abstract class Platform {
     public abstract void changeExecutionMac(ImageCopy image) throws PlatformOperationException;
     
     public abstract void registerImage(ImageCopy image);
+
+    public abstract File registerAndCloneImage (ImageCopy image);
     
     public abstract void unregisterImage(ImageCopy image);
     
@@ -134,7 +136,7 @@ public abstract class Platform {
 
     /**
      * Configure image acording to the hypervisor.
-     * @param iamge Image copy to configure
+     * @param image Image copy to configure
      */
     public abstract void configureImage(ImageCopy image);
 }
