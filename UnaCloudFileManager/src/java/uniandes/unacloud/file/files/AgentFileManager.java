@@ -13,8 +13,8 @@ import java.util.zip.ZipOutputStream;
 
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.file.FileManager;
-import uniandes.unacloud.file.db.ServerVariableManager;
-import uniandes.unacloud.file.db.entities.ServerVariableEntity;
+import uniandes.unacloud.share.db.ServerVariableManager;
+import uniandes.unacloud.share.db.entities.ServerVariableEntity;
 
 /**
  * Class used to copy files in stream to send files to agent

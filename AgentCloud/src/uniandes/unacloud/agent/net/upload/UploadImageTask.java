@@ -17,7 +17,9 @@ public class UploadImageTask extends AbsUploadFileTask {
 	private Execution machineExecution;
 
 	public UploadImageTask(String fileId, Execution exe) {
-		super(exe.getImage().getMainFile().getExecutableFile(), exe.getId() + "_" + fileId, FileEnum.IMAGE);		
+		super(exe.getImage().getMainFile().getExecutableFile(), exe.getId() + "_" + fileId, FileEnum.IMAGE);	
+
+		System.out.println("Start upload image task");
 		this.machineExecution = exe;
 	}
 
@@ -78,7 +80,6 @@ public class UploadImageTask extends AbsUploadFileTask {
 			}
 			FileProcessor.deleteFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

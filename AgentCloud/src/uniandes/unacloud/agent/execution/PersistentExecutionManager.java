@@ -256,6 +256,7 @@ public class PersistentExecutionManager {
 			}
     		return response;
 		} catch (Exception e) {			
+			e.printStackTrace();
 			return new UnaCloudResponse(UnaCloudConstants.ERROR_MESSAGE + e, ExecutionProcessEnum.FAIL);
 		}       
     }
