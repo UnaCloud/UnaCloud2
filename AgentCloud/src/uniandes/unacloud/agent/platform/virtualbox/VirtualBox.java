@@ -147,10 +147,12 @@ public abstract class VirtualBox extends Platform {
 			System.out.println("Start vm headless response "+h);
 			if(h.contains(NETWORK_ERROR))
             {
+				System.out.println("List of network interfaces");
+            	LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","bridgedifs");
                 System.out.println("Change network int");
                 changeExecutionMac(image);
                 h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "headless");
-                System.out.println("After net; Start vm headless response "+h);
+                System.out.println("After net; Start vm headless response ");
             }
             if (!h.contains(ERROR_MESSAGE) && !h.contains(LOCKED_BY_SESSION_ERROR))
 				break;
