@@ -76,7 +76,8 @@ public abstract class VirtualBox extends Platform {
         String newName=null;
         if(!names.containsKey(image.getImageName()))
             names.put(image.getImageName(),0);
-        names.put(image.getImageName(),(names.get(image.getImageName())+1));
+        int tmp=names.get(image.getImageName())+1;
+        names.put(image.getImageName(),tmp);
         newName=image.getImageName()+names.get(image.getImageName());
         String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
         System.out.println("Cloning result "+h);
@@ -91,16 +92,7 @@ public abstract class VirtualBox extends Platform {
         System.out.println(newName+" vms listed: ");
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms");
         //TODO Cambiar el UUID
-        File f=new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath());
-        System.out.println("Path"+f.getAbsolutePath());
-        for(String s:f.list())
-            System.out.println("File"+s);
-        f=new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName);
-        System.out.println("Path"+f.getAbsolutePath());
-        for(String s:f.list())
-            System.out.println("File"+s);
-        f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+File.separator+newName+".vbox");
-        System.out.println(f.getAbsolutePath());
+        File f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+File.separator+newName+".vbox");
         return f;
     }
     
@@ -112,11 +104,7 @@ public abstract class VirtualBox extends Platform {
 	public void unregisterImage(ImageCopy image){
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "unregistervm", image.getImageName());
         sleep(10000);
-        /*String rta = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "closemedium", "disk", image.getMainFile().getFilePath().replaceAll("vbox", "vdi"));
-        System.out.println("FULL UNREGISTER OF IMAGE WITH ROUTE " + image.getMainFile().getFilePath() + ": " + rta);
-        sleep(5000); */
     }
-    
     /**
      * Sends a reset message to the platform
      * @param image Image to be restarted

@@ -408,6 +408,92 @@ public class DeploymentTimeTesting {
     }
 
     /**
+     * Example for testing the deployment of 10 machines at the same time for the given user. The type of lab dependends on the string given by param since it is restricted to the user access on the web interface.
+     * @param lab Name of the lab to be used
+     * @param iterations Maximum number of iterations
+     * @param significantHostName Defines the host name used for this set of tests
+     * @param path Path for the file to be written on
+     * @throws Exception If there is any HTTPException or if there are any failed deployments.
+     */
+    public void netLabDeploymentTesting(String lab,int iterations, String significantHostName, String path) throws Exception
+    {
+        DeploymentManager dep= new DeploymentManager(uc);
+        int qty=10;
+        PrintWriter pw=new PrintWriter(new File(path));
+        pw.println("Deployment testing with 10 machines per iteration for lab "+lab);
+        for(int j=0;j<iterations;j++)
+        {
+                //Post deployment with params
+                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
+                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+";",false);
+                double deploymentId=dep.deployWithParams(deploymentRequest);
+                System.out.println("ID DEPLOY"+deploymentId);
+
+                //Get the current deployment
+                DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
+                System.out.println(deploy.getStatus().getName()+"");
+
+                //Assume we have executions
+                System.out.println("Get executions");
+                //Signals if you need to throw an exception or not
+                boolean todoEstaDetenido=false;
+                int state=0;
+                int success=0;
+                int failed=0;
+                while(!todoEstaDetenido)
+                {
+                    success=0;
+                    failed=0;
+                    Thread.sleep(60000);
+                    todoEstaDetenido=true;
+                    for(ObjectId<Integer> id:deploy.getImages())
+                    {
+                        for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                        {
+                            state=exec.getState().getId();
+                            System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode().getId()+" "+exec.getState().getId());
+                            if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
+                            {
+                                todoEstaDetenido=false;
+                                break;
+                            }
+                            //Get the count of successful deployments versus failed ones
+                            if(state==DeploymentManager.DEPLOYED)
+                                success++;
+                            else if (state==DeploymentManager.FAILED)
+                                failed++;
+                        }
+                    }
+                }
+                pw.println("Iteration,Successful,Failed");
+                pw.println((j+1)+","+success+","+failed);
+                ArrayList<Integer> machines=new ArrayList<>();
+                System.out.println("Stop");
+                DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+                //Cycle through all executions of the deployment and add them to the list for stopping
+                for(ObjectId<Integer> id:deploy.getImages())
+                {
+                    for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                    {
+                        System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                        deploymentStopRequest.addExecution(exec.getId());
+                        machines.add(exec.getExecutionNode().getId());
+                    }
+                }
+                //Stop executions
+                dep.stopExecutions(deploymentStopRequest);
+                //While the deployment is not done loop
+                finishDeployment(deploy,dep);
+                Thread.sleep(20000);
+                if(failed>=0.4*(success+failed))
+                    throw new Exception("There are "+failed+" instances on the deployment "+j);
+        }
+        pw.close();
+
+
+    }
+
+    /**
      * Method for checking whether number represents a hardware profile id or not
      * @param i Id of hardware profile
      * @return Whether it is a hardware profile or not
@@ -483,8 +569,9 @@ public class DeploymentTimeTesting {
 
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
+        deploymentTimeTesting.netLabDeploymentTesting("Waira 1",10,"Test","./test.csv");
 
-
+/*
         //First method for making deployment time testing
         deploymentTimeTesting.deploymentTimeTesting(1,61,74,new int[]{15,25,50},100,"P2PTestMaySmall");
         deploymentTimeTesting.deploymentTimeTesting(1,62,75,new int[]{15,25,50},100,"P2PTestMayMedium");
@@ -542,7 +629,7 @@ public class DeploymentTimeTesting {
         //deploymentTimeTesting.energyTestingPerAlgorithm(1,new int[]{40,50},1,clusterId,quantitiesPerNode,"test",1,"test.csv");
 
         //Second method for making deployment time testing with post-cache processing UNCOMENT NEXT LINE TÇO USE
-        //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");
+        //deploymentTimeTesting.deploymentTimeTestingWithPostCacheCleaning(1,new int[]{1},"UnaCloudConnectionTest");*/
 
     }
 
