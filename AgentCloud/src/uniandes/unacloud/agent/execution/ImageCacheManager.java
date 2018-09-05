@@ -146,14 +146,18 @@ public class ImageCacheManager {
 	 * Removes all images fom physical machine disk
 	 * @return operation confirmation
 	 */
-	public static synchronized UnaCloudResponse clearCache() {
+	public static synchronized UnaCloudResponse clearCache(String commonRoot) {
 		System.out.println("clearCache");
-		loadImages();		
+		loadImages();
+		if (commonRoot==null)
+			commonRoot="";
 		try {	
 			  System.out.println("The agent is clearing cache from it's image list");
               for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
-						try {			              
+						try {
+							if (!copy.getMainFile().getFilePath().contains(commonRoot))
+								continue;
 							System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
 							copy.stopAndUnregister();
 	                        System.out.println("\tRemoving torrent: " + copy.getMainFile().getFilePath());

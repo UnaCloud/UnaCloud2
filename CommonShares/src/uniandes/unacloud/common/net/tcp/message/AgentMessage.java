@@ -49,6 +49,10 @@ public class AgentMessage extends ClientMessage {
 	 */
 	public static final int GET_MONITORING = 13;
 	/**
+	 * Clear image copies.
+	 */
+	public static final int CLEAR_COPY = 14;
+	/**
 	 * Creates a new Agent message
 	 * @param subOperation
 	 */

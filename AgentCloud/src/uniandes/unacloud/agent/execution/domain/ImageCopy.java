@@ -69,7 +69,6 @@ public class ImageCopy implements Serializable {
 		if (mainFile == null || mainFile.getFilePath() == null) 
 			return "null";
 		String h = mainFile.getExecutableFile().getName();
-		System.out.println("FILE:"+mainFile.getFilePath()+" "+mainFile.getExecutableFile().getName());
 		int l = h.lastIndexOf(".");
 		if (l == -1)
 			return h;

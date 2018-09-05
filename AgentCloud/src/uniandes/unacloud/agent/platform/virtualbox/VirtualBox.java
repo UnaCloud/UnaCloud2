@@ -79,12 +79,12 @@ public abstract class VirtualBox extends Platform {
         int tmp=names.get(image.getImageName())+1;
         names.put(image.getImageName(),tmp);
         newName=image.getImageName()+names.get(image.getImageName());
-        String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+        String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+"\\copy", "--register");
         System.out.println("Cloning result "+h);
         if(h.contains("error") && h.contains("snapshots"))
         {
             takeExecutionSnapshot(image, "unacloudbase");
-            h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+            h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+"\\copy", "--register");
             System.out.println("Cloning result with unacloudbase reinstated: "+h);
         }
         sleep(20000);

@@ -42,7 +42,11 @@ public enum TaskEnum {
 	/**
 	 * Message to request monitoring files from agent
 	 */
-	GET_MONITORING("monitoring",AgentMessage.GET_MONITORING);
+	GET_MONITORING("monitoring",AgentMessage.GET_MONITORING),
+	/**
+	 * Message for clearing copies from memory
+	 */
+	CLEAR_COPY("copy",AgentMessage.CLEAR_COPY);
 
 
 	
