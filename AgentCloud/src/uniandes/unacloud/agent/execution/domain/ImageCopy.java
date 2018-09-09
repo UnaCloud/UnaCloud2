@@ -44,7 +44,8 @@ public class ImageCopy implements Serializable {
 	 * Holds the platform specific execution ID
 	 */
 	private String platformExecutionID;
-	
+
+
 	/**
 	 * Get main file
 	 */

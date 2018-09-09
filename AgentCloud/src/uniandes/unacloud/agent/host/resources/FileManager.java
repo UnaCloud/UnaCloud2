@@ -13,7 +13,7 @@ import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 /**
- * Class for managinf file exchange in UnaCloud
+ * Class for managing file exchange in UnaCloud
  * @author CesarF
  */
 public class FileManager {	

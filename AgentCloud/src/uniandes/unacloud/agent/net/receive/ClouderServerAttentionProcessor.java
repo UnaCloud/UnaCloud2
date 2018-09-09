@@ -109,10 +109,10 @@ public class ClouderServerAttentionProcessor extends AbstractTCPSocketProcessor 
 	                return new UnaCloudResponse(AgentManager.getVersion(), ExecutionProcessEnum.SUCCESS);
 	            case AgentMessage.CLEAR_CACHE:
 	            	System.out.println("The agent is clearing cache");
-	                return ImageCacheManager.clearCache(null);
+	                return ImageCacheManager.clearCache(false);
 				case AgentMessage.CLEAR_COPY:
-					System.out.println("The agent is clearing cache");
-					return ImageCacheManager.clearCache("copy");
+					System.out.println("The agent is clearing cache from copy");
+					return ImageCacheManager.clearCache(true);
 	            case AgentMessage.CLEAR_IMAGE_FROM_CACHE:
 	                return ImageCacheManager.clearImageFromCache(((ClearImageFromCacheMessage)message).getImageId());
 	            case AgentMessage.GET_DATA_SPACE:

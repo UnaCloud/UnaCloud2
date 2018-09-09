@@ -1,0 +1,14 @@
+Deployment testing with 10 machines per iteration for lab Waira 2
+Iteration,Successful,Failed, Time (s), Time (m)
+1,10,0,482,8
+2,10,0,360,6
+3,10,0,240,4
+4,10,0,240,4
+5,10,0,240,4
+6,10,0,240,4
+7,10,0,240,4
+8,10,0,240,4
+9,10,0,240,4
+10,10,0,240,4
+Average deployment time (s)276.6073
+Average deployment time (m) 4.610121666666667

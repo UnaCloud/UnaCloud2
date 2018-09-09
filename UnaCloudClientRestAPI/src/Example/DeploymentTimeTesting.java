@@ -409,66 +409,78 @@ public class DeploymentTimeTesting {
 
     /**
      * Example for testing the deployment of 10 machines at the same time for the given user. The type of lab dependends on the string given by param since it is restricted to the user access on the web interface.
-     * @param lab Name of the lab to be used
-     * @param iterations Maximum number of iterations
+     * @param labname Name of the lab to be used
+     * @param qty Number of machines to be deployed
+     * @oaram labId Id of the given lab
      * @param significantHostName Defines the host name used for this set of tests
      * @param path Path for the file to be written on
      * @throws Exception If there is any HTTPException or if there are any failed deployments.
      */
-    public void netLabDeploymentTesting(String lab,int iterations, String significantHostName, String path) throws Exception
-    {
-        DeploymentManager dep= new DeploymentManager(uc);
-        int qty=10;
-        PrintWriter pw=new PrintWriter(new File(path));
-        pw.println("Deployment testing with 10 machines per iteration for lab "+lab);
-        for(int j=0;j<iterations;j++)
-        {
-                //Post deployment with params
-                DeploymentRequest deploymentRequest=new DeploymentRequest(1,61);
-                deploymentRequest.addNode(74,DeploymentManager.HW_SMALL,qty,significantHostName+";"+(j+1)+";",false);
-                double deploymentId=dep.deployWithParams(deploymentRequest);
-                System.out.println("ID DEPLOY"+deploymentId);
+    public void netLabDeploymentTesting(String labname,int labId,int clusterId,int qty, String significantHostName, String path) throws Exception {
+        DeploymentManager dep = new DeploymentManager(uc);
+        int iterations = 10;
+        long[] time=new long[iterations];
+        boolean cacheCleaned = false;
+        PrintWriter pw = new PrintWriter(new File(path));
+        pw.println("Deployment testing with "+qty+" machines per iteration for lab " + labname);
+        pw.println("Iteration,Successful,Failed, Time (s), Time (m)");
+        for (int j = 0; j < iterations; j++) {
 
-                //Get the current deployment
-                DeploymentResponse deploy=dep.getDeployment((int)deploymentId);
-                System.out.println(deploy.getStatus().getName()+"");
+            time[j]=System.currentTimeMillis();
 
-                //Assume we have executions
-                System.out.println("Get executions");
-                //Signals if you need to throw an exception or not
-                boolean todoEstaDetenido=false;
-                int state=0;
-                int success=0;
-                int failed=0;
-                while(!todoEstaDetenido)
-                {
-                    success=0;
-                    failed=0;
-                    Thread.sleep(60000);
-                    todoEstaDetenido=true;
-                    for(ObjectId<Integer> id:deploy.getImages())
-                    {
-                        for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
-                        {
-                            state=exec.getState().getId();
-                            System.out.println("EXEC "+exec.getId()+" "+exec.getExecutionNode().getId()+" "+exec.getState().getId());
-                            if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
-                            {
-                                todoEstaDetenido=false;
-                                break;
-                            }
-                            //Get the count of successful deployments versus failed ones
-                            if(state==DeploymentManager.DEPLOYED)
-                                success++;
-                            else if (state==DeploymentManager.FAILED)
-                                failed++;
+            //Post deployment with params
+            DeploymentRequest deploymentRequest = new DeploymentRequest(1, clusterId);
+            deploymentRequest.addNode(74, DeploymentManager.HW_SMALL, qty, significantHostName + ";" + (j + 1) + ";", false);
+            double deploymentId = dep.deployWithParams(deploymentRequest);
+            System.out.println("ID DEPLOY" + deploymentId);
+
+            //Get the current deployment
+            DeploymentResponse deploy = dep.getDeployment((int) deploymentId);
+            System.out.println(deploy.getStatus().getName() + "");
+
+            //Assume we have executions
+            System.out.println("Get executions");
+            //Signals if you need to throw an exception or not
+            boolean todoEstaDetenido = false;
+            int state = 0;
+            int success = 0;
+            int failed = 0;
+            while (!todoEstaDetenido) {
+                success = 0;
+                failed = 0;
+                Thread.sleep(60000);
+                todoEstaDetenido = true;
+                for (ObjectId<Integer> id : deploy.getImages()) {
+                    for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
+                        state = exec.getState().getId();
+                        System.out.println("EXEC " + exec.getId() + " " + exec.getExecutionNode().getId() + " " + exec.getState().getId());
+                        if (state != DeploymentManager.DEPLOYED && state != DeploymentManager.FAILED) {
+                            todoEstaDetenido = false;
+                            break;
                         }
+                        //Get the count of successful deployments versus failed ones
+                        if (state == DeploymentManager.DEPLOYED)
+                            success++;
+                        else if (state == DeploymentManager.FAILED)
+                            failed++;
                     }
                 }
-                pw.println("Iteration,Successful,Failed");
-                pw.println((j+1)+","+success+","+failed);
-                ArrayList<Integer> machines=new ArrayList<>();
-                System.out.println("Stop");
+            }
+            time[j]=System.currentTimeMillis()-time[j];
+
+            ArrayList<Integer> machines=new ArrayList<>();
+            System.out.println("Stop");
+            //Cycle through all executions of the deployment and add them to the list for stopping and if necessary, cleaning cache
+            for(ObjectId<Integer> id:deploy.getImages())
+            {
+                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                {
+                    System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                    machines.add(exec.getExecutionNode().getId());
+                }
+            }
+
+            System.out.println("Stop");
                 DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
                 //Cycle through all executions of the deployment and add them to the list for stopping
                 for(ObjectId<Integer> id:deploy.getImages())
@@ -485,11 +497,41 @@ public class DeploymentTimeTesting {
                 //While the deployment is not done loop
                 finishDeployment(deploy,dep);
                 Thread.sleep(20000);
-                if(failed>=0.4*(success+failed))
-                    throw new Exception("There are "+failed+" instances on the deployment "+j);
-        }
-        pw.close();
+                if(failed>=0.4*(success+failed) && !cacheCleaned)
+                {
+                    if (!cacheCleaned)
+                    {
+                        LaboratoryManager lab = new LaboratoryManager(uc);
+                        //Clean the cache of the given machines or of given numbers.
+                        System.out.println("Cache");
+                        //The user must know the id of the lab to clean up
+                        LaboratoryUpdateRequest laboratoryUpdateRequest=new LaboratoryUpdateRequest(labId, TaskManagerState.CACHE);
+                        for(Integer i:machines)
+                        {
+                            System.out.println("MACHINE "+i);
+                            laboratoryUpdateRequest.addMachine(i);
+                        }
+                        lab.cleanCache(laboratoryUpdateRequest);
+                        Thread.sleep(1000*60*5);
+                        cacheCleaned=true;
+                        j--;
+                        continue;
+                    }
+                    else
+                        throw new Exception("There are "+failed+" instances on the deployment "+j);
+                }
+                else
+                    cacheCleaned=false;
+                pw.println((j + 1) + "," + success + "," + failed+","+time[j]/1000+","+time[j]/1000/60);
 
+        }
+        double avg=0;
+        for(Long j:time)
+            avg+=j;
+        avg/=iterations;
+        pw.println("Average deployment time (s)"+avg/1000);
+        pw.println("Average deployment time (m) "+avg/1000/60);
+        pw.close();
 
     }
 
@@ -569,7 +611,12 @@ public class DeploymentTimeTesting {
 
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
-        deploymentTimeTesting.netLabDeploymentTesting("Waira 1",10,"Test","./test.csv");
+
+        deploymentTimeTesting.netLabDeploymentTesting("Turing",3,61,10,"T_10","./turing_10.csv");
+
+        Thread.sleep(10000);
+        deploymentTimeTesting.netLabDeploymentTesting("Turing",3,61,25,"T_25","./turing_25.csv");
+
 
 /*
         //First method for making deployment time testing

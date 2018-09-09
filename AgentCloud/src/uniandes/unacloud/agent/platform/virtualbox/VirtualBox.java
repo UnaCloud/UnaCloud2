@@ -4,6 +4,7 @@ import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
 import java.io.*;
 import java.net.NetworkInterface;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import uniandes.unacloud.agent.exceptions.PlatformOperationException;
@@ -38,6 +39,16 @@ public abstract class VirtualBox extends Platform {
      */
     private HashMap<String,Integer> names;
 	/**
+	 * Date format for avoiding colissions
+	 */
+	private SimpleDateFormat sf= new SimpleDateFormat("dd-MM-yyyy_kk-mm-ss");
+	/**
+	 * Constant for identifying copies in hash MD5
+	 */
+	private static final String COPY2="12cba3ee81cf4a793796a51b6327c678";
+    private static final String COPY="copy";
+
+    /**
 	 * Class constructor
 	 * @param path Path to this platform executable
 	 * @throws UnsupportedPlatformException 
@@ -78,13 +89,13 @@ public abstract class VirtualBox extends Platform {
             names.put(image.getImageName(),0);
         int tmp=names.get(image.getImageName())+1;
         names.put(image.getImageName(),tmp);
-        newName=image.getImageName()+names.get(image.getImageName());
-        String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+"\\copy", "--register");
+        newName=image.getImageName()+names.get(image.getImageName())+"_"+COPY;
+        String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
         System.out.println("Cloning result "+h);
         if(h.contains("error") && h.contains("snapshots"))
         {
             takeExecutionSnapshot(image, "unacloudbase");
-            h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+"\\copy", "--register");
+            h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
             System.out.println("Cloning result with unacloudbase reinstated: "+h);
         }
         sleep(20000);
@@ -92,7 +103,7 @@ public abstract class VirtualBox extends Platform {
         System.out.println(newName+" vms listed: ");
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms");
         //TODO Cambiar el UUID
-        File f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+File.separator+newName+".vbox");
+        File f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+".vbox");
         return f;
     }
     
@@ -414,7 +425,7 @@ public abstract class VirtualBox extends Platform {
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
 	    System.out.println("VBox vms");
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
-		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
 		System.out.println("Cloning result "+h);
 		if(h.contains("error") && h.contains("snapshots"))
 		{

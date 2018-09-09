@@ -82,6 +82,7 @@ public enum TaskEnum {
 		if (name.equals(VERSION.name)) return VERSION;
 		if (name.equals(GET_LOGS.name)) return GET_LOGS;
 		if (name.equals(GET_MONITORING.name)) return GET_MONITORING;
+		if (name.equals(CLEAR_COPY.name)) return CLEAR_COPY;
 		return null;
 	}
 	

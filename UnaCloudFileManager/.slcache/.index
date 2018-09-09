@@ -7832,3 +7832,5 @@ y:2643:org/springframework/core/$Proxy40
 n:842:com/mysql/jdbc/exceptions/jdbc4/MySQLSyntaxErrorException
 n:2872:uniandes/unacloud/share/db/ServerVariableManager
 n:1526:uniandes/unacloud/share/db/entities/ServerVariableEntity
+n:4231:uniandes/unacloud/common/utils/ConfigurationReader
+n:1672:uniandes/unacloud/share/enums/ServerVariableTypeEnum

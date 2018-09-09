@@ -146,17 +146,20 @@ public class ImageCacheManager {
 	 * Removes all images fom physical machine disk
 	 * @return operation confirmation
 	 */
-	public static synchronized UnaCloudResponse clearCache(String commonRoot) {
+	public static synchronized UnaCloudResponse clearCache(boolean isCopy) {
 		System.out.println("clearCache");
 		loadImages();
-		if (commonRoot==null)
-			commonRoot="";
+		String commonRoot="";
+		//Hash MD5 for copies that is used in Vbox
+		if(isCopy)
+			commonRoot=	"copy";
 		try {	
 			  System.out.println("The agent is clearing cache from it's image list");
               for (Image image: imageList.values())
 					for (ImageCopy copy: image.getImageCopies()) {
 						try {
-							if (!copy.getMainFile().getFilePath().contains(commonRoot))
+							System.out.println("\tImage: " + copy.getMainFile().getFilePath());
+							if (!copy.getMainFile().getExecutableFile().getName().contains(commonRoot))
 								continue;
 							System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
 							copy.stopAndUnregister();
@@ -168,6 +171,9 @@ public class ImageCacheManager {
 						}	
 					}
 			for (File f : new File(machineRepository).listFiles()) {
+				System.out.println("\tFile: " + f.getAbsolutePath());
+				if (!f.getName().contains(commonRoot))
+              		continue;
 				System.out.println("\tDelete File: " + f.getAbsolutePath());
 				FileProcessor.deleteFileSync(f.getAbsolutePath());
 			}

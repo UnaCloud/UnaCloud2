@@ -52,12 +52,12 @@
 													  	<div class="pull-left text-head"><input type = "checkbox" id = "selectAll" ><strong>&nbsp;Select All</strong> </div>				  	
 													  	<div id = "btn-group-agent" class = "btn-group pull-right ">
 					                                 	 	<a title = "Stop Agents" class = "stop-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/stop/', absolute: true)}" data-toggle = "tooltip"><i class = 'fa fa-stop' ></i></a>
-					                                   	 	<a title = "Clean host cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/copy/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-eraser" ></i></a>
-															<a title = "Clean copy cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/copy/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-eraser" ></i></a>
+					                                   	 	<a title = "Clean host cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/cache/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-eraser" ></i></a>
+															<a title = "Clean copy cache" class = "cache-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/copy/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-copy" ></i></a>
 															<a title = "Update Agents" class = "update-agents btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/update/', absolute: true)}" data-toggle = "tooltip"><i class = "fa fa-level-up"></i></a>
 															<a title = "Request Version" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/version/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-save"></i></a>
 					                                        <a title = "Request used disk space" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/size/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-floppy-save"></i></a>
-															<a title = "Request logs" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/logs/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-floppy-save"></i></a>
+															<a title = "Request logs" class = "no_required_confirm_task btn btn-default" href = "${createLink(uri: '/admin/lab/' + lab.id + '/machine/task/logs/', absolute: true)}" data-toggle = "tooltip"><i class = "glyphicon glyphicon-file"></i></a>
 														</div>
 												  	</td>
 											  </tr>

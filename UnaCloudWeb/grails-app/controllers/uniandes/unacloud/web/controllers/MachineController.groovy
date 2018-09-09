@@ -193,7 +193,10 @@ class MachineController extends AbsAdminController {
 				try {
 					def user = User.get(session.user.id)
 					machineService.createRequestTasktoMachines(hostList, TaskEnum.getEnum(params.process), user)
-					flash.message = "Your request have been sent."
+                    if (hostList.size()==1)
+                        flash.message = "Your request has been sent."
+                    else
+					    flash.message = "Your requests have been sent."
 					flash.type = "info"
 				} catch (Exception e) {
 					flash.message = e.message
