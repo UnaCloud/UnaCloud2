@@ -107,10 +107,11 @@ public abstract class Platform {
         synchronized (image) {
             System.out.println("The agent is stopping the image copy "+image.getImageName()+" "+image.getImage().getId());
             stopExecution(image);
-            System.out.println("The agent is unregistering the image copy "+image.getImageName()+" "+image.getImage().getId());
+            //Test for unregistering success
+            /*System.out.println("The agent is unregistering the image copy "+image.getImageName()+" "+image.getImage().getId());
             unregisterImage(image);
             System.out.println("The agent is freeing the locked image copy of "+image.getImageName()+" "+image.getImage().getId());
-            ImageCacheManager.freeLockedImageCopy(image);
+            ImageCacheManager.freeLockedImageCopy(image);*/
 		}
     }
     

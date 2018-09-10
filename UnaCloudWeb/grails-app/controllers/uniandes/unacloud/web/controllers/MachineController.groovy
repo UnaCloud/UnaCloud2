@@ -78,13 +78,10 @@ class MachineController extends AbsAdminController {
 		if (!machine)
 			redirect(uri: "/admin/lab/list", absolute: true)
 		else {
-			def logUrl = null
-			def monitoringUrl = null
+			def fileUrl = null
 			if (machine.lastLog != null && !machine.lastLog.isEmpty())
-				logUrl = serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastLog
-			if (machine.lastMonitoring != null && !machine.lastMonitoring.isEmpty())
-				monitoringUrl = serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastMonitoring
-			[machine: machine, lab: lab, logUrl: logUrl, monitoringUrl: monitoringUrl]
+				fileUrl = serverVariableService.getUrlFileManager() + "log/" + machine.name + "/" + machine.lastLog
+			[machine: machine, lab: lab, fileUrl: fileUrl]
 		}
 
 	}

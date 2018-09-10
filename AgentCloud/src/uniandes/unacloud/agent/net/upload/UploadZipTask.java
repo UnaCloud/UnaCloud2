@@ -44,7 +44,7 @@ public class UploadZipTask extends AbsUploadFileTask {
 						writer = new PrintWriter(file);
 						writer.print("");
 						writer.close();	
-						System.out.println("Logs were upload to server");
+						System.out.println("Logs were uploaded to server");
 					}		
 				}				
 			} catch (Exception e) {			

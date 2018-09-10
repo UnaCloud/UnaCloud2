@@ -84,12 +84,20 @@ public abstract class VirtualBox extends Platform {
 
     public synchronized File registerAndCloneImage(ImageCopy image)
     {
+
+        String[] data=image.getImageName().split(";;;");
+        String name=data[0];
+        for(int i=1;i<data.length-1;i++)
+        {
+            name+=";;;"+data[i];
+        }
         String newName=null;
-        if(!names.containsKey(image.getImageName()))
-            names.put(image.getImageName(),0);
-        int tmp=names.get(image.getImageName())+1;
-        names.put(image.getImageName(),tmp);
-        newName=image.getImageName()+names.get(image.getImageName())+"_"+COPY;
+        if(!names.containsKey(name))
+            names.put(name,0);
+        int tmp=names.get(name)+1;
+        names.put(name,tmp);
+
+        newName=name+";;;"+names.get(name);
         String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
         System.out.println("Cloning result "+h);
         if(h.contains("error") && h.contains("snapshots"))
@@ -415,7 +423,17 @@ public abstract class VirtualBox extends Platform {
 	        sleep(15000);
 		}
 	}
-	
+
+	private static boolean isCopyFile(String name, String commonRoot) {
+		String[] data = name.split(commonRoot);
+		try {
+			Integer.parseInt(data[data.length - 1].split("\\.")[0]);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
 	/**
 	 * Clones an image making a new copy
 	 * @param source source copy
@@ -424,13 +442,14 @@ public abstract class VirtualBox extends Platform {
 	@Override
 	public void cloneImage(ImageCopy source, ImageCopy dest) {
 	    System.out.println("VBox vms");
-        LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
-		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
+	    String name=source.getImageName();
+	    LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
+		String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm",name, "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(),"--register");
 		System.out.println("Cloning result "+h);
 		if(h.contains("error") && h.contains("snapshots"))
 		{
 			takeExecutionSnapshot(source, "unacloudbase");
-			h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", source.getImageName(), "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
+			h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", name, "--snapshot", "unacloudbase", "--name", dest.getImageName(), "--basefolder", dest.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
 			System.out.println("Cloning result with unacloudbase reinstated: "+h);
             System.out.println("VBox vms 2");
             LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","vms");
