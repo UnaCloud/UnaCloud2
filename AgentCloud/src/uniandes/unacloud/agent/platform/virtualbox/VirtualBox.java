@@ -1,5 +1,6 @@
 package uniandes.unacloud.agent.platform.virtualbox;
 
+import static java.util.Objects.hash;
 import static uniandes.unacloud.common.utils.UnaCloudConstants.ERROR_MESSAGE;
 
 import java.io.*;
@@ -91,6 +92,8 @@ public abstract class VirtualBox extends Platform {
         {
             name+=";;;"+data[i];
         }
+        name+=hash(image.getImage().getId());
+        System.out.println("Image name "+name);
         String newName=null;
         if(!names.containsKey(name))
             names.put(name,0);
@@ -109,6 +112,10 @@ public abstract class VirtualBox extends Platform {
         sleep(20000);
         takeExecutionSnapshot(image, "unacloudbase");
         System.out.println(newName+" vms listed: ");
+
+        //Unregister original machine
+		unregisterImage(image);
+
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms");
         //TODO Cambiar el UUID
         File f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+".vbox");
