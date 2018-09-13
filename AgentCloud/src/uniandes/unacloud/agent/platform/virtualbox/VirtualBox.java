@@ -92,6 +92,7 @@ public abstract class VirtualBox extends Platform {
         {
             name+=";;;"+data[i];
         }
+        //Adding hash in case there is another valuable attribute for identifying an image one from another
         name+=hash(image.getImage().getId());
         System.out.println("Image name "+name);
         String newName=null;

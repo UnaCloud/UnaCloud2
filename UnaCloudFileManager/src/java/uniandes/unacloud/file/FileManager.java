@@ -141,6 +141,7 @@ public class FileManager extends ProjectManager {
 			
 			int torrentPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_TORRENT_PORT).getValue());
 			String fileServerIP = ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_IP).getValue();
+
 			String mainRepo = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con).getRoot();
 					
 			TorrentTracker.getInstance().startService(torrentPort, fileServerIP, mainRepo,	ports);

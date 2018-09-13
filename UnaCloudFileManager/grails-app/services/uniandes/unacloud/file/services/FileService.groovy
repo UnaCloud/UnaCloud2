@@ -75,6 +75,7 @@ class FileService implements ApplicationContextAware {
 				boolean isValid = true;
 				files.each {
 					def fileName = it.getOriginalFilename().trim()
+					print image.getPlatform().getName()+" "+fileName
 					if (!image.getPlatform().validatesExtension(fileName))
 						isValid = false;
 				}

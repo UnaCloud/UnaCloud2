@@ -36,3 +36,7 @@ UnaCloudFileManager/web-app/agentSources/.idea/
 UnaCloudFileManager/scripts/test/unit/uniandes/unacloud/file/test/
 AgentCloud/src/META-INF/MANIFEST.MF
 UnaCloudClientRestAPI/archivoEntrada.csv
+UnaCloudFileManager/web-app/agentSources/UnaClient/
+UnaCloudFileManager/UsersDellDocumentsMonitoriasUnaCloudvmsaan_admin/
+AgentCloud/META-INF/
+CommonShares/bin/META-INF/
