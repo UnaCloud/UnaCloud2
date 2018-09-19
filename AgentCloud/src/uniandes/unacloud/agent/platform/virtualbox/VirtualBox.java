@@ -35,6 +35,8 @@ public abstract class VirtualBox extends Platform {
 
 	private static final String NETWORK_ERROR="Nonexistent host networking interface";
 
+	private static final String DISK_FULL_ERROR="VERR_DISK_FULL";
+
     /**
      * Hash for storing names and counter
      */

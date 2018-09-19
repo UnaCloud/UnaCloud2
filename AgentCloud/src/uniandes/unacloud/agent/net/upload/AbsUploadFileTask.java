@@ -32,6 +32,38 @@ public abstract class AbsUploadFileTask implements Runnable {
 	public AbsUploadFileTask(File folderOrDirectory, String token, FileEnum fileType) {
 		this.files=new ArrayList<>();
 		this.files.add(folderOrDirectory);
+		//Check if given file is a .vbox or not
+		if(folderOrDirectory.getName().contains(".vbox"))
+		{
+			System.out.println("Vbox file "+folderOrDirectory.getAbsolutePath());
+			File f= new File(folderOrDirectory.getAbsolutePath().replaceAll("vbox","vdi"));
+            System.out.println("Vdi file 1"+f.getAbsolutePath());
+            if(f.exists())
+			{
+                System.out.println("Vdi file exists");
+                this.files.add(f);
+			}
+			System.out.println("Parent "+folderOrDirectory.getParentFile().getName());
+			if(folderOrDirectory.getParentFile()!=null && folderOrDirectory.getParentFile().listFiles()!=null)
+            {
+                for(File file:folderOrDirectory.getParentFile().listFiles())
+                {
+                    System.out.println("File name"+ file.getAbsolutePath());
+                    if(file.getAbsolutePath().contains("vdi"))
+                    {
+                        f=file;
+                        break;
+                    }
+                }
+                System.out.println("Vdi file 2"+f.getName());
+                if(f.exists())
+                {
+                    System.out.println("Vdi file exists");
+                    this.files.add(f);
+                }
+            }
+
+		}
 		this.tokenUploadCom = token;
 		type = fileType;
 	}

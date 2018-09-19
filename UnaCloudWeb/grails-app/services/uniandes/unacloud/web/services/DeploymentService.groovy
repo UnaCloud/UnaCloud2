@@ -82,7 +82,7 @@ class DeploymentService {
 	
 	def synchronized deploy(Cluster cluster, User user, long time, ImageRequestOptions[] requests) throws Exception, AllocatorException {
 		
-		
+		print "Check restrictions"
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
 		requests.eachWithIndex() { request, i->	
@@ -135,8 +135,11 @@ class DeploymentService {
 			
 			try
 			{
+				"Start allocation"
 				physicalMachineAllocatorService.allocatePhysicalMachines(user, depImage.executions.sort(), depImage.highAvaliavility ? pmsHigh : pms, depImage.highAvaliavility ? pmDescriptionHigh : pmDescriptions)
+				"Get reserved ips"
 				reservedIps.addAll(ipAllocatorService.allocateIPAddresses(depImage.executions))
+				"Finished"
 			}
 			catch (Exception e)
 			{

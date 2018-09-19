@@ -420,6 +420,11 @@ public class DeploymentTimeTesting {
         DeploymentManager dep = new DeploymentManager(uc);
         int iterations = 10;
         long[] time=new long[iterations];
+        HashMap<Integer,String>[] failures=new HashMap[iterations];
+        for(int i=0;i<failures.length;i++)
+        {
+            failures[i]=new HashMap<>();
+        }
         boolean cacheCleaned = false;
         PrintWriter pw = new PrintWriter(new File(path));
         pw.println("Deployment testing with "+qty+" machines per iteration for lab " + labname);
@@ -462,7 +467,10 @@ public class DeploymentTimeTesting {
                         if (state == DeploymentManager.DEPLOYED)
                             success++;
                         else if (state == DeploymentManager.FAILED)
+                        {
                             failed++;
+                            failures[j].put(exec.getExecutionNode().getId(),exec.getMessage()+","+exec.getLastReport());
+                        }
                     }
                 }
             }
@@ -531,6 +539,15 @@ public class DeploymentTimeTesting {
         avg/=iterations;
         pw.println("Average deployment time (s)"+avg/1000);
         pw.println("Average deployment time (m) "+avg/1000/60);
+        pw.println();
+        pw.println("Iteration,Failed machines,Message, Last report");
+        for(int i=0;i<failures.length;i++)
+        {
+            for(Integer s:failures[i].keySet())
+            {
+                pw.println((i+1)+","+s+","+failures[i].get(s));
+            }
+        }
         pw.close();
 
     }
@@ -557,7 +574,8 @@ public class DeploymentTimeTesting {
         int deploymentId=deploy.getId();
         boolean todoEstaDetenido=false;
         int state=0;
-        while(!todoEstaDetenido)
+        int times=10;
+        while(!todoEstaDetenido && times>0)
         {
             Thread.sleep(60000);
             todoEstaDetenido=true;
@@ -570,6 +588,7 @@ public class DeploymentTimeTesting {
                     if(state!=DeploymentManager.DEPLOYED && state!=DeploymentManager.FAILED)
                     {
                         todoEstaDetenido=false;
+                        times--;
                         break;
                     }
                     //if(state== DeploymentManager.FAILED)
@@ -612,10 +631,10 @@ public class DeploymentTimeTesting {
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
 
-        deploymentTimeTesting.netLabDeploymentTesting("Turing",3,61,10,"T_10","./turing_10.csv");
+        deploymentTimeTesting.netLabDeploymentTesting("Waira 2",2,61,10,"W22_10","./waira22_10.csv");
 
         Thread.sleep(10000);
-        deploymentTimeTesting.netLabDeploymentTesting("Turing",3,61,25,"T_25","./turing_25.csv");
+        deploymentTimeTesting.netLabDeploymentTesting("Waira 2",2,61,25,"W22_23","./waira22_25.csv");
 
 
 /*
