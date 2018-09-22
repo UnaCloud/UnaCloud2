@@ -16,6 +16,7 @@ import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.platform.Platform;
 import uniandes.unacloud.agent.utils.AddressUtility;
 import uniandes.unacloud.utils.LocalProcessExecutor;
+import uniandes.unacloud.utils.security.HashGenerator;
 
 import java.io.File;
 
@@ -95,15 +96,7 @@ public abstract class VirtualBox extends Platform {
             name+=";;;"+data[i];
         }
         //Adding hash in case there is another valuable attribute for identifying an image one from another
-        name+=hash(image.getImage().getId());
-        System.out.println("Image name "+name);
-        String newName=null;
-        if(!names.containsKey(name))
-            names.put(name,0);
-        int tmp=names.get(name)+1;
-        names.put(name,tmp);
-
-        newName=name+";;;"+names.get(name);
+        String newName=name+=";;;v" + HashGenerator.randomString(9);
         String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
         System.out.println("Cloning result "+h);
         if(h.contains("error") && h.contains("snapshots"))
