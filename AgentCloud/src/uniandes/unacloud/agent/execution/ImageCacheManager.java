@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import uniandes.unacloud.agent.exceptions.ExecutionException;
@@ -161,33 +162,40 @@ public class ImageCacheManager {
         HashMap<Long,Image> hash=new HashMap<>();
         try {
             System.out.println("The agent is clearing cache from it's image list");
+            File choice=null;
+            long lastMod=0;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-            int num=0;
+
+            ArrayList<File> files= new ArrayList<>();
+            //Strategy for removing most recent copy
             if (isCopy)
             {
                 for(Image image:imageList.values())
                 {
+                    lastMod=Long.MIN_VALUE;
+                    choice=null;
+                    System.out.println("Image: "+image.getId());
                     for(ImageCopy copy: image.getImageCopies())
                     {
-                        String[] data = copy.getMainFile().getExecutableFile().getName().split(commonRoot);
-                        try {
-                            int temp=Integer.parseInt(data[data.length - 1].split("\\.")[0]);
-                            if(temp>num)
-                                num=temp;
-                        } catch (Exception e) {
+                        File file = copy.getMainFile().getExecutableFile();
+                        System.out.println("\tFILE "+file.getAbsolutePath()+" "+file.lastModified()+" "+file.exists()+" "+sdf.format(file.lastModified()));
+                        if (file.lastModified() > lastMod) {
+                            choice = file;
+                            lastMod = file.lastModified();
                         }
+
                     }
-                    names.put(image.getId(),num);
+                    files.add(choice);
                     hash.put(image.getId(),image);
-                    System.out.println("MAX "+image.getId()+" "+num);
-                    num=0;
+                    System.out.println("\t\tMAX "+choice.lastModified()+" "+choice.getAbsolutePath());
                 }
             }
             for (Image image : imageList.values())
                 for (ImageCopy copy : image.getImageCopies()) {
                     try {
                         System.out.println("\tImage: " + copy.getMainFile().getFilePath());
-                        if (isCopy && !isCopyFile(copy.getMainFile().getExecutableFile().getName(), commonRoot,names.get(image.getId())))
+                        if (isCopy && files.contains(copy.getMainFile().getExecutableFile()))
                             continue;
                         System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
                         copy.stopAndUnregister();
@@ -198,13 +206,12 @@ public class ImageCacheManager {
                         e.printStackTrace();
                     }
                 }
-            if (!isCopy)
-                for (File f : new File(machineRepository).listFiles()) {
-
-                    System.out.println("\tFile: " + f.getAbsolutePath());
-                    System.out.println("\tDelete File: " + f.getAbsolutePath());
-                    FileProcessor.deleteFileSync(f.getAbsolutePath());
-                }
+            for (File f : new File(machineRepository).listFiles()) {
+                System.out.println("\tFile: " + f.getAbsolutePath());
+                System.out.println("\tDelete File: " + f.getAbsolutePath());
+                //Should be FileProcessor.deleteFileSync(f.getAbsolutePath())
+                deleteFileSync(f.getAbsolutePath(),files,isCopy);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -220,15 +227,45 @@ public class ImageCacheManager {
         return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);
     }
 
-    private static boolean isCopyFile(String name, String commonRoot, int num) {
-        String[] data = name.split(commonRoot);
-        try {
-            if(Integer.parseInt(data[data.length - 1].split("\\.")[0])!=num)
-                return true;
-            else return false;
-        } catch (Exception e) {
+
+    public static boolean deleteFileSync(String pathFile, ArrayList<File> forbidden, boolean isCopy) throws Exception {
+        File file = new File(pathFile);
+        if (!file.exists()) {
             return false;
+        } else {
+            System.out.println("\t File params "+isCopy +" "+file.getAbsolutePath().contains("base"));
+            if(isCopy && (isCopyFile(file,forbidden) || file.getAbsolutePath().contains("base")))
+                    return false;
+            if (file.isDirectory()) {
+                File[] var5;
+                int var4 = (var5 = file.listFiles()).length;
+
+                for(int var3 = 0; var3 < var4; ++var3) {
+                    File f = var5[var3];
+                    deleteFileSync(f.getAbsolutePath(),forbidden, isCopy);
+                }
+
+                System.out.println("Deletes folder: " + file.getAbsolutePath() + " " + file.delete());
+            } else {
+                System.out.println("Deletes file: " + file.getAbsolutePath() + " " + file.delete());
+            }
+
+            return true;
         }
+    }
+    private static boolean isCopyFile(File f, List<File> files) {
+        String name="";
+        for(File file:files)
+        {
+            System.out.println("Copies "+f.getAbsolutePath()+" "+file.getAbsolutePath());
+            name=file.getName().replaceAll(".vbox","");
+            System.out.println("File name "+name+" VS "+f.getName());
+            System.out.println("Optional name "+name.replaceAll(";;;","___")+" "+f.getName());
+            System.out.println("Boolean "+f.getName().contains(name)+" "+f.getName().contains(name));
+            if(f.getName().contains(name) || f.getName().contains(name.replaceAll(";;;","___")))
+                return true;
+        }
+        return false;
 
     }
 
@@ -323,4 +360,20 @@ public class ImageCacheManager {
 		ids.addAll(imageList.keySet());
 		return ids;
 	}
+
+	public static void main (String[] args)
+    {
+        String name="";
+        String[] files=new String[]{"test","hola"};
+        File f= new File("hola.vbox");
+        for(String file:files)
+        {
+            name=file.replaceAll(".vbox","");
+            System.out.println("File name "+name+" VS "+f.getName());
+            System.out.println("Optional name "+name.replaceAll(";;;","___")+" "+f.getName());
+            System.out.println("Boolean "+f.getName().contains(name)+" "+f.getName().contains(name));
+            if(f.getName().contains(name) || f.getName().contains(name.replaceAll(";;;","___")))
+                System.out.println("Se puede");
+        }
+    }
 }
