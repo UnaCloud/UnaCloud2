@@ -91,16 +91,7 @@ public class ImageCacheManager {
                 }
                 System.out.println("\t No copy is free");
                 source = vmi.getImageCopies().get(0);
-                //Change for the break free copy results
-                //final String vmName = "v" + HashGenerator.randomString(9);
-                String[] data=source.getImageName().split(";;;");
-                String vmName=data[0];
-                for(int i=1;i<data.length-1;i++)
-                {
-                    vmName+=";;;"+data[i];
-                }
-                //Adding hash in case there is another valuable attribute for identifying an image one from another
-                vmName+=";;;v" + HashGenerator.randomString(9);
+                final String vmName = "v" + HashGenerator.randomString(9);
                 dest = new ImageCopy();
                 dest.setImage(vmi);
                 vmi.getImageCopies().add(dest);
@@ -166,39 +157,37 @@ public class ImageCacheManager {
         //Hash MD5 for copies that is used in Vbox
         if (isCopy)
             commonRoot = ";;;";
-        ArrayList<File> files=new ArrayList<>();
         HashMap<Long,Integer> names=new HashMap<>();
         HashMap<Long,Image> hash=new HashMap<>();
         try {
             System.out.println("The agent is clearing cache from it's image list");
 
-            File choice=null;
-            long lastMod=0;
+            int num=0;
             if (isCopy)
             {
                 for(Image image:imageList.values())
                 {
-                    lastMod=Long.MIN_VALUE;
-                    choice=null;
                     for(ImageCopy copy: image.getImageCopies())
                     {
-                        File file = copy.getMainFile().getExecutableFile();
-                        System.out.println("FILE "+file.getAbsolutePath()+" "+file.lastModified());
-                        if (file.lastModified() > lastMod) {
-                            choice = file;
-                            lastMod = file.lastModified();
+                        String[] data = copy.getMainFile().getExecutableFile().getName().split(commonRoot);
+                        try {
+                            int temp=Integer.parseInt(data[data.length - 1].split("\\.")[0]);
+                            if(temp>num)
+                                num=temp;
+                        } catch (Exception e) {
                         }
-
                     }
-                    files.add(choice);
-                    System.out.println("MAX "+choice.lastModified()+" "+choice.getAbsolutePath());
+                    names.put(image.getId(),num);
+                    hash.put(image.getId(),image);
+                    System.out.println("MAX "+image.getId()+" "+num);
+                    num=0;
                 }
             }
             for (Image image : imageList.values())
                 for (ImageCopy copy : image.getImageCopies()) {
                     try {
                         System.out.println("\tImage: " + copy.getMainFile().getFilePath());
-                        if (isCopy && !isCopyFile(copy.getMainFile().getExecutableFile(),files))
+                        if (isCopy && !isCopyFile(copy.getMainFile().getExecutableFile().getName(), commonRoot,names.get(image.getId())))
                             continue;
                         System.out.println("\tRemove execution: " + copy.getMainFile().getFilePath());
                         copy.stopAndUnregister();
@@ -231,9 +220,15 @@ public class ImageCacheManager {
         return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);
     }
 
-    private static boolean isCopyFile(File file, ArrayList<File> files)
-    {
-        return !files.contains(file);
+    private static boolean isCopyFile(String name, String commonRoot, int num) {
+        String[] data = name.split(commonRoot);
+        try {
+            if(Integer.parseInt(data[data.length - 1].split("\\.")[0])!=num)
+                return true;
+            else return false;
+        } catch (Exception e) {
+            return false;
+        }
 
     }
 
