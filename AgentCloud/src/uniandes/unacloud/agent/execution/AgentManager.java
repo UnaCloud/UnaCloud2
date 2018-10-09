@@ -23,6 +23,10 @@ public class AgentManager {
      * Monitoring process for agent on updating
      */
     private static Process monitoringProcess;
+    /**
+     * Name of the monitoring file
+     */
+    private static final String MONITORING_FILE="monitoring.py";
 	
 	/**
 	 * Current agent version
@@ -43,7 +47,7 @@ public class AgentManager {
 		//TODO: Pass to ClientUpdater.jar when fully tested
         try
         {
-            LocalProcessExecutor.executeCommandOutput("cmd.exe","/c","echo print(\"Hola mundo\")", ">", "monitoring.py");
+            LocalProcessExecutor.executeCommandOutput("cmd.exe","/c","echo print(\"Hola mundo\")", ">", MONITORING_FILE);
         }
         catch(Exception e)
         {
@@ -52,8 +56,8 @@ public class AgentManager {
         }
         try
         {
-            monitoringProcess=Runtime.getRuntime().exec("python monitoring.py");
-            LocalProcessExecutor.executeCommandOutput("python","monitoring.py");
+            monitoringProcess=Runtime.getRuntime().exec("python "+MONITORING_FILE);
+            LocalProcessExecutor.executeCommandOutput("python",MONITORING_FILE);
         }
         catch(Exception e)
         {

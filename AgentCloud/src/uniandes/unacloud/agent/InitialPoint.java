@@ -19,12 +19,14 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
+
+
 /**
  * Responsible for start UnaCloud Client
  *
  */
 public class InitialPoint {
-	
+
 	/**
 	 * Number of threads to attend messages from server
 	 */
@@ -117,8 +119,9 @@ public class InitialPoint {
 				if (!userFound && OSFactory.getOS().isRunningBySuperUser()) {
 					System.err.println("You can't execute the agent as " + whoAmI);
 	        		System.exit(0);
-	        		return;
-	        	}
+                    return;
+
+                }
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -128,7 +131,6 @@ public class InitialPoint {
     	}    
 		if (args != null && args.length > 0 && !args[0].matches("[0-9]+"))
 			mainCase = Integer.parseInt(args[0]);
-		
 	    if (mainCase == UnaCloudConstants.TEST) {
 	    	try {
 				ServerMessageSender.reportPhyisicalMachine(null);
