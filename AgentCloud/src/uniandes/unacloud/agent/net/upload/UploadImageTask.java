@@ -40,14 +40,7 @@ public class UploadImageTask extends AbsUploadFileTask {
 		System.out.println("Unregister execution: " + machineExecution.getId());
 		PersistentExecutionManager.unregisterExecution(machineExecution.getId());
 		
-		try {				
-			//TODO: If virtual machine requires some external folder it will be deleted. Take care when a new platform will be added
-			for (File f: machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().listFiles())
-				if (f.isDirectory() || f.getName().equals(machineExecution.getImage().getMainFile().getZipFile().getName()))
-					FileProcessor.deleteFileSync(f.getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	@Override
@@ -79,7 +72,15 @@ public class UploadImageTask extends AbsUploadFileTask {
 				ImageCacheManager.deleteImage(machineExecution.getImageId());
 				TorrentClient.getInstance().removeTorrent(machineExecution.getImage().getMainFile().getTorrentFile());				
 			}
-			FileProcessor.deleteFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
+			try {
+				//TODO: If virtual machine requires some external folder it will be deleted. Take care when a new platform will be added
+				for (File f: machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().listFiles())
+					if (f.isDirectory() || f.getName().equals(machineExecution.getImage().getMainFile().getZipFile().getName()))
+						FileProcessor.deleteFileSync(f.getAbsolutePath());
+				FileProcessor.deleteFileSync(machineExecution.getImage().getMainFile().getExecutableFile().getParentFile().getAbsolutePath());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			System.out.println("There was an exception after uploading");
 			e.printStackTrace();
