@@ -47,16 +47,7 @@ public class AgentManager {
 		//TODO: Pass to ClientUpdater.jar when fully tested
         try
         {
-            LocalProcessExecutor.executeCommandOutput("cmd.exe","/c","echo print(\"Hola mundo\")", ">", MONITORING_FILE);
-        }
-        catch(Exception e)
-        {
-            System.out.println("Cannot execute creation of python script");
-            e.printStackTrace();
-        }
-        try
-        {
-            monitoringProcess=Runtime.getRuntime().exec(MONITORING_FILE);
+            monitoringProcess=Runtime.getRuntime().exec(MONITORING_FILE+" -f 60");
         }
         catch(Exception e)
         {
