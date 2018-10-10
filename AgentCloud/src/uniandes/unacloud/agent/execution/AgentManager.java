@@ -13,6 +13,7 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.LocalProcessExecutor;
 
 
+
 /**
  * Class responsible to execute commands to control agent operation
  * @author CesarF
@@ -23,10 +24,6 @@ public class AgentManager {
      * Monitoring process for agent on updating
      */
     private static Process monitoringProcess;
-    /**
-     * Name of the monitoring file
-     */
-    private static final String MONITORING_FILE="agent.exe";
 	
 	/**
 	 * Current agent version
@@ -47,7 +44,7 @@ public class AgentManager {
 		//TODO: Pass to ClientUpdater.jar when fully tested
         try
         {
-            monitoringProcess=Runtime.getRuntime().exec(MONITORING_FILE+" -f 60");
+            monitoringProcess=Runtime.getRuntime().exec(UnaCloudConstants.MONITORING_FILE+" -f 60");
         }
         catch(Exception e)
         {

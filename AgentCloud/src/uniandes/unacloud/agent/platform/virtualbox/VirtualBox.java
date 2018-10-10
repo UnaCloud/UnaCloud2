@@ -120,7 +120,6 @@ public abstract class VirtualBox extends Platform {
 		unregisterImage(image);
 
         LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms");
-        //TODO Cambiar el UUID
         File f= new File( image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath()+File.separator+newName+".vbox");
         return f;
     }

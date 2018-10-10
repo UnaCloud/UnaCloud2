@@ -143,15 +143,8 @@ public class FileManager extends ProjectManager {
 			String fileServerIP = ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_IP).getValue();
 
 			String mainRepo = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con).getRoot();
-			try
-			{
-				TorrentTracker.getInstance().startService(torrentPort, fileServerIP, mainRepo,	ports);
-			}
-			catch(Exception torrentTemp)
-			{
-				System.out.println("There was an error processing the torrent tracker "+torrentTemp.getMessage());
-				torrentTemp.printStackTrace();
-			}
+			TorrentTracker.getInstance().startService(torrentPort, fileServerIP, mainRepo,	ports);
+
 		}
 		catch (Exception e) {
 			e.printStackTrace();
