@@ -68,6 +68,7 @@ public class UnaCloudConstants {
 	public static final int RUN = 1;
 	public static final int DELAY = 6;
 	public static final String UPDATER_JAR = "ClientUpdater.jar";
+	public static final String MONITORING="test";
 	public static final String AGENT_JAR = "UnaClient.jar";
 	public static final String GLOBAL_FILE = "global.properties";
 	public static final String LOCAL_FILE = "local.properties";

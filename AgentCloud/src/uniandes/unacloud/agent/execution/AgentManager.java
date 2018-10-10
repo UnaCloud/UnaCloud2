@@ -26,7 +26,7 @@ public class AgentManager {
     /**
      * Name of the monitoring file
      */
-    private static final String MONITORING_FILE="monitoring.py";
+    private static final String MONITORING_FILE="agent.exe";
 	
 	/**
 	 * Current agent version
@@ -56,8 +56,7 @@ public class AgentManager {
         }
         try
         {
-            monitoringProcess=Runtime.getRuntime().exec("python "+MONITORING_FILE);
-            LocalProcessExecutor.executeCommandOutput("python",MONITORING_FILE);
+            monitoringProcess=Runtime.getRuntime().exec(MONITORING_FILE);
         }
         catch(Exception e)
         {
