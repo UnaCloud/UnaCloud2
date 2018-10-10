@@ -56,7 +56,7 @@ public abstract class AbsUploadFileTask implements Runnable {
 						if(temp.getName().equals(regex))
                         {
                             f=temp;
-                            folderOrDirectory=new File(f.getAbsolutePath().replaceAll("vdi","vbox"));
+                            folderOrDirectory=new File(f.getAbsolutePath().replaceAll("vdi","vbox").replaceAll(";;;","___"));
                             System.out.println(folderOrDirectory.getAbsolutePath()+" "+folderOrDirectory.exists());
 
                         }
