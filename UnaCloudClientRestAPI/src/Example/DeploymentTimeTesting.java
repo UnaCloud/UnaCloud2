@@ -553,6 +553,119 @@ public class DeploymentTimeTesting {
     }
 
     /**
+     * Example for testing the deployment of 10 machines at the same time for the given user. The type of lab dependends on the string given by param since it is restricted to the user access on the web interface.
+     * @param labname Name of the lab to be used
+     * @param qty Number of machines to be deployed
+     * @oaram labId Id of the given lab
+     * @param significantHostName Defines the host name used for this set of tests
+     * @throws Exception If there is any HTTPException or if there are any failed deployments.
+     */
+    public HashMap<Integer,String>[] midwayShutDownTesting(String labname,int labId,int clusterId, int[] nodes, int iterations, int qty, String significantHostName, int numberHours) throws Exception {
+        DeploymentManager dep = new DeploymentManager(uc);
+        HashMap<Integer, String>[] failures = new HashMap[iterations];
+        for (int i = 0; i < failures.length; i++) {
+            failures[i] = new HashMap<>();
+        }
+        for (int j = 0; j < iterations; j++) {
+            //Post deployment with params
+            DeploymentRequest deploymentRequest = new DeploymentRequest(numberHours, clusterId);
+            for (int i=0;i< nodes.length;i++)
+            {
+                deploymentRequest.addNode(nodes[i], DeploymentManager.HW_SMALL, qty, significantHostName + ";" + (j + 1) + ";", false);
+                System.out.println("Node "+nodes[i]);
+            }
+            double deploymentId = dep.deployWithParams(deploymentRequest);
+            System.out.println("ID DEPLOY" + deploymentId);
+
+            //Get the current deployment
+            DeploymentResponse deploy = dep.getDeployment((int) deploymentId);
+            System.out.println(deploy.getStatus().getName() + "");
+
+            //Assume we have executions
+            System.out.println("Get executions");
+            //Signals if you need to throw an exception or not
+            boolean todoEstaDetenido = false;
+
+            int state = 0;
+            int success = 0;
+            int failed = 0;
+            long tiempoTotal = numberHours * 60000 * 60;
+            ArrayList<Integer> list = new ArrayList<>();
+            while (!todoEstaDetenido) {
+                success = 0;
+                failed = 0;
+                Thread.sleep(60000);
+                todoEstaDetenido = true;
+                list = new ArrayList<>();
+                for (ObjectId<Integer> id : deploy.getImages()) {
+                    for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
+                        state = exec.getState().getId();
+                        System.out.println("EXEC " + exec.getId() + " " + exec.getExecutionNode().getId() + " " + exec.getState().getId());
+                        if (state != DeploymentManager.DEPLOYED && state != DeploymentManager.FAILED) {
+                            todoEstaDetenido = false;
+                            break;
+                        }
+                        //Get the count of successful deployments versus failed ones
+                        if (state == DeploymentManager.DEPLOYED)
+                            success++;
+                        else if (state == DeploymentManager.FAILED) {
+                            failed++;
+                        }
+                        list.add(exec.getExecutionNode().getId());
+                    }
+                }
+            }
+            boolean[] inscritos;
+            while (tiempoTotal > 0) {
+                inscritos = new boolean[list.size()];
+                failed = 0;
+                Thread.sleep(60000);
+                tiempoTotal -= 60000;
+                for (ObjectId<Integer> id : deploy.getImages()) {
+                    for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
+                        state = exec.getState().getId();
+                        System.out.println("TIME " + exec.getId() + " " + exec.getExecutionNode().getId() + " " + exec.getState().getId());
+                        //Get the count of successful deployments versus failed ones
+                        if (state == DeploymentManager.FAILED) {
+                            failed++;
+                            failures[j].put(exec.getExecutionNode().getId(), exec.getMessage() + "," + exec.getLastReport());
+                        }
+                        inscritos[list.indexOf(exec.getExecutionNode().getId())] = true;
+                    }
+                }
+            }
+
+            ArrayList<Integer> machines = new ArrayList<>();
+            System.out.println("Stop");
+            //Cycle through all executions of the deployment and add them to the list for stopping and if necessary, cleaning cache
+            for (ObjectId<Integer> id : deploy.getImages()) {
+                for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
+                    System.out.println("ADD " + exec.getId() + " " + exec.getExecutionNode() + " " + exec.getState().getId());
+                    machines.add(exec.getExecutionNode().getId());
+                }
+            }
+            //While the deployment is not done loop
+            finishDeployment(deploy, dep);
+            Thread.sleep(20000);
+            System.out.println("Cache");
+            //The user must know the id of the lab to clean up
+            LaboratoryUpdateRequest laboratoryUpdateRequest = new LaboratoryUpdateRequest(labId, TaskManagerState.CACHE);
+            for (Integer i : machines) {
+                System.out.println("MACHINE " + i);
+                laboratoryUpdateRequest.addMachine(i);
+            }
+            System.out.println("Cache");
+            LaboratoryManager lab = new LaboratoryManager(uc);
+            lab.cleanCache(laboratoryUpdateRequest);
+            Thread.sleep(1000 * 60 * 5);
+
+
+        }
+        return failures;
+
+    }
+
+    /**
      * Method for checking whether number represents a hardware profile id or not
      * @param i Id of hardware profile
      * @return Whether it is a hardware profile or not
@@ -630,12 +743,17 @@ public class DeploymentTimeTesting {
 
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
+        HashMap<Integer, String>[] failures=deploymentTimeTesting.midwayShutDownTesting("Waira 1",1,61,new int[]{74},10,25,"pruebasApagado",1);
 
-        deploymentTimeTesting.netLabDeploymentTesting("Waira 2",2,61,10,"W22_10","./waira22_10.csv");
+        for(int i=0;i<failures.length;i++)
+        {
+            System.out.println("Iteración "+(i+1));
+            for(Integer j:failures[i].keySet())
+            {
+                System.out.println("Node "+j+" has failure "+failures[i].get(j));
 
-        Thread.sleep(10000);
-        deploymentTimeTesting.netLabDeploymentTesting("Waira 2",2,61,25,"W22_23","./waira22_25.csv");
-
+            }
+        }
 
 /*
         //First method for making deployment time testing

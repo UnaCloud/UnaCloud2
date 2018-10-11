@@ -266,7 +266,7 @@ public class ImageCacheManager {
         String name="";
         for(File file:files)
         {
-            //TODO Find where the ____ is comming from 
+            //TODO Find where the ____ is comming from
             System.out.println("Copies "+f.getAbsolutePath()+" "+file.getAbsolutePath());
             name=file.getName().replaceAll(".vbox","");
             System.out.println("File name "+name+" VS "+f.getName());
