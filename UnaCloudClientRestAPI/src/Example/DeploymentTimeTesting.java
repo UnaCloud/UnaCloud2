@@ -637,13 +637,20 @@ public class DeploymentTimeTesting {
 
             ArrayList<Integer> machines = new ArrayList<>();
             System.out.println("Stop");
-            //Cycle through all executions of the deployment and add them to the list for stopping and if necessary, cleaning cache
-            for (ObjectId<Integer> id : deploy.getImages()) {
-                for (ExecutionResponse exec : dep.getExecutionsByDeployedImageId((int) deploymentId, id.getId())) {
-                    System.out.println("ADD " + exec.getId() + " " + exec.getExecutionNode() + " " + exec.getState().getId());
+            DeploymentStopRequest deploymentStopRequest=new DeploymentStopRequest();
+            //Cycle through all executions of the deployment and add them to the list for stopping
+            for(ObjectId<Integer> id:deploy.getImages())
+            {
+                for(ExecutionResponse exec:dep.getExecutionsByDeployedImageId((int)deploymentId,id.getId()))
+                {
+                    System.out.println("ADD "+exec.getId()+" "+exec.getExecutionNode()+" "+exec.getState().getId());
+                    deploymentStopRequest.addExecution(exec.getId());
                     machines.add(exec.getExecutionNode().getId());
                 }
             }
+            //Stop executions
+            dep.stopExecutions(deploymentStopRequest);
+
             //While the deployment is not done loop
             finishDeployment(deploy, dep);
             Thread.sleep(20000);
@@ -743,7 +750,7 @@ public class DeploymentTimeTesting {
 
         UnaCloudConnection uc = new UnaCloudConnection("5ZVAZEP0Q7RQRYK2LXYON05T7LUA9GOI","http://157.253.236.113:8080/UnaCloud");
         DeploymentTimeTesting deploymentTimeTesting=new DeploymentTimeTesting(uc);
-        HashMap<Integer, String>[] failures=deploymentTimeTesting.midwayShutDownTesting("Waira 1",1,61,new int[]{74},10,25,"pruebasApagado",1);
+        HashMap<Integer, String>[] failures=deploymentTimeTesting.midwayShutDownTesting("Waira 1",1,61,new int[]{74},5,25,"pruebasApagado",1);
 
         for(int i=0;i<failures.length;i++)
         {
