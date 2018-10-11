@@ -154,10 +154,7 @@ public class ImageCacheManager {
     public static synchronized UnaCloudResponse clearCache(boolean isCopy) {
         System.out.println("clearCache");
         loadImages();
-        String commonRoot = "";
-        //Hash MD5 for copies that is used in Vbox
-        if (isCopy)
-            commonRoot = ";;;";
+
         HashMap<Long,Integer> names=new HashMap<>();
         HashMap<Long,Image> hash=new HashMap<>();
         try {
@@ -260,9 +257,8 @@ public class ImageCacheManager {
             System.out.println("Copies "+f.getAbsolutePath()+" "+file.getAbsolutePath());
             name=file.getName().replaceAll(".vbox","");
             System.out.println("File name "+name+" VS "+f.getName());
-            System.out.println("Optional name "+name.replaceAll(";;;","___")+" "+f.getName());
             System.out.println("Boolean "+f.getName().contains(name)+" "+f.getName().contains(name));
-            if(f.getName().contains(name) || f.getName().contains(name.replaceAll(";;;","___")))
+            if(f.getName().contains(name))
                 return true;
         }
         return false;
@@ -361,19 +357,4 @@ public class ImageCacheManager {
 		return ids;
 	}
 
-	public static void main (String[] args)
-    {
-        String name="";
-        String[] files=new String[]{"test","hola"};
-        File f= new File("hola.vbox");
-        for(String file:files)
-        {
-            name=file.replaceAll(".vbox","");
-            System.out.println("File name "+name+" VS "+f.getName());
-            System.out.println("Optional name "+name.replaceAll(";;;","___")+" "+f.getName());
-            System.out.println("Boolean "+f.getName().contains(name)+" "+f.getName().contains(name));
-            if(f.getName().contains(name) || f.getName().contains(name.replaceAll(";;;","___")))
-                System.out.println("Se puede");
-        }
-    }
 }

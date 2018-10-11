@@ -88,11 +88,11 @@ public abstract class VirtualBox extends Platform {
     public synchronized File registerAndCloneImage(ImageCopy image)
     {
 
-        String[] data=image.getImageName().split(";;;");
+        String[] data=image.getImageName().split("___");
         String name=data[0];
         for(int i=1;i<data.length-1;i++)
         {
-            name+=";;;"+data[i];
+            name+="___"+data[i];
         }
         //Adding hash in case there is another valuable attribute for identifying an image one from another
         name+=hash(image.getImage().getId());
@@ -103,7 +103,7 @@ public abstract class VirtualBox extends Platform {
         int tmp=names.get(name)+1;
         names.put(name,tmp);
 
-        newName=name+";;;"+names.get(name);
+        newName=name+"___"+names.get(name);
         String h=LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "clonevm", image.getImageName(), "--snapshot", "unacloudbase", "--name", newName, "--basefolder", image.getMainFile().getExecutableFile().getParentFile().getParentFile().getAbsolutePath(), "--register");
         System.out.println("Cloning result "+h);
         if(h.contains("error") && h.contains("snapshots"))
