@@ -196,7 +196,11 @@ class Execution {
 	 * @return history status 
 	 */
 	def getHistoryStatus(ExecutionStateEnum searchState) {
-		return ExecutionHistory.where{state.state == searchState && execution == this}.find()
+		historyStatus=ExecutionHistory.findAllByStateAndExecution(state.state,this)
+		print "Base exec "+id
+		for(ExecutionHistory executionHistory:historyStatus)
+			print "History "+executionHistory.id+" "+executionHistory.state
+		return historyStatus.get(0)
 	}
 	
 }
