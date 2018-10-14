@@ -154,6 +154,7 @@ public class ImageCacheManager {
     public static synchronized UnaCloudResponse clearCache(boolean isCopy) {
         System.out.println("clearCache");
         loadImages();
+
         HashMap<Long,Integer> names=new HashMap<>();
         HashMap<Long,Image> hash=new HashMap<>();
         try {
@@ -223,14 +224,7 @@ public class ImageCacheManager {
         return new UnaCloudResponse(SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);
     }
 
-    /**
-     * Method for deleting files sync using copies as an exception
-     * @param pathFile Path to the given file list
-     * @param forbidden Forbidden files
-     * @param isCopy If it is copy or not
-     * @return True if everything was deleted accordingly
-     * @throws Exception If there are any I/O exceptions
-     */
+
     public static boolean deleteFileSync(String pathFile, ArrayList<File> forbidden, boolean isCopy) throws Exception {
         File file = new File(pathFile);
         if (!file.exists()) {
@@ -240,13 +234,14 @@ public class ImageCacheManager {
             if(isCopy && (isCopyFile(file,forbidden) || file.getAbsolutePath().contains("base")))
                     return false;
             if (file.isDirectory()) {
-                File[] files;
-                int length = (files = file.listFiles()).length;
+                File[] var5;
+                int var4 = (var5 = file.listFiles()).length;
 
-                for(int i = 0; i < length; ++i) {
-                    File f = files[i];
+                for(int var3 = 0; var3 < var4; ++var3) {
+                    File f = var5[var3];
                     deleteFileSync(f.getAbsolutePath(),forbidden, isCopy);
                 }
+
                 System.out.println("Deletes folder: " + file.getAbsolutePath() + " " + file.delete());
             } else {
                 System.out.println("Deletes file: " + file.getAbsolutePath() + " " + file.delete());
@@ -255,29 +250,24 @@ public class ImageCacheManager {
             return true;
         }
     }
-
-    /**
-     * Checks if the given files is a copy using the default string separator ;;;
-     * @param f File
-     * @param files List of copy files
-     * @return Whether the file is a copy or not
-     */
     private static boolean isCopyFile(File f, List<File> files) {
         String name="";
         for(File file:files)
         {
-            //TODO Find where the ____ is comming from
             System.out.println("Copies "+f.getAbsolutePath()+" "+file.getAbsolutePath());
             name=file.getName().replaceAll(".vbox","");
             System.out.println("File name "+name+" VS "+f.getName());
-            System.out.println("Optional name "+name.replaceAll(";;;","___")+" "+f.getName());
             System.out.println("Boolean "+f.getName().contains(name)+" "+f.getName().contains(name));
-            if(f.getName().contains(name) || f.getName().contains(name.replaceAll(";;;","___")))
+            if(f.getName().contains(name))
                 return true;
         }
         return false;
 
     }
+
+
+
+
     /**
 	 * Removes an image from cache in repository
 	 * @return response
@@ -366,4 +356,5 @@ public class ImageCacheManager {
 		ids.addAll(imageList.keySet());
 		return ids;
 	}
+
 }
