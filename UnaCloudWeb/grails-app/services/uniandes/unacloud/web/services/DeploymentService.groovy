@@ -267,11 +267,26 @@ class DeploymentService {
 
 	/**
 	 * Returns the execution given by id in the selected deployment
+	 * @param deployment Deployment to look at
+	 * @return executions with the given id
+	 */
+	def getActiveExecutions(Deployment deployment) {
+        def active=[]
+		for(DeployedImage image:deployment.images)
+		{
+            print "Getting active exec of image "+image.id
+			active.addAll(image.getActiveExecutions())
+		}
+        return active
+
+    }
+	/**
+	 * Returns the execution given by id in the selected deployment
      * @param deployment Deployment to look at
 	 * @param idExec id of execution
 	 * @return executions with the given id
 	 */
-	def getActiveExecution(Deployment deployment, int idExec) {
+	def getActiveExecutions(Deployment deployment, int idExec) {
         for(DeployedImage image:deployment.images)
         {
             for(Execution execution:image.executions)

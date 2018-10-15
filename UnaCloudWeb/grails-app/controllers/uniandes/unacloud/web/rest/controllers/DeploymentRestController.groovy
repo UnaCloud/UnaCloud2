@@ -211,11 +211,15 @@ class DeploymentRestController extends AbstractRestController {
 
             if(deployment.user==flash.user)
             {
-                List<Execution> executions=deploymentService.getActiveExecutions()
+                List<Execution> executions=deploymentService.getActiveExecutions(deployment)
                 if(executions) {
                     List<String> list = []
                     for (Execution e : executions)
-                        list.add(e.mainIp().ip)
+                    {
+                        print "Exec"+ e.id
+                        if(e.mainIp()!=null)
+                            list.add(e.mainIp().ip)
+                    }
                     def responseData = ["ips": list]
                     response.setContentType("application/json")
                     response.status = 200
