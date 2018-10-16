@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -31,7 +32,50 @@ public abstract class AbsUploadFileTask implements Runnable {
 	
 	public AbsUploadFileTask(File folderOrDirectory, String token, FileEnum fileType) {
 		this.files=new ArrayList<>();
-		this.files.add(folderOrDirectory);
+		//Check if given file is a .vbox or not
+		if(folderOrDirectory.getName().contains(".vbox"))
+		{
+			System.out.println("Vbox file "+folderOrDirectory.getAbsolutePath());
+			File f=null;
+			String regex=folderOrDirectory.getName().replaceAll("vbox","vdi");
+			if(folderOrDirectory.getParentFile()!=null && folderOrDirectory.getParentFile().listFiles()!=null)
+            {
+            	Stack<File> stack=new Stack<>();
+            	stack.push(folderOrDirectory.getParentFile());
+				while(!stack.isEmpty() && f==null)
+				{
+					File temp=stack.pop();
+					System.out.println("\tName "+temp+" VS "+regex);
+					if(temp.isDirectory())
+					{
+						for(File dir:temp.listFiles())
+							stack.push(dir);
+					}
+					else
+					{
+						if(temp.getName().equals(regex))
+                        {
+                        	f=temp;
+							folderOrDirectory=new File(f.getAbsolutePath().replaceAll("vdi","vbox"));
+							System.out.println(folderOrDirectory.getAbsolutePath()+" "+folderOrDirectory.exists());
+
+                        }
+					}
+				}
+				if(f!=null)
+                	System.out.println("Vdi file 2"+f.getName());
+                this.files.add(folderOrDirectory);
+                if(f.exists())
+                {
+                    System.out.println("Vdi file exists");
+                    this.files.add(f);
+                }
+
+            }
+
+		}
+		for(File file:files)
+		    System.out.println("\t Added "+file.getAbsolutePath()+" "+file.length());
 		this.tokenUploadCom = token;
 		type = fileType;
 	}
@@ -65,8 +109,14 @@ public abstract class AbsUploadFileTask implements Runnable {
 			try {	
 				String name = null;
 				if (files.size() > 1) {
-					name = files.get(0).getParentFile().getAbsolutePath() + files.get(0).getName() + "_" + SystemUtils.getStringDate();
+				    for(File f: files)
+				        System.out.println("Content file "+f.getAbsolutePath()+" "+f.exists()+" "+f.length());
+				    if(files.get(0).getName().contains("vbox")||files.get(0).getName().contains("vdi"))
+				        name=files.get(0).getAbsolutePath();
+				    else
+					    name = files.get(0).getParentFile().getAbsolutePath() + files.get(0).getName() + "_" + SystemUtils.getStringDate();
 					System.out.println("\tMultiple Files " + name);
+
 					zip = FileProcessor.zipFilesSync(name, files);					
 				}
 				//If size is one

@@ -26,9 +26,12 @@ class IpAllocatorService {
 	/**
 	 * Allocates IP addresses to all executions in parameters
 	 * @param list of executions
+	 * @return List of ids of reserved ips for restoring database state
 	**/
 	//TODO manage net interfaces configuration	
-	def allocateIPAddresses(executions){		
+	def allocateIPAddresses(executions){
+		//Get all the reserved ips of the executions
+		def reservedIps=[]
 		for (Execution vme in executions) {
 			if (vme.state.state.equals(ExecutionStateEnum.REQUESTED)) {
 				List <ExecutionIP> ips = vme.executionNode.laboratory.getAvailableIps()
@@ -37,6 +40,7 @@ class IpAllocatorService {
 						NetInterface netInterface = new NetInterface(name:'eth0', ip:ip, execution:vme)
 						vme.interfaces.add(netInterface)
 						ip.putAt('state', IPEnum.RESERVED)
+						reservedIps.add(ip.id)
 						String[] subname = ip.ip.split("\\.")
 						vme.setName(vme.name + subname[2] + subname[3]) 
 						break
@@ -51,5 +55,6 @@ class IpAllocatorService {
 				}
 			}
 		}
+		return reservedIps
 	}		
 }

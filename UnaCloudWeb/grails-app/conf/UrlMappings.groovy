@@ -95,8 +95,8 @@ class UrlMappings {
 			"/lab/new"(controller:'laboratory', action:"create")
 			"/lab/save"(controller:'laboratory', action:"save")
 			"/lab/$id"(controller:'laboratory', action:"lab")
-			"/lab/$id/disable"(controller:'laboratory', action:"setStatus")
 			"/lab/$id/delete"(controller:'laboratory', action:"delete")
+			"/lab/$id/disable"(controller:'laboratory', action:"setStatus")
 			"/lab/$id/edit"(controller:'laboratory', action:"edit")
 			"/lab/$id/save"(controller:'laboratory', action:"saveEdit")
 			
@@ -143,6 +143,7 @@ class UrlMappings {
 		group "/rest", {
 			"/deployments"(controller:'DeploymentRest', action:[GET:"list", POST:"deploy", PUT:"stop", DELETE:"delete"])
 			"/deployments/$id"(controller:'DeploymentRest', action:[GET:"show"])
+			"/deployments/$id/executionIps/"(controller:'DeploymentRest', action:[GET:"getIpsOfDeployment"])
 			"/deployments/$id/executions/$idExec"(controller:'DeploymentRest', action:[GET:"getExecutionById"])
 			"/deployments/$id/executions/$idExec/histories"(controller:'DeploymentRest', action:[GET:"getExecutionHistory"])
 			"/deployments/$id/deployedImages/$imageId"(controller:'DeploymentRest', action:[GET:"getExecutionsByDeployedImagetId"])

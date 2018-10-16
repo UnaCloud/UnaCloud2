@@ -98,6 +98,7 @@ public class UserManager {
 		if (user.getId() == null || user.getId() < 1)
 			return;
 		try {
+			System.out.println("Query ");
 			String query = "DELETE FROM user WHERE status = ? and id = ? and id > 0;";
 			PreparedStatement ps = con.prepareStatement(query);
 			ps.setString(1, UserStateEnum.DISABLE.getName());

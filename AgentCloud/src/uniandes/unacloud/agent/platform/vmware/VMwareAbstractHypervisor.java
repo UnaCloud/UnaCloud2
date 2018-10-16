@@ -30,6 +30,11 @@ public abstract class VMwareAbstractHypervisor extends Platform {
 	public VMwareAbstractHypervisor(String path) {
 		super(path);
 	}
+
+	public File registerAndCloneImage(ImageCopy image)
+    {
+        return null;
+    }
 	
     @Override
     public void stopExecution(ImageCopy image) {

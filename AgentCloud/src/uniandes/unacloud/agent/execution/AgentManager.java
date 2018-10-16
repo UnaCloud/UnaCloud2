@@ -1,9 +1,6 @@
 package uniandes.unacloud.agent.execution;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 import uniandes.unacloud.agent.host.system.OSFactory;
 import uniandes.unacloud.agent.net.receive.ClouderClientAttention;
@@ -15,12 +12,18 @@ import uniandes.unacloud.common.net.tcp.message.UnaCloudResponse;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.utils.LocalProcessExecutor;
 
+
+
 /**
  * Class responsible to execute commands to control agent operation
  * @author CesarF
  *
  */
 public class AgentManager {
+    /**
+     * Monitoring process for agent on updating
+     */
+    private static Process monitoringProcess;
 	
 	/**
 	 * Current agent version
@@ -33,7 +36,22 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
-		System.out.println("Updating agent");
+	    if(monitoringProcess!=null)
+        {
+            monitoringProcess.destroy();
+            monitoringProcess=null;
+        }
+		//TODO: Pass to ClientUpdater.jar when fully tested
+        try
+        {
+            monitoringProcess=Runtime.getRuntime().exec(UnaCloudConstants.MONITORING_FILE+" -f 60");
+        }
+        catch(Exception e)
+        {
+            System.out.println("Cannot executing monitoring python 1 script");
+            e.printStackTrace();
+        }
+        System.out.println("Updating agent");
 		try {
 			ClouderClientAttention.getInstance().stopService();
 		} catch (Exception e) {
@@ -50,7 +68,7 @@ public class AgentManager {
         		System.exit(6);
         	};
         }.start();
-        return new UnaCloudResponse(UnaCloudConstants.SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);          
+        return new UnaCloudResponse(UnaCloudConstants.SUCCESSFUL_OPERATION, ExecutionProcessEnum.SUCCESS);
 	}
 	
 	/**
@@ -133,5 +151,8 @@ public class AgentManager {
 		String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
 		return new File(dataPath).getTotalSpace();
 	}
+
+
+
 	
 }

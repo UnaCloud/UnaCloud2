@@ -126,6 +126,10 @@ class BootStrap {
 			new ServerVariable(name:UnaCloudConstants.FILE_SERVER_IP, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.VERSION_MANAGER_PORT, serverVariableType: ServerVariableTypeEnum.INT, variable:reader.getStringVariable(UnaCloudConstants.VERSION_MANAGER_PORT), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
 			new ServerVariable(name:UnaCloudConstants.TORRENT_CLIENT_PORTS, serverVariableType: ServerVariableTypeEnum.STRING, variable:reader.getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS), program:ServerVariableProgramEnum.FILE_MANAGER, serverOnly:false).save()
+
+			//TODO Delete this variable when groups are used for controlling unacloud. This is temporary
+			new ServerVariable(name:"ALLOWED_USERS", serverVariableType: ServerVariableTypeEnum.STRING, variable:"s.guzmanm;;;ja.chavarriaga408", program:ServerVariableProgramEnum.SERVER, serverOnly:false).save()
+
 		}
 		println "***** Create Platform"
 		if (Platform.count() == 0) {

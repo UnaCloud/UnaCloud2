@@ -195,7 +195,8 @@ class User {
 	 */
 	def deprecate() {
 		this.putAt("status", UserStateEnum.DISABLE);
-		for (UserRestriction restriction in restrictions)	
+		print "Status "+status.name
+		for (UserRestriction restriction in restrictions)
 			restriction.delete()		
 		restrictions = []
 		for (Deployment deploy in deployments)

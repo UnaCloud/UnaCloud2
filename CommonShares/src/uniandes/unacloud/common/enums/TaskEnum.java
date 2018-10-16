@@ -36,9 +36,19 @@ public enum TaskEnum {
 	
 	
 	/**
-	 * Message to request file from agents
+	 * Message to request log from agents
 	 */
-	GET_FILES("logs", AgentMessage.GET_FILE);
+	GET_LOGS("logs", AgentMessage.GET_LOGS),
+	/**
+	 * Message to request monitoring files from agent
+	 */
+	GET_MONITORING("monitoring",AgentMessage.GET_MONITORING),
+	/**
+	 * Message for clearing copies from memory
+	 */
+	CLEAR_COPY("copy",AgentMessage.CLEAR_COPY);
+
+
 	
 	/**
 	 * Name of task
@@ -70,7 +80,9 @@ public enum TaskEnum {
 		if (name.equals(CACHE.name)) return CACHE;
 		if (name.equals(DATA_SPACE.name)) return DATA_SPACE;
 		if (name.equals(VERSION.name)) return VERSION;
-		if (name.equals(GET_FILES.name)) return GET_FILES;
+		if (name.equals(GET_LOGS.name)) return GET_LOGS;
+		if (name.equals(GET_MONITORING.name)) return GET_MONITORING;
+		if (name.equals(CLEAR_COPY.name)) return CLEAR_COPY;
 		return null;
 	}
 	

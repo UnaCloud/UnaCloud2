@@ -101,7 +101,6 @@ public class TorrentTracker {
 		System.out.println("Start tracker " + tracker_url);
 		
 		listPorts = clientPorts;
-		
 		System.out.println("load from: " + sourcePath);
 		List<File> torrentList = new ArrayList<File>();
 		torrentList = getTorrentFiles(torrentList, new File(sourcePath));

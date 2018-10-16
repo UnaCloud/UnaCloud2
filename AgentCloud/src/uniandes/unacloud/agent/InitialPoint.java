@@ -19,17 +19,27 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
+
+
 /**
  * Responsible for start UnaCloud Client
  *
  */
 public class InitialPoint {
-	
+
 	/**
 	 * Number of threads to attend messages from server
 	 */
 	private static final int THREADS = 10;
-	
+	/**
+	 * Allowed users in the system
+	 */
+	private static final String ALLOWED_USERS="ALLOWED_USERS";
+	/**
+	 * Split regex for allowed users
+	 */
+	private static final String SPLIT_REGEX=";;;";
+
 	//-----------------------------------------------------------------
 	// Methods
 	//-----------------------------------------------------------------
@@ -90,13 +100,28 @@ public class InitialPoint {
         System.out.println("Start configuration");         	
        	
     	{
-    		//Validate if the user that is executing agent is system user    		
+    		//Validate if the user that is executing agent is system user or it is an authorized one
 			try {
-				if (OSFactory.getOS().isRunningBySuperUser()) {
-					System.err.println("You can't execute the agent as " + OSFactory.getOS().getWhoAmI());
+				String prop=VariableManager.getInstance().getGlobal().getStringVariable(ALLOWED_USERS);
+				String whoAmI=OSFactory.getOS().getWhoAmI();
+				boolean userFound=false;
+				if(prop!=null)
+				{
+					String[] allowedUsers = prop.split(SPLIT_REGEX);
+					System.out.println("User is "+whoAmI);
+					for(String s:allowedUsers)
+						if(whoAmI.contains(s))
+						{
+							userFound=true;
+							break;
+						}
+				}
+				if (!userFound && OSFactory.getOS().isRunningBySuperUser()) {
+					System.err.println("You can't execute the agent as " + whoAmI);
 	        		System.exit(0);
-	        		return;
-	        	}
+                    return;
+
+                }
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -106,7 +131,6 @@ public class InitialPoint {
     	}    
 		if (args != null && args.length > 0 && !args[0].matches("[0-9]+"))
 			mainCase = Integer.parseInt(args[0]);
-		
 	    if (mainCase == UnaCloudConstants.TEST) {
 	    	try {
 				ServerMessageSender.reportPhyisicalMachine(null);

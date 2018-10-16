@@ -44,7 +44,8 @@ public class ImageCopy implements Serializable {
 	 * Holds the platform specific execution ID
 	 */
 	private String platformExecutionID;
-	
+
+
 	/**
 	 * Get main file
 	 */
@@ -69,7 +70,6 @@ public class ImageCopy implements Serializable {
 		if (mainFile == null || mainFile.getFilePath() == null) 
 			return "null";
 		String h = mainFile.getExecutableFile().getName();
-		System.out.println("FILE:"+mainFile.getFilePath()+" "+mainFile.getExecutableFile().getName());
 		int l = h.lastIndexOf(".");
 		if (l == -1)
 			return h;
@@ -145,6 +145,8 @@ public class ImageCopy implements Serializable {
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
 					platform.registerImage(this);
+					setMainFile(platform.registerAndCloneImage(this));
+					System.out.println("New path "+mainFile.getFilePath());
 	    			platform.restoreExecutionSnapshot(this, "unacloudbase");
 	        		platform.configureExecutionHardware(machineExecution.getCores(), machineExecution.getMemory(), this);
 	    			platform.startExecution(this);
