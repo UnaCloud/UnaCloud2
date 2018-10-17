@@ -45,6 +45,7 @@ public class AgentManager {
         try
         {
             monitoringProcess=Runtime.getRuntime().exec(UnaCloudConstants.MONITORING_FILE+" -f 60");
+            System.out.println("Monitoring agent fully started without errors");
         }
         catch(Exception e)
         {
