@@ -36,6 +36,7 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
+		System.out.println("Starting monitoring agent ");
 	    if(monitoringProcess!=null)
         {
             monitoringProcess.destroy();
@@ -49,7 +50,7 @@ public class AgentManager {
         }
         catch(Exception e)
         {
-            System.out.println("Cannot executing monitoring python 1 script");
+            System.out.println("Cannot executing monitoring exe script");
             e.printStackTrace();
         }
         System.out.println("Updating agent");

@@ -19,6 +19,8 @@ import uniandes.unacloud.agent.platform.PlatformFactory;
 import uniandes.unacloud.agent.utils.VariableManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 
+import uniandes.unacloud.utils.file.Zipper;
+
 
 
 /**
@@ -49,8 +51,7 @@ public class InitialPoint {
      * @param args String array
      * @throws Exception 
      */
-    public static void main(String[] args) {      
-    
+    public static void main(String[] args) throws Exception{
         int mainCase = 0;
         //Validates data path 
         String dataPath = VariableManager.getInstance().getLocal().getStringVariable(UnaCloudConstants.DATA_PATH);
