@@ -20,10 +20,7 @@ import uniandes.unacloud.utils.LocalProcessExecutor;
  *
  */
 public class AgentManager {
-    /**
-     * Monitoring process for agent on updating
-     */
-    private static Process monitoringProcess;
+
 	
 	/**
 	 * Current agent version
@@ -36,23 +33,6 @@ public class AgentManager {
 	 * @return message
 	 */
 	public static UnaCloudResponse updateAgent() {
-		System.out.println("Starting monitoring agent ");
-	    if(monitoringProcess!=null)
-        {
-            monitoringProcess.destroy();
-            monitoringProcess=null;
-        }
-		//TODO: Pass to ClientUpdater.jar when fully tested
-        try
-        {
-            monitoringProcess=Runtime.getRuntime().exec(UnaCloudConstants.MONITORING_FILE+" -f 60");
-            System.out.println("Monitoring agent fully started without errors");
-        }
-        catch(Exception e)
-        {
-            System.out.println("Cannot executing monitoring exe script");
-            e.printStackTrace();
-        }
         System.out.println("Updating agent");
 		try {
 			ClouderClientAttention.getInstance().stopService();

@@ -34,7 +34,12 @@ public class UpdaterAgent {
     /**
      * Representation of properties file reader
      */
-    private static ConfigurationReader propReader;   
+    private static ConfigurationReader propReader;
+
+	/**
+	 * Monitoring process for agent on updating
+	 */
+	private static Process monitoringProcess;
     
     /**
      * Creates a new Agent updater
@@ -49,6 +54,7 @@ public class UpdaterAgent {
      * @throws Exception
      */
 	public void doUpdate() throws Exception {
+	    startMonitoringAgent();
 		final List<String> versionsFile = getVersionFile();
 		final int port = propReader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT);
 		final String ip = propReader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP);
@@ -100,7 +106,29 @@ public class UpdaterAgent {
 		}
 	}
 
-	 /**
+    /**
+     * Method for starting new python monitor using given command "-f 60"
+     */
+    private void startMonitoringAgent() {
+        System.out.println("Starting monitoring agent ");
+        if(monitoringProcess!=null)
+        {
+            monitoringProcess.destroy();
+            monitoringProcess=null;
+        }
+        try
+        {
+            monitoringProcess=Runtime.getRuntime().exec(UnaCloudConstants.MONITORING_FILE+" -f 60");
+            System.out.println("Monitoring agent fully started without errors");
+        }
+        catch(Exception e)
+        {
+            System.out.println("Cannot executing monitoring exe");
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Returns the information contained on stored version file.
      * @return list or files names
      */
