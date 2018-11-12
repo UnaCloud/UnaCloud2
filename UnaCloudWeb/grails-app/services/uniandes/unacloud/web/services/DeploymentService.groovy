@@ -154,23 +154,27 @@ class DeploymentService {
 				throw e
 			}
 		}
-		
+		print "New deployment"
 		Deployment dep = new Deployment(user: user, duration: time, status: DeploymentStateEnum.ACTIVE, cluster: cluster)
-		dep.save(failOnError: true, flush: true)		
-				
+		print "Deployment saved"
+		dep.save(failOnError: true, flush: true)
+		"Images cycle"
 		for (DeployedImage image in images) {
 			image.deployment = dep
 			image.save(failOnError: true, flush:true)
+			print "Image "+image.id+" saved"
 			for (Execution execution in image.executions) {
 				execution.deployImage = image
+				print "Execution "+execution.id+" begin save"
 				execution.saveExecution()
+				print "Execution "+execution.id+" end save"
 			}
 		}
 		
 		if (!Environment.isDevelopmentMode()) {				
 			QueueTaskerControl.deployCluster(dep, user, TransmissionProtocolEnum.getEnum(serverVariableService.getTransmissionProtocol()))
 		}		
-		
+		print "Dep returned"
 		return dep
 	}
 	
