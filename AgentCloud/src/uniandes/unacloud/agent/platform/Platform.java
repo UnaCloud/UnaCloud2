@@ -49,7 +49,7 @@ public abstract class Platform {
      * @param image
      * @throws PlatformOperationException
      */
-    public abstract void configureExecutionHardware(int cores,int ram,ImageCopy image) throws PlatformOperationException;
+    public abstract void configureExecutionHardware(int cores, int ram, ImageCopy image) throws PlatformOperationException;
     
     /**
      * turns off the managed execution
@@ -95,6 +95,8 @@ public abstract class Platform {
     public abstract void changeExecutionMac(ImageCopy image) throws PlatformOperationException;
     
     public abstract void registerImage(ImageCopy image);
+
+    public abstract File registerAndCloneImage (ImageCopy image);
     
     public abstract void unregisterImage(ImageCopy image);
     
@@ -105,10 +107,11 @@ public abstract class Platform {
         synchronized (image) {
             System.out.println("The agent is stopping the image copy "+image.getImageName()+" "+image.getImage().getId());
             stopExecution(image);
-            System.out.println("The agent is unregistering the image copy "+image.getImageName()+" "+image.getImage().getId());
+            //Test for unregistering success
+            /*System.out.println("The agent is unregistering the image copy "+image.getImageName()+" "+image.getImage().getId());
             unregisterImage(image);
             System.out.println("The agent is freeing the locked image copy of "+image.getImageName()+" "+image.getImage().getId());
-            ImageCacheManager.freeLockedImageCopy(image);
+            ImageCacheManager.freeLockedImageCopy(image);*/
 		}
     }
     
@@ -131,4 +134,10 @@ public abstract class Platform {
 			code = this.getClass().getSimpleName();
 		return code;
 	}
+
+    /**
+     * Configure image acording to the hypervisor.
+     * @param image Image copy to configure
+     */
+    public abstract void configureImage(ImageCopy image);
 }

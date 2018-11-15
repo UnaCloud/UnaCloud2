@@ -44,7 +44,8 @@ public class ImageCopy implements Serializable {
 	 * Holds the platform specific execution ID
 	 */
 	private String platformExecutionID;
-	
+
+
 	/**
 	 * Get main file
 	 */
@@ -70,7 +71,7 @@ public class ImageCopy implements Serializable {
 			return "null";
 		String h = mainFile.getExecutableFile().getName();
 		int l = h.lastIndexOf(".");
-		if (l == -1) 
+		if (l == -1)
 			return h;
 		return h.substring(0, l);
 	}
@@ -144,6 +145,8 @@ public class ImageCopy implements Serializable {
 					configurator.setExecution(machineExecution);
 					//TODO Evaluar si hacerlo en el apagado porque es mas importante el tiempo de arranque.
 					platform.registerImage(this);
+					setMainFile(platform.registerAndCloneImage(this));
+					System.out.println("New path "+mainFile.getFilePath());
 	    			platform.restoreExecutionSnapshot(this, "unacloudbase");
 	        		platform.configureExecutionHardware(machineExecution.getCores(), machineExecution.getMemory(), this);
 	    			platform.startExecution(this);
@@ -151,7 +154,8 @@ public class ImageCopy implements Serializable {
 	    			configurator.configureIP();
 	    			System.out.println("Execution config " + getImageName() + " - " + new Date());
 	    	        PersistentExecutionManager.startUpMachine(machineExecution, !configurator.doPostConfigure());	    	       
-				} else {
+				} 
+				else {
 					ServerMessageSender.reportExecutionState(machineExecution.getId(), ExecutionProcessEnum.FAIL, "Invalid execution configurator.");
 					status = ImageStatus.FREE;
 				}
@@ -186,6 +190,7 @@ public class ImageCopy implements Serializable {
 		Platform platform = PlatformFactory.getPlatform(image.getPlatformId());
 		if (platform == null)
 			throw new ExecutionException("Platform doesn't exists on machine. platform was " + image.getPlatformId());
+		platform.configureImage(this);
 		platform.registerImage(this);
 		try {
 			platform.changeExecutionMac(this);

@@ -91,7 +91,7 @@ class DeploymentController {
                         HardwareProfile hp = HardwareProfile.get(params.get('option_hw_' + it.id))
 						requests[idx] = new ImageRequestOptions(it, hp, params.get('instances_' + it.id).toInteger(), params.get('host_' + it.id), (params.get('highAvailability_' + it.id)) != null);
 					}
-                    println "TIME "+params.time.toLong()
+					print "Start deployment"
                     deploymentService.deploy(cluster, user, params.time.toLong() * 60 * 60 * 1000, requests)
 					redirect(uri:"/services/deployment/list", absolute:true)
 					return

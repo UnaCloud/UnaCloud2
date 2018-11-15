@@ -1,10 +1,13 @@
 package uniandes.unacloud.control;
 
+import java.sql.Connection;
+
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.control.net.tcp.VmMessageReceiver;
 import uniandes.unacloud.control.net.udp.PmMessageReceiver;
 import uniandes.unacloud.control.queue.QueueMessageProcessor;
 import uniandes.unacloud.share.db.DatabaseConnection;
+import uniandes.unacloud.share.db.ServerVariableManager;
 import uniandes.unacloud.share.manager.ProjectManager;
 import uniandes.unacloud.share.queue.QueueMessageReceiver;
 import uniandes.unacloud.share.queue.QueueRabbitManager;
@@ -52,6 +55,8 @@ public class ControlManager extends ProjectManager {
 	 */
 	private static final int TASK_BY_THREAD_QUEUE = 5;
 	
+	private Integer agentPort;
+	
 	/**
 	 * Creates a project manager with all services
 	 */
@@ -79,7 +84,15 @@ public class ControlManager extends ProjectManager {
 	 * @throws Exception 
 	 */
 	public int getAgentPort() throws Exception {
-		return reader.getIntegerVariable(UnaCloudConstants.AGENT_PORT);
+		if(agentPort == null) {
+			try (Connection con = connection.getConnection()){				
+				agentPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.AGENT_PORT).getValue());				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}	
+		}
+		return agentPort;
 	}
 	
 
@@ -96,18 +109,11 @@ public class ControlManager extends ProjectManager {
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{
-				UnaCloudConstants.CONTROL_MANAGE_VM_PORT,
-				UnaCloudConstants.CONTROL_MANAGE_PM_PORT,
-				UnaCloudConstants.QUEUE_USER,
-				UnaCloudConstants.QUEUE_PASS,
-				UnaCloudConstants.QUEUE_IP,
-				UnaCloudConstants.QUEUE_PORT,
 				UnaCloudConstants.DB_NAME,
 				UnaCloudConstants.DB_PASS,
 				UnaCloudConstants.DB_PORT,
 				UnaCloudConstants.DB_IP,
-				UnaCloudConstants.DB_USERNAME,
-				UnaCloudConstants.AGENT_PORT};
+				UnaCloudConstants.DB_USERNAME};
     }
 
 	/**
@@ -134,17 +140,22 @@ public class ControlManager extends ProjectManager {
 	 */
 	@Override
 	protected void startQueueService() throws Exception {
-		System.out.println("Start queue service " + reader.getStringVariable(UnaCloudConstants.QUEUE_IP) + ":" + reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT));
-		QueueRabbitManager rabbitManager = new QueueRabbitManager(
-				reader.getStringVariable(UnaCloudConstants.QUEUE_USER),
-				reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), 
-				reader.getStringVariable(UnaCloudConstants.QUEUE_IP), 
-				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT), 
-				UnaCloudConstants.QUEUE_CONTROL);
-		queueReceiver = new QueueMessageReceiver();
-		queueReceiver.createConnection(rabbitManager);
-		processor = new QueueMessageProcessor(CONCURRENT_THREADS_QUEUE, TASK_BY_THREAD_QUEUE);
-		queueReceiver.startReceiver(processor);		
+		System.out.println("Start queue service");
+		try (Connection con = connection.getConnection()){
+			String queueUser = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_USER).getValue();
+			String queuePass = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_PASS).getValue();
+			String queueIP = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_IP).getValue();
+			int queuePort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_PORT).getValue());
+			QueueRabbitManager rabbitManager = new QueueRabbitManager(queueUser, queuePass, queueIP, queuePort,
+					UnaCloudConstants.QUEUE_CONTROL);
+			queueReceiver = new QueueMessageReceiver();
+			queueReceiver.createConnection(rabbitManager);
+			processor = new QueueMessageProcessor(CONCURRENT_THREADS_QUEUE, TASK_BY_THREAD_QUEUE);
+			queueReceiver.startReceiver(processor);		
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}	
 	}
 	
 
@@ -154,8 +165,17 @@ public class ControlManager extends ProjectManager {
 	@Override
 	protected void startCommunicationService() throws Exception {
 		System.out.println("Start communication service");
-		new PmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_PM_PORT), CONCURRENT_THREADS_PM).start();
-		new VmMessageReceiver(reader.getIntegerVariable(UnaCloudConstants.CONTROL_MANAGE_VM_PORT), CONCURRENT_THREADS_VM).start();
+		try (Connection con = connection.getConnection()){
+			int controlPMPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.CONTROL_MANAGE_PM_PORT).getValue());
+			int controlVMPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.CONTROL_MANAGE_VM_PORT).getValue());
+			new PmMessageReceiver(controlPMPort, CONCURRENT_THREADS_PM).start();
+			new VmMessageReceiver(controlVMPort, CONCURRENT_THREADS_VM).start();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		
 	}	
 	
 	/**

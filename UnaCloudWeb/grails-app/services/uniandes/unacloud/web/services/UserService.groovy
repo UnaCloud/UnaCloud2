@@ -88,17 +88,21 @@ class UserService {
 	 * Puts the task to delete user, deployments, images, clusters
 	 * @param user user to be removed
 	 */	
-	def deleteUser(User user, User admin) throws Exception {
+	def deleteUser(User current, User admin) throws Exception {
 		if (user.getActiveDeployments().size() > 0)
 			throw new Exception('User has currently active deployments')
 		if (user.getNotAvailableImages().size() > 0)
 			throw new Exception('It is necessary that all images have AVAILABLE state')
-		user.deprecate()
+		User user=User.lock(current.databaseId)
+        user.deprecate()
 		userGroupService.removeUser(user);
-		if (user.images.size() > 0)					
+		if (user.images.size() > 0)
 			QueueTaskerFile.deleteUser(user, admin);			
 		else
-			user.delete()				
+			user.delete()
+		print ("Status "+user.status.name)
+        print ("\nUser "+user.id+" "+User.get(user.getDatabaseId()).id+" "+User.get(user.databaseId).status.name)
+
 	}
 	
 	/**

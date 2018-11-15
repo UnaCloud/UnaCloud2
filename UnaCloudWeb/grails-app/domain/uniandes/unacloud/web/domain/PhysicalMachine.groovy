@@ -94,6 +94,10 @@ class  PhysicalMachine {
 	 * Last log request name
 	 */
 	String lastLog;
+	/**
+	 * Last monitoring file request
+	 */
+	String lastMonitoring;
 	
 	
 	static belongsTo =  [laboratory: Laboratory]
@@ -110,6 +114,7 @@ class  PhysicalMachine {
 		lastReport nullable:true
 		ip nullable:true
 		agentVersion nullable:true
+		lastMonitoring nullable:true
 	}
 	
 	//-----------------------------------------------------------------

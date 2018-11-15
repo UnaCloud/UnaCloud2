@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
+import uniandes.unacloud.common.utils.UnaCloudConstants;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -77,6 +78,18 @@ public class DeploymentManager {
         String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA+"/"+id, null);
         //Do mapping to json with gson library
         return gson.fromJson(jsonResponse, DeploymentResponse.class);
+    }
+
+    /**
+     * Gets specific deployment of the user found in UnaCloudConnection
+     * @param id Id of deployment
+     * @return active user deployment
+     * @throws Exception If there is any issue during the http request
+     */
+    public ListIp getIpsPerDeployment(int id) throws Exception {
+        String jsonResponse = uc.getInfoFromUrl(RestVerb.GET, RUTA+"/"+id+"/executionIps", null);
+        //Do mapping to json with gson library
+        return gson.fromJson(jsonResponse, ListIp.class);
     }
 
 

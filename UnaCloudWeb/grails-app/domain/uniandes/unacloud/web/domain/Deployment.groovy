@@ -92,6 +92,12 @@ class Deployment {
 				ExecutionHistory.where{execution == exec}.list().each {
 					it.delete();
 				}
+                exec.interfaces=null
+                exec.state=null
+                exec.hardwareProfile=null
+                exec.executionNode=null
+                exec.deployImage=null
+                exec.save()
 				exec.delete();
 			}
 			image.delete()

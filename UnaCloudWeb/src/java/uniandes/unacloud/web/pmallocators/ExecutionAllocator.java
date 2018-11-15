@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.pmallocators;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -50,7 +52,8 @@ public abstract class ExecutionAllocator{
 	 * @throws AllocatorException
 	 */
 	protected abstract void allocateExecutions(List<Execution> executionList, List<PhysicalMachine> physicalMachines, Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions)throws AllocatorException;
-	
+
+	SimpleDateFormat sf= new SimpleDateFormat("hh:mm:ss");
 	/**
 	 * validates if an execution fits with resources of a physical machine
 	 * @param vme
@@ -59,7 +62,8 @@ public abstract class ExecutionAllocator{
 	 * @return true if there is enough resources in physical machine to assign execution 
 	 */
 	protected boolean fitEXonPM(Execution vme, PhysicalMachine pm, PhysicalMachineAllocationDescription pmad){
-		System.out.println("Requires: " + ( (Image) ( (DeployedImage) vme.getDeployedImage() ).getImage()).getPlatform().getName());
+
+		System.out.println(sf.format(new Date())+"\t Requires: " + ( (Image) ( (DeployedImage) vme.getDeployedImage() ).getImage()).getPlatform().getName());
 		if (!isSupportedPlatform( ( (Image) ( (DeployedImage ) vme.getDeployedImage() ).getImage() ).getPlatform(), pm))
 			return false;
 		System.out.println("Required: exe cores" + vme.getHardwareProfile().getCores() + " exe ram" +  vme.getHardwareProfile().getRam() + " pm cores" + pm.getCores() + "pm ram" + pm.getRam());	
@@ -76,10 +80,13 @@ public abstract class ExecutionAllocator{
 	 * @return true if there is a IP available for physical machines, false in case or not
 	 */
 	private boolean isThereEnoughIps(PhysicalMachine pm){
-		Integer ips = ipsNeeded.get(pm.getLaboratory().getDatabaseId());		
+		Integer ips = ipsNeeded.get(pm.getLaboratory().getDatabaseId());
 		if (ips == null)
 			ipsNeeded.put(pm.getLaboratory().getDatabaseId(), 1);
-		else ipsNeeded.put(pm.getLaboratory().getDatabaseId(), ips + 1);			
+		else ipsNeeded.put(pm.getLaboratory().getDatabaseId(), ips + 1);
+		System.out.println(sf.format(new Date())+"\tA "+(ipsNeeded.get(pm.getLaboratory().getDatabaseId())));
+		System.out.println("B "+( pm.getLaboratory().getAvailableIps().size()));
+		System.out.println("Check ips "+(ipsNeeded.get(pm.getLaboratory().getDatabaseId()) > pm.getLaboratory().getAvailableIps().size()));
 		if (ipsNeeded.get(pm.getLaboratory().getDatabaseId()) > pm.getLaboratory().getAvailableIps().size())
 			return false;
 		else 

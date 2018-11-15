@@ -8,9 +8,9 @@ import java.sql.Connection;
 import uniandes.unacloud.common.net.tcp.AbstractTCPSocketProcessor;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.file.FileManager;
-import uniandes.unacloud.file.db.ServerVariableManager;
-import uniandes.unacloud.file.db.entities.ServerVariableEntity;
 import uniandes.unacloud.file.files.AgentFileManager;
+import uniandes.unacloud.share.db.ServerVariableManager;
+import uniandes.unacloud.share.db.entities.ServerVariableEntity;
 
 /**
  * Class used to process task to update agent. It receives message from agent validate if agent requests agent files and call manager to copy files in socket stream

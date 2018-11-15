@@ -26,12 +26,14 @@ public class RoundRobinAllocator extends ExecutionAllocator {
 				return p1.getName().compareTo(p2.getName());
 			}
 		});
+		System.out.println("\t Start round robin");
 		ciclo1 : for (int nextVm = 0, lastNextVm = 0; nextVm < executionList.size();) {
 			for (PhysicalMachine pm : physicalMachines) {
 				if (nextVm >= executionList.size())
 					break ciclo1;
 				PhysicalMachineAllocationDescription pmad = physicalMachineDescriptions.get(pm.getDatabaseId());
 				Execution nextExecution = executionList.get(nextVm);
+				System.out.println("\t Perfect fit "+fitEXonPM(nextExecution, pm, pmad));
 				if (fitEXonPM(nextExecution, pm, pmad)) {
 					nextExecution.setExecutionNode(pm);
 					if (pmad == null) {

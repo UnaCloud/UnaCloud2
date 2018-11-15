@@ -1,5 +1,7 @@
 package uniandes.unacloud.web.services
 
+import uniandes.unacloud.web.domain.IP
+
 import java.util.ArrayList;
 
 import uniandes.unacloud.common.utils.Ip4Validator;
@@ -54,9 +56,13 @@ class IpService {
 	 */
 	def deletePool(Laboratory lab, pool){
 		def ipPool = IPPool.get(pool)
+		print ipPool.id+" "+ipPool.getUsedIpsQuantity()
 		if (ipPool && ipPool.getUsedIpsQuantity() == 0) {
-			for (ExecutionIP ip : ipPool.ips)
-				delete(lab, ip.id)
+            def ips=[]
+            for (ExecutionIP ip : ipPool.ips)
+			{
+                delete(lab, ip.id)
+			}
 			ipPool.delete()
 		} else
 			throw new Exception('Some IP addresses in IP Pool are being used')

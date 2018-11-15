@@ -1,10 +1,14 @@
 package uniandes.unacloud.file;
 
+import java.sql.Connection;
+
 import uniandes.unacloud.share.queue.QueueMessageReceiver;
 import uniandes.unacloud.share.queue.QueueRabbitManager;
 import uniandes.unacloud.share.utils.EnvironmentManager;
 import uniandes.unacloud.common.utils.UnaCloudConstants;
 import uniandes.unacloud.share.db.DatabaseConnection;
+import uniandes.unacloud.share.db.ServerVariableManager;
+import uniandes.unacloud.share.db.StorageManager;
 import uniandes.unacloud.share.manager.ProjectManager;
 import uniandes.unacloud.file.net.AgentServerSocket;
 import uniandes.unacloud.file.net.FileServerSocket;
@@ -73,22 +77,11 @@ public class FileManager extends ProjectManager {
 	@Override
 	protected String[] getVariableList() {
 		return new String[]{
-				UnaCloudConstants.FILE_SERVER_TORRENT_PORT,
-				UnaCloudConstants.FILE_SERVER_IP,
-				UnaCloudConstants.TORRENT_CLIENT_PORTS,
-				UnaCloudConstants.MAIN_REPOSITORY,
-				UnaCloudConstants.VERSION_MANAGER_PORT,
-				UnaCloudConstants.FILE_SERVER_PORT,
-				UnaCloudConstants.QUEUE_USER,
-				UnaCloudConstants.QUEUE_PASS,
-				UnaCloudConstants.QUEUE_IP,
-				UnaCloudConstants.QUEUE_PORT,
 				UnaCloudConstants.DB_NAME,
 				UnaCloudConstants.DB_PASS,
 				UnaCloudConstants.DB_PORT,
 				UnaCloudConstants.DB_IP,
-				UnaCloudConstants.DB_USERNAME,
-				UnaCloudConstants.AGENT_PORT};
+				UnaCloudConstants.DB_USERNAME};
 	}
 
 	@Override
@@ -108,15 +101,21 @@ public class FileManager extends ProjectManager {
 	@Override
 	protected void startQueueService() throws Exception {
 		System.out.println("Start queue service");
-		QueueRabbitManager rabbitManager = new QueueRabbitManager(
-				reader.getStringVariable(UnaCloudConstants.QUEUE_USER),
-				reader.getStringVariable(UnaCloudConstants.QUEUE_PASS), 
-				reader.getStringVariable(UnaCloudConstants.QUEUE_IP), 
-				reader.getIntegerVariable(UnaCloudConstants.QUEUE_PORT),
-				UnaCloudConstants.QUEUE_FILE);
-		queueReceiver = new QueueMessageReceiver();
-		queueReceiver.createConnection(rabbitManager);
-		queueReceiver.startReceiver(new QueueMessageFileProcessor(CONCURRENT_THREADS_QUEUE));	
+		try (Connection con = connection.getConnection()){
+			String queueUser = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_USER).getValue();
+			String queuePass = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_PASS).getValue();
+			String queueIP = ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_IP).getValue();
+			int queuePort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.QUEUE_PORT).getValue());
+			QueueRabbitManager rabbitManager = new QueueRabbitManager(queueUser, queuePass, queueIP, queuePort,
+					UnaCloudConstants.QUEUE_FILE);
+			queueReceiver = new QueueMessageReceiver();
+			queueReceiver.createConnection(rabbitManager);
+			queueReceiver.startReceiver(new QueueMessageFileProcessor(CONCURRENT_THREADS_QUEUE));	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		
 	}
 
 	@Override
@@ -124,30 +123,34 @@ public class FileManager extends ProjectManager {
 		
 		System.out.println("Start communication service");
 		
-		new FileServerSocket(
-				reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_PORT), 
-				CONCURRENT_THREADS_FILE).start();
-		
-		new AgentServerSocket(
-				reader.getIntegerVariable(UnaCloudConstants.VERSION_MANAGER_PORT), 
-				CONCURRENT_THREADS_AGENT).start();
-		
-		int[] ports = null;
-		String portString = reader.getStringVariable(UnaCloudConstants.TORRENT_CLIENT_PORTS);
-		if (portString != null) {
-			String [] data = portString.split(",");
-			ports = new int[data.length];
-			for (int i = 0; i < data.length; i++)
-				ports[i] = Integer.parseInt(data[i]);
+		try (Connection con = connection.getConnection()){
+			int fileServerPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_PORT).getValue());
+			int versionPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.VERSION_MANAGER_PORT).getValue());
+			
+			new FileServerSocket(fileServerPort, CONCURRENT_THREADS_FILE).start();			
+			new AgentServerSocket(versionPort, CONCURRENT_THREADS_AGENT).start();
+			
+			int[] ports = null;
+			String portString = ServerVariableManager.getVariable(con, UnaCloudConstants.TORRENT_CLIENT_PORTS).getValue();
+			if (portString != null) {
+				String [] data = portString.split(",");
+				ports = new int[data.length];
+				for (int i = 0; i < data.length; i++)
+					ports[i] = Integer.parseInt(data[i]);
+			}
+			
+			int torrentPort = Integer.parseInt(ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_TORRENT_PORT).getValue());
+			String fileServerIP = ServerVariableManager.getVariable(con, UnaCloudConstants.FILE_SERVER_IP).getValue();
+
+			String mainRepo = StorageManager.getRepositoryByName(UnaCloudConstants.MAIN_REPOSITORY, con).getRoot();
+			TorrentTracker.getInstance().startService(torrentPort, fileServerIP, mainRepo,	ports);
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 		
-		//TODO path is taken from file not from database.
-		//TODO this service is not design to work when there are multiple nodes of File Manager
-		TorrentTracker.getInstance().startService(
-				reader.getIntegerVariable(UnaCloudConstants.FILE_SERVER_TORRENT_PORT), 
-				reader.getStringVariable(UnaCloudConstants.FILE_SERVER_IP), 
-				reader.getStringVariable(UnaCloudConstants.MAIN_REPOSITORY),
-				ports);
 	
 	}
 
