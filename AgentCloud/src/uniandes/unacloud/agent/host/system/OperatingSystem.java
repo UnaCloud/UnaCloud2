@@ -151,8 +151,11 @@ public abstract class OperatingSystem {
     	hostname = LocalProcessExecutor.executeCommandOutput(getHostNameCommand()).trim();
     	return hostname;
     }
-    
-    /**
+	/**
+	 * Gets the command for creating new file with the given content in string and extension
+	 */
+
+	/**
      * Validates if agent is being executed by super user
      * @return true in case agent is being executed by super user, false in case not
      */

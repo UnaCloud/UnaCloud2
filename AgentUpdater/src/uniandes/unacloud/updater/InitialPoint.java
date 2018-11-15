@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +30,9 @@ public class InitialPoint {
 	private static ConfigurationReader reader;
 	   
     public static void main(String... args) throws IOException {
+    	System.out.println(args.length);
         if (args.length >= 1) {        	
+        	System.out.println("Reader initialized");
         	reader = new ConfigurationReader(UnaCloudConstants.LOCAL_FILE);
             startClient(Integer.parseInt(args[0]));
         }
@@ -40,6 +43,7 @@ public class InitialPoint {
      * @param opcion
      */
     public static void startClient(int opcion) {
+    	System.out.println("OPC "+opcion);
     	   //Start log    
         try {
     		//Create agent log file

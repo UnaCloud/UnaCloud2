@@ -283,14 +283,18 @@ public class QueueMessageProcessor implements QueueReader {
 						System.out.println("Execution " + execution.getId() + " - " + execution.getTimeInHours() + " - " + execution.getDuration());
 						
 						messageList.add(vmsm);
-						if (j >= messagesByThread || i == image.getExecutions().size()-1) {
-													
+						System.out.println(i+" "+(image.getExecutions().size()-1)+" "+(i == image.getExecutions().size()-1));
+						System.out.println(j+" "+messagesByThread+" "+(j >= messagesByThread) );
+                        System.out.println("Conditions met "+(j >= messagesByThread || i == image.getExecutions().size()-1));
+                        if (j >= messagesByThread || i == image.getExecutions().size()-1) {
+
+							System.out.println("Execute messages");
 							threadPool.execute(new TCPMultipleSender(messageList, new TCPResponseProcessor() {
 								
 								@Override
 								public void attendResponse(Object response, Object message) {
 									UnaCloudResponse resp = (UnaCloudResponse) response;
-									System.out.println("Response: " + resp);
+									System.out.println("New Response: " + resp);
 								}
 								
 								@Override
@@ -527,7 +531,7 @@ public class QueueMessageProcessor implements QueueReader {
 					
 					@Override
 					public void attendError(Object error, String message) {
-						ExecutionStartMessage mss = (ExecutionStartMessage) error;
+						ExecutionSaveImageMessage mss = (ExecutionSaveImageMessage) error;
 						try (Connection con2 = ControlManager.getInstance().getDBConnection()) {
 							PhysicalMachineEntity pm = new PhysicalMachineEntity(mss.getPmId(), PhysicalMachineStateEnum.OFF);
 							PhysicalMachineManager.setPhysicalMachine(pm,con2);

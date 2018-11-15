@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
+
 import uniandes.unacloud.share.enums.ExecutionStateEnum;
 import uniandes.unacloud.share.enums.IPEnum;
 
@@ -196,7 +197,11 @@ class Execution {
 	 * @return history status 
 	 */
 	def getHistoryStatus(ExecutionStateEnum searchState) {
-		return ExecutionHistory.where{state.state == searchState && execution == this}.find()
+		def historyStatus=ExecutionHistory.findAllByStateAndExecution(state,this)
+		print "Base exec "+id
+		for(ExecutionHistory executionHistory:historyStatus)
+			print "History "+executionHistory.id+" "+executionHistory.state
+		return historyStatus.get(0)
 	}
 	
 }

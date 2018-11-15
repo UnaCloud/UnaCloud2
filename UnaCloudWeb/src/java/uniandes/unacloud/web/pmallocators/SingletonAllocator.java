@@ -20,12 +20,13 @@ public class SingletonAllocator extends ExecutionAllocator {
 	@Override
 	protected void allocateExecutions(List<Execution> executionList, List<PhysicalMachine> physicalMachines, 
 			Map<Long, PhysicalMachineAllocationDescription> physicalMachineDescriptions) throws AllocatorException {
-		
+		System.out.println("Start allocations");
 		// start with the first physical machine and the first virtual machine
 		int nextPm = 0;
 		int nextVm = 0;
 
 		// while there are physical and virtual machines
+		System.out.println("While there are phy and vms");
 		while (nextPm < physicalMachines.size() && nextVm < executionList.size()) {
 						
 			// get the physical and virtual machines
@@ -59,8 +60,13 @@ public class SingletonAllocator extends ExecutionAllocator {
 					nextPm++;
 				}				
 			}
+			else //Hypothesis it is getting stuck on the same physical machine that already possesses an execution
+			{
+				nextPm++;
+			}
 		}
-		
+		System.out.println("Finish allocation");
+
 		// ends the cycle when:
 		//   all the VMs have been allocated
 		//   all the PMs have been tested

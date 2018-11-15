@@ -278,18 +278,23 @@ public class QueueMessageFileProcessor implements QueueReader {
 				Long userId = messageDelete.getIdUser();
 				UserEntity user = null;
 				List<ImageFileEntity> images = null;
+				System.out.println("Get con initial");
 				try (Connection con = FileManager.getInstance().getDBConnection()) {
 					user = UserManager.getUser(userId, con);
+					System.out.println("User exists "+user);
 					if (user != null) 
 						images =  ImageFileManager.getAllImagesByUser(user.getId(), con);
 				} catch (Exception e) {	
 					e.printStackTrace();
 				}
-				
+				System.out.println("Part 2");
+				System.out.println(user.getState()+"  VS "+UserStateEnum.DISABLE);
 				if (user != null && user.getState().equals(UserStateEnum.DISABLE)) {
 					System.out.println("Delete user: " + user.getId());
 					if (images != null) {
-						for (ImageFileEntity image : images) {						
+						System.out.println("Has images");
+						for (ImageFileEntity image : images) {
+							System.out.println("torrent delete "+image.getId());
 							try {
 								TorrentTracker.getInstance().removeTorrent(image.getFileConversor().getTorrentFile());
 								FileProcessor.deleteFileSync(new java.io.File(image.getMainFile()).getParentFile().getAbsolutePath());																
@@ -303,8 +308,12 @@ public class QueueMessageFileProcessor implements QueueReader {
 								System.err.println("public copy files can't be deleted  " + UnaCloudConstants.TEMPLATE_PATH + File.separator + image.getName() + File.separator);
 							}	
 						}
-					}					
-					try (Connection con = FileManager.getInstance().getDBConnection()) {						
+					}
+					System.out.println("Final con");
+					try (Connection con = FileManager.getInstance().getDBConnection()) {
+						System.out.println("Delete images "+images);
+						if(images!=null)
+							System.out.println("Size "+ images.size());
 						if (images != null) 
 							for (ImageFileEntity image : images) 
 								ImageManager.deleteImage(new ImageEntity(image.getId(), null, null, ImageEnum.IN_QUEUE, null), con);
@@ -317,6 +326,7 @@ public class QueueMessageFileProcessor implements QueueReader {
 			@Override
 			protected void processError(Exception e) {
 				//TODO notification
+				System.out.println("Error "+e.getMessage());
 			}
 		});	
 	}

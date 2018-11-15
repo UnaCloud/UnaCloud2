@@ -90,6 +90,12 @@ $(document).on('ready',function(){
 		var form = $('#form_machines');
 		submitConfirm(form, href);
 	});
+    $(".multiple_selection_confirm_task").click(function (event){
+        event.preventDefault();
+        var href = $(this).attr("href");
+        var form = $('#form_machines');
+        fastConfirm(form, href);
+    });
 	
 	
 	$('.clear_image').click(function (event){	
@@ -257,18 +263,29 @@ function checkSelected(){
 	return selected;
 }
 
-function submitConfirm(form, href, message){
-	if(checkSelected()){
-		var func = function(){	
-			form.attr('action',href);
-			form.submit()
-		}
-		if(message)
-			showConfirm('Confirm', message, func);	
-		else 
-			func();
-	}
+function submitConfirm(form, href, message) {
+    if (checkSelected()) {
+        var func = function () {
+            form.attr('action', href);
+            form.submit()
+        }
+        if (message)
+            showConfirm('Confirm', message, func);
+        else
+            func();
+    }
+
 }
+
+function fastConfirm(form, href, message) {
+    var func = function () {
+        form.attr('action', href);
+        form.submit()
+    }
+    func();
+
+}
+
 
 function redirectConfirm(data, href, name, method){
 	sendConfirm('This <strong>'+name+'</strong> will be deleted. Are you sure you want to confirm it?', href, data, method)

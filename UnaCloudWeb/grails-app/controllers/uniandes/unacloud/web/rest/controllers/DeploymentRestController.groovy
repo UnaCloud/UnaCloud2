@@ -196,6 +196,44 @@ class DeploymentRestController extends AbstractRestController {
             throw new HttpException(412, 'Only executions with state FAILED or DEPLOYED can be selected to be FINISHED')
         }
     }
+    /**
+     * Gets execution by id of a particular deployment
+     * @param id Deployment id
+     * @param idExec Execution id
+     * @return The execution given by id
+     */
+    def getIpsOfDeployment(int id)
+    {
+
+        Deployment deployment=Deployment.get(id)
+        if(deployment)
+        {
+
+            if(deployment.user==flash.user)
+            {
+                List<Execution> executions=deploymentService.getActiveExecutions(deployment)
+                if(executions) {
+                    List<String> list = []
+                    for (Execution e : executions)
+                    {
+                        print "Exec"+ e.id
+                        if(e.mainIp()!=null)
+                            list.add(e.mainIp().ip)
+                    }
+                    def responseData = ["ips": list]
+                    response.setContentType("application/json")
+                    response.status = 200
+                    render responseData as JSON
+                }
+                else
+                    throw new HttpException(404,"The deployment does not have any active executions")
+            }
+            else
+                throw new HttpException(401,"The user does not have permissions for this execution")
+        }
+        else
+            throw new HttpException(404,"The deployment does not exist in the system")
+    }
 
     /**
      * Gets execution by id of a particular deployment

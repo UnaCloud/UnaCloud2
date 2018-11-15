@@ -71,7 +71,6 @@ class FileService implements ApplicationContextAware {
 			}		
 			
 			if (image) {
-				println 'Image: ' + image
 				boolean isValid = true;
 				files.each {
 					def fileName = it.getOriginalFilename().trim()

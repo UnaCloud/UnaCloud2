@@ -46,10 +46,12 @@ public class TCPMultipleSender extends Thread {
 	 */
 	private void sendMessage(UnaCloudMessage message) {
 		System.out.println("Sending message to " + message.getIp() + ":" + message.getPort());
-		try (Socket s =  new Socket()) {	
+		System.out.println("STARTING PROC WITH SOCKET");
+		try (Socket s =  new Socket()) {
 			s.connect(new InetSocketAddress(message.getIp(), message.getPort()), UnaCloudConstants.SOCKET_TIME_OUT);
 			ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 			ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+			System.out.println("Object output stream");
 			oos.writeObject(message);
 			oos.flush();
 			if (processor != null)

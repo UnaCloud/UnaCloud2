@@ -1,7 +1,10 @@
 package uniandes.unacloud.web.services
 
+import uniandes.unacloud.share.enums.IPEnum
 import uniandes.unacloud.utils.security.HashGenerator
-import uniandes.unacloud.web.domain.ExecutionHistory;
+import uniandes.unacloud.web.domain.ExecutionHistory
+import uniandes.unacloud.web.domain.ExecutionIP
+import uniandes.unacloud.web.domain.IP;
 import uniandes.unacloud.web.services.allocation.IpAllocatorService
 import uniandes.unacloud.web.services.allocation.PhysicalMachineAllocatorService
 import uniandes.unacloud.common.enums.TransmissionProtocolEnum;
@@ -79,7 +82,7 @@ class DeploymentService {
 	
 	def synchronized deploy(Cluster cluster, User user, long time, ImageRequestOptions[] requests) throws Exception, AllocatorException {
 		
-		
+		print "Check restrictions"
 		//Validates that hardware profile is available for user and there are enough host to deploy
 		def allowedHwdProfiles = userRestrictionService.getAllowedHwdProfiles(user)
 		requests.eachWithIndex() { request, i->	
@@ -103,6 +106,7 @@ class DeploymentService {
 		Map<Long, PhysicalMachineAllocationDescription> pmDescriptionHigh = physicalMachineAllocatorService.getPhysicalMachineUsage(pmsHigh)
 		
 		def images = []
+		def reservedIps=[]
 		requests.eachWithIndex(){ request, i->
 			def depImage= new DeployedImage(image: request.image, highAvaliavility: request.high, executions: [])
 			def executions = []
@@ -129,27 +133,48 @@ class DeploymentService {
 			if (depImage.highAvaliavility && pmsHigh.size() == 0) 
 				throw new Exception('Not enough high availability physical machines available')
 			
-			physicalMachineAllocatorService.allocatePhysicalMachines(user, depImage.executions.sort(), depImage.highAvaliavility ? pmsHigh : pms, depImage.highAvaliavility ? pmDescriptionHigh : pmDescriptions)
-			ipAllocatorService.allocateIPAddresses(depImage.executions)
-			
-		}	
-		
+			try
+			{
+				"Start allocation"
+				physicalMachineAllocatorService.allocatePhysicalMachines(user, depImage.executions.sort(), depImage.highAvaliavility ? pmsHigh : pms, depImage.highAvaliavility ? pmDescriptionHigh : pmDescriptions)
+				"Get reserved ips"
+				reservedIps.addAll(ipAllocatorService.allocateIPAddresses(depImage.executions))
+				"Finished"
+			}
+			catch (Exception e)
+			{
+				print "Excepcion "+e
+				for(Long id: reservedIps)
+				{
+					def ip=ExecutionIP.get(id)
+					ip.state=IPEnum.AVAILABLE
+					ip.save()
+				}
+				print "Disponibles otra vez"
+				throw e
+			}
+		}
+		print "New deployment"
 		Deployment dep = new Deployment(user: user, duration: time, status: DeploymentStateEnum.ACTIVE, cluster: cluster)
-		dep.save(failOnError: true, flush: true)		
-				
+		print "Deployment saved"
+		dep.save(failOnError: true, flush: true)
+		"Images cycle"
 		for (DeployedImage image in images) {
 			image.deployment = dep
 			image.save(failOnError: true, flush:true)
+			print "Image "+image.id+" saved"
 			for (Execution execution in image.executions) {
 				execution.deployImage = image
+				print "Execution "+execution.id+" begin save"
 				execution.saveExecution()
+				print "Execution "+execution.id+" end save"
 			}
 		}
 		
 		if (!Environment.isDevelopmentMode()) {				
 			QueueTaskerControl.deployCluster(dep, user, TransmissionProtocolEnum.getEnum(serverVariableService.getTransmissionProtocol()))
 		}		
-		
+		print "Dep returned"
 		return dep
 	}
 	
@@ -246,11 +271,26 @@ class DeploymentService {
 
 	/**
 	 * Returns the execution given by id in the selected deployment
+	 * @param deployment Deployment to look at
+	 * @return executions with the given id
+	 */
+	def getActiveExecutions(Deployment deployment) {
+        def active=[]
+		for(DeployedImage image:deployment.images)
+		{
+            print "Getting active exec of image "+image.id
+			active.addAll(image.getActiveExecutions())
+		}
+        return active
+
+    }
+	/**
+	 * Returns the execution given by id in the selected deployment
      * @param deployment Deployment to look at
 	 * @param idExec id of execution
 	 * @return executions with the given id
 	 */
-	def getActiveExecution(Deployment deployment, int idExec) {
+	def getActiveExecutions(Deployment deployment, int idExec) {
         for(DeployedImage image:deployment.images)
         {
             for(Execution execution:image.executions)
