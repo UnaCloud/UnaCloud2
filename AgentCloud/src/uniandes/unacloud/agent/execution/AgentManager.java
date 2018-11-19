@@ -21,11 +21,16 @@ import uniandes.unacloud.utils.LocalProcessExecutor;
  */
 public class AgentManager {
 
+	/**
+	 * Global snapshot process
+	 */
+	private static Process GS;
 	
 	/**
 	 * Current agent version
 	 */
 	private static String agentVersion;
+
 	
 	
 	/**

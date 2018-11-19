@@ -1,9 +1,6 @@
 package uniandes.unacloud.agent.execution;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,10 +27,18 @@ import uniandes.unacloud.common.utils.UnaCloudConstants;
  * then the next time the physical machine starts the execution will be powered on.<br/>
  * To schedule the execution turn off we used a Timer that manage a collection of TimerTask objects, each timer task is responsible for
  * stopping one execution
- * @author Clouder
+ * @author Clouder and sguzmanm
  */
 public class PersistentExecutionManager {
 
+    /**
+     * The file that contains the names of the virtual machines
+     */
+    private static final String vmnames="vmnames.txt";
+    /**
+     * Global snapshot process
+     */
+    private static Process GS=null;
     /**
      * The file that contains the powered executions and its execution times
      */
@@ -132,7 +137,12 @@ public class PersistentExecutionManager {
 	            timer.schedule(new Scheduler(execution.getId()), new Date(execution.getShutdownTime() + 100l));
 	            
 	            if (new ExecutionStateViewer(execution.getId(), execution.getMainInterface().getIp()).check())
-	            	execution.getImage().setStatus(ImageStatus.LOCK);
+                {
+                    System.out.println("Image fully deployed");
+                    execution.getImage().setStatus(ImageStatus.LOCK);
+                    if(createGlobalSnapshotFile());
+                        startGlobalSnapshot();
+                }
 	        } 
 	        catch (PlatformOperationException e) {
 	        	e.printStackTrace();
@@ -260,26 +270,67 @@ public class PersistentExecutionManager {
 			return new UnaCloudResponse(UnaCloudConstants.ERROR_MESSAGE + e, ExecutionProcessEnum.FAIL);
 		}       
     }
-
 	/**
-	 * Returns a list of name executions that currently are running,
+	 * Creates a file with the list of execution names that are currently running,
 	 * not return images in state STARTING (testing running)
-	 * @return list of execution names
+	 * @return  True if the file is created, false otherwise
 	 */
-	public static List<String> returnFileNameExecutions() {
-		if (executionList.values().size() == 0)
-			return new ArrayList<String>();
-		try {
-			refreshData();
-			List<String> ids = new ArrayList<String>();
-			for (Execution execution: executionList.values())
-				if (execution.getImage().getStatus() != ImageStatus.STARTING)
-					ids.add(execution.getImage().getImageName());
-			return ids;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<String>();
-		}
-	}
+	private static boolean createGlobalSnapshotFile()
+    {
+        System.out.println("Check if file exists and prev contents");
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader("vmnames.txt"));
+            String linea=br.readLine();
+            System.out.println("Active vms are");
+            while(linea!=null)
+            {
+                System.out.println(linea);
+                linea=br.readLine();
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("VM names does not exist");
+            e.printStackTrace();
+        }
+        if (executionList.values().size() == 0)
+            return false;
+        try {
+            PrintWriter pw = new PrintWriter (new File("vmnames.txt"));
+            refreshData();
+            for (Execution execution: executionList.values())
+                if (execution.getImage().getStatus() != ImageStatus.STARTING)
+                    pw.println(execution.getImage().getImageName());
+            pw.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    /**
+     * Method for starting new Global snaphot taker
+     */
+    private static void startGlobalSnapshot() {
+        System.out.println("Starting GS");
+        if(GS!=null)
+        {
+            GS.destroy();
+            GS=null;
+        }
+        try
+        {
+            GS=Runtime.getRuntime().exec("java -jar GS.jar");
+            System.out.println("GS started without errors");
+        }
+        catch(Exception e)
+        {
+            System.out.println("Cannot execute GS.jar");
+            e.printStackTrace();
+        }
+    }
 
 }
