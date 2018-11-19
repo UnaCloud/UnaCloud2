@@ -260,4 +260,26 @@ public class PersistentExecutionManager {
 			return new UnaCloudResponse(UnaCloudConstants.ERROR_MESSAGE + e, ExecutionProcessEnum.FAIL);
 		}       
     }
+
+	/**
+	 * Returns a list of name executions that currently are running,
+	 * not return images in state STARTING (testing running)
+	 * @return list of execution names
+	 */
+	public static List<String> returnFileNameExecutions() {
+		if (executionList.values().size() == 0)
+			return new ArrayList<String>();
+		try {
+			refreshData();
+			List<String> ids = new ArrayList<String>();
+			for (Execution execution: executionList.values())
+				if (execution.getImage().getStatus() != ImageStatus.STARTING)
+					ids.add(execution.getImage().getImageName());
+			return ids;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ArrayList<String>();
+		}
+	}
+
 }

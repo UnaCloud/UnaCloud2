@@ -545,6 +545,7 @@ public class QueueMessageProcessor implements QueueReader {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-		}	
+		}
 	}
+
 }
