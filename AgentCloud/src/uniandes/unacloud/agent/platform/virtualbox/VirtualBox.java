@@ -69,6 +69,8 @@ public abstract class VirtualBox extends Platform {
      */
     @Override
     public void stopExecution(ImageCopy image){
+    	System.out.println("Stopping execution vm names");
+    	System.out.println(getVmsWithList());
 		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getImageName(), "poweroff");
         sleep(2000);
     }
@@ -187,24 +189,11 @@ public abstract class VirtualBox extends Platform {
 			sleep(20000);
 		}
 		//If it does not work try with an emergency start
-		if(times==0)
-		{
-            System.out.println("Show vm info "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
-            System.out.println("Listm vms log "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list","vms"));
-            h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
-			System.out.println("Start vm emergencystop response "+h);
-			/*try
-            {
-
-            	changeAbortedState(image.getMainFile().getFilePath().replaceAll(".vbox",".vdi"));
-				String t=LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"startvm",image.getImageName(),"--type","headless");
-				System.out.println("START HEADLESS AFTER ABORTED "+t);
-				sleep(20000);
-            }
-            catch (Exception e)
-            {
-                System.out.println("Could not start vm from aborted state "+e.getMessage() );
-            }*/
+		if(times==0) {
+			System.out.println("Show vm info " + LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
+			System.out.println("Listm vms log " + LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "list", "vms"));
+			h = LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "startvm", image.getImageName(), "--type", "emergencystop");
+			System.out.println("Start vm emergencystop response " + h);
 			times=1;
 			String temp;
 			System.out.println("Show vm info "+LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "showvminfo", image.getImageName()));
@@ -614,18 +603,44 @@ public abstract class VirtualBox extends Platform {
      */
     public static String getLocalHostAddress() throws UnknownHostException
     {
-         try
-         {
-                        String hostAddress = getLocalHostLANAddress().getHostAddress();
-                                System.out.println( "hostAddress = [" + hostAddress + "]" );
-                        return hostAddress;
-                    }
-                catch ( UnknownHostException e1 )
-                {
-                        System.out.println( "Couldn't get localhost address" );
-                        throw e1;
-                    }
-            }
+		 try
+		 {
+				String hostAddress = getLocalHostLANAddress().getHostAddress();
+				System.out.println( "hostAddress = [" + hostAddress + "]" );
+				return hostAddress;
+		 }
+		 catch ( UnknownHostException e1 ) {
+			 System.out.println("Couldn't get localhost address");
+			 throw e1;
+		 }
+
+	}
+
+
+	/**
+	 * Return list of vms
+	 * @return List of vms in the system
+	 */
+	public String getVmsWithList()
+	{
+		String s = "";
+
+		s = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","runningvms");
+
+		String[] array = s.split("\n");
+
+		String answer="";
+		String a = "";
+		int i = 0;
+		for (; i < array.length - 1; i++) {
+			a = array[i].split(" ")[0].replace("\"", "");
+			answer+=a + "\n";
+		}
+		a = array[i].split(" ")[0].substring(1).replace("\"", "");
+		answer+=a;
+		System.out.println(a);
+		return answer;
+	}
 
             /**
       * Returns an <code>InetAddress</code> object encapsulating what is most likely the machine's
@@ -655,8 +670,7 @@ public abstract class VirtualBox extends Platform {
       * @return InetAddress
       * @throws UnknownHostException If the LAN address of the machine cannot be found.
       */
-            public static InetAddress getLocalHostLANAddress()
-        throws UnknownHostException
+	public static InetAddress getLocalHostLANAddress() throws UnknownHostException
     {
                 try
                 {
@@ -711,6 +725,6 @@ public abstract class VirtualBox extends Platform {
                         unknownHostException.initCause( e );
                         throw unknownHostException;
                     }
-            }
+	}
 
 }
