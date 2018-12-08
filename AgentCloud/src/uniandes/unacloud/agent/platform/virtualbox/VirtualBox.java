@@ -70,7 +70,6 @@ public abstract class VirtualBox extends Platform {
     @Override
     public void stopExecution(ImageCopy image){
     	System.out.println("Stopping execution vm names");
-    	System.out.println(getVmsWithList());
 		LocalProcessExecutor.executeCommandOutput(getExecutablePath(), "controlvm", image.getImageName(), "poweroff");
         sleep(2000);
     }
@@ -617,30 +616,7 @@ public abstract class VirtualBox extends Platform {
 	}
 
 
-	/**
-	 * Return list of vms
-	 * @return List of vms in the system
-	 */
-	public String getVmsWithList()
-	{
-		String s = "";
 
-		s = LocalProcessExecutor.executeCommandOutput(getExecutablePath(),"list","runningvms");
-
-		String[] array = s.split("\n");
-
-		String answer="";
-		String a = "";
-		int i = 0;
-		for (; i < array.length - 1; i++) {
-			a = array[i].split(" ")[0].replace("\"", "");
-			answer+=a + "\n";
-		}
-		a = array[i].split(" ")[0].substring(1).replace("\"", "");
-		answer+=a;
-		System.out.println(a);
-		return answer;
-	}
 
             /**
       * Returns an <code>InetAddress</code> object encapsulating what is most likely the machine's
