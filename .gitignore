@@ -1,44 +1,71 @@
-UnaCloudWeb/target/*
-UnaCloudWeb/target-eclipse/*
+# UnaCloud
+# files to ignore by Git 
+
+# Temporary files
+.metadata
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+.settings/
+.loadpath
+.recommenders
+.recommenders/
+stacktrace.log
+
+# Compiled files
+bin/
+out/
+target/
 *.class
-UnaCloudWeb/target/stacktrace.log
-UnaCloudWeb/grails-app/conf/config.properties
-UnaCloudControl/controlConfig.properties
-AgentClient/global.properties
-AgentClient/local.properties
-UnaCloudControl/log_control.txt
-AgentClient/imageList
-AgentClient/executions.txt
-UnaCloudFileManager/target/*
-UnaCloudFileManager/target-eclipse/*
-*.class
-*.class
+
+# Grails files
+config.properties
+
+# Configuration files
+global.properties
+local.properties
+log_control.txt
+imageList
+executions.txt
+
+# Eclipse files
+.project
+target-eclipse/
+
+# IntelliJ files
+.idea/
+
+# Other files
 UnaCloudFileManager/target-eclipse/classes/javascripts/jquery.js
 UnaCloudFileManager/target/assets/manifest.properties
+UnaCloudFileManager/UnaCloudFileManager.iml
+UnaCloudFileManager/UnaCloudFileManager-grailsPlugins.iml
+UnaCloudFileManager/scripts/test/unit/uniandes/unacloud/file/test/
+UnaCloudFileManager/.slcache/
+UnaCloudFileManager/web-app/agentSources/UnaClient/
+UnaCloudFileManager/UsersDellDocumentsMonitoriasUnaCloudvmsaan_admin/
+UnaCloudFileManager/web-app/agentSources/UnaClient.jar
 
 UnaCloudWeb/UnaCloudWeb.iml
 UnaCloudWeb/UnaCloudWeb-grailsPlugins.iml
-UnaCloudFileManager/UnaCloudFileManager.iml
-UnaCloudFileManager/UnaCloudFileManager-grailsPlugins.iml
-AgentCloud/.idea/*
-AgentCloud/AgentCloud.iml
-AgentUpdater/AgentUpdater.iml
-CommonShares/CommonShares.iml
-ServerShares/ServerShares.iml
-UnaCloudClientRestAPI/UnaCloudClientRestAPI.iml
-UnaCloudClientRestAPI/.idea/*
-UnaCloudControl/UnaCloudControl.iml
-.idea/*
-UnaCloudFileManager/.slcache/
 UnaCloudWeb/.slcache/
-out/
-UnaCloudFileManager/web-app/agentSources/.idea/
-UnaCloudFileManager/scripts/test/unit/uniandes/unacloud/file/test/
+
 AgentCloud/src/META-INF/MANIFEST.MF
-UnaCloudClientRestAPI/archivoEntrada.csv
-UnaCloudFileManager/web-app/agentSources/UnaClient/
-UnaCloudFileManager/UsersDellDocumentsMonitoriasUnaCloudvmsaan_admin/
+AgentCloud/AgentCloud.iml
 AgentCloud/META-INF/
+
+AgentUpdater/AgentUpdater.iml
+
+CommonShares/CommonShares.iml
 CommonShares/bin/META-INF/
-UnaCloudFileManager/web-app/agentSources/UnaClient.jar
+
+ServerShares/ServerShares.iml
+
+UnaCloudClientRestAPI/UnaCloudClientRestAPI.iml
+
+UnaCloudControl/UnaCloudControl.iml
 UnaCloudControl/META-INF/MANIFEST.MF
+
+UnaCloudClientRestAPI/archivoEntrada.csv
