@@ -126,7 +126,7 @@ vagrant ssh
 
 
 ### Manual Installation
-This kind of installation package is designed to be distribuited and requires between 1 and 5 fives machines. You can allocate server components in different execution nodes or in the same one.
+This kind of installation package is designed to be distributed and requires between 1 and 5 fives machines. You can allocate server components in different execution nodes or in the same one.
 
 #### Node for MySQL server
 * Install and configure MySQL server
