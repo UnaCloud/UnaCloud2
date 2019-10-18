@@ -2,7 +2,7 @@
 ## Overview
 UnaCloud is a project developed by the research group COMIT (Comunicaciones y Tecnología de Información) from Universidad de los Andes, Colombia. It is an open source opportunistic cloud computing Infrastructure as a Service (IaaS) implementation which provides basic computing resources (processing, storage, and networking) to run arbitrary software, including operating systems and applications.
 
-UnaCloud is able to execute single instances and/or clusters of virtual machines. Its execution is mostly supported by off-the-shelf, volatile, non-dedicated, distributed, and heterogeneous computing resources (such as desktops) that belong to a variety of administrative domains on a university campus.
+UnaCloud is able to execute single instances and/or clusters of virtual machines. This execution is mostly supported by off-the-shelf, volatile, non-dedicated, distributed, and heterogeneous computing resources (such as desktops) that belong to a variety of administrative domains on a university campus.
 
 UnaCloud is a Client-Server application which can be used currently in desktops with Windows or Linux (Debian, Ubuntu) operating systems. 
 
