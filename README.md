@@ -104,7 +104,7 @@ bash install.sh
 This kind of installation is very fast, does not use distributed components and does not need a previous configured machine for server. Download package for Vagrant Installation, this installation will run in a virtual machine therefore your physical machine should meet system requeriments.
 * Install Vagrant from https://www.vagrantup.com/
 * Install VirtualBox 4.3 or better.
-* Unzip package in path of your preference.
+* Unzip package in your path of preference.
 * Replace IP_FOR_UNACLOUD word in vagrantfile by the IP address you defined for UnaCloud Server
 * Replace IP_FOR_UNACLOUD word in fields WEB_SERVER_URL, WEB_FILE_SERVER_URL, CONTROL_SERVER_IP and FILE_SERVER_IP in config.properties, by the IP address you defined for UnaCloud Server
 * Execute in terminal vagrantfile located in folder using command:
