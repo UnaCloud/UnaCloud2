@@ -90,7 +90,7 @@ This kind of installation is very fast and does not use distributed components. 
 ```
 bash install.sh
 ```
-* The script will install in machine:
+* The script will install in the machine:
 	* Java 8
 	* Apache Tomcat 8
 	* UnaCloud server components
@@ -111,14 +111,14 @@ This kind of installation is very fast, does not use distributed components and 
 ```
 vagrant up
 ```
-* Can access to virtual machine using command:
+* Can access to virtual the machine using command:
 ```
 vagrant ssh
 ```
 * Vagrant will configure machine with:
 	* Java 8
 	* Apache Tomcat 8
-	* UnaCloud Server components
+	* UnaCloud the Server components
 	* MySQL Database
 	* RabbitMQ
 * Access in your browser to url http://IP_FOR_UNACLOUD:8080/UnaCloud
@@ -143,14 +143,14 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OP
 * Set database port in config.properties file.
 * Create a database.
 * Create an user with read and write privileges on database.
-* Set database name and user credentials in config.properties file.
+* Set database name and the user credentials in config.properties file.
 
 #### Node for RabbitMQ
 * Install RabbitMQ
-* Configure user with read and write queues privileges.
+* Configure the user with read and write queues privileges.
 * Validate communication with RabbitMQ port.
 * Configure RabbitMQ service to run in startup machine process
-* Set RabbitMQ port and user credentials in config.properties file.
+* Set RabbitMQ port and the user credentials in config.properties file.
 
 #### Node for CloudControl application
 * Install Java 8
@@ -163,7 +163,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password' WITH GRANT OP
 ```
 java –jar CloudControl.jar
 ```
-* Configure application to run when machine starts.
+* Configure application to run when the machine starts.
 
 #### Node for FileManager application
 * Install Java 8
@@ -254,7 +254,7 @@ Unfortunately we only have detailed documentation in spanish, we hope to offer t
 Code documentation? please check docs folder in github project.
 
 ## Using UnaCloud
-You can follow our user manual located in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/)
+You can follow our the user manual located in [UnaCloud Wiki](https://sistemasproyectos.uniandes.edu.co/iniciativas/unacloud/es/inicio/)
 
 ## Research
 UnaCloud is based on research publications, that were made by members of investigation group COMMIT from Universidad de los Andes, which develop, analyze and expose the features of implementation, in order to improve UnaCloud service.
